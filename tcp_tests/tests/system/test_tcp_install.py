@@ -23,19 +23,15 @@ from tcp_tests.helpers import ext
 class TestTCPInstaller(object):
     """Test class for testing TCP deployment"""
 
-    @pytest.mark.snapshot_needed
+    # @pytest.mark.snapshot_needed
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.underlay)
     @pytest.mark.fail_snapshot
     def test_tcp_install_default(self, underlay, tcp_actions, show_step):
         """Test for deploying an tcp environment and check it
 
-        Preconditions:
-            1. Environment with installed salt master and salt minions
-            2. Installed TCP salt formulas on salt master
-
         Scenario:
             1. Show TCP config
-        """
 
+        """
         show_step(1)
         tcp_actions.show_tcp_config()

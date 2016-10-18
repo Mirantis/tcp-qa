@@ -85,8 +85,8 @@ def hardware(request, config):
     # for devops manager: power on nodes and wait for SSH
     # for empty manager: do nothing
     # for maas manager: provision nodes and wait for SSH
-    env.start()
     if not env.has_snapshot(ext.SNAPSHOT.hardware):
+        env.start()
         env.create_snapshot(ext.SNAPSHOT.hardware)
 
     def fin():

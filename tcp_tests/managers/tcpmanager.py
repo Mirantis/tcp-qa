@@ -46,7 +46,8 @@ class TCPManager(object):
 
     def show_tcp_config(self):
         cmd = 'reclass -n {0}'.format(self.__underlay.node_names()[0])
-        self.__underlay.sudo_check_call(cmd, host=self.__config.tcp.tcp_host)
+        self.__underlay.sudo_check_call(cmd, host=self.__config.tcp.tcp_host,
+                                        verbose=True)
 
     def install_tcp(self):
         raise Exception("Not implemented!")
