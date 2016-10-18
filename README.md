@@ -1,18 +1,18 @@
 # tcpcloud-devops-env
 
-This template requires 20 vCPU and 52Gb host RAM.
+Default template used here requires 20 vCPU and 52Gb host RAM.
 
 Clone the repo
 --------------
 
-git clone https://github.com/dis-xcom/tcpcloud-devops-env
+git clone https://github.com/Mirantis/tcp-qa
 
-cd ./tcpcloud-devops-env
+cd ./tcp-qa
 
 Install requirements
 --------------------
 
-pip install -r ./requirements.txt
+pip install -r ./tcp_tests/requirements.txt
 
 Initialize fuel-devops database if needed:
 ------------------------------------------
@@ -37,8 +37,6 @@ export WORKSPACE=$(pwd)
 export SUSPEND_ENV_ON_TEARDOWN=false  # Optional
 
 py.test -vvv -s -k test_tcp_install_default
-
-
 
 
 Create and start the env for manual tests
