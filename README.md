@@ -48,4 +48,6 @@ dos.py create-env ./tcpcloud-wk20.yaml
 dos.py start "${ENV_NAME}"
 
 
-Then, wait until cloud-init is finished and port 22 is open (~3-4 minutes), and login with ' vagrant / vagrant '.
+Then, wait until cloud-init is finished and port 22 is open (~3-4 minutes), and login to the cfg01 node:
+
+ssh root@172.16.10.100  # Use password 'r00tme'

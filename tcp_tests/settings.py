@@ -29,8 +29,8 @@ TIMESTAT_PATH_YAML = os.environ.get(
     'TIMESTAT_PATH_YAML', os.path.join(
         LOGS_DIR, 'timestat_{}.yaml'.format(time.strftime("%Y%m%d"))))
 
-SSH_LOGIN = os.environ.get('SSH_LOGIN', 'vagrant')
-SSH_PASSWORD = os.environ.get('SSH_PASSWORD', 'vagrant')
+SSH_LOGIN = os.environ.get('SSH_LOGIN', 'root')
+SSH_PASSWORD = os.environ.get('SSH_PASSWORD', 'r00tme')
 SSH_NODE_CREDENTIALS = {"login": SSH_LOGIN,
                         "password": SSH_PASSWORD}
 

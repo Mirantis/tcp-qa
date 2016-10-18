@@ -3,20 +3,24 @@
 
   ssh_pwauth: True
   users:
-   - name: vagrant
+   - name: root
      sudo: ALL=(ALL) NOPASSWD:ALL
      shell: /bin/bash
      ssh_authorized_keys:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGwjUlYn9UsmWmAGSuEA2sICad7WqxgsJR0HKcMbbxi0tn96h4Cq2iGYmzlJ48egLm5R5pxyWnFvL4b/2zb+kKTPCMwRc9nv7xEGosEFNQEoSDd+gYu2CO0dgS2bX/7m2DXmzvhqPjxWQUXXsb0OYAS1r9Es65FE8y4rLaegz8V35xfH45bTCA0W8VSKh264XtGz12hacqsttE/UvyjJTZe+/XV+xJy3WAWxe8J/MuW1VqbqNewTmpTE/LJU8i6pG4msU6+wH99UvsGAOKQOduynUHKWG3VZg5YCjpbbV/t/pfW/vHB3b3jiifQmNhulyiG/CNnSQ5BahtV/7qPsYt vagrant@cfg01
 
+  disable_root: false
   chpasswd:
    list: |
-    vagrant:vagrant
+    root:r00tme
    expire: False
 
   bootcmd:
    # Block access to SSH while node is preparing
    - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   # Enable root access
+   - sed -i'.orig' -e's/without-password/yes/' /etc/ssh/sshd_config
+   - service sshd restart
   output:
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
@@ -24,9 +28,6 @@
    # Configure dhclient
    - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
    - sudo resolvconf -u
-
-   # Change owner for .ssh/
-   - chown -R vagrant:vagrant /home/vagrant/.ssh
 
    # Prepare network connection
    - sudo ifup {interface_name}
@@ -99,15 +100,15 @@
    - service salt-minion restart
 
    - echo "Showing system info and metadata ..."
-   #- salt-call --no-color grains.items
-   #- salt-call --no-color pillar.data
+   - salt-call --no-color grains.items
+   - salt-call --no-color pillar.data
    - reclass -n {hostname}
 
-   #- echo "Running complete state ..."
-   #- salt-call --no-color state.sls linux openssh salt.minion
-   #- salt-call --no-color state.sls salt.master
-   #- service salt-minion restart
-   #salt-call --no-color state.highstate
+   - echo "Running complete state ..."
+   - salt-call --no-color state.sls linux openssh salt.minion
+   - salt-call --no-color state.sls salt.master
+   - service salt-minion restart
+   # - salt-call --no-color state.highstate
 
    ########################################################
    # Node is ready, allow SSH access
@@ -127,8 +128,8 @@
               pre-up ifconfig $IFACE up
               post-down ifconfig $IFACE down
 
-   - path: /home/vagrant/.ssh/id_rsa
-     owner: vagrant:vagrant
+   - path: /root/.ssh/id_rsa
+     owner: root:root
      permissions: '0600'
      content: |
          -----BEGIN RSA PRIVATE KEY-----
@@ -159,8 +160,8 @@
          XKI6Ldfq6TU3xKujRHfGP+oQ6GLwVCL/kjGxOuSRLFGfRiiqYI3nww==
          -----END RSA PRIVATE KEY-----
 
-   - path: /home/vagrant/.ssh/config
-     owner: vagrant:vagrant
+   - path: /root/.ssh/config
+     owner: root:root
      permissions: '0600'
      content: |
           Host *

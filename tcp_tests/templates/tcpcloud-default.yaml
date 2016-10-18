@@ -204,11 +204,11 @@ template:
                   networks:
                     - private
 
-          - name: cmp01.mk20-lab-advanced.local
+          - name: web01.mk20-lab-advanced.local
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              vcpu: !os_env SLAVE_NODE_CPU, 1
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -242,11 +242,11 @@ template:
                   networks:
                     - private
 
-          - name: web01.mk20-lab-advanced.local
+          - name: cmp01.mk20-lab-advanced.local
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
               boot:
                 - hd
               cloud_init_volume_name: iso
