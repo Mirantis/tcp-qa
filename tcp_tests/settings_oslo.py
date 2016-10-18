@@ -24,7 +24,7 @@ from tcp_tests import settings
 
 
 _default_conf = pkg_resources.resource_filename(
-    __name__, 'templates/default.yaml')
+    __name__, 'templates/tcpcloud-default.yaml')
 
 
 hardware_opts = [
@@ -51,8 +51,8 @@ underlay_opts = [
                   }, ...]""", default=[]),
     ct.Cfg('roles', ct.JSONList(),
            help="Node roles managed by underlay in the environment",
-           default=[ext.UNDERLAY_NODE_ROLE.salt-master,
-                    ext.UNDERLAY_NODE_ROLE.salt-minion, ]),
+           default=[ext.UNDERLAY_NODE_ROLE.salt_master,
+                    ext.UNDERLAY_NODE_ROLE.salt_minion, ]),
     ct.Cfg('nameservers', ct.JSONList(),
            help="IP addresses of DNS servers",
            default=[]),

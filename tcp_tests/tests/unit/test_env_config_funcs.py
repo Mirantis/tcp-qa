@@ -2,7 +2,7 @@ import copy
 
 import pytest
 
-from fuel_ccp_tests.helpers import env_config as funcs
+from tcp_tests.helpers import env_config as funcs
 
 # Test data for funcs.return_obj
 testdata1 = [

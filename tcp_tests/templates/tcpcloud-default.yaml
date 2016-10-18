@@ -53,7 +53,7 @@ template:
 
         nodes:
           - name: cfg01.mk20-lab-advanced.local
-            role: salt-master
+            role: salt_master
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 4096
@@ -91,7 +91,7 @@ template:
                     - private
 
           - name: ctl01.mk20-lab-advanced.local
-            role: salt-minion
+            role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
               memory: !os_env SLAVE_NODE_MEMORY, 12400
@@ -129,7 +129,7 @@ template:
                     - private
 
           - name: ctl02.mk20-lab-advanced.local
-            role: salt-minion
+            role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
               memory: !os_env SLAVE_NODE_MEMORY, 12400
@@ -167,7 +167,7 @@ template:
                     - private
 
           - name: ctl03.mk20-lab-advanced.local
-            role: salt-minion
+            role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
               memory: !os_env SLAVE_NODE_MEMORY, 12400
@@ -205,7 +205,7 @@ template:
                     - private
 
           - name: cmp01.mk20-lab-advanced.local
-            role: salt-minion
+            role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
               memory: !os_env SLAVE_NODE_MEMORY, 8192
@@ -243,7 +243,7 @@ template:
                     - private
 
           - name: web01.mk20-lab-advanced.local
-            role: salt-minion
+            role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 2048
@@ -281,7 +281,7 @@ template:
                     - private
 
           - name: mtr01.mk20-lab-advanced.local
-            role: salt-minion
+            role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 2048

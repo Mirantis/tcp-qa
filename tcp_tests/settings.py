@@ -18,9 +18,6 @@ import time
 _boolean_states = {'1': True, 'yes': True, 'true': True, 'on': True,
                    '0': False, 'no': False, 'false': False, 'off': False}
 
-_default_conf = pkg_resources.resource_filename(
-    __name__, 'templates/tcpcloud-default.yaml')
-
 
 def get_var_as_bool(name, default):
     value = os.environ.get(name, '')
@@ -37,7 +34,6 @@ SSH_PASSWORD = os.environ.get('SSH_PASSWORD', 'vagrant')
 SSH_NODE_CREDENTIALS = {"login": SSH_LOGIN,
                         "password": SSH_PASSWORD}
 
-CONF_PATH = os.environ.get('CONF_PATH', os.path.abspath(_default_conf))
 SHUTDOWN_ENV_ON_TEARDOWN = get_var_as_bool('SHUTDOWN_ENV_ON_TEARDOWN', True)
 
 # public_iface = IFACES[0]

@@ -240,46 +240,6 @@ class ElasticSearchResult(object):
             None
 
 
-def create_file(node, pod, path, size,
-                namespace=ext.Namespace.BASE_NAMESPACE):
-    node.check_call(
-        'kubectl exec {} --namespace={} {}'.format(
-            pod.name,
-            namespace,
-            'dd -- if=/dev/zero -- of={} bs=1MB count={}'.format(path, size)),
-        expected=[ext.ExitCodes.EX_OK])
-
-
-def run_daily_cron(node, pod, task,
-                   namespace=ext.Namespace.BASE_NAMESPACE):
-    node.check_call(
-        'kubectl exec {} --namespace={} {}'.format(
-            pod.name,
-            namespace,
-            '/etc/cron.daily/{}'.format(task)),
-        expected=[ext.ExitCodes.EX_OK])
-
-
-def list_files(node, pod, path, mask,
-               namespace=ext.Namespace.BASE_NAMESPACE):
-    return "".join(node.check_call(
-        'kubectl exec {} --namespace={} {}'.format(
-            pod.name,
-            namespace,
-            'find {} -- -iname {}'.format(path, mask)),
-        expected=[ext.ExitCodes.EX_OK])['stdout']) \
-        .replace('\n', ' ').strip().split(" ")
-
-
-def rm_files(node, pod, path,
-             namespace=ext.Namespace.BASE_NAMESPACE):
-    node.execute(
-        'kubectl exec {} --namespace={} {}'.format(
-            pod.name,
-            namespace,
-            'rm -- {}'.format(path)))
-
-
 class YamlEditor(object):
     """Manipulations with local or remote .yaml files.
 

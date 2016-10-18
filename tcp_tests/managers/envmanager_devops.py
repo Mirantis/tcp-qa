@@ -318,7 +318,7 @@ class EnvironmentManager(object):
         :rtype: list
         """
         nodes = self.__get_nodes_by_role(
-            node_role=ext.UNDERLAY_NODE_ROLE.salt-master)
+            node_role=ext.UNDERLAY_NODE_ROLE.salt_master)
         return nodes
 
     @property
@@ -328,7 +328,7 @@ class EnvironmentManager(object):
         :rtype: list
         """
         nodes = self.__get_nodes_by_role(
-            node_role=ext.UNDERLAY_NODE_ROLE.salt-minion)
+            node_role=ext.UNDERLAY_NODE_ROLE.salt_minion)
         return nodes
 
 #    @staticmethod

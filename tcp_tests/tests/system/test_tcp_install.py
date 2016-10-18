@@ -15,7 +15,6 @@ import copy
 
 import pytest
 
-import base_test
 from tcp_tests import settings
 from tcp_tests.helpers import ext
 

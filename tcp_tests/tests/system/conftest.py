@@ -12,39 +12,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import collections
-
-from enum import IntEnum
-
-
-def enum(*values, **kwargs):
-    names = kwargs.get('names')
-    if names:
-        return collections.namedtuple('Enum', names)(*values)
-    return collections.namedtuple('Enum', values)(*values)
-
-UNDERLAY_NODE_ROLE = enum(
-    'salt_master',
-    'salt_minion',
-)
-
-NETWORK_TYPE = enum(
-    'private',
-    'public'
-)
-
-SNAPSHOT = enum(
-    'hardware',
-    'underlay',
-    'tcp_deployed',
-    'os_deployed',
-)
-
-LOG_LEVELS = enum(
-    'INFO',
-    'WARNING',
-    'ERROR',
-    'CRITICAL',
-    'DEBUG',
-    'NOTE'
-)
+pytest_plugins = ['tcp_tests.fixtures.common_fixtures',
+                  'tcp_tests.fixtures.config_fixtures',
+                  'tcp_tests.fixtures.underlay_fixtures']
