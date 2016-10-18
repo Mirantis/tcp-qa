@@ -18,7 +18,7 @@ template:
             gateway: +1
             l2_network_device: +1
           ip_ranges:
-            dhcp: [+2, -2]
+            dhcp: [+100, -2]
 
     groups:
       - name: default

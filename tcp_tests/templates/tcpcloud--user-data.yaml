@@ -50,7 +50,7 @@
 
    # To be configured from inventory/fuel-devops by operator or autotests
    - 'echo "id: {hostname}" >> /etc/salt/minion'
-   - 'echo "master: 172.16.10.2" >> /etc/salt/minion'
+   - 'echo "master: 172.16.10.100" >> /etc/salt/minion'
 
    - rm -f /etc/salt/pki/minion/minion_master.pub
    - service salt-minion restart

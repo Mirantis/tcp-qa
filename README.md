@@ -35,7 +35,7 @@ Run deploy test
 -----------------------------------------
 export WORKSPACE=$(pwd)
 
-export SUSPEND_ENV_ON_TEARDOWN=false  # Optional
+export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
 
 py.test -vvv -s -k test_tcp_install_default
 
