@@ -1,4 +1,4 @@
-# tcpcloud-devops-env
+# tcp-qa
 
 Default template used here requires 20 vCPU and 52Gb host RAM.
 
