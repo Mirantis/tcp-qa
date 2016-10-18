@@ -14,4 +14,5 @@
 
 pytest_plugins = ['tcp_tests.fixtures.common_fixtures',
                   'tcp_tests.fixtures.config_fixtures',
-                  'tcp_tests.fixtures.underlay_fixtures']
+                  'tcp_tests.fixtures.underlay_fixtures',
+                  'tcp_tests.fixtures.tcp_fixtures']
