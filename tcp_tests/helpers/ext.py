@@ -23,7 +23,7 @@ def enum(*values, **kwargs):
         return collections.namedtuple('Enum', names)(*values)
     return collections.namedtuple('Enum', values)(*values)
 
-UNDERLAY_NODE_ROLE = enum(
+UNDERLAY_NODE_ROLES = enum(
     'salt_master',
     'salt_minion',
 )

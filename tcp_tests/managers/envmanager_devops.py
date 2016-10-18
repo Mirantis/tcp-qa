@@ -102,8 +102,7 @@ class EnvironmentManager(object):
         :rtype: dict
         """
         result = {}
-#        for node in self.k8s_nodes:
-        for node in self.master_nodes + self.slave_nodes:
+        for node in self._env.get_nodes(role__in=ext.UNDERLAY_NODE_ROLES):
             lvm = filter(lambda x: x.volume.name == 'lvm', node.disk_devices)
             if len(lvm) == 0:
                 continue
@@ -248,7 +247,7 @@ class EnvironmentManager(object):
             raise exceptions.EnvironmentAlreadyExists(env_name)
         self._env.define()
         LOG.info(
-            'Environment "{0}" created and started'.format(env_name)
+            'Environment "{0}" created'.format(env_name)
         )
 
     def start(self):
@@ -258,9 +257,9 @@ class EnvironmentManager(object):
         if self._env is None:
             raise exceptions.EnvironmentIsNotSet()
         self._env.start()
-#        for node in self.k8s_nodes:
-        for node in self.master_nodes + self.slave_nodes:
-            LOG.debug("Waiting for SSH on node '{}...'".format(node.name))
+        LOG.info('Environment "{0}" started'.format(self._env.name))
+        for node in self._env.get_nodes(role__in=ext.UNDERLAY_NODE_ROLES):
+            LOG.info("Waiting for SSH on node '{}...'".format(node.name))
             timeout = 360
             helpers.wait(
                 lambda: helpers.tcp_ping(self.node_ip(node), 22),
@@ -269,6 +268,7 @@ class EnvironmentManager(object):
                     node.name, timeout
                 )
             )
+        LOG.info('Environment "{0}" ready'.format(self._env.name))
 
     def resume(self):
         """Resume environment"""
@@ -318,7 +318,7 @@ class EnvironmentManager(object):
         :rtype: list
         """
         nodes = self.__get_nodes_by_role(
-            node_role=ext.UNDERLAY_NODE_ROLE.salt_master)
+            node_role=ext.UNDERLAY_NODE_ROLES.salt_master)
         return nodes
 
     @property
@@ -328,38 +328,20 @@ class EnvironmentManager(object):
         :rtype: list
         """
         nodes = self.__get_nodes_by_role(
-            node_role=ext.UNDERLAY_NODE_ROLE.salt_minion)
+            node_role=ext.UNDERLAY_NODE_ROLES.salt_minion)
         return nodes
 
-#    @staticmethod
-#    def node_ip(node):
-#        """Determine node's IP
-#
-#        :param node: devops.models.Node
-#        :return: string
-#        """
-#        LOG.debug('Trying to determine {0} ip.'.format(node.name))
-#        return node.get_ip_address_by_network_name(
-#            ext.NETWORK_TYPE.public
-#        )
+    @staticmethod
+    def node_ip(node):
+        """Determine node's IP
 
-#    @property
-#    def admin_ips(self):
-#        """Property to get ip of admin role VMs
-#
-#        :return: list
-#        """
-#        nodes = self.master_nodes
-#        return [self.node_ip(node) for node in nodes]
-
-#    @property
-#    def slave_ips(self):
-#        """Property to get ip(s) of slave role VMs
-#
-#        :return: list
-#        """
-#        nodes = self.slave_nodes
-#        return [self.node_ip(node) for node in nodes]
+        :param node: devops.models.Node
+        :return: string
+        """
+        LOG.debug('Trying to determine {0} ip.'.format(node.name))
+        return node.get_ip_address_by_network_name(
+            ext.NETWORK_TYPE.public
+        )
 
     @property
     def nameserver(self):
