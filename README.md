@@ -34,6 +34,7 @@ export IMAGE_PATH=./trusty-server-cloudimg-amd64.qcow2
 Run deploy test
 -----------------------------------------
 export WORKSPACE=$(pwd)
+
 export SUSPEND_ENV_ON_TEARDOWN=false  # Optional
 
 py.test -vvv -s -k test_tcp_install_default
