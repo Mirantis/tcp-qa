@@ -56,6 +56,10 @@
    - 'echo "id: {hostname}" >> /etc/salt/minion'
    - 'echo "master: 172.16.10.100" >> /etc/salt/minion'
 
+   - echo "Restarting minion service with workarounds..."
+   - rm -f /etc/salt/pki/minion/minion_master.pub
+   - service salt-minion restart
+   - sleep 5
    - rm -f /etc/salt/pki/minion/minion_master.pub
    - service salt-minion restart
 
@@ -79,6 +83,4 @@
 
           # 2nd interface should be UP without IP address
           auto eth1
-          iface eth1 inet manual
-              pre-up ifconfig $IFACE up
-              post-down ifconfig $IFACE down
+          iface eth1 inet dhcp

@@ -69,6 +69,13 @@
          reclass: *reclass
        EOF
 
+   - echo "Configure git settings and certificate"
+   - touch /root/.git_trusted_certs.pem
+   - for server in git.tcpcloud.eu github.com; do openssl s_client -showcerts -connect $server:443 </dev/null | openssl x509 -outform PEM >> /root/.git_trusted_certs.pem; done
+   - HOME=/root git config --global http.sslCAInfo /root/.git_trusted_certs.pem
+   - HOME=/root git config --global user.email "tcp-qa@example.com"
+   - HOME=/root git config --global user.name "TCP QA"
+
    - echo "Configuring reclass ..."
    - git clone https://github.com/Mirantis/mk-lab-salt-model.git /srv/salt/reclass -b master
 
@@ -94,7 +101,7 @@
        master: localhost
        EOF
 
-   - echo "Restarting services ..."
+   - echo "Restarting services with workarounds..."
    - service salt-master restart
    - rm -f /etc/salt/pki/minion/minion_master.pub
    - service salt-minion restart
@@ -107,6 +114,16 @@
    - echo "Running complete state ..."
    - salt-call --no-color state.sls linux openssh salt.minion
    - salt-call --no-color state.sls salt.master
+   - rm -f /etc/salt/pki/minion/minion_master.pub
+   - service salt-minion stop
+   - sleep 5
+   - service salt-master stop
+   - sleep 5
+   - killall -9 salt-master
+   - sleep 5
+   - service salt-master start
+   - sleep 60
+   - rm -f /etc/salt/pki/minion/minion_master.pub
    - service salt-minion restart
    # - salt-call --no-color state.highstate
 
@@ -124,9 +141,7 @@
 
           # 2nd interface should be UP without IP address
           auto eth1
-          iface eth1 inet manual
-              pre-up ifconfig $IFACE up
-              post-down ifconfig $IFACE down
+          iface eth1 inet dhcp
 
    - path: /root/.ssh/id_rsa
      owner: root:root
