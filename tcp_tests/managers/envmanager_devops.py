@@ -151,6 +151,7 @@ class EnvironmentManager(object):
         for d_node in self._env.get_nodes(role__in=roles):
             ssh_data = {
                 'node_name': d_node.name,
+                'roles': [d_node.role],
                 'address_pool': self._get_network_pool(
                     ext.NETWORK_TYPE.public).address_pool.name,
                 'host': self.node_ip(d_node),

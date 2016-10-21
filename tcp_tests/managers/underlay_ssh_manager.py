@@ -40,6 +40,7 @@ class UnderlaySSHManager(object):
               keys_source_host: None,
               login: ,
               password: ,
+              roles: [],
             },
             {
               node_name: node1,
@@ -50,6 +51,7 @@ class UnderlaySSHManager(object):
               keys_source_host: None,
               login:
               password:
+              roles: [],
             },
             {
               node_name: node2,
@@ -97,6 +99,7 @@ class UnderlaySSHManager(object):
                 'address_pool': ssh.get('address_pool', None),
                 'port': ssh.get('port', None),
                 'keys': ssh.get('keys', []),
+                'roles': ssh.get('roles', []),
             }
 
             if 'keys_source_host' in ssh:
@@ -122,6 +125,7 @@ class UnderlaySSHManager(object):
                 'address_pool': ssh.get('address_pool', None),
                 'port': ssh.get('port', None),
                 'keys': ssh.get('keys', []),
+                'roles': ssh.get('roles', []),
             }
             self.config_ssh.remove(ssh_data)
 
