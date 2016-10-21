@@ -51,3 +51,20 @@ class TCPManager(object):
 
     def install_tcp(self):
         raise Exception("Not implemented!")
+
+    def check_salt_service(self, service_name, node_name, check_cmd):
+        cmd = "service {0} status | grep -q 'start/running'".format(
+            service_name)
+        with self.__underlay.remote(node_name=node_name) as remote:
+            result = remote.execute(cmd)
+            if result.exit_code != 0:
+                LOG.info("{0} is not in running state on the node {1},"
+                         " restarting".format(service_name, node_name))
+                cmd = ("service {0} stop;"
+                       " sleep 3; killall -9 {0};"
+                       "service {0} start; sleep 5;"
+                       .format(service_name))
+                remote.execute(cmd)
+
+                remote.execute(check_cmd)
+                remote.execute(check_cmd)

@@ -34,162 +34,193 @@ class TestTCPInstaller(object):
 
 
     @pytest.mark.steps({
-        '1': {
+        1: {
             'cmd': salt_cmd + "'cfg01*' state.sls linux",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-#        '2': {
-#            'cmd': salt_cmd + "'cfg01*' state.sls openssh",
-#            'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
-#            'retry': {'count': 3, 'delay': 5},
-#        },
-        '3': {
+        2: {
+            'cmd': salt_cmd + "'cfg01*' state.sls openssh",
+            'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
+            'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
+        },
+        3: {
             'cmd': "echo '    StrictHostKeyChecking no' >> /root/.ssh/config",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 1, 'delay': 1},
+            'skip_fail': False,
         },
-        '4': {
+        4: {
             'cmd': salt_cmd + "'cfg01*' state.sls salt",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '5': {
+        5: {
             'cmd': salt_cmd + "'cfg01*' state.sls reclass.storage",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '6': {
+        6: {
             'cmd': salt_cmd + "'*' saltutil.refresh_pillar",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '7': {
+        7: {
             'cmd': salt_cmd + "'ctl*' state.sls ntp",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '8': {
+        8: {
             'cmd': salt_cmd + "'ctl*' state.sls linux,salt.minion,openssh",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '9': {
+        9: {
             'cmd': salt_cmd + "'ctl01*' state.sls keepalived",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '10': {
+        10: {
             'cmd': salt_cmd + "'ctl01*' cmd.run 'ip a'",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '11': {
+        11: {
             'cmd': salt_cmd + "'ctl0[23].*' state.sls keepalived",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '12': {
+        12: {
             'cmd': salt_cmd + "'ctl*' state.sls glusterfs.server.service",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '13': {
+        13: {
             'cmd': salt_call_cmd + "state.sls glusterfs.server.setup",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '14': {
+        14: {
             'cmd': "gluster peer status",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '15': {
+        15: {
             'cmd': "gluster volume status",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '16': {
+        16: {
             'cmd': salt_cmd + "'ctl*' state.sls rabbitmq",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '17': {
+        17: {
             'cmd': salt_call_cmd + "state.sls galera",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '18': {
+        18: {
             'cmd': salt_cmd + "'ctl0[23]*' state.sls galera",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '19': {
+        19: {
             'cmd': salt_cmd + "'ctl01*'  mysql.status | grep -A1 'wsrep_incoming_addresses:'",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '20': {
+        20: {
             'cmd': salt_cmd + "'ctl*' state.sls haproxy",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '21': {
+        21: {
             'cmd': salt_cmd + "'ctl*' cmd.run 'netstat -tulnp | grep 3306'",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '22': {
+        22: {
             'cmd': salt_call_cmd + "state.sls memcached,keystone",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '23': {
+        23: {
             'cmd': salt_call_cmd + "state.sls memcached,keystone",
             'node_name': 'ctl02.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '24': {
+        24: {
             'cmd': salt_call_cmd + "state.sls memcached,keystone",
             'node_name': 'ctl03.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '25': {
+        25: {
             'cmd': "source ~/keystonerc; keystone user-list",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '26': {
+        26: {
             'cmd': "source ~/keystonerc; keystone tenant-list",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '27': {
+        27: {
             'cmd': "source ~/keystonerc; keystone endpoint-list",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '28': {
+        28: {
             'cmd': salt_cmd + "'ctl*' state.sls glance",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '29': {
+        29: {
             'cmd': salt_cmd + "'ctl*' state.sls glusterfs.client",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '30': {
+        30: {
             'cmd': salt_cmd + "'ctl*' cmd.run 'df -h'",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '31': {
+        31: {
             'cmd': salt_call_cmd + "state.sls keystone",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '32': {
+        32: {
             'cmd': ("source ~/keystonerc;"
                     "wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img;"
                     "glance image-create --name 'cirros-0.3.4'"
@@ -198,61 +229,72 @@ class TestTCPInstaller(object):
                     "glance image-list;"),
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '33': {
+        33: {
             'cmd': salt_cmd + "'ctl*' cmd.run 'ls -al /var/lib/keystone/fernet-keys' ",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '34': {
+        34: {
             'cmd': salt_cmd + "'ctl*' cinder",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '35': {
+        35: {
             'cmd': salt_cmd + "'ctl*' nova",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '36': {
+        36: {
             'cmd': "source ~/keystonerc; cinder list",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '37': {
+        37: {
             'cmd': "source ~/keystonerc; nova-manage service list",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '38': {
+        38: {
             'cmd': "source ~/keystonerc; nova list",
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '39': {
+        39: {
             'cmd': salt_cmd + "'ctl*' state.sls neutron",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '40': {
+        40: {
             'cmd': ("source ~/keystonerc;"
                     "neutron net-create --router:external=true  --shared external;"
                     "neutron subnet-create external 10.177.0.0/24;"
                     "neutron floatingip-create;"),
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '41': {
+        41: {
             'cmd': salt_cmd + "'ctl*' state.sls opencontrail.database",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
-        '42': {
+        42: {
             'cmd': ("nodetool status;"
                     "nodetool compactionstats;"
                     "nodetool describecluster;"),
             'node_name': 'ctl01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
         },
 
     })
@@ -318,4 +360,11 @@ class TestTCPInstaller(object):
                         time.sleep(steps[step]['retry']['delay'])
                         LOG.info(" ========================= retry...")
                     else:
+                        # Workarounds for crashed services
+                        tcp_actions.check_salt_service("salt-master", "cfg01.mk20-lab-advanced.local", "salt-call pillar.items") # Hardcoded for now
+                        tcp_actions.check_salt_service("salt-minion", "cfg01.mk20-lab-advanced.local", "salt 'cfg01*' pillar.items") # Hardcoded for now
                         break
+
+                    if x == 1 and steps[step]['skip_fail'] == False:
+                        # In the last retry iteration, raise an exception
+                        raise Exception("Step {0} failed".format(step))
