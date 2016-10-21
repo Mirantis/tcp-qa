@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 import copy
+import time
 
 import pytest
 
@@ -38,11 +39,11 @@ class TestTCPInstaller(object):
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
         },
-        '2': {
-            'cmd': salt_cmd + "'cfg01*' state.sls openssh",
-            'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
-            'retry': {'count': 3, 'delay': 5},
-        },
+#        '2': {
+#            'cmd': salt_cmd + "'cfg01*' state.sls openssh",
+#            'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
+#            'retry': {'count': 3, 'delay': 5},
+#        },
         '3': {
             'cmd': "echo '    StrictHostKeyChecking no' >> /root/.ssh/config",
             'node_name': 'cfg01.mk20-lab-advanced.local',  # hardcoded for now
@@ -314,7 +315,7 @@ class TestTCPInstaller(object):
                 for x in range(steps[step]['retry']['count']):
                     result = remote.execute(steps[step]['cmd'], verbose=True)
                     if result.exit_code != 0:
-                        sleep(steps[step]['retry']['delay'])
+                        time.sleep(steps[step]['retry']['delay'])
                         LOG.info(" ========================= retry...")
                     else:
                         break
