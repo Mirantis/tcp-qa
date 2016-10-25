@@ -1,0 +1,12 @@
+language: python
+sudo: false
+os:
+  - linux
+python:
+  - '2.7'
+  - '3.4'
+  - '3.5'
+install:
+  - pip install -U pip
+  - pip install -U tox-travis
+script: tox -v -epep8
