@@ -27,20 +27,24 @@ LOG = logger.logger
 class TestTCPInstaller(object):
     """Test class for testing TCP deployment"""
 
-    salt_cmd = 'salt -l debug '  # For debug output
-    salt_call_cmd = 'salt-call -l debug '  # For debug output
-    #salt_cmd = 'salt --state-verbose=False '  # For reduced output
-    #salt_call_cmd = 'salt-call --state-verbose=False '  # For reduced output
+    #salt_cmd = 'salt -l debug '  # For debug output
+    #salt_call_cmd = 'salt-call -l debug '  # For debug output
+    salt_cmd = 'salt --state-output=terse '  # For cause only output
+    salt_call_cmd = 'salt-call --state-output=terse '  # For cause only output
+    #salt_cmd = 'salt --state-output=terse --state-verbose=False '  # For reduced output
+    #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
 
 
-    @pytest.mark.steps({
-        1: {
+    steps_mk22_lab_advanced = [
+        {
+            'description': "Run 'linux' formula on cfg01",
             'cmd': salt_cmd + "'cfg01*' state.sls linux",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        2: {
+        {
+            'description': "Run 'openssh' formula on cfg01",
             'cmd': (salt_cmd + "'cfg01*' state.sls openssh;"
                     "sed -i 's/PasswordAuthentication no/"
                     "PasswordAuthentication yes/' "
@@ -49,38 +53,53 @@ class TestTCPInstaller(object):
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        3: {
+        {
+            'description': ("*Workaround* of the bug"
+                            " https://mirantis.jira.com/browse/PROD-7962"),
             'cmd': "echo '    StrictHostKeyChecking no' >> /root/.ssh/config",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 1, 'delay': 1},
             'skip_fail': False,
         },
-        4: {
+        {
+            'description': "Run 'salt' formula on cfg01",
             'cmd': salt_cmd + "'cfg01*' state.sls salt",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        5: {
+        {
+            'description': ("Generate inventory for all the nodes to the"
+                            " /srv/salt/reclass/nodes/_generated"),
             'cmd': salt_cmd + "'cfg01*' state.sls reclass.storage",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        6: {
+        {
+            'description': "Refresh pillars on all minions",
             'cmd': salt_cmd + "'*' saltutil.refresh_pillar",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        7: {
+        {
+            'description': "Configure ntp on controllers",
             'cmd': salt_cmd + "'ctl*' state.sls ntp",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        8: {
-            'cmd': (salt_cmd + "'ctl*' state.sls linux,salt.minion,openssh;"
+        {
+            'description': "Configure linux on controllers",
+            'cmd': salt_cmd + "'ctl*' state.sls linux",
+            'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
+            'retry': {'count': 5, 'delay': 5},
+            'skip_fail': False,
+        },
+        {
+            'description': "Configure openssh on controllers",
+            'cmd': (salt_cmd + "'ctl*' state.sls openssh;"
                     + salt_cmd + "'ctl*' cmd.run "
                     "\"sed -i 's/PasswordAuthentication no/"
                     "PasswordAuthentication yes/' /etc/ssh/sshd_config && "
@@ -89,153 +108,189 @@ class TestTCPInstaller(object):
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        9: {
+        {
+            'description': "Configure salt.minion on controllers",
+            'cmd': salt_cmd + "'ctl*' state.sls salt.minion",
+            'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
+            'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
+        },
+        {
+            'description': "Install keepalived on primary controller",
             'cmd': salt_cmd + "'ctl01*' state.sls keepalived",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        10: {
+        {
+            'description': "Show VIP on primary controller",
             'cmd': salt_cmd + "'ctl01*' cmd.run 'ip a'",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        11: {
+        {
+            'description': "Install keepalived on other controllers",
             'cmd': salt_cmd + "'ctl0[23].*' state.sls keepalived",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        12: {
+        {
+            'description': "Install glusterfs on all controllers",
             'cmd': salt_cmd + "'ctl*' state.sls glusterfs.server.service",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        13: {
+        {
+            'description': "Setup glusterfs on primary controller",
             'cmd': salt_call_cmd + "state.sls glusterfs.server.setup",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        14: {
+        {
+            'description': "Show glusterfs peer status",
             'cmd': "gluster peer status",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        15: {
+        {
+            'description': "Show glusterfs volume status",
             'cmd': "gluster volume status",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        16: {
+        {
+            'description': "Install RabbitMQ on all controllers",
             'cmd': salt_cmd + "'ctl*' state.sls rabbitmq",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        17: {
+        {
+            'description': ("*Workaround* Update salt-formula-galera on"
+                            " config node to the latest version"),
             'cmd': "apt-get -y --force-yes install salt-formula-galera",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        18: {
+        {
+            'description': "Install Galera on primary controller",
             'cmd': salt_call_cmd + "state.sls galera",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        19: {
+        {
+            'description': "Install Galera on other controllers",
             'cmd': salt_cmd + "'ctl0[23]*' state.sls galera",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        20: {
-            'cmd': salt_cmd + "'ctl01*'  mysql.status | grep -A1 'wsrep_incoming_addresses:'",
+        {
+            'description': "Check Galera addresses",
+            'cmd': (salt_cmd + "'ctl01*'  mysql.status |"
+                    " grep -A1 'wsrep_incoming_addresses:'"),
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        21: {
+        {
+            'description': "Install haproxy on all controllers",
             'cmd': salt_cmd + "'ctl*' state.sls haproxy",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        22: {
+        {
+            'description': "Check haproxy on all controllers with Galera port",
             'cmd': salt_cmd + "'ctl*' cmd.run 'netstat -tulnp | grep 3306'",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        23: {
+        {
+            'description': "Install memcached and keystone on ctl01",
             'cmd': salt_call_cmd + "state.sls memcached,keystone",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        24: {
+        {
+            'description': "Install memcached and keystone on ctl02",
             'cmd': salt_call_cmd + "state.sls memcached,keystone",
             'node_name': 'ctl02.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        25: {
+        {
+            'description': "Install memcached and keystone on ctl03",
             'cmd': salt_call_cmd + "state.sls memcached,keystone",
             'node_name': 'ctl03.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        26: {
+        {
+            'description': "Check keystone user-list",
             'cmd': "source ~/keystonerc; keystone user-list",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        27: {
+        {
+            'description': "Check keystone tenant-list",
             'cmd': "source ~/keystonerc; keystone tenant-list",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        28: {
+        {
+            'description': "Check keystone endpoint-list",
             'cmd': "source ~/keystonerc; keystone endpoint-list",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        29: {
+        {
+            'description': "Install glance on controllers",
             'cmd': salt_cmd + "'ctl*' state.sls glance",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        30: {
+        {
+            'description': "Install glusterfs on controllers",
             'cmd': salt_cmd + "'ctl*' state.sls glusterfs.client",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        31: {
+        {
+            'description': "Check that glusterfs was added on controllers",
             'cmd': salt_cmd + "'ctl*' cmd.run 'df -h'",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        32: {
+        {
+            'description': ("*Workaround* Re-run keystone formula on ctl01 to"
+                            " create fernet keys"),
             'cmd': salt_call_cmd + "state.sls keystone",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        33: {
+        {
+            'description': "Check glance on ctl01",
             'cmd': ("source ~/keystonerc;"
-                    "wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img;"
+                    "wget http://download.cirros-cloud.net/0.3.4/"
+                    "cirros-0.3.4-i386-disk.img;"
                     "glance image-create --name 'cirros-0.3.4'"
                     "  --disk-format qcow2 --container-format bare"
                     "  --progress --file /root/cirros-0.3.4-i386-disk.img;"
@@ -244,64 +299,76 @@ class TestTCPInstaller(object):
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        34: {
-            'cmd': salt_cmd + "'ctl*' cmd.run 'ls -al /var/lib/keystone/fernet-keys' ",
+        {
+            'description': "Check keystone fernet keys on controllers",
+            'cmd': (salt_cmd + "'ctl*' cmd.run 'ls -la"
+                    " /var/lib/keystone/fernet-keys' "),
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        35: {
+        {
+            'description': "Install cinder on controllers",
             'cmd': salt_cmd + "'ctl*' cinder",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        36: {
+        {
+            'description': "Install nova on controllers",
             'cmd': salt_cmd + "'ctl*' nova",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        37: {
+        {
+            'description': "Check cinder status",
             'cmd': "source ~/keystonerc; cinder list",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        38: {
+        {
+            'description': "Check nova services status",
             'cmd': "source ~/keystonerc; nova-manage service list",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        39: {
+        {
+            'description': "Check nova status",
             'cmd': "source ~/keystonerc; nova list",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        40: {
+        {
+            'description': "Install neutron on controllers",
             'cmd': salt_cmd + "'ctl*' state.sls neutron",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        41: {
+        {
+            'description': "Create a neutron subnet",
             'cmd': ("source ~/keystonerc;"
-                    "neutron net-create --router:external=true  --shared external;"
+                    "neutron net-create --router:external=true"
+                    " --shared external;"
                     "neutron subnet-create external 10.177.0.0/24;"
                     "neutron floatingip-create;"),
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        42: {
+        {
+            'description': "Install contrail database on controllers",
             'cmd': salt_cmd + "'ctl*' state.sls opencontrail.database",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
-        43: {
+        {
+            'description': "Check cassandra status on ctl01",
             'cmd': ("nodetool status;"
                     "nodetool compactionstats;"
                     "nodetool describecluster;"),
@@ -309,8 +376,10 @@ class TestTCPInstaller(object):
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
+    ]
 
-    })
+
+    @pytest.mark.steps(steps_mk22_lab_advanced)
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.underlay)
     # @pytest.mark.snapshot_needed
     # @pytest.mark.fail_snapshot
@@ -318,60 +387,22 @@ class TestTCPInstaller(object):
         """Test for deploying an tcp environment and check it
 
         Scenario:
-            1. Run 'linux' formula on cfg01
-            2. Run 'openssh' formula on cfg01
-            3. *Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962
-            4. Run 'salt' formula on cfg01
-            5. Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
-            6. Refresh pillars on all minions
-            7. Configure ntp on controllers
-            8. Configure linux, openssh and salt.minion on controllers
-            9. Install keepalived on primary controller
-            10. Show VIP on primary controller
-            11. Install keepalived on other controllers
-            12. Install glusterfs on all controllers
-            13. Setup glusterfs on primary controller
-            14. Show glusterfs peer status
-            15. Show glusterfs volume status
-            16. Install RabbitMQ on all controllers
-            17. *Workaround* Update salt-formula-galera on config node to the latest version
-            18. Install Galera on primary controller
-            19. Install Galera on other controllers
-            20. Check Galera addresses
-            21. Install haproxy on all controllers
-            22. Check haproxy on all controllers with Galera port
-            23. Install memcached and keystone on ctl01
-            24. Install memcached and keystone on ctl02
-            25. Install memcached and keystone on ctl03
-            26. Check keystone user-list
-            27. Check keystone tenant-list
-            28. Check keystone endpoint-list
-            29. Install glance on controllers
-            30. Install glusterfs on controllers
-            31. Check that glusterfs was added on controllers
-            32. *Workaround* Re-run keystone formula on ctl01 to create fernet keys
-            33. Check glance on ctl01
-            34. Check keystone fernet keys on controllers
-            35. Install cinder on controllers
-            36. Install nova on controllers
-            37. Check cinder status
-            38. Check nova services status
-            39. Check nova status
-            40. Install neutron on controllers
-            41. Create a neutron subnet
-            42. Install contrail database on controllers
-            43. Check cassandra status on ctl01
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
 
         """
-        for step in sorted(steps):
-            LOG.info("     #######################################################################")
-            show_step(int(step))
-            with underlay.remote(node_name=steps[step]['node_name']) as remote:
-                for x in range(steps[step]['retry']['count']):
+        for n, step in enumerate(steps):
+            LOG.info(" ####################################################")
+            LOG.info(" *** [ STEP #{0} ] {1} ***"
+                     .format(n+1, step['description']))
+
+            with underlay.remote(node_name=step['node_name']) as remote:
+                for x in range(step['retry']['count'], 0, -1):
 
                     time.sleep(5)
 
-                    result = remote.execute(steps[step]['cmd'], verbose=True)
+                    result = remote.execute(step['cmd'], verbose=True)
 
                     # Workaround of exit code 0 from salt in case of failures
                     failed = 0
@@ -380,17 +411,27 @@ class TestTCPInstaller(object):
                             failed += int(s.split("Failed:")[1])
 
                     if result.exit_code != 0:
-                        time.sleep(steps[step]['retry']['delay'])
-                        LOG.info(" ========================= retry...")
+                        time.sleep(step['retry']['delay'])
+                        LOG.info(" === RETRY ({0}/{1}) ========================="
+                                 .format(x-1, step['retry']['count']))
                     elif failed != 0:
-                        LOG.error(" ================= SALT returned exit code = 0 while there are failed modules!")
-                        LOG.info(" ========================= retry...")
+                        LOG.error(" === SALT returned exit code = 0 while "
+                                  "there are failed modules! ===")
+                        LOG.info(" === RETRY ({0}/{1}) ======================="
+                                 .format(x-1, step['retry']['count']))
                     else:
                         # Workarounds for crashed services
-                        tcp_actions.check_salt_service("salt-master", "cfg01.mk22-lab-advanced.local", "salt-call pillar.items") # Hardcoded for now
-                        tcp_actions.check_salt_service("salt-minion", "cfg01.mk22-lab-advanced.local", "salt 'cfg01*' pillar.items") # Hardcoded for now
+                        tcp_actions.check_salt_service(
+                            "salt-master",
+                            "cfg01.mk22-lab-advanced.local",
+                            "salt-call pillar.items") # Hardcoded for now
+                        tcp_actions.check_salt_service(
+                            "salt-minion",
+                            "cfg01.mk22-lab-advanced.local",
+                            "salt 'cfg01*' pillar.items") # Hardcoded for now
                         break
 
-                    if x == 1 and steps[step]['skip_fail'] == False:
+                    if x == 1 and step['skip_fail'] == False:
                         # In the last retry iteration, raise an exception
-                        raise Exception("Step {0} failed".format(step))
+                        raise Exception("Step '{0}' failed"
+                                        .format(step['description']))
