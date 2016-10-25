@@ -29,8 +29,8 @@ class TestTCPInstaller(object):
 
     #salt_cmd = 'salt -l debug '  # For debug output
     #salt_call_cmd = 'salt-call -l debug '  # For debug output
-    salt_cmd = 'salt --state-output=terse '  # For cause only output
-    salt_call_cmd = 'salt-call --state-output=terse '  # For cause only output
+    salt_cmd = 'salt --state-output=mixed --state-verbose=False '  # For cause only output
+    salt_call_cmd = 'salt-call --state-output=mixed --state-verbose=False '  # For cause only output
     #salt_cmd = 'salt --state-output=terse --state-verbose=False '  # For reduced output
     #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
 
