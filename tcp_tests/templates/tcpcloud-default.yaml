@@ -17,6 +17,14 @@ template:
           ip_reserved:
             gateway: +1
             l2_network_device: +1
+            default_cfg01.mk22-lab-advanced.local: +100
+            default_ctl01.mk22-lab-advanced.local: +101
+            default_ctl02.mk22-lab-advanced.local: +102
+            default_ctl03.mk22-lab-advanced.local: +103
+            default_web01.mk22-lab-advanced.local: +104
+            default_cmp01.mk22-lab-advanced.local: +105
+            default_mtr01.mk22-lab-advanced.local: +106
+            default_mon01.mk22-lab-advanced.local: +107
           ip_ranges:
             dhcp: [+100, -2]
 

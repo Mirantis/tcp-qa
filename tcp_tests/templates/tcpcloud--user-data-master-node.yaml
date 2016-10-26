@@ -19,7 +19,7 @@
    # Block access to SSH while node is preparing
    - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
    # Enable root access
-   - sed -i'.orig' -e's/without-password/yes/' /etc/ssh/sshd_config
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
    - service sshd restart
   output:
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
@@ -38,7 +38,7 @@
    - echo "Preparing base OS"
    - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
-   - echo "deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ trusty main security extra tcp tcp-salt" > /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ xenial main security extra tcp tcp-salt" > /etc/apt/sources.list
    - wget -O - http://apt.tcpcloud.eu/public.gpg | apt-key add -
 
    - apt-get clean
@@ -103,6 +103,7 @@
 
    - echo "Restarting services with workarounds..."
    - service salt-master restart
+   - sleep 60
    - rm -f /etc/salt/pki/minion/minion_master.pub
    - service salt-minion restart
 
@@ -110,22 +111,6 @@
    - salt-call --no-color grains.items
    - salt-call --no-color pillar.data
    - reclass -n {hostname}
-
-   - echo "Running complete state ..."
-   - salt-call --no-color state.sls linux openssh salt.minion
-   - salt-call --no-color state.sls salt.master
-   - rm -f /etc/salt/pki/minion/minion_master.pub
-   - service salt-minion stop
-   - sleep 5
-   - service salt-master stop
-   - sleep 5
-   - killall -9 salt-master
-   - sleep 5
-   - service salt-master start
-   - sleep 60
-   - rm -f /etc/salt/pki/minion/minion_master.pub
-   - service salt-minion restart
-   # - salt-call --no-color state.highstate
 
    ########################################################
    # Node is ready, allow SSH access

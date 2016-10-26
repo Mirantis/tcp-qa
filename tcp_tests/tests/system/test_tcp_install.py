@@ -38,14 +38,14 @@ class TestTCPInstaller(object):
     steps_mk22_lab_advanced = [
         {
             'description': "Run 'linux' formula on cfg01",
-            'cmd': salt_cmd + "'cfg01*' state.sls linux",
+            'cmd': salt_call_cmd + "state.sls linux",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
         {
             'description': "Run 'openssh' formula on cfg01",
-            'cmd': (salt_cmd + "'cfg01*' state.sls openssh;"
+            'cmd': (salt_call_cmd + "state.sls openssh;"
                     "sed -i 's/PasswordAuthentication no/"
                     "PasswordAuthentication yes/' "
                     "/etc/ssh/sshd_config && service ssh restart"),
@@ -63,10 +63,10 @@ class TestTCPInstaller(object):
         },
         {
             'description': "Run 'salt' formula on cfg01",
-            'cmd': salt_cmd + "'cfg01*' state.sls salt",
+            'cmd': salt_call_cmd + " state.sls salt",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
-            'skip_fail': False,
+            'skip_fail': True,
         },
         {
             'description': "Accept salt keys from all the nodes",
@@ -78,7 +78,7 @@ class TestTCPInstaller(object):
         {
             'description': ("Generate inventory for all the nodes to the"
                             " /srv/salt/reclass/nodes/_generated"),
-            'cmd': salt_cmd + "'cfg01*' state.sls reclass.storage",
+            'cmd': salt_call_cmd + "state.sls reclass.storage",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
@@ -86,6 +86,24 @@ class TestTCPInstaller(object):
         {
             'description': "Refresh pillars on all minions",
             'cmd': salt_cmd + "'*' saltutil.refresh_pillar",
+            'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
+            'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
+        },
+        {
+            'description': ("*Workaround* for the bug"
+                            " https://mirantis.jira.com/browse/PROD-8025"),
+            'cmd': (salt_cmd + "'*' cmd.run 'apt-get update &&"
+                    " apt-get -y upgrade'"),
+            'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
+            'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
+        },
+        {
+            'description': ("*Workaround* for the bug"
+                            " https://mirantis.jira.com/browse/PROD-8021"),
+            'cmd': (salt_cmd + "'*' cmd.run 'apt-get -y install"
+                    " linux-image-extra-$(uname -r)'"),
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
@@ -244,6 +262,13 @@ class TestTCPInstaller(object):
             'skip_fail': False,
         },
         {
+            'description': "Configure keystone client access from cfg01 node",
+            'cmd': salt_call_cmd + "state.sls keystone.client",
+            'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
+            'retry': {'count': 3, 'delay': 5},
+            'skip_fail': False,
+        },
+        {
             'description': "Check keystone user-list",
             'cmd': "source ~/keystonerc; keystone user-list",
             'node_name': 'ctl01.mk22-lab-advanced.local',  # hardcoded for now
@@ -316,14 +341,14 @@ class TestTCPInstaller(object):
         },
         {
             'description': "Install cinder on controllers",
-            'cmd': salt_cmd + "'ctl*' cinder",
+            'cmd': salt_cmd + "'ctl*' state.sls cinder",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
         },
         {
             'description': "Install nova on controllers",
-            'cmd': salt_cmd + "'ctl*' nova",
+            'cmd': salt_cmd + "'ctl*' state.sls nova",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
             'retry': {'count': 3, 'delay': 5},
             'skip_fail': False,
@@ -406,7 +431,7 @@ class TestTCPInstaller(object):
 
             with underlay.remote(node_name=step['node_name']) as remote:
                 for x in range(step['retry']['count'], 0, -1):
-
+                    time.sleep(3)
                     result = remote.execute(step['cmd'], verbose=True)
 
                     # Workaround of exit code 0 from salt in case of failures
@@ -429,11 +454,13 @@ class TestTCPInstaller(object):
                         tcp_actions.check_salt_service(
                             "salt-master",
                             "cfg01.mk22-lab-advanced.local",
-                            "salt-call pillar.items") # Hardcoded for now
+                            "salt-call pillar.items",
+                            'active (running)') # Hardcoded for now
                         tcp_actions.check_salt_service(
                             "salt-minion",
                             "cfg01.mk22-lab-advanced.local",
-                            "salt 'cfg01*' pillar.items") # Hardcoded for now
+                            "salt 'cfg01*' pillar.items",
+                            "active (running)") # Hardcoded for now
                         break
 
                     if x == 1 and step['skip_fail'] == False:
