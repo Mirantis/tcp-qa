@@ -69,6 +69,13 @@ class TestTCPInstaller(object):
             'skip_fail': False,
         },
         {
+            'description': "Accept salt keys from all the nodes",
+            'cmd': "salt-key -A -y",
+            'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
+            'retry': {'count': 1, 'delay': 5},
+            'skip_fail': False,
+        },
+        {
             'description': ("Generate inventory for all the nodes to the"
                             " /srv/salt/reclass/nodes/_generated"),
             'cmd': salt_cmd + "'cfg01*' state.sls reclass.storage",
@@ -87,7 +94,7 @@ class TestTCPInstaller(object):
             'description': "Configure ntp on controllers",
             'cmd': salt_cmd + "'ctl*' state.sls ntp",
             'node_name': 'cfg01.mk22-lab-advanced.local',  # hardcoded for now
-            'retry': {'count': 3, 'delay': 5},
+            'retry': {'count': 5, 'delay': 10},
             'skip_fail': False,
         },
         {
@@ -399,8 +406,6 @@ class TestTCPInstaller(object):
 
             with underlay.remote(node_name=step['node_name']) as remote:
                 for x in range(step['retry']['count'], 0, -1):
-
-                    time.sleep(5)
 
                     result = remote.execute(step['cmd'], verbose=True)
 
