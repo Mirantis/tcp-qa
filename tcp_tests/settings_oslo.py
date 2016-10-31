@@ -42,6 +42,7 @@ underlay_opts = [
     ct.Cfg('ssh', ct.JSONList(),
            help="""SSH Settings for Underlay: [{
                   'node_name': node1,
+                  'roles': ['salt-master', 'salt-minion', ],
                   'host': hostname,
                   'login': login,
                   'password': password,

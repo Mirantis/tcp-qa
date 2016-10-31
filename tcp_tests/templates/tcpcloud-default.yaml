@@ -21,10 +21,8 @@ template:
             default_ctl01.mk22-lab-advanced.local: +101
             default_ctl02.mk22-lab-advanced.local: +102
             default_ctl03.mk22-lab-advanced.local: +103
-            default_web01.mk22-lab-advanced.local: +104
+            default_prx01.mk22-lab-advanced.local: +104
             default_cmp01.mk22-lab-advanced.local: +105
-            default_mtr01.mk22-lab-advanced.local: +106
-            default_mon01.mk22-lab-advanced.local: +107
           ip_ranges:
             dhcp: [+100, -2]
 
@@ -227,7 +225,7 @@ template:
                   networks:
                     - private
 
-          - name: web01.mk22-lab-advanced.local
+          - name: prx01.mk22-lab-advanced.local
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 1
@@ -270,82 +268,6 @@ template:
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
               memory: !os_env SLAVE_NODE_MEMORY, 8192
-              boot:
-                - hd
-              cloud_init_volume_name: iso
-              cloud_init_iface_up: eth0
-              volumes:
-                - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1404
-                  format: qcow2
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-                  capacity: 1
-                  format: raw
-                  device: cdrom
-                  bus: ide
-                  cloudinit_meta_data: !include tcpcloud--meta-data.yaml
-                  cloudinit_user_data: !include tcpcloud--user-data.yaml
-
-              interfaces:
-                - label: eth0
-                  l2_network_device: public
-                  interface_model: *interface_model
-                - label: eth1
-                  l2_network_device: private
-                  interface_model: *interface_model
-              network_config:
-                eth0:    # Will get an IP from DHCP public-pool01
-                  networks:
-                    - public
-                eth1:
-                  networks:
-                    - private
-
-          - name: mtr01.mk22-lab-advanced.local
-            role: salt_minion
-            params:
-              vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
-              boot:
-                - hd
-              cloud_init_volume_name: iso
-              cloud_init_iface_up: eth0
-              volumes:
-                - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1404
-                  format: qcow2
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-                  capacity: 1
-                  format: raw
-                  device: cdrom
-                  bus: ide
-                  cloudinit_meta_data: !include tcpcloud--meta-data.yaml
-                  cloudinit_user_data: !include tcpcloud--user-data.yaml
-
-              interfaces:
-                - label: eth0
-                  l2_network_device: public
-                  interface_model: *interface_model
-                - label: eth1
-                  l2_network_device: private
-                  interface_model: *interface_model
-              network_config:
-                eth0:    # Will get an IP from DHCP public-pool01
-                  networks:
-                    - public
-                eth1:
-                  networks:
-                    - private
-
-          - name: mon01.mk22-lab-advanced.local
-            role: salt_minion
-            params:
-              vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
               cloud_init_volume_name: iso

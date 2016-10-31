@@ -39,6 +39,8 @@
    - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
    - echo "deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ xenial main security extra tcp tcp-salt" > /etc/apt/sources.list
+   # 'tcp-salt' from trusty is for temporary workaround until formulas will be fixed in xenial
+   - echo "deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ trusty tcp-salt" >> /etc/apt/sources.list
    - wget -O - http://apt.tcpcloud.eu/public.gpg | apt-key add -
 
    - apt-get clean
@@ -77,7 +79,17 @@
    - HOME=/root git config --global user.name "TCP QA"
 
    - echo "Configuring reclass ..."
-   - git clone https://github.com/Mirantis/mk-lab-salt-model.git /srv/salt/reclass -b master
+   - git clone https://github.com/Mirantis/mk-lab-salt-model.git /srv/salt/reclass -b dash
+   - sed -i 's/ master/ dash/' /srv/salt/reclass/classes/cluster/mk20_lab_advanced/openstack_config.yml
+   - |
+       cat << 'EOF' >> /srv/salt/reclass/nodes/control/{hostname}.yml
+       # local storage
+         reclass:
+           storage:
+             data_source:
+               engine: local
+       EOF
+   - cd /srv/salt/reclass; git add -A;git commit -m"use dash repo"
 
    - mkdir -p /srv/salt/reclass/classes/service
    - for i in /usr/share/salt-formulas/reclass/service/*; do ln -s $i /srv/salt/reclass/classes/service/; done
