@@ -36,8 +36,9 @@ NETWORK_TYPE = enum(
 SNAPSHOT = enum(
     'hardware',
     'underlay',
-    'tcp_deployed',
-    'os_deployed',
+    'salt_deployed',
+    'common_services_deployed',
+    'openstack_deployed',
 )
 
 LOG_LEVELS = enum(

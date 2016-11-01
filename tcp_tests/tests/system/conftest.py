@@ -12,7 +12,31 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-pytest_plugins = ['tcp_tests.fixtures.common_fixtures',
-                  'tcp_tests.fixtures.config_fixtures',
-                  'tcp_tests.fixtures.underlay_fixtures',
-                  'tcp_tests.fixtures.tcp_fixtures']
+#from tcp_tests.fixtures import *
+from tcp_tests.fixtures.common_fixtures import *
+from tcp_tests.fixtures.config_fixtures import *
+from tcp_tests.fixtures.underlay_fixtures import *
+from tcp_tests.fixtures.salt_fixtures import *
+from tcp_tests.fixtures.common_services_fixtures import *
+from tcp_tests.fixtures.openstack_fixtures import *
+
+__all__ = sorted([  # sort for documentation
+    # common_fixtures
+    'show_step',
+    'revert_snapshot',
+    'snapshot',
+    # config_fixtures
+    'config',
+    #underlay_fixtures
+    'hardware',
+    'underlay',
+    # salt_fixtures
+    'salt_actions',
+    'salt_deployed',
+    # common_services_fixtures
+    'common_services_actions',
+    'common_services_deployed',
+    # openstack_fixtures
+    'openstack_actions',
+    'openstack_deployed',
+])

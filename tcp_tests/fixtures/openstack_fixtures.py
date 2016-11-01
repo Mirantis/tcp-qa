@@ -13,18 +13,20 @@
 #    under the License.
 
 import os
+
 import pytest
+import yaml
 
 from tcp_tests import logger
 from tcp_tests.helpers import ext
 from tcp_tests import settings
-from tcp_tests.managers import tcpmanager
+from tcp_tests.managers import openstack_manager
 
 LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def tcp_actions(config, underlay):
+def openstack_actions(config, underlay):
     """Fixture that provides various actions for K8S
 
     :param config: fixture provides oslo.config
@@ -33,12 +35,13 @@ def tcp_actions(config, underlay):
 
     For use in tests or fixtures to deploy a custom K8S
     """
-    return tcpmanager.TCPManager(config, underlay)
+    return openstack_manager.OpenstackManager(config, underlay)
 
 
 @pytest.fixture(scope='function')
-def tcpcluster(revert_snapshot, request, config,
-               hardware, underlay, tcp_actions):
+def openstack_deployed(revert_snapshot, request, config,
+                       hardware, underlay, common_services_deployed,
+                       openstack_actions):
     """Fixture to get or install TCP on environment
 
     :param request: fixture provides pytest data
@@ -65,15 +68,16 @@ def tcpcluster(revert_snapshot, request, config,
     # that belongs to the fixture.
     # Note: keep fixtures in strict dependences from each other!
     if not revert_snapshot:
-        if hardware.has_snapshot(ext.SNAPSHOT.tcp_deployed) and \
-                hardware.has_snapshot_config(ext.SNAPSHOT.tcp_deployed):
-            hardware.revert_snapshot(ext.SNAPSHOT.tcp_deployed)
+        if hardware.has_snapshot(ext.SNAPSHOT.openstack_deployed) and \
+                hardware.has_snapshot_config(ext.SNAPSHOT.openstack_deployed):
+            hardware.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
 
-    # Create TCP cluster
-    if config.tcp.tcp_host == '0.0.0.0':
-
-        tcp_actions.install_tcp()
-        hardware.create_snapshot(ext.SNAPSHOT.tcp_deployed)
+    # Create Salt cluster
+    if not config.openstack.installed:
+        steps_path = config.openstack_deploy.openstack_steps_path
+        with underlay.yaml_editor(steps_path) as commands:
+            openstack_actions.install(commands.content)
+        hardware.create_snapshot(ext.SNAPSHOT.openstack_deployed)
 
     else:
         # 1. hardware environment created and powered on
@@ -83,4 +87,4 @@ def tcpcluster(revert_snapshot, request, config,
         #    installed TCP API endpoint
         pass
 
-    return tcp_actions
+    return openstack_actions

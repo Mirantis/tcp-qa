@@ -11,23 +11,18 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-import os
 
-import pytest
+class OpenstackManager(object):
+    """docstring for OpenstackManager"""
 
-from tcp_tests import settings_oslo
+    __config = None
+    __underlay = None
 
+    def __init__(self, config, underlay):
+        self.__config = config
+        self.__underlay = underlay
+        super(OpenstackManager, self).__init__()
 
-@pytest.fixture(scope='session')
-def config():
-    """Get the global config options from oslo.config INI file"""
-    config_files = []
-
-    tests_configs = os.environ.get('TESTS_CONFIGS', None)
-    if tests_configs:
-        for test_config in tests_configs.split(','):
-            config_files.append(test_config)
-
-    config_opts = settings_oslo.load_config(config_files)
-
-    return config_opts
+    def install(self, commands):
+        self.__underlay.execute_commands(commands)
+        self.__config.openstack.installed = True

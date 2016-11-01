@@ -1,0 +1,96 @@
+# Install support services
+- description: Install keepalived on primary controller
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' state.sls
+    keepalived
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Install keepalived on other controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
+    keepalived -b 1
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Check the VIP
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+    'ip a | grep 172.16.10.254' | grep -B1 172.16.10.254
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Install glusterfs on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
+    glusterfs.server.service
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Setup glusterfs on primary controller
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' state.sls
+    glusterfs.server.setup
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Setup glusterfs on other controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
+    glusterfs.server.setup -b 1
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Check the gluster status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    'gluster peer status; gluster volume status'
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Install RabbitMQ on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
+    rabbitmq
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Check the rabbitmq status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+    'rabbitmqctl cluster_status'
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: '*Workaround* Update salt-formula-galera on config node to the latest
+    version'
+  cmd: apt-get -y --force-yes install salt-formula-galera
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Install Galera on primary controller
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' state.sls
+    galera
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Install Galera on other controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
+    galera
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Check mysql status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' mysql.status
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: true
+- description: Install haproxy on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
+    haproxy
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Check haproxy status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' service.status
+    haproxy
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+- description: Install memcached on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
+    memcached
+  node_name: cfg01.mk22-lab-advanced.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false

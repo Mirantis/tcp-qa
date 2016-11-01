@@ -30,8 +30,8 @@
    - sudo resolvconf -u
 
    # Prepare network connection
-   - sudo ifup {interface_name}
-   - sudo route add default gw {gateway} {interface_name}
+   - sudo ifup eth0
+   #- sudo route add default gw {gateway} {interface_name}
    - sudo ifup eth1
 
    ############## TCP Cloud cfg01 node ##################
@@ -83,7 +83,5 @@
      content: |
           auto eth0
           iface eth0 inet dhcp
-
-          # 2nd interface should be UP without IP address
           auto eth1
           iface eth1 inet dhcp

@@ -13,6 +13,7 @@
 #    under the License.
 
 import random
+import time
 
 from devops.helpers import helpers
 from devops.helpers import ssh_client
@@ -363,3 +364,66 @@ class UnderlaySSHManager(object):
             username=ssh_data['login'],
             password=ssh_data['password'],
             private_keys=ssh_data['keys'])
+
+    def ensure_running_service(self, service_name, node_name, check_cmd,
+                               state_running='start/running'):
+        cmd = "service {0} status | grep -q '{1}'".format(
+            service_name, state_running)
+        with self.remote(node_name=node_name) as remote:
+            result = remote.execute(cmd)
+            if result.exit_code != 0:
+                LOG.info("{0} is not in running state on the node {1},"
+                         " restarting".format(service_name, node_name))
+                cmd = ("service {0} stop;"
+                       " sleep 3; killall -9 {0};"
+                       "service {0} start; sleep 5;"
+                       .format(service_name))
+                remote.execute(cmd)
+
+                remote.execute(check_cmd)
+                remote.execute(check_cmd)
+
+    def execute_commands(self, commands):
+        for n, step in enumerate(commands):
+            LOG.info(" ####################################################")
+            LOG.info(" *** [ Command #{0} ] {1} ***"
+                     .format(n+1, step['description']))
+
+            with self.remote(node_name=step['node_name']) as remote:
+                for x in range(step['retry']['count'], 0, -1):
+                    time.sleep(3)
+                    result = remote.execute(step['cmd'], verbose=True)
+
+                    # Workaround of exit code 0 from salt in case of failures
+                    failed = 0
+                    for s in result['stdout']:
+                        if s.startswith("Failed:"):
+                            failed += int(s.split("Failed:")[1])
+
+                    if result.exit_code != 0:
+                        time.sleep(step['retry']['delay'])
+                        LOG.info(" === RETRY ({0}/{1}) ========================="
+                                 .format(x-1, step['retry']['count']))
+                    elif failed != 0:
+                        LOG.error(" === SALT returned exit code = 0 while "
+                                  "there are failed modules! ===")
+                        LOG.info(" === RETRY ({0}/{1}) ======================="
+                                 .format(x-1, step['retry']['count']))
+                    else:
+                        # Workarounds for crashed services
+                        self.ensure_running_service(
+                            "salt-master",
+                            "cfg01.mk22-lab-advanced.local",
+                            "salt-call pillar.items",
+                            'active (running)') # Hardcoded for now
+                        self.ensure_running_service(
+                            "salt-minion",
+                            "cfg01.mk22-lab-advanced.local",
+                            "salt 'cfg01*' pillar.items",
+                            "active (running)") # Hardcoded for now
+                        break
+
+                    if x == 1 and step['skip_fail'] == False:
+                        # In the last retry iteration, raise an exception
+                        raise Exception("Step '{0}' failed"
+                                        .format(step['description']))

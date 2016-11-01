@@ -81,7 +81,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: eth0
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -93,21 +93,21 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include tcpcloud--meta-data.yaml
-                  cloudinit_user_data: !include tcpcloud--user-data-master-node.yaml
+                  cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data-cfg01.yaml
 
               interfaces:
-                - label: eth0
+                - label: ens3
                   l2_network_device: public
                   interface_model: *interface_model
-                - label: eth1
+                - label: ens4
                   l2_network_device: private
                   interface_model: *interface_model
               network_config:
-                eth0:    # Will get an IP from DHCP public-pool01
+                ens3:
                   networks:
                     - public
-                eth1:
+                ens4:
                   networks:
                     - private
 
@@ -131,18 +131,18 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include tcpcloud--meta-data.yaml
-                  cloudinit_user_data: !include tcpcloud--user-data.yaml
+                  cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
 
-              interfaces:
+              interfaces: &interfaces
                 - label: eth0
                   l2_network_device: public
                   interface_model: *interface_model
                 - label: eth1
                   l2_network_device: private
                   interface_model: *interface_model
-              network_config:
-                eth0:    # Will get an IP from DHCP public-pool01
+              network_config: &network_config
+                eth0:
                   networks:
                     - public
                 eth1:
@@ -169,23 +169,11 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include tcpcloud--meta-data.yaml
-                  cloudinit_user_data: !include tcpcloud--user-data.yaml
+                  cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
 
-              interfaces:
-                - label: eth0
-                  l2_network_device: public
-                  interface_model: *interface_model
-                - label: eth1
-                  l2_network_device: private
-                  interface_model: *interface_model
-              network_config:
-                eth0:    # Will get an IP from DHCP public-pool01
-                  networks:
-                    - public
-                eth1:
-                  networks:
-                    - private
+              interfaces: *interfaces
+              network_config: *network_config
 
           - name: ctl03.mk22-lab-advanced.local
             role: salt_minion
@@ -207,23 +195,11 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include tcpcloud--meta-data.yaml
-                  cloudinit_user_data: !include tcpcloud--user-data.yaml
+                  cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
 
-              interfaces:
-                - label: eth0
-                  l2_network_device: public
-                  interface_model: *interface_model
-                - label: eth1
-                  l2_network_device: private
-                  interface_model: *interface_model
-              network_config:
-                eth0:    # Will get an IP from DHCP public-pool01
-                  networks:
-                    - public
-                eth1:
-                  networks:
-                    - private
+              interfaces: *interfaces
+              network_config: *network_config
 
           - name: prx01.mk22-lab-advanced.local
             role: salt_minion
@@ -245,23 +221,11 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include tcpcloud--meta-data.yaml
-                  cloudinit_user_data: !include tcpcloud--user-data.yaml
+                  cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
 
-              interfaces:
-                - label: eth0
-                  l2_network_device: public
-                  interface_model: *interface_model
-                - label: eth1
-                  l2_network_device: private
-                  interface_model: *interface_model
-              network_config:
-                eth0:    # Will get an IP from DHCP public-pool01
-                  networks:
-                    - public
-                eth1:
-                  networks:
-                    - private
+              interfaces: *interfaces
+              network_config: *network_config
 
           - name: cmp01.mk22-lab-advanced.local
             role: salt_minion
@@ -283,20 +247,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include tcpcloud--meta-data.yaml
-                  cloudinit_user_data: !include tcpcloud--user-data.yaml
+                  cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
 
-              interfaces:
-                - label: eth0
-                  l2_network_device: public
-                  interface_model: *interface_model
-                - label: eth1
-                  l2_network_device: private
-                  interface_model: *interface_model
-              network_config:
-                eth0:    # Will get an IP from DHCP public-pool01
-                  networks:
-                    - public
-                eth1:
-                  networks:
-                    - private
+              interfaces: *interfaces
+              network_config: *network_config

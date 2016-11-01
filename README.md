@@ -52,3 +52,17 @@ dos.py start "${ENV_NAME}"
 
 
 Then, wait until cloud-init is finished and port 22 is open (~3-4 minutes), and login with root:r00tme
+
+
+Additional info
+---------------
+
+Installation steps are placed in YAML files and executed in the following order:
+
+- Hardware (VMs) environment is created from tcp-qa/tcp_tests/templates/underlay/mk22-lab-advanced.yaml
+
+- Salt installation and configuration steps tcp-qa/tcp_tests/templates/salt/mk22-lab-advanced-salt.yaml
+
+- Common services installation steps tcp-qa/tcp_tests/templates/common-services/mk22-lab-advanced-common-services.yaml
+
+- OpenStack services installation steps tcp-qa/tcp_tests/templates/openstack/mk22-lab-advanced-openstack.yaml
