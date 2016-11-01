@@ -12,7 +12,7 @@ cd ./tcp-qa
 Install requirements
 --------------------
 
-pip install -r ./tcp_tests/requirements.txt
+pip install -r ./tcp_tests/requirements.txt --upgrade
 
 Initialize fuel-devops database if needed:
 ------------------------------------------
