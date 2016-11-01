@@ -24,7 +24,15 @@ from tcp_tests import settings
 
 
 _default_conf = pkg_resources.resource_filename(
-    __name__, 'templates/tcpcloud-default.yaml')
+    __name__, 'templates/underlay/mk22-lab-advanced.yaml')
+
+_default_salt_steps = pkg_resources.resource_filename(
+    __name__, 'templates/salt/mk22-lab-advanced-salt.yaml')
+_default_common_services_steps = pkg_resources.resource_filename(
+    __name__,
+    'templates/common-services/mk22-lab-advanced-common-services.yaml')
+_default_openstack_steps = pkg_resources.resource_filename(
+    __name__, 'templates/openstack/mk22-lab-advanced-openstack.yaml')
 
 
 hardware_opts = [
@@ -64,26 +72,36 @@ underlay_opts = [
            help="LVM settings for Underlay", default={}),
 ]
 
-# Deploy options for a new TCPCloud deployment
-tcp_deploy_opts = [
-    ct.Cfg('reclass_settings', ct.JSONDict(),
-           help="", default={}),
+
+salt_deploy_opts = [
+    ct.Cfg('salt_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy salt",
+           default=_default_salt_steps),
 ]
-
-
-# Access credentials to a ready TCP cluster
-tcp_opts = [
-    ct.Cfg('tcp_host', ct.IPAddress(),
+salt_opts = [
+    ct.Cfg('salt_master_host', ct.IPAddress(),
            help="", default='0.0.0.0'),
 ]
 
-
-os_deploy_opts = [
-    # ct.Cfg('stacklight_enable', ct.Boolean(),
-    #        help="", default=False),
+common_services_deploy_opts = [
+    ct.Cfg('common_services_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy common services",
+           default=_default_common_services_steps),
 ]
 
-os_opts = [
+common_services_opts = [
+    ct.Cfg('installed', ct.Boolean(),
+           help="", default=False),
+]
+
+openstack_deploy_opts = [
+    ct.Cfg('openstack_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy openstack",
+           default=_default_openstack_steps),
+]
+openstack_opts = [
+    ct.Cfg('installed', ct.Boolean(),
+           help="", default=False),
     ct.Cfg('keystone_endpoint', ct.String(),
            help="", default=''),
 ]
@@ -92,10 +110,12 @@ os_opts = [
 _group_opts = [
     ('hardware', hardware_opts),
     ('underlay', underlay_opts),
-    ('tcp_deploy', tcp_deploy_opts),
-    ('tcp', tcp_opts),
-    ('os_deploy', os_deploy_opts),
-    ('os', os_opts),
+    ('salt_deploy', salt_deploy_opts),
+    ('salt', salt_opts),
+    ('common_services_deploy', common_services_deploy_opts),
+    ('common_services', common_services_opts),
+    ('openstack_deploy', openstack_deploy_opts),
+    ('openstack', openstack_opts),
 ]
 
 
@@ -108,22 +128,34 @@ def register_opts(config):
                           title="Underlay configuration", help=""))
     config.register_opts(group='underlay', opts=underlay_opts)
 
-    config.register_group(cfg.OptGroup(name='tcp_deploy',
-                          title="tcp deploy configuration", help=""))
-    config.register_opts(group='tcp_deploy', opts=tcp_deploy_opts)
+    config.register_group(cfg.OptGroup(name='salt_deploy',
+                          title="salt deploy configuration", help=""))
+    config.register_opts(group='salt_deploy', opts=salt_deploy_opts)
 
-    config.register_group(cfg.OptGroup(name='tcp',
-                          title="tcp config and credentials", help=""))
-    config.register_opts(group='tcp', opts=tcp_opts)
+    config.register_group(cfg.OptGroup(name='salt',
+                          title="salt config and credentials", help=""))
+    config.register_opts(group='salt', opts=salt_opts)
 
-    config.register_group(cfg.OptGroup(name='os',
-                          title="Openstack config and credentials", help=""))
-    config.register_opts(group='os', opts=os_opts)
+    config.register_group(cfg.OptGroup(name='common_services',
+                          title="Common services for Openstack", help=""))
+    config.register_opts(group='common_services', opts=common_services_opts)
+
     config.register_group(
-        cfg.OptGroup(name='os_deploy',
+        cfg.OptGroup(name='common_services_deploy',
+                     title="Common services for Openstack deploy config",
+                     help=""))
+    config.register_opts(group='common_services_deploy',
+                         opts=common_services_deploy_opts)
+
+    config.register_group(cfg.OptGroup(name='openstack',
+                          title="Openstack config and credentials", help=""))
+    config.register_opts(group='openstack', opts=openstack_opts)
+
+    config.register_group(
+        cfg.OptGroup(name='openstack_deploy',
                      title="Openstack deploy config and credentials",
                      help=""))
-    config.register_opts(group='os_deploy', opts=os_deploy_opts)
+    config.register_opts(group='openstack_deploy', opts=openstack_deploy_opts)
     return config
 
 
