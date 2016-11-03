@@ -56,7 +56,7 @@ py.test -vvv -s -k test_tcp_install_default
 Create and start the env for manual tests
 -----------------------------------------
 
-dos.py create-env ./tcp_tests/templates/tcpcloud-default.yaml
+dos.py create-env ./tcp_tests/templates/underlay/mk22-lab-basic.yaml
 
 dos.py start "${ENV_NAME}"
 
