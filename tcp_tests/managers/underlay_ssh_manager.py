@@ -430,9 +430,10 @@ class UnderlaySSHManager(object):
             retry = step.get('retry', {'count': 1, 'delay': 1})
             retry_count = retry.get('count', 1)
             retry_delay = retry.get('delay', 1)
-            skip_fail = retry.get('skip_fail', False)
+            skip_fail = step.get('skip_fail', False)
 
-            LOG.info(" >>> [ {0} #{1} ] {2}".format(label, n+1, description))
+            msg = "[ {0} #{1} ] {2}".format(label, n+1, description)
+            LOG.info("\n\n{0}\n{1}".format(msg, '=' * len(msg)))
 
             with self.remote(node_name=node_name) as remote:
 
