@@ -72,7 +72,7 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 - description: Check mysql status
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' mysql.status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' mysql.status | grep -A1 wsrep_incoming_addresses
   node_name: cfg01.mk22-lab-advanced.local
   retry: {count: 3, delay: 5}
   skip_fail: true

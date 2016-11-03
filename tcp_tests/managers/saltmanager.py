@@ -32,4 +32,5 @@ class SaltManager(object):
             self.__config.salt.salt_master_host = \
                 self.__underlay.host_by_node_name(salt_nodes[0])
 
-        self.__underlay.execute_commands(commands)
+        self.__underlay.execute_commands(commands=commands,
+                                         label="Install and configure salt")

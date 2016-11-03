@@ -37,7 +37,8 @@ class TestTCPInstaller(object):
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
     # @pytest.mark.snapshot_needed
     # @pytest.mark.fail_snapshot
-    def test_tcp_install_default(self, underlay, openstack_deployed, show_step):
+    def test_tcp_install_default(self, underlay, openstack_deployed,
+                                 show_step, rally):
         """Test for deploying an tcp environment and check it
 
         Scenario:
@@ -46,4 +47,14 @@ class TestTCPInstaller(object):
             3. Setup compute nodes
 
         """
-        underlay.check_call("ip a")
+        # prepare rally
+        rally.prepare()
+        rally.pull_image()
+        rally.run()
+        # run tempest
+        rally.run_tempest()
+
+        res = rally.get_results()
+
+        fail_msg = 'Tempest verification fails {}'.format(res)
+        assert res['failures'] == 0, fail_msg

@@ -16,6 +16,7 @@
 from tcp_tests.fixtures.common_fixtures import *
 from tcp_tests.fixtures.config_fixtures import *
 from tcp_tests.fixtures.underlay_fixtures import *
+from tcp_tests.fixtures.rally_fixtures import *
 from tcp_tests.fixtures.salt_fixtures import *
 from tcp_tests.fixtures.common_services_fixtures import *
 from tcp_tests.fixtures.openstack_fixtures import *
@@ -30,6 +31,8 @@ __all__ = sorted([  # sort for documentation
     #underlay_fixtures
     'hardware',
     'underlay',
+    # rally_fixtures
+    'rally',
     # salt_fixtures
     'salt_actions',
     'salt_deployed',

@@ -24,5 +24,6 @@ class CommonServicesManager(object):
         super(CommonServicesManager, self).__init__()
 
     def install(self, commands):
-        self.__underlay.execute_commands(commands)
+        self.__underlay.execute_commands(commands,
+                                         label='Install common services')
         self.__config.common_services.installed = True

@@ -18,7 +18,7 @@ from tcp_tests.managers import rallymanager
 
 
 @pytest.fixture(scope='function')
-def rally(underlay):
+def rally(config, underlay):
     """Fixture that provides various actions for TCP
 
     :param config: fixture provides oslo.config
@@ -27,4 +27,4 @@ def rally(underlay):
 
     For use in tests or fixtures to deploy a custom TCP
     """
-    return rallymanager.RallyManager(underlay, 'cfg01')
+    return rallymanager.RallyManager(underlay, config.salt.salt_master_host)
