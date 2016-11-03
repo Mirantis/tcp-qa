@@ -68,21 +68,23 @@ class UnderlaySSHManager(object):
        self.remote(): SSHClient object by a node name (w/wo address pool)
                       or by a hostname.
     """
+    __config = None
     config_ssh = None
     config_lvm = None
 
-    def __init__(self, config_ssh):
+    def __init__(self, config):
         """Read config.underlay.ssh object
 
            :param config_ssh: dict
         """
+        self.__config = config
         if self.config_ssh is None:
             self.config_ssh = []
 
         if self.config_lvm is None:
             self.config_lvm = {}
 
-        self.add_config_ssh(config_ssh)
+        self.add_config_ssh(self.__config.underlay.ssh)
 
     def add_config_ssh(self, config_ssh):
 
@@ -365,7 +367,7 @@ class UnderlaySSHManager(object):
             password=ssh_data['password'],
             private_keys=ssh_data['keys'])
 
-    def ensure_running_service(self, service_name, node_name, check_cmd,
+    def ensure_running_service(self, service_name, host, check_cmd,
                                state_running='start/running'):
         """Check if the service_name running or try to restart it
 
@@ -376,11 +378,11 @@ class UnderlaySSHManager(object):
         """
         cmd = "service {0} status | grep -q '{1}'".format(
             service_name, state_running)
-        with self.remote(node_name=node_name) as remote:
+        with self.remote(host=host) as remote:
             result = remote.execute(cmd)
             if result.exit_code != 0:
                 LOG.info("{0} is not in running state on the node {1},"
-                         " trying to start".format(service_name, node_name))
+                         " trying to start".format(service_name, host))
                 cmd = ("service {0} stop;"
                        " sleep 3; killall -9 {0};"
                        "service {0} start; sleep 5;"
@@ -457,18 +459,19 @@ class UnderlaySSHManager(object):
                         LOG.info(" === RETRY ({0}/{1}) ======================="
                                  .format(x-1, retry_count))
                     else:
-                        # Workarounds for crashed services
-                        self.ensure_running_service(
-                            "salt-master",
-                            "cfg01.mk22-lab-advanced.local",
-                            "salt-call pillar.items",
-                            'active (running)') # Hardcoded for now
-                        self.ensure_running_service(
-                            "salt-minion",
-                            "cfg01.mk22-lab-advanced.local",
-                            "salt 'cfg01*' pillar.items",
-                            "active (running)") # Hardcoded for now
-                        break
+                        if self.__config.salt.salt_master_host != '0.0.0.0':
+                            # Workarounds for crashed services
+                            self.ensure_running_service(
+                                "salt-master",
+                                self.__config.salt.salt_master_host,
+                                "salt-call pillar.items",
+                                'active (running)') # Hardcoded for now
+                            self.ensure_running_service(
+                                "salt-minion",
+                                self.__config.salt.salt_master_host,
+                                "salt 'cfg01*' pillar.items",
+                                "active (running)") # Hardcoded for now
+                            break
 
                     if x == 1 and skip_fail == False:
                         # In the last retry iteration, raise an exception

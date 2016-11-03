@@ -24,15 +24,17 @@ from tcp_tests import settings
 
 
 _default_conf = pkg_resources.resource_filename(
-    __name__, 'templates/underlay/mk22-lab-advanced.yaml')
+    __name__, 'templates/underlay/{0}.yaml'.format(settings.LAB_CONFIG_NAME))
 
 _default_salt_steps = pkg_resources.resource_filename(
-    __name__, 'templates/salt/mk22-lab-advanced-salt.yaml')
+    __name__, 'templates/salt/{0}-salt.yaml'.format(settings.LAB_CONFIG_NAME))
 _default_common_services_steps = pkg_resources.resource_filename(
     __name__,
-    'templates/common-services/mk22-lab-advanced-common-services.yaml')
+    'templates/common-services/{0}-common-services.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 _default_openstack_steps = pkg_resources.resource_filename(
-    __name__, 'templates/openstack/mk22-lab-advanced-openstack.yaml')
+    __name__, 'templates/openstack/{0}-openstack.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 
 
 hardware_opts = [

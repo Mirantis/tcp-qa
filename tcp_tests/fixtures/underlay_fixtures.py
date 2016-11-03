@@ -194,7 +194,7 @@ def underlay(revert_snapshot, config, hardware):
         config.underlay.ssh = hardware.get_ssh_data(
             roles=config.underlay.roles)
 
-        underlay = underlay_ssh_manager.UnderlaySSHManager(config.underlay.ssh)
+        underlay = underlay_ssh_manager.UnderlaySSHManager(config)
 
         if not config.underlay.lvm:
             underlay.enable_lvm(hardware.lvm_storages())
@@ -206,6 +206,6 @@ def underlay(revert_snapshot, config, hardware):
         # 1. hardware environment created and powered on
         # 2. config.underlay.ssh contains SSH access to provisioned nodes
         #    (can be passed from external config with TESTS_CONFIGS variable)
-        underlay = underlay_ssh_manager.UnderlaySSHManager(config.underlay.ssh)
+        underlay = underlay_ssh_manager.UnderlaySSHManager(config)
 
     return underlay
