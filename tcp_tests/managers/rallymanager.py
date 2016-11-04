@@ -27,7 +27,7 @@ class RallyManager(object):
     """docstring for RallyManager"""
 
     image_name = 'rallyforge/rally'
-    image_version = '0.5.0'
+    image_version = '0.7.0'
 
     def __init__(self, underlay, admin_host):
         super(RallyManager, self).__init__()
@@ -46,7 +46,7 @@ rally verify showconfig"""
         cmd = "cat > {path} << EOF\n{content}\nEOF".format(
             path='/root/rally/install_tempest.sh', content=content)
         cmd1 = "chmod +x /root/rally/install_tempest.sh"
-        cmd2 = "scp ctl01:/root/keystonerc /root/rally/openrc"
+        cmd2 = "scp ctl01:/root/keystonercv3 /root/rally/openrc"
 
         with self._underlay.remote(host=self._admin_host) as remote:
             LOG.info("Create rally workdir")
@@ -71,7 +71,7 @@ rally verify showconfig"""
 
         with self._underlay.remote(host=self._admin_host) as remote:
             LOG.info("Getting image id")
-            cmd = "docker images | grep 0.5.0| awk '{print $3}'"
+            cmd = "docker images | grep 0.7.0| awk '{print $3}'"
             res = remote.check_call(cmd)
             self.image_id = res['stdout'][0].strip()
             LOG.info("Image ID is {}".format(self.image_id))
@@ -92,8 +92,7 @@ rally verify showconfig"""
             LOG.info("Container ID is {}".format(self.docker_id))
 
     def run_tempest(self, test=''):
-        docker_exec = ('source /root/rally/openrc; '
-                       'docker exec -i {docker_id} bash -c "{cmd}"')
+        docker_exec = ('docker exec -i {docker_id} bash -c "{cmd}"')
         commands = [
             docker_exec.format(cmd="./install_tempest.sh",
                                docker_id=self.docker_id),
