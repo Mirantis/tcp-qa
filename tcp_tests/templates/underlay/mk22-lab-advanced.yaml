@@ -140,7 +140,7 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
-                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data1404.yaml
 
               interfaces: &interfaces
                 - label: eth0
@@ -178,7 +178,7 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
-                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data1404.yaml
 
               interfaces: *interfaces
               network_config: *network_config
@@ -204,7 +204,7 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
-                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data1404.yaml
 
               interfaces: *interfaces
               network_config: *network_config
@@ -230,7 +230,7 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
-                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data1404.yaml
 
               interfaces: *interfaces
               network_config: *network_config
@@ -256,7 +256,7 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: !include mk22-lab-advanced--meta-data.yaml
-                  cloudinit_user_data: !include mk22-lab-advanced--user-data.yaml
+                  cloudinit_user_data: !include mk22-lab-advanced--user-data1404.yaml
 
               interfaces: *interfaces
               network_config: *network_config
