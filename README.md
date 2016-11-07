@@ -40,10 +40,8 @@ Optional:
 
 export ENV_NAME=tcpcloud-mk22  # You can set any env name
 
-export LAB_CONFIG_NAME=mk22-lab-basic  # Prefix for names of the templates.
-                                       # Currently there are two template sets:
-                                       # mk22-lab-basic
-                                       # mk22-lab-advanced
+export LAB_CONFIG_NAME=mk22-lab-basic  # mk22-lab-basic or mk22-lab-advanced
+
 
 Run deploy test
 ---------------
@@ -51,6 +49,12 @@ Run deploy test
 export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
 
 py.test -vvv -s -k test_tcp_install_default
+
+, or as an alternative there is another test that use deploy scripts from models repository written on bash [1]:
+
+py.test -vvv -s -k test_tcp_install_with_scripts
+
+[1] https://github.com/Mirantis/mk-lab-salt-model/tree/dash/scripts
 
 
 Create and start the env for manual tests
