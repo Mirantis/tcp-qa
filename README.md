@@ -45,11 +45,11 @@ Run deploy test
 
 export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
 
-py.test -vvv -s -k test_tcp_install_default
+LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
 
 , or as an alternative there is another test that use deploy scripts from models repository written on bash [2]:
 
-py.test -vvv -s -k test_tcp_install_with_scripts
+LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_with_scripts
 
 
 
