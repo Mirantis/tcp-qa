@@ -14,10 +14,7 @@ Install requirements
 
 pip install -r ./tcp_tests/requirements.txt
 
-Initialize fuel-devops database if needed:
-------------------------------------------
-
-dos-manage.py migrate
+* Note: Please read [1] if you don't have fuel-devops installed, because there are required some additional packages and configuration.
 
 Get cloudinit images
 --------------------
@@ -50,11 +47,10 @@ export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
 
 py.test -vvv -s -k test_tcp_install_default
 
-, or as an alternative there is another test that use deploy scripts from models repository written on bash [1]:
+, or as an alternative there is another test that use deploy scripts from models repository written on bash [2]:
 
 py.test -vvv -s -k test_tcp_install_with_scripts
 
-[1] https://github.com/Mirantis/mk-lab-salt-model/tree/dash/scripts
 
 
 Create and start the env for manual tests
@@ -66,3 +62,7 @@ dos.py start "${ENV_NAME}"
 
 
 Then, wait until cloud-init is finished and port 22 is open (~3-4 minutes), and login with root:r00tme
+
+[1] https://github.com/openstack/fuel-devops/blob/master/doc/source/install.rst
+
+[2] https://github.com/Mirantis/mk-lab-salt-model/tree/dash/scripts

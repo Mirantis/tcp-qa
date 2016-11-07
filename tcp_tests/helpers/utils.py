@@ -23,7 +23,6 @@ import paramiko
 import yaml
 from devops.helpers import helpers
 from devops.helpers import ssh_client
-from elasticsearch import Elasticsearch
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -183,61 +182,6 @@ def retry(tries_number=3, exception=Exception):
                 iter_number += 1
         return wrapper
     return _retry
-
-
-class ElasticClient(object):
-    def __init__(self, host='localhost', port=9200):
-        self.es = Elasticsearch([{'host': '{}'.format(host),
-                                  'port': port}])
-        self.host = host
-        self.port = port
-
-    def find(self, key, value):
-        LOG.info('Search for {} for {}'.format(key, value))
-        search_request_body = '{' +\
-            '  "query": {' +\
-            '   "simple_query_string": {' +\
-            '     "query": "{}",'.format(value) +\
-            '     "analyze_wildcard" : "true",' +\
-            '     "fields" : ["{}"],'.format(key) +\
-            '     "default_operator": "AND"' +\
-            '     }' +\
-            ' },' +\
-            '  "size": 1' +\
-            '}'
-        LOG.info('Search by {}'.format(search_request_body))
-
-        def is_found():
-            def temporary_status():
-                res = self.es.search(index='_all', body=search_request_body)
-                return res['hits']['total'] != 0
-            return temporary_status
-
-        predicate = is_found()
-        helpers.wait(predicate, timeout=300,
-                     timeout_msg='Timeout waiting, result from elastic')
-
-        es_raw = self.es.search(index='_all', body=search_request_body)
-        if es_raw['timed_out']:
-            raise RuntimeError('Elastic search timeout exception')
-
-        return ElasticSearchResult(key, value, es_raw['hits']['total'], es_raw)
-
-
-class ElasticSearchResult(object):
-    def __init__(self, key, value, count, raw):
-        self.key = key
-        self.value = value
-        self.count = count
-        self.raw = raw
-        if self.count != 0:
-            self.items = raw['hits']['hits']
-
-    def get(self, index):
-        if self.count != 0:
-            return self.items[index]['_source']
-        else:
-            None
 
 
 class YamlEditor(object):
