@@ -125,7 +125,7 @@
   node_name: cfg01.mk22-lab-advanced.local
   retry: {count: 3, delay: 5}
   skip_fail: false
-- description: Install contrail database on controllers
+- description: Install opencontrail on controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
     opencontrail -b 1
   node_name: cfg01.mk22-lab-advanced.local

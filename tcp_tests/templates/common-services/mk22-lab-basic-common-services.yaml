@@ -4,13 +4,13 @@
     keepalived
   node_name: cfg01.mk22-lab-basic.local
   retry: {count: 3, delay: 5}
-  skip_fail: false
+  skip_fail: true
 - description: Install keepalived on other controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
     keepalived -b 1
   node_name: cfg01.mk22-lab-basic.local
-  retry: {count: 3, delay: 5}
-  skip_fail: false
+  retry: {count: 10, delay: 10}
+  skip_fail: true
 - description: Check the VIP
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
     'ip a | grep 172.16.10.254' | grep -B1 172.16.10.254

@@ -114,6 +114,12 @@
   skip_fail: true
 
 # Install contrail on controllers
+- description: Workaround of the bug https://mirantis.jira.com/browse/PROD-8164
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' grains.set noservices True
+  node_name: cfg01.mk22-lab-basic.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
 - description: Install contrail database on controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
     opencontrail.database -b 1
@@ -125,7 +131,7 @@
   node_name: cfg01.mk22-lab-basic.local
   retry: {count: 3, delay: 5}
   skip_fail: false
-- description: Install contrail database on controllers
+- description: Install opencontrail on controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
     opencontrail -b 1
   node_name: cfg01.mk22-lab-basic.local
@@ -191,7 +197,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
     'ip a'
   node_name: cfg01.mk22-lab-basic.local
-  retry: {count: 3, delay: 5}
+  retry: {count: 10, delay: 30}
   skip_fail: false
 - description: Check contrail status on computes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run

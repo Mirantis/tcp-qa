@@ -34,6 +34,13 @@
    #- sudo route add default gw {gateway} {interface_name}
    - sudo ifup eth1
 
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
    ############## TCP Cloud cfg01 node ##################
    #- sleep 120
    - echo "Preparing base OS"

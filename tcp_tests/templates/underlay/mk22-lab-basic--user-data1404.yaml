@@ -34,12 +34,19 @@
    #- sudo route add default gw {gateway} {interface_name}
    - sudo ifup eth1
 
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
    ############## TCP Cloud cfg01 node ##################
    #- sleep 120
    - echo "Preparing base OS"
    - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
-   - echo "deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ trusty main security extra tcp tcp-salt" > /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ trusty main security tcp tcp-salt" > /etc/apt/sources.list
    - wget -O - http://apt.tcpcloud.eu/public.gpg | apt-key add -
    # saltstack repo is for minions that have the same version in the xenial and trusty (2016.3.3)
    - echo "deb http://repo.saltstack.com/apt/ubuntu/14.04/amd64/latest trusty main" > /etc/apt/sources.list.d/saltstack.list
