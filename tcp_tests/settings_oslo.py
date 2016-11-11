@@ -22,6 +22,8 @@ from tcp_tests.helpers import ext
 from tcp_tests.helpers import oslo_cfg_types as ct
 from tcp_tests import settings
 
+print ("\n" + "-" * 10 + " Initialize oslo.config variables with defaults"
+       " from environment" + "-" * 10)
 
 _default_conf = pkg_resources.resource_filename(
     __name__, 'templates/underlay/{0}.yaml'.format(settings.LAB_CONFIG_NAME))
@@ -34,6 +36,9 @@ _default_common_services_steps = pkg_resources.resource_filename(
         settings.LAB_CONFIG_NAME))
 _default_openstack_steps = pkg_resources.resource_filename(
     __name__, 'templates/openstack/{0}-openstack.yaml'.format(
+        settings.LAB_CONFIG_NAME))
+_default_opencontrail_prepare_tests_steps_path = pkg_resources.resource_filename(
+    __name__, 'templates/opencontrail/{0}-opencontrail.yaml'.format(
         settings.LAB_CONFIG_NAME))
 
 
@@ -92,7 +97,7 @@ common_services_deploy_opts = [
 ]
 
 common_services_opts = [
-    ct.Cfg('installed', ct.Boolean(),
+    ct.Cfg('common_services_installed', ct.Boolean(),
            help="", default=False),
 ]
 
@@ -102,12 +107,21 @@ openstack_deploy_opts = [
            default=_default_openstack_steps),
 ]
 openstack_opts = [
-    ct.Cfg('installed', ct.Boolean(),
+    ct.Cfg('openstack_installed', ct.Boolean(),
            help="", default=False),
-    ct.Cfg('keystone_endpoint', ct.String(),
+    ct.Cfg('openstack_keystone_endpoint', ct.String(),
            help="", default=''),
 ]
 
+opencontrail_opts = [
+    ct.Cfg('opencontrail_tags', ct.String(),
+           help="", default=''),
+    ct.Cfg('opencontrail_features', ct.String(),
+           help="", default=''),
+    ct.Cfg('opencontrail_prepare_tests_steps_path', ct.String(),
+           help="Path to YAML with steps to prepare contrail-tests",
+           default=_default_opencontrail_prepare_tests_steps_path),
+]
 
 _group_opts = [
     ('hardware', hardware_opts),
@@ -118,6 +132,7 @@ _group_opts = [
     ('common_services', common_services_opts),
     ('openstack_deploy', openstack_deploy_opts),
     ('openstack', openstack_opts),
+    ('opencontrail', opencontrail_opts),
 ]
 
 
@@ -158,6 +173,10 @@ def register_opts(config):
                      title="Openstack deploy config and credentials",
                      help=""))
     config.register_opts(group='openstack_deploy', opts=openstack_deploy_opts)
+
+    config.register_group(cfg.OptGroup(name='opencontrail',
+                          title="Options for Juniper contrail-tests", help=""))
+    config.register_opts(group='opencontrail', opts=opencontrail_opts)
     return config
 
 

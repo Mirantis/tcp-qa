@@ -1,0 +1,15 @@
+# Prepare Juniper contrail-test
+
+- description: Allow password authentication for SSH on compute nodes
+  cmd: salt 'cmp*' cmd.run "sed -i -e 's/^PasswordAuthentication./PasswordAuthentication yes/' /etc/ssh/sshd_config ; service ssh restart"
+  node_name: cfg01.mk22-lab-basic.local
+
+- description: Install contrail-test on ctl01
+  cmd: wget https://raw.githubusercontent.com/Juniper/contrail-test-ci/master/install.sh;
+    chmod +x ./install.sh;
+    ./install.sh install contrail-test --ci-ref R3.0.2.x --fab-ref R3.0.2.x --test-ref R3.0.2.x;
+  node_name: ctl01.mk22-lab-basic.local
+
+- description: Install OpenJDK-7 for contrail tests
+  cmd: apt-get -y install openjdk-7-jdk
+  node_name: ctl01.mk22-lab-basic.local

@@ -101,6 +101,13 @@ class Cfg(cfg.Opt):
     """Wrapper for cfg.Opt class that reads default form evironment variables.
     """
     def __init__(self, *args, **kwargs):
+
+        env_var_name = args[0].upper()
+        if 'default' in kwargs:
+            kwargs['default'] = os.environ.get(env_var_name, kwargs.get('default', None))
         super(Cfg, self).__init__(*args, **kwargs)
-        env_var_name = self.name.upper()
-        self.default = os.environ.get(env_var_name, self.default)
+
+        # Print info about default environment variables to console
+        print ('{}={}  # {}'.format(env_var_name,
+                                   kwargs.get('default', ''),
+                                   kwargs.get('help', '')))

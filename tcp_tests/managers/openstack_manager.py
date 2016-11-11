@@ -26,4 +26,4 @@ class OpenstackManager(object):
     def install(self, commands):
         self.__underlay.execute_commands(commands=commands,
                                          label="Install OpenStack services")
-        self.__config.openstack.installed = True
+        self.__config.openstack.openstack_installed = True

@@ -12,18 +12,21 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-class CommonServicesManager(object):
-    """docstring for CommonServicesManager"""
 
-    __config = None
-    __underlay = None
+import pytest
 
-    def __init__(self, config, underlay):
-        self.__config = config
-        self.__underlay = underlay
-        super(CommonServicesManager, self).__init__()
+from tcp_tests.managers import opencontrail_manager
 
-    def install(self, commands):
-        self.__underlay.execute_commands(commands,
-                                         label='Install common services')
-        self.__config.common_services.common_services_installed = True
+
+@pytest.fixture(scope='function')
+def opencontrail(config, underlay, openstack_deployed):
+    """Fixture that provides various actions for OpenContrail
+
+    :param config: fixture provides oslo.config
+    :param underlay: fixture provides underlay manager
+    :rtype: OpenContrailManager
+
+    """
+    return opencontrail_manager.OpenContrailManager(config, underlay,
+                                                    openstack_deployed)
+

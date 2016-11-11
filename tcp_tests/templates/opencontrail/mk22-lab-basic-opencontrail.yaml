@@ -1,0 +1,110 @@
+# Prepare Juniper contrail-test
+
+- description: Allow password authentication for SSH on compute nodes
+  cmd: salt 'cmp*' cmd.run "sed -i -e 's/^PasswordAuthentication./PasswordAuthentication yes/' /etc/ssh/sshd_config ; service ssh restart"
+  node_name: cfg01.mk22-lab-basic.local
+
+- description: Install contrail-test on ctl01
+  cmd: wget https://raw.githubusercontent.com/Juniper/contrail-test-ci/master/install.sh;
+    chmod +x ./install.sh;
+    ./install.sh install contrail-test --ci-ref R3.0.2.x --fab-ref R3.0.2.x --test-ref R3.0.2.x;
+  node_name: ctl01.mk22-lab-basic.local
+
+- description: Install OpenJDK-7 for contrail tests
+  cmd: apt-get -y install openjdk-7-jdk
+  node_name: ctl01.mk22-lab-basic.local
+
+- description: Create testbed.py with lab parameters
+  cmd: |
+    cat << EOF >> /opt/contrail/utils/fabfile/testbeds/testbed.py
+    from fabric.api import env
+
+    #Management ip addresses of hosts in the cluster
+    os_ctrl_1 = 'root@172.16.10.101'
+    os_ctrl_2 = 'root@172.16.10.102'
+    os_ctrl_3 = 'root@172.16.10.103'
+    c_ctrl_1 = 'root@172.16.10.101'
+    c_ctrl_2 = 'root@172.16.10.102'
+    c_ctrl_3 = 'root@172.16.10.103'
+    c_compute_1 = 'root@172.16.10.105'
+    #c_compute_2 = 'root@10.84.30.51'
+    vip_ctrl = 'root@172.16.10.254'
+
+    ext_routers = [
+    ('gateway1','192.168.10.1'),
+    #('gateway2','10.110.1.1'),
+    ]
+
+    #Autonomous system number
+    router_asn = 64512
+
+    #Host from which the fab commands are triggered to install and provision
+    deploy_node = 'root@172.16.10.101'
+
+    #Role definition of the hosts.
+    env.roledefs = {
+    'all': [os_ctrl_1,c_ctrl_1,c_ctrl_2,c_ctrl_3,os_ctrl_2,os_ctrl_3,c_compute_1],
+    'cfgm': [c_ctrl_1,c_ctrl_2,c_ctrl_3],
+    'openstack': [os_ctrl_1,os_ctrl_2,os_ctrl_3],
+    'control': [c_ctrl_1,c_ctrl_2,c_ctrl_3],
+    'compute': [c_compute_1],
+    'collector': [c_ctrl_1,c_ctrl_2,c_ctrl_3],
+    #'webui': [c_ctrl_1,c_ctrl_2,c_ctrl_3],
+    'webui': [vip_ctrl],
+    'database': [c_compute_1],
+    'build': [deploy_node],
+    }
+    #Openstack admin password
+    env.openstack_admin_password = 'admin'
+    env.password = 'r00tme'
+    #Passwords of each host
+    env.passwords = {
+    os_ctrl_1: 'r00tme',
+    c_ctrl_1: 'r00tme',
+    c_ctrl_2: 'r00tme',
+    c_ctrl_3: 'r00tme',
+    os_ctrl_2: 'r00tme',
+    os_ctrl_3: 'r00tme',
+    c_compute_1: 'r00tme',
+    deploy_node: 'r00tme',
+    }
+
+    env.ha = {
+    'internal_vip' : '172.16.10.254',
+    #'external_vip' : '10.84.30.65',
+    'contrail_internal_vip' : '172.16.10.254',
+    #'contrail_external_vip' : '192.168.200.254',
+    }
+
+    multi_tenancy = True
+    env.keystone = {
+    'admin_user' : 'admin',
+    'admin_password' : 'workshop',
+    'service_tenant': 'admin',
+    'admin_tenant' : 'admin',
+    'keystone_ip' : '172.16.10.254',
+    }
+
+    os_username = 'admin'
+    os_password = 'workshop'
+    os_tenant_name = 'admin'
+
+
+    control_data = {
+    os_ctrl_1 : { 'ip': '172.16.10.101/24', 'gw' : '172.16.10.1', 'device':'eth1' },
+    os_ctrl_2 : { 'ip': '172.16.10.102/24', 'gw' : '172.16.10.1', 'device':'eth1' },
+    os_ctrl_3 : { 'ip': '172.16.10.103/24', 'gw' : '172.16.10.1', 'device':'eth1' },
+    c_ctrl_1 : { 'ip': '172.16.10.101/24', 'gw' : '172.16.10.1', 'device':'eth1' },
+    c_ctrl_2 : { 'ip': '172.16.10.102/24', 'gw' : '172.16.10.1', 'device':'eth1' },
+    c_ctrl_3 : { 'ip': '172.16.10.103/24', 'gw' : '172.16.10.1', 'device':'eth1' },
+    c_compute_1 : { 'ip': '172.16.10.105/24', 'gw' : '172.16.10.1', 'device':'eth1' },
+    }
+
+    env.test = {
+    'mail_to': 'user@test.mlx',
+    'mail_server': '10.204.x.x',
+    'mail_sender': 'mailer@juniper.net'
+    }
+    EOF
+
+  node_name: ctl01.mk22-lab-basic.local

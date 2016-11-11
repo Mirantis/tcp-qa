@@ -27,13 +27,11 @@ LOG = logger.logger
 
 @pytest.fixture(scope='function')
 def common_services_actions(config, underlay):
-    """Fixture that provides various actions for K8S
+    """Fixture that provides various actions for CommonServices
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
-    :rtype: K8SManager
-
-    For use in tests or fixtures to deploy a custom K8S
+    :rtype: CommonServicesManager
     """
     return common_services_manager.CommonServicesManager(config, underlay)
 
@@ -42,27 +40,32 @@ def common_services_actions(config, underlay):
 def common_services_deployed(revert_snapshot, request, config,
                              hardware, underlay, salt_deployed,
                              common_services_actions):
-    """Fixture to get or install TCP on environment
+    """Fixture to get or install common services on the environment
 
+    :param revert_snapshot: fixture that reverts snapshot that is specified
+                            in test with @pytest.mark.revert_snapshot(<name>)
     :param request: fixture provides pytest data
     :param config: fixture provides oslo.config
     :param hardware: fixture provides enviromnet manager
     :param underlay: fixture provides underlay manager
-    :param tcp_actions: fixture provides TCPManager instance
-    :rtype: TCPManager
+    :param common_services_actions: fixture provides CommonServicesManager
+                                    instance
+    :rtype: CommonServicesManager
 
-    If config.tcp.tcp_host is not set, this fixture assumes that
-    the tcp cluster was not deployed, and do the following:
-    - deploy tcp cluster
-    - make snapshot with name 'tcp_deployed'
-    - return TCPCluster instance
+    If config.common_services.common_services_installed is not set, this
+    fixture assumes that the common services were not installed
+    , and do the following:
+    - install common services
+    - make snapshot with name 'common_services_deployed'
+    - return CommonServicesManager
 
-    If config.tcp.tcp_host was set, this fixture assumes that the tcp
-    cluster was already deployed, and do the following:
-    - return TCPCluster instance
+    If config.common_services.common_services_installed was set, this fixture
+    assumes that the common services were already installed, and do
+    the following:
+    - return CommonServicesManager instance
 
-    If you want to revert 'tcp_deployed' snapshot, please use mark:
-    @pytest.mark.revert_snapshot("tcp_deployed")
+    If you want to revert 'common_services_deployed' snapshot, please use mark:
+    @pytest.mark.revert_snapshot("common_services_deployed")
     """
     # If no snapshot was reverted, then try to revert the snapshot
     # that belongs to the fixture.
@@ -74,7 +77,7 @@ def common_services_deployed(revert_snapshot, request, config,
             hardware.revert_snapshot(ext.SNAPSHOT.common_services_deployed)
 
     # Create Salt cluster
-    if not config.common_services.installed:
+    if not config.common_services.common_services_installed:
         steps_path = config.common_services_deploy.common_services_steps_path
         with underlay.yaml_editor(steps_path) as commands:
             common_services_actions.install(commands.content)
