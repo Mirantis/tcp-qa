@@ -79,10 +79,14 @@
    #- echo "Running complete state ..."
    #- salt-call state.sls linux,openssh,salt
 
+   # Workaround for bug https://mirantis.jira.com/browse/PROD-8214
+   - apt-get -y install --install-recommends linux-generic-lts-xenial
+   - reboot
+
    ########################################################
    # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ##- echo "Allow SSH access ..."
+   ##- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    ########################################################
 
   write_files:
