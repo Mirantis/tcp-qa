@@ -114,7 +114,8 @@
   skip_fail: true
 
 # Install contrail on controllers
-- description: Workaround of the bug https://mirantis.jira.com/browse/PROD-8164
+
+- description: Workaround of the bug https://mirantis.jira.com/browse/PROD-8164 for opencontrail.database
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' grains.set noservices True
   node_name: cfg01.mk22-lab-basic.local
   retry: {count: 3, delay: 5}
@@ -170,6 +171,12 @@
 
 
 # Install compute node
+
+- description: Workaround of the bug https://mirantis.jira.com/browse/PROD-8164 for opencontrail on compute nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' grains.set noservices True
+  node_name: cfg01.mk22-lab-basic.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
 - description: Apply formulas for compute node
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
   node_name: cfg01.mk22-lab-basic.local
