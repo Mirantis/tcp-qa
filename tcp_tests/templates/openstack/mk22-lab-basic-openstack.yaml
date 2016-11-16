@@ -182,6 +182,11 @@
   node_name: cfg01.mk22-lab-basic.local
   retry: {count: 3, delay: 5}
   skip_fail: false
+- description: Workaround of the bug https://mirantis.jira.com/browse/PROD-8164 for opencontrail on compute nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' grains.set noservices True
+  node_name: cfg01.mk22-lab-basic.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
 - description: Re-apply(as in doc) formulas for compute node
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
   node_name: cfg01.mk22-lab-basic.local
