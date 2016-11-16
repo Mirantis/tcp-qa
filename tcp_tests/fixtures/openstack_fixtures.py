@@ -38,6 +38,7 @@ def openstack_actions(config, underlay):
     return openstack_manager.OpenstackManager(config, underlay)
 
 
+@pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
 @pytest.fixture(scope='function')
 def openstack_deployed(revert_snapshot, request, config,
                        hardware, underlay, common_services_deployed,
@@ -66,14 +67,6 @@ def openstack_deployed(revert_snapshot, request, config,
     If you want to revert 'openstack_deployed' snapshot, please use mark:
     @pytest.mark.revert_snapshot("openstack_deployed")
     """
-    # If no snapshot was reverted, then try to revert the snapshot
-    # that belongs to the fixture.
-    # Note: keep fixtures in strict dependences from each other!
-    if not revert_snapshot:
-        if hardware.has_snapshot(ext.SNAPSHOT.openstack_deployed) and \
-                hardware.has_snapshot_config(ext.SNAPSHOT.openstack_deployed):
-            hardware.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
-
     # Create Salt cluster
     if not config.openstack.openstack_installed:
         steps_path = config.openstack_deploy.openstack_steps_path

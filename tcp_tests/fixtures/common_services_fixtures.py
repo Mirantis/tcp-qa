@@ -36,6 +36,7 @@ def common_services_actions(config, underlay):
     return common_services_manager.CommonServicesManager(config, underlay)
 
 
+@pytest.mark.revert_snapshot(ext.SNAPSHOT.common_services_deployed)
 @pytest.fixture(scope='function')
 def common_services_deployed(revert_snapshot, request, config,
                              hardware, underlay, salt_deployed,
@@ -67,15 +68,6 @@ def common_services_deployed(revert_snapshot, request, config,
     If you want to revert 'common_services_deployed' snapshot, please use mark:
     @pytest.mark.revert_snapshot("common_services_deployed")
     """
-    # If no snapshot was reverted, then try to revert the snapshot
-    # that belongs to the fixture.
-    # Note: keep fixtures in strict dependences from each other!
-    if not revert_snapshot:
-        if hardware.has_snapshot(ext.SNAPSHOT.common_services_deployed) and \
-                hardware.has_snapshot_config(
-                    ext.SNAPSHOT.common_services_deployed):
-            hardware.revert_snapshot(ext.SNAPSHOT.common_services_deployed)
-
     # Create Salt cluster
     if not config.common_services.common_services_installed:
         steps_path = config.common_services_deploy.common_services_steps_path

@@ -36,6 +36,7 @@ def salt_actions(config, underlay):
     return saltmanager.SaltManager(config, underlay)
 
 
+@pytest.mark.revert_snapshot(ext.SNAPSHOT.salt_deployed)
 @pytest.fixture(scope='function')
 def salt_deployed(revert_snapshot, request, config,
                   hardware, underlay, salt_actions):
@@ -63,14 +64,6 @@ def salt_deployed(revert_snapshot, request, config,
     If you want to revert 'salt_deployed' snapshot, please use mark:
     @pytest.mark.revert_snapshot("salt_deployed")
     """
-    # If no snapshot was reverted, then try to revert the snapshot
-    # that belongs to the fixture.
-    # Note: keep fixtures in strict dependences from each other!
-    if not revert_snapshot:
-        if hardware.has_snapshot(ext.SNAPSHOT.salt_deployed) and \
-                hardware.has_snapshot_config(ext.SNAPSHOT.salt_deployed):
-            hardware.revert_snapshot(ext.SNAPSHOT.salt_deployed)
-
     # Create Salt cluster
     if config.salt.salt_master_host == '0.0.0.0':
         with underlay.yaml_editor(

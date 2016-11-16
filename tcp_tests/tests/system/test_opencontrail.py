@@ -27,7 +27,6 @@ LOG = logger.logger
 class TestOpenContrail(object):
     """Test class for testing OpenContrail on a TCP lab"""
 
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
     # @pytest.mark.snapshot_needed
     # @pytest.mark.fail_snapshot
     def test_opencontrail(self, config, openstack_deployed,
