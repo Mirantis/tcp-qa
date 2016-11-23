@@ -9,3 +9,7 @@ docker-compose==1.7.1
 urllib3
 junit-xml
 jinja2
+jira
+testrail
+functools32
+
