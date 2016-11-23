@@ -11,3 +11,5 @@ junit-xml
 jinja2
 jira
 testrail
+functools32
+
