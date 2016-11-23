@@ -11,7 +11,7 @@ template:
     env_name: !os_env ENV_NAME, tcpcloud-mk22
 
     address_pools:
-      public-pool01:
+      admin-pool01:
         net: 172.16.10.0/24:24
         params:
           ip_reserved:
@@ -54,12 +54,12 @@ template:
             use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
 
         network_pools:
-          public: public-pool01
+          admin: admin-pool01
           private: private-pool01
 
         l2_network_devices:
-          public:
-            address_pool: public-pool01
+          admin:
+            address_pool: admin-pool01
             dhcp: true
 #            forward:
 #              mode: nat
@@ -109,7 +109,7 @@ template:
                   l2_network_device: private
                   interface_model: *interface_model
                 - label: ens4
-                  l2_network_device: public
+                  l2_network_device: admin
                   interface_model: *interface_model
               network_config:
                 ens3:
@@ -117,7 +117,7 @@ template:
                     - private
                 ens4:
                   networks:
-                    - public
+                    - admin
 
           - name: ctl01.mk22-lab-basic.local
             role: salt_minion
@@ -147,7 +147,7 @@ template:
                   l2_network_device: private
                   interface_model: *interface_model
                 - label: eth1
-                  l2_network_device: public
+                  l2_network_device: admin
                   interface_model: *interface_model
               network_config: &network_config
                 eth0:
@@ -155,7 +155,7 @@ template:
                     - private
                 eth1:
                   networks:
-                    - public
+                    - admin
 
           - name: ctl02.mk22-lab-basic.local
             role: salt_minion

@@ -30,7 +30,7 @@ UNDERLAY_NODE_ROLES = enum(
 
 NETWORK_TYPE = enum(
     'private',
-    'public'
+    'admin'
 )
 
 SNAPSHOT = enum(
