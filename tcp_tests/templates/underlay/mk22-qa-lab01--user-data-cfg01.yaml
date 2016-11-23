@@ -1,0 +1,98 @@
+| # All the data below will be stored as a string object
+  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGwjUlYn9UsmWmAGSuEA2sICad7WqxgsJR0HKcMbbxi0tn96h4Cq2iGYmzlJ48egLm5R5pxyWnFvL4b/2zb+kKTPCMwRc9nv7xEGosEFNQEoSDd+gYu2CO0dgS2bX/7m2DXmzvhqPjxWQUXXsb0OYAS1r9Es65FE8y4rLaegz8V35xfH45bTCA0W8VSKh264XtGz12hacqsttE/UvyjJTZe+/XV+xJy3WAWxe8J/MuW1VqbqNewTmpTE/LJU8i6pG4msU6+wH99UvsGAOKQOduynUHKWG3VZg5YCjpbbV/t/pfW/vHB3b3jiifQmNhulyiG/CNnSQ5BahtV/7qPsYt vagrant@cfg01
+
+  disable_root: false
+  chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+  bootcmd:
+   # Block access to SSH while node is preparing
+   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+  output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+  runcmd:
+   # Configure dhclient
+   - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
+   - sudo resolvconf -u
+
+   # Prepare network connection
+   - sudo ifup ens3
+   #- sudo route add default gw {gateway} {interface_name}
+   - sudo ifup ens4
+
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
+   ########################################################
+   # Node is ready, allow SSH access
+   - echo "Allow SSH access ..."
+   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ########################################################
+
+  write_files:
+   - path: /etc/network/interfaces.d/99-tcp-tests.cfg
+     content: |
+          auto ens3
+          iface ens3 inet dhcp
+          auto ens4
+          iface ens4 inet dhcp
+
+   - path: /root/.ssh/id_rsa
+     owner: root:root
+     permissions: '0600'
+     content: |
+         -----BEGIN RSA PRIVATE KEY-----
+         MIIEpAIBAAKCAQEAxsI1JWJ/VLJlpgBkrhANrCAmne1qsYLCUdBynDG28YtLZ/eo
+         eAqtohmJs5SePHoC5uUeacclpxby+G/9s2/pCkzwjMEXPZ7+8RBqLBBTUBKEg3fo
+         GLtgjtHYEtm1/+5tg15s74aj48VkFF17G9DmAEta/RLOuRRPMuKy2noM/Fd+cXx+
+         OW0wgNFvFUioduuF7Rs9doWnKrLbRP1L8oyU2Xvv11fsSct1gFsXvCfzLltVam6j
+         XsE5qUxPyyVPIuqRuJrFOvsB/fVL7BgDikDnbsp1Bylht1WYOWAo6W21f7f6X1v7
+         xwd2944on0JjYbpcohvwjZ0kOQWobVf+6j7GLQIDAQABAoIBAF0tAAMlmLGY7CQU
+         /R3IctBlRhU1DpZmyTfXc1MbzzqO5Wu44yZbQyjBthcUrdWGEUQy1r4Z2OHq1T54
+         KcPry6DDjuU9Q+rkVXmnC07a3GOmOq7zEEA/3zU01ImJvFNdb8NtCb6ELOKDT7Zo
+         WGUi2h/7M41+OqDzD2m4csYO/3Vvr12sMhn9BfwU4OPpL44A4PJiEryEAw9o5/j/
+         73eyPvgf6tkC4l0mMtfHB9tg/F++iH8fiEr1SMvHGIc9gZNmFYMrs2XfLkAejPfH
+         XrOyw6eqd+kluqw51gHhdeQYwBx6mfOkbhPHWU79FzpH5M1ikdfImZmPCxVf3Ykj
+         nxLoK9UCgYEA4c9agPb/OFyN00nnUMBxzQt1pErpOf/7QhnvNZThomzSV7PyefxF
+         H6G/VlS3gCcrWBCh7mqOSxGcNQwgudVqzUm7QXruQeg4nWcCGSxg7lGYSEf0MyWL
+         5wrd+f9MoV/VV8udIPENjp96o5kwQEVRfsTBNwmk54kup2+br5q8re8CgYEA4VT8
+         UeIN+plP6FjZYITI+SO/ou5goKIhfBrqa5gOXXPc2y6sIu9wBWCr+T7FAF/2gGhS
+         rpVx76zcmx05nwkxIlJh58+G3MVyUDFoWnrtL38vdkBSuOGgNfzcBsFpQvFs8WaW
+         otbuTtkPcXbVdYRr32/C620MxXhUO+svo3CLaaMCgYEA1rjlF8NHl+Gy31rkQg5t
+         aIxgFpVBR+zZkNa2d94V3Ozb65fqmALB/D1Dg6VVROB6P+i5AsyCeHHLd0oMCIof
+         YAyfqrlpvHRE+bAM98ESfyxJwVnipYwrh8z2nZYd2UoWxcCRrtRpjtipts2ha0w/
+         HWudS2e5To5NNdxUT9y1VDMCgYEAxkQiE+ZkyGiXv+hVtLCBqX4EA9fdm9msvudr
+         9qn/kcj9vrntanvlxEWQbCoH61GEsu2YOtdyPiKKpc1sQvwyiHGWhgK7NoxhDiC7
+         IknhYxZ064ajgtu8PWS1MRiDhwypACt1Rej6HNSu2vZl0hZnWF2dU8tLHoHHFEXX
+         T+caNCMCgYBZpD6XBiiEXf0ikXYnXKOmbsyVG80V+yqfLo85qb2RW9TaviOSP43g
+         nB22ReMSHq2cOrs6VTTgfhxefBwzdDFbfKMf6ZU82jCNlpetAZOrhdMHUvcsjSQk
+         XKI6Ldfq6TU3xKujRHfGP+oQ6GLwVCL/kjGxOuSRLFGfRiiqYI3nww==
+         -----END RSA PRIVATE KEY-----
+
+   - path: /root/.ssh/config
+     owner: root:root
+     permissions: '0600'
+     content: |
+          Host *
+            ServerAliveInterval 300
+            ServerAliveCountMax 10
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null

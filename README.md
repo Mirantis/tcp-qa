@@ -33,20 +33,38 @@ export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
 
 Optional:
 ```
+export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
 export ENV_NAME=tcpcloud-mk22  # You can set any env name
-export LAB_CONFIG_NAME=mk22-lab-basic  # mk22-lab-basic or mk22-lab-advanced
 ```
 
-Run deploy test
----------------
+Run deploy test for mk22-lab-basic
+----------------------------------
 ```
-export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
+export LAB_CONFIG_NAME=mk22-lab-basic  # Name of set of templates
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
 ```
 , or as an alternative there is another test that use deploy scripts from models repository written on bash [2]:
 ```
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_with_scripts
+```
+
+Run deploy test for mk22-lab-avdanced
+-------------------------------------
+```
+export LAB_CONFIG_NAME=mk22-lab-advanced  # Name of set of templates
+
+LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
+```
+
+Run deploy test for mk22-qa-lab01
+---------------------------------
+Note: This lab is not finished yet. TBD: configure vsrx node
+```
+export LAB_CONFIG_NAME=mk22-qa-lab01  # Name of set of templates
+export VSRX_PATH=./vSRX.img           # /path/to/vSRX.img, or to ./xenial-server-cloudimg-amd64.qcow2 as a temporary workaround
+
+LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
 ```
 
 

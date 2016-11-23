@@ -1,0 +1,451 @@
+---
+aliases:
+  dynamic_addresses_pool:
+    - &pool_default !os_env POOL_DEFAULT, 172.16.10.0/24:24
+
+  default_interface_model:
+    - &interface_model !os_env INTERFACE_MODEL, virtio
+
+template:
+  devops_settings:
+    env_name: !os_env ENV_NAME, tcpcloud-mk22
+
+    address_pools:
+      admin-pool01:
+        net: 172.16.10.0/24:24
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_cfg01.mk22-qa-lab01.local: +100
+            default_ctl01.mk22-qa-lab01.local: +101
+            default_ctl02.mk22-qa-lab01.local: +102
+            default_ctl03.mk22-qa-lab01.local: +103
+            default_prx01.mk22-qa-lab01.local: +121
+            default_cmp01.mk22-qa-lab01.local: +105
+            default_cmp02.mk22-qa-lab01.local: +106
+            default_mon01.mk22-qa-lab01.local: +107
+            default_gtw01.mk22-qa-lab01.local: +131
+            default_dbs01.mk22-qa-lab01.local: +181
+            default_dbs02.mk22-qa-lab01.local: +182
+            default_dbs03.mk22-qa-lab01.local: +183
+            default_vsrx01.mk22-qa-lab01.local: +250
+          ip_ranges:
+            dhcp: [+100, -2]
+
+      private-pool01:
+        net: 192.168.10.0/24:24
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_cfg01.mk22-qa-lab01.local: +100
+            default_ctl01.mk22-qa-lab01.local: +101
+            default_ctl02.mk22-qa-lab01.local: +102
+            default_ctl03.mk22-qa-lab01.local: +103
+            default_prx01.mk22-qa-lab01.local: +121
+            default_cmp01.mk22-qa-lab01.local: +105
+            default_cmp02.mk22-qa-lab01.local: +106
+            default_gtw01.mk22-qa-lab01.local: +131
+            default_dbs01.mk22-qa-lab01.local: +181
+            default_dbs02.mk22-qa-lab01.local: +182
+            default_dbs03.mk22-qa-lab01.local: +183
+            default_vsrx01.mk22-qa-lab01.local: +250
+          ip_ranges:
+            dhcp: [+100, -2]
+
+      public-pool01:
+        net: 10.100.1.0/24:24
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_vsrx01.mk22-qa-lab01.local: +250
+
+    groups:
+      - name: default
+        driver:
+          name: devops.driver.libvirt
+          params:
+            connection_string: !os_env CONNECTION_STRING, qemu:///system
+            storage_pool_name: !os_env STORAGE_POOL_NAME, default
+            stp: False
+            hpet: False
+            enable_acpi: true
+            use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
+
+        network_pools:
+          admin: admin-pool01
+          private: private-pool01
+
+        l2_network_devices:
+          admin:
+            address_pool: admin-pool01
+            dhcp: true
+#            forward:
+#              mode: nat
+
+          private:
+            address_pool: private-pool01
+            dhcp: true
+            forward:
+              mode: nat
+
+          public:
+            address_pool: public-pool01
+            forward:
+              mode: nat
+
+        group_volumes:
+         - name: cloudimage1404    # This name is used for 'backing_store' option for node volumes.
+           source_image: !os_env IMAGE_PATH1404  # https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img or
+                                             # http://apt.tcpcloud.eu/images/ubuntu-14-04-x64-201608231134.qcow2
+           format: qcow2
+         - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
+           source_image: !os_env IMAGE_PATH1604  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img or
+                                             # http://apt.tcpcloud.eu/images/ubuntu-16-04-x64-201608231004.qcow2
+           format: qcow2
+
+         - name: vsrx_image    # This name is used for 'backing_store' option for node volumes.
+           source_image: !os_env VSRX_PATH
+           format: qcow2
+
+        nodes:
+          - name: cfg01.mk22-qa-lab01.local
+            role: salt_master
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data-cfg01.yaml
+
+              interfaces:
+                - label: ens3
+                  l2_network_device: private
+                  interface_model: *interface_model
+                - label: ens4
+                  l2_network_device: admin
+                  interface_model: *interface_model
+              network_config:
+                ens3:
+                  networks:
+                    - private
+                ens4:
+                  networks:
+                    - admin
+
+          - name: ctl01.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 15000
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: &interfaces
+                - label: eth0
+                  l2_network_device: private
+                  interface_model: *interface_model
+                - label: eth1
+                  l2_network_device: admin
+                  interface_model: *interface_model
+              network_config: &network_config
+                eth0:
+                  networks:
+                    - private
+                eth1:
+                  networks:
+                    - admin
+
+          - name: ctl02.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 15000
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: ctl03.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 15000
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: cmp01.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: cmp02.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: prx01.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 1
+              memory: !os_env SLAVE_NODE_MEMORY, 1024
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: dbs01.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: dbs02.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: dbs03.mk22-qa-lab01.local
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: eth0
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1404
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+
+#          - name: gtw01.mk22-qa-lab01.local
+#            role: salt_minion
+#            params:
+#              vcpu: !os_env SLAVE_NODE_CPU, 1
+#              memory: !os_env SLAVE_NODE_MEMORY, 2048
+#              boot:
+#                - hd
+#              cloud_init_volume_name: iso
+#              cloud_init_iface_up: eth0
+#              volumes:
+#                - name: system
+#                  capacity: !os_env NODE_VOLUME_SIZE, 150
+#                  backing_store: cloudimage1404
+#                  format: qcow2
+#                - name: iso  # Volume with name 'iso' will be used
+#                             # for store image with cloud-init metadata.
+#                  capacity: 1
+#                  format: raw
+#                  device: cdrom
+#                  bus: ide
+#                  cloudinit_meta_data: !include mk22-qa-lab01--meta-data.yaml
+#                  cloudinit_user_data: !include mk22-qa-lab01--user-data1404.yaml
+#              interfaces: *interfaces
+#              network_config: *network_config
+
+          - name: vsrx01.mk22-qa-lab01.local
+            role: vsrx
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: vsrx_image
+                  format: qcow2
+              interfaces:
+                - label: eth0
+                  l2_network_device: public
+                  interface_model: virtio
+                  mac_address: 52:54:00:4e:b4:36
+                - label: eth1
+                  l2_network_device: private
+                  interface_model: virtio
+                  mac_address: 52:54:00:e1:44:9d
+              network_config:
+                eth0:
+                  networks:
+                    - public
+                eth1:
+                  networks:
+                    - private

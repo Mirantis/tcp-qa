@@ -153,7 +153,7 @@ class EnvironmentManager(object):
                 'node_name': d_node.name,
                 'roles': [d_node.role],
                 'address_pool': self._get_network_pool(
-                    ext.NETWORK_TYPE.public).address_pool.name,
+                    ext.NETWORK_TYPE.admin).address_pool.name,
                 'host': self.node_ip(d_node),
                 'login': settings.SSH_NODE_CREDENTIALS['login'],
                 'password': settings.SSH_NODE_CREDENTIALS['password'],
@@ -261,7 +261,7 @@ class EnvironmentManager(object):
         LOG.info('Environment "{0}" started'.format(self._env.name))
         for node in self._env.get_nodes(role__in=ext.UNDERLAY_NODE_ROLES):
             LOG.info("Waiting for SSH on node '{}...'".format(node.name))
-            timeout = 360
+            timeout = 480
             helpers.wait(
                 lambda: helpers.tcp_ping(self.node_ip(node), 22),
                 timeout=timeout,
@@ -341,12 +341,12 @@ class EnvironmentManager(object):
         """
         LOG.debug('Trying to determine {0} ip.'.format(node.name))
         return node.get_ip_address_by_network_name(
-            ext.NETWORK_TYPE.public
+            ext.NETWORK_TYPE.admin
         )
 
     @property
     def nameserver(self):
-        return self._env.router(ext.NETWORK_TYPE.public)
+        return self._env.router(ext.NETWORK_TYPE.admin)
 
     def set_dns_config(self):
         # Set local nameserver to use by default
