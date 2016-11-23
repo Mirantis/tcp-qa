@@ -23,7 +23,6 @@ template:
             default_ctl03.mk22-lab-basic.local: +103
             default_prx01.mk22-lab-basic.local: +121
             default_cmp01.mk22-lab-basic.local: +105
-            default_mon01.mk22-lab-basic.local: +107
           ip_ranges:
             dhcp: [+100, -2]
 
@@ -39,7 +38,6 @@ template:
             default_ctl03.mk22-lab-basic.local: +103
             default_prx01.mk22-lab-basic.local: +121
             default_cmp01.mk22-lab-basic.local: +105
-            default_mon01.mk22-lab-basic.local: +107
           ip_ranges:
             dhcp: [+100, -2]
 
@@ -236,30 +234,3 @@ template:
 
               interfaces: *interfaces
               network_config: *network_config
-
-          - name: mon01.mk22-lab-basic.local
-            role: salt_minion
-            params:
-              vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
-              boot:
-                - hd
-              cloud_init_volume_name: iso
-              cloud_init_iface_up: eth0
-              volumes:
-                - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
-                  format: qcow2
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-                  capacity: 1
-                  format: raw
-                  device: cdrom
-                  bus: ide
-                  cloudinit_meta_data: !include mk22-lab-basic--meta-data.yaml
-                  cloudinit_user_data: !include mk22-lab-basic--user-data1604.yaml
-
-              interfaces: *interfaces
-              network_config: *network_config
-
