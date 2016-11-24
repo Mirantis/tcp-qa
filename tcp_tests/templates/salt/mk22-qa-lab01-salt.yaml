@@ -124,7 +124,7 @@
   retry: {count: 3, delay: 10}
   skip_fail: false
 
-- description: Workaround for VMs: set low 'max_heap_size' for Cassandra
+- description: Workaround set low max_heap_size for Cassandra
   cmd: |
     cat << 'EOF' >> /srv/salt/reclass/classes/system/linux/system/single.yml
     # opencontrail lowmem
