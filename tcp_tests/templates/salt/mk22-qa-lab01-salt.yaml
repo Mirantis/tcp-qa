@@ -124,6 +124,19 @@
   retry: {count: 3, delay: 10}
   skip_fail: false
 
+- description: Workaround set low max_heap_size for Cassandra
+  cmd: |
+    cat << 'EOF' >> /srv/salt/reclass/classes/system/linux/system/single.yml
+    # opencontrail lowmem
+      opencontrail:
+        database:
+          max_heap_size: "1G"
+          heap_newsize: "200M"
+    EOF
+  node_name: cfg01.mk22-qa-lab01.local
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 
 # Prepare salt services and nodes settings
 - description: Run 'linux' formula on cfg01
