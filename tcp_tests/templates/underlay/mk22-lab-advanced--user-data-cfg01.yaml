@@ -48,7 +48,7 @@
    ########################################################
 
   write_files:
-   - path: /etc/network/interfaces.d/99-tcp-tests.cfg
+   - path: /etc/network/interfaces
      content: |
           auto ens3
           iface ens3 inet dhcp
