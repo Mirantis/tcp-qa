@@ -37,26 +37,6 @@ export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
 export ENV_NAME=tcpcloud-mk22  # You can set any env name
 ```
 
-Run deploy test for mk22-lab-basic
-----------------------------------
-```
-export LAB_CONFIG_NAME=mk22-lab-basic  # Name of set of templates
-
-LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
-```
-, or as an alternative there is another test that use deploy scripts from models repository written on bash [2]:
-```
-LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_with_scripts
-```
-
-Run deploy test for mk22-lab-avdanced
--------------------------------------
-```
-export LAB_CONFIG_NAME=mk22-lab-advanced  # Name of set of templates
-
-LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
-```
-
 Run deploy test for mk22-qa-lab01
 ---------------------------------
 Note: This lab is not finished yet. TBD: configure vsrx node
@@ -66,6 +46,12 @@ export VSRX_PATH=./vSRX.img           # /path/to/vSRX.img, or to ./xenial-server
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
 ```
+, or as an alternative there is another test that use deploy scripts from models repository written on bash [2]:
+```
+LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_with_scripts
+```
+
+Labs with names mk22-lab-basic and mk22-lab-avdanced are deprecated and not recommended to use.
 
 
 Create and start the env for manual tests

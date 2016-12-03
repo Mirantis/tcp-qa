@@ -1,4 +1,5 @@
 # Install salt to the config node
+
 - description: Configure tcpcloud repository on the cfg01 node
   cmd: echo 'deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ xenial main security tcp tcp-salt' > /etc/apt/sources.list;
     echo 'deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ trusty tcp-salt' >> /etc/apt/sources.list;
@@ -72,7 +73,9 @@
 
 - description: Clone reclass models and perform a workaround for https://mirantis.jira.com/browse/PROD-8078
   cmd: |
-    git clone https://github.com/Mirantis/mk-lab-salt-model.git /srv/salt/reclass -b dash;
+    git clone https://github.com/Mirantis/mk-lab-salt-model.git /srv/salt/reclass;
+    cd /srv/salt/reclass;
+    git checkout master;
     cat << 'EOF' >> /srv/salt/reclass/nodes/control/cfg01.mk22-qa-lab01.local.yml
     # local storage
       reclass:
@@ -126,7 +129,7 @@
 
 - description: Workaround set low max_heap_size for Cassandra
   cmd: |
-    cat << 'EOF' >> /srv/salt/reclass/classes/system/linux/system/single.yml
+    cat << 'EOF' >> /srv/salt/reclass/classes/system/opencontrail/control/cluster.yml
     # opencontrail lowmem
       opencontrail:
         database:
@@ -137,32 +140,34 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-
 # Prepare salt services and nodes settings
 - description: Run 'linux' formula on cfg01
-  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls
-    linux
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls linux
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Run 'openssh' formula on cfg01
-  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls
-    openssh;sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
-    && service ssh restart
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls openssh;
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh restart"
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962'
-  cmd: echo '    StrictHostKeyChecking no' >> /root/.ssh/config
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    '*' cmd.run "echo '    StrictHostKeyChecking no' >> /root/.ssh/config"
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 1, delay: 1}
   skip_fail: false
 
 - description: Run 'salt' formula on cfg01
-  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False  state.sls
-    salt
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls salt.master
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 5}
   skip_fail: true
@@ -174,8 +179,8 @@
   skip_fail: false
 
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
-  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls
-    reclass.storage
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls reclass
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -186,15 +191,34 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
+  node_name: cfg01.mk22-qa-lab01.local
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+
 # Bootstrap all nodes
-- description: Configure linux on controllers
+- description: Workaround for missing kernel modules
+  cmd: salt '*' cmd.run "for module in nf_conntrack_ipv4 ip_tables
+    x_tables nf_defrag_ipv4 nf_nat_ipv4 nf_nat
+    iptable_filter iptable_mangle iptable_nat;
+    do
+    modprobe \$module;
+    echo \$module >> /etc/modules;
+    done"
+  node_name: cfg01.mk22-qa-lab01.local
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Configure linux on all nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
     linux
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 5, delay: 5}
   skip_fail: false
 
-- description: Configure openssh on controllers
+- description: Configure openssh on all nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
     cfg*' state.sls openssh;salt --hard-crash --state-output=mixed --state-verbose=False
     -C '* and not cfg*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
@@ -224,13 +248,6 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
-#- description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-8063'
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run 'dhclient
-#    -r;dhclient'
-#  node_name: cfg01.mk22-qa-lab01.local
-#  retry: {count: 1, delay: 1}
-#  skip_fail: false
-
 - description: Configure salt.minion on controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
     salt.minion
@@ -244,3 +261,4 @@
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 5, delay: 10}
   skip_fail: false
+
