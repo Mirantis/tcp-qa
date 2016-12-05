@@ -121,7 +121,7 @@ rally verify showconfig"""
             settings.LOGS_DIR, file_prefix, res_file_name)
         with self._underlay.remote(host=self._admin_host) as remote:
             remote.download(
-                '/root/rally/{1}'.format(res_file_name),
+                '/root/rally/{0}'.format(res_file_name),
                 file_dst)
             res = json.load(remote.open('/root/rally/result.json'))
         if not store:
