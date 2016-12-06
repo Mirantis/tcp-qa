@@ -46,6 +46,18 @@ class TestTCPInstaller(object):
             3. Setup compute nodes
 
         """
+        LOG.info("*************** DONE **************")
+
+    def test_tcp_install_run_rally(self, underlay, openstack_deployed,
+                                 show_step, rally):
+        """Test for deploying an tcp environment and check it
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+
+        """
         # prepare rally
         rally.prepare()
         rally.pull_image()
