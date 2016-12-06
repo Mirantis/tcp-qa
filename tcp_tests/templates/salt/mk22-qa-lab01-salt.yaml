@@ -1,11 +1,13 @@
 # Install salt to the config node
 
 - description: Configure tcpcloud repository on the cfg01 node
-  cmd: echo 'deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ xenial main security tcp tcp-salt' > /etc/apt/sources.list;
+  cmd: echo 'deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ xenial main security extra tcp tcp-salt' > /etc/apt/sources.list;
     echo 'deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ trusty tcp-salt' >> /etc/apt/sources.list;
     wget -O - http://apt.tcpcloud.eu/public.gpg | apt-key add -;
-    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest xenial main" > /etc/apt/sources.list.d/saltstack.list;
-    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add -;
+    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+    #echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest xenial main" > /etc/apt/sources.list.d/saltstack.list;
+    #wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add -;
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -32,7 +34,26 @@
   skip_fail: false
 
 - description: Install salt formulas, master and minion on cfg01
-  cmd: apt-get install -y salt-formula-* salt-master salt-minion reclass
+  # cmd: apt-get install -y salt-formula-* salt-master salt-minion reclass
+  cmd: apt-get install -y
+    salt-master
+    salt-minion
+    reclass
+    salt-formula-linux
+    salt-formula-reclass
+    salt-formula-salt
+    salt-formula-openssh
+    salt-formula-ntp
+    salt-formula-git
+    salt-formula-nginx
+    salt-formula-collectd
+    salt-formula-sensu
+    salt-formula-heka
+    salt-formula-sphinx
+    salt-formula-keystone
+    salt-formula-mysql
+    salt-formula-grafana
+    salt-formula-haproxy
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 10}
   skip_fail: false
@@ -117,16 +138,6 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Restarting salt services with workarounds
-  cmd: service salt-master restart;
-    sleep 60;
-    rm -f /etc/salt/pki/minion/minion_master.pub;
-    service salt-minion restart;
-    reclass -n cfg01.mk22-qa-lab01.local;
-  node_name: cfg01.mk22-qa-lab01.local
-  retry: {count: 3, delay: 10}
-  skip_fail: false
-
 - description: Workaround set low max_heap_size for Cassandra
   cmd: |
     cat << 'EOF' >> /srv/salt/reclass/classes/system/opencontrail/control/cluster.yml
@@ -139,6 +150,20 @@
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 1, delay: 1}
   skip_fail: false
+
+- description: Restarting salt serviceswith workarounds
+  cmd: service salt-master restart;
+    sleep 30;
+    service salt-master restart;
+    sleep 30;
+    rm -f /etc/salt/pki/minion/minion_master.pub;
+    service salt-minion restart;
+    reclass -n cfg01.mk22-qa-lab01.local;
+    sleep 10;
+  node_name: cfg01.mk22-qa-lab01.local
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
 
 # Prepare salt services and nodes settings
 - description: Run 'linux' formula on cfg01
@@ -153,7 +178,7 @@
     -C 'I@salt:master' state.sls openssh;
     salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
-    yes/' /etc/ssh/sshd_config && service ssh restart"
+    yes/' /etc/ssh/sshd_config && service ssh restart";
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -166,7 +191,7 @@
   skip_fail: false
 
 - description: Run 'salt' formula on cfg01
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls salt.master
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 5}
@@ -199,17 +224,6 @@
 
 
 # Bootstrap all nodes
-- description: Workaround for missing kernel modules
-  cmd: salt '*' cmd.run "for module in nf_conntrack_ipv4 ip_tables
-    x_tables nf_defrag_ipv4 nf_nat_ipv4 nf_nat
-    iptable_filter iptable_mangle iptable_nat;
-    do
-    modprobe \$module;
-    echo \$module >> /etc/modules;
-    done"
-  node_name: cfg01.mk22-qa-lab01.local
-  retry: {count: 1, delay: 1}
-  skip_fail: false
 
 - description: Configure linux on all nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
@@ -227,13 +241,6 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
-- description: '*Workaround* for the bug https://mirantis.jira.com/browse/PROD-8025'
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run 'apt-get
-    update && apt-get -y upgrade'
-  node_name: cfg01.mk22-qa-lab01.local
-  retry: {count: 3, delay: 5}
-  skip_fail: true
-
 - description: '*Workaround* for the bug https://mirantis.jira.com/browse/PROD-8021'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run 'apt-get
     -y install linux-image-extra-$(uname -r)'
@@ -241,16 +248,15 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
-- description: '*Workaround* for the bug https://mirantis.jira.com/browse/PROD-8025'
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run 'apt-get
-    -y install python-requests'
+- description: Configure salt.minion on controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
+    salt.minion
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 5}
   skip_fail: false
 
-- description: Configure salt.minion on controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
-    salt.minion
+- description: Check salt minion versions on slaves
+  cmd: salt '*' test.version
   node_name: cfg01.mk22-qa-lab01.local
   retry: {count: 3, delay: 5}
   skip_fail: false
