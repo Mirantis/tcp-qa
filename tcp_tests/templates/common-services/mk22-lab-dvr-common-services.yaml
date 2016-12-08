@@ -1,5 +1,5 @@
-{% from 'mk22-lab-dvr-defaults.jinja' import DOMAIN_NAME %}
-{% from 'mk22-lab-dvr-defaults.jinja' import HOSTNAME_CFG01 %}
+{% from 'mk22-lab-dvr-defaults.jinja' import DOMAIN_NAME with context %}
+{% from 'mk22-lab-dvr-defaults.jinja' import HOSTNAME_CFG01 with context %}
 
 # Install support services
 

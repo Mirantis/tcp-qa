@@ -1,5 +1,5 @@
-{% from 'mk22-lab-dvr-defaults.jinja' import DOMAIN_NAME %}
-{% from 'mk22-lab-dvr-defaults.jinja' import HOSTNAME_CFG01 %}
+{% from 'mk22-lab-dvr-defaults.jinja' import DOMAIN_NAME with context %}
+{% from 'mk22-lab-dvr-defaults.jinja' import HOSTNAME_CFG01 with context %}
 
 # Install salt to the config node
 
@@ -252,8 +252,7 @@
   skip_fail: false
 
 - description: Configure salt.minion on controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
-    salt.minion
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -264,9 +263,14 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
+- description: Check salt minion versions on slaves
+  cmd: salt '*' state.show_top
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
 - description: Configure ntp on controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
-    ntp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls ntp
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 5, delay: 10}
   skip_fail: false
