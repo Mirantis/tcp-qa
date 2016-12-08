@@ -14,16 +14,19 @@
 
 # TODO(slebedev): implement unit tests
 
+import collections
 import copy
-import json
+import os
 import re
 
-from devops.helpers import templates
+#from devops.helpers import templates
+from devops import error
+import json
 import yaml
 
 from tcp_tests.helpers import exceptions
+from tcp_tests.helpers import utils
 from tcp_tests import logger
-
 
 LOG = logger.logger
 
@@ -312,7 +315,67 @@ class EnvironmentConfig(object):
                     filename
                 )
             )
-            self.config = templates.yaml_template_load(filename)
+
+            #self.config = templates.yaml_template_load(filename)
+            self.config = yaml_template_load(filename)
         else:
             LOG.error("Template filename is not set, loading config " +
                       "from template aborted.")
+
+
+def yaml_template_load(config_file):
+    """Temporary moved from fuel_devops to use jinja2"""
+    dirname = os.path.dirname(config_file)
+
+    class TemplateLoader(yaml.Loader):
+        pass
+
+    def yaml_include(loader, node):
+        file_name = os.path.join(dirname, node.value)
+        if not os.path.isfile(file_name):
+            raise error.DevopsError(
+                "Cannot load the environment template {0} : include file {1} "
+                "doesn't exist.".format(dirname, file_name))
+        inputfile = utils.render_template(file_name)
+        return yaml.load(inputfile, TemplateLoader)
+
+    def yaml_get_env_variable(loader, node):
+        if not node.value.strip():
+            raise error.DevopsError(
+                "Environment variable is required after {tag} in "
+                "{filename}".format(tag=node.tag, filename=loader.name))
+        node_value = node.value.split(',', 1)
+        # Get the name of environment variable
+        env_variable = node_value[0].strip()
+
+        # Get the default value for environment variable if it exists in config
+        if len(node_value) > 1:
+            default_val = node_value[1].strip()
+        else:
+            default_val = None
+
+        value = os.environ.get(env_variable, default_val)
+        if value is None:
+            raise error.DevopsError(
+                "Environment variable {var} is not set from shell"
+                " environment! No default value provided in file "
+                "{filename}".format(var=env_variable, filename=loader.name))
+
+        return yaml.load(value, TemplateLoader)
+
+    def construct_mapping(loader, node):
+        loader.flatten_mapping(node)
+        return collections.OrderedDict(loader.construct_pairs(node))
+
+    if not os.path.isfile(config_file):
+        raise error.DevopsError(
+            "Cannot load the environment template {0} : file "
+            "doesn't exist.".format(config_file))
+
+    TemplateLoader.add_constructor("!include", yaml_include)
+    TemplateLoader.add_constructor("!os_env", yaml_get_env_variable)
+    TemplateLoader.add_constructor(
+        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping)
+
+    f = utils.render_template(config_file)
+    return yaml.load(f, TemplateLoader)

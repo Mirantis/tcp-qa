@@ -243,9 +243,10 @@ class EnvironmentManager(object):
             )
         except db.IntegrityError:
             LOG.error(
-                'Seems like environment {0} already exists.'.format(env_name)
+                'Seems like environment {0} already exists or contain errors'
+                ' in template.'.format(env_name)
             )
-            raise exceptions.EnvironmentAlreadyExists(env_name)
+            raise
         self._env.define()
         LOG.info(
             'Environment "{0}" created'.format(env_name)

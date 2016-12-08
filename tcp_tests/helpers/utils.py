@@ -19,6 +19,7 @@ import tempfile
 import time
 import traceback
 
+import jinja2
 import paramiko
 import yaml
 from devops.helpers import helpers
@@ -315,6 +316,49 @@ class YamlEditor(object):
         if self.content == self.__original_content:
             return
         self.write_content()
+
+
+def render_template(file_path):
+    required_env_vars = set()
+    optional_env_vars = dict()
+    def os_env(var_name, default=None):
+        var = os.environ.get(var_name, default)
+
+        if var is None:
+            raise Exception("Environment variable '{0}' is undefined!".format(var_name))
+
+        if default is None:
+            required_env_vars.add(var_name)
+        else:
+            optional_env_vars[var_name] = default
+
+        return var
+
+    options = {
+        'os_env': os_env,
+    }
+    LOG.info("Reading template {0}".format(file_path))
+
+    path, filename = os.path.split(file_path)
+    environment = jinja2.Environment(
+        loader=jinja2.FileSystemLoader([path, os.path.dirname(path)], followlinks=True))
+    template = environment.get_template(filename).render(options)
+
+    if required_env_vars:
+        LOG.info("Required environment variables:")
+        for var in required_env_vars:
+            LOG.info("    {0}".format(var))
+    if optional_env_vars:
+        LOG.info("Optional environment variables:")
+        for var, default in sorted(optional_env_vars.iteritems()):
+            LOG.info("    {0} , default value = {1}".format(var, default))
+    return template
+
+
+def read_template(file_path):
+    """Read yaml as a jinja template"""
+    template = render_template(file_path)
+    return yaml.load(template)
 
 
 def extract_name_from_mark(mark):
