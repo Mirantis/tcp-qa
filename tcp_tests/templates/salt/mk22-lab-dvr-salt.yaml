@@ -228,6 +228,19 @@
 
 # Bootstrap all nodes
 
+- description: Workaround for missing kernel modules
+  cmd: salt '*' cmd.run "for module in nf_conntrack_ipv4 ip_tables
+    x_tables nf_defrag_ipv4 nf_nat_ipv4 nf_nat
+    iptable_filter iptable_mangle iptable_nat;
+    do
+    modprobe \$module;
+    echo \$module >> /etc/modules;
+    done"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+
 - description: Configure linux on all nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
     linux
