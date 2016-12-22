@@ -46,6 +46,16 @@ export LAB_CONFIG_NAME=mk22-lab-dvr  # Name of set of templates
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
 
 
+Run deploy test for mk22-lab-ovs
+--------------------------------
+Note: This lab is not finished yet. TBD: configure vsrx node
+```
+export ENV_NAME=tcpcloud-mk22-ovs  # You can set any env name
+export LAB_CONFIG_NAME=mk22-lab-ovs  # Name of set of templates
+
+LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
+
+
 Run deploy test for mk22-qa-lab01
 ---------------------------------
 Note: This lab is not finished yet. TBD: configure vsrx node
