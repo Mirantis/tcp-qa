@@ -133,6 +133,9 @@ template:
                   capacity: !os_env NODE_VOLUME_SIZE, 150
                   backing_store: cloudimage1404
                   format: qcow2
+                - name: cinder
+                  capacity: 50
+                  format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
                   capacity: 1
@@ -171,6 +174,9 @@ template:
                   capacity: !os_env NODE_VOLUME_SIZE, 150
                   backing_store: cloudimage1404
                   format: qcow2
+                - name: cinder
+                  capacity: 50
+                  format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
                   capacity: 1
@@ -196,6 +202,9 @@ template:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
                   backing_store: cloudimage1404
+                  format: qcow2
+                - name: cinder
+                  capacity: 50
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
