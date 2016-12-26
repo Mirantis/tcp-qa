@@ -52,13 +52,6 @@
   skip_fail: false
 
 
-- description: '*Workaround* Update salt-formula-galera on config node to the latest
-    version'
-  cmd: apt-get -y --force-yes install salt-formula-galera
-  node_name: cfg01.mk22-qa-lab01.local
-  retry: {count: 3, delay: 5}
-  skip_fail: false
-
 - description: Install Galera on first server
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@galera:master' state.sls galera
