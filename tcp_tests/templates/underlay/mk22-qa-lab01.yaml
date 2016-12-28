@@ -439,7 +439,7 @@ template:
                   interface_model: virtio
                   mac_address: 52:54:00:4e:b4:36
                 - label: eth1
-                  l2_network_device: private
+                  l2_network_device: admin
                   interface_model: virtio
                   mac_address: 52:54:00:e1:44:9d
               network_config:
@@ -448,4 +448,4 @@ template:
                     - public
                 eth1:
                   networks:
-                    - private
+                    - admin
