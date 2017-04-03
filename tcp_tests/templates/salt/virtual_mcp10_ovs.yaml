@@ -1,0 +1,264 @@
+{% from 'virtual_mcp10_ovs.jinja' import HOSTNAME_CFG01 with context %}
+
+# Install salt to the config node
+
+
+- description: Configure tcpcloud repository on the cfg01 node
+  cmd: echo 'deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ xenial main security extra tcp tcp-salt' > /etc/apt/sources.list;
+    echo 'deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ trusty tcp-salt' >> /etc/apt/sources.list;
+    wget -O - http://apt.tcpcloud.eu/public.gpg | apt-key add -;
+    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+    #echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest xenial main" > /etc/apt/sources.list.d/saltstack.list;
+    #wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add -;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+#- description: Configure tcpcloud and saltstack repositories on the rest of nodes
+#  cmd: echo 'deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ trusty main security extra tcp tcp-salt' > /etc/apt/sources.list;
+#    wget -O - http://apt.tcpcloud.eu/public.gpg | apt-key add - ;
+#    echo 'deb http://repo.saltstack.com/apt/ubuntu/14.04/amd64/latest trusty main' > /etc/apt/sources.list.d/saltstack.list;
+#    wget -O - https://repo.saltstack.com/apt/ubuntu/14.04/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add -
+#  node_name: ***
+#  retry: {count: 1, delay: 1}
+#  skip_fail: false
+
+- description: Update packages on cfg01
+  cmd: apt-get clean; apt-get update && apt-get -y upgrade
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: Install common packages on cfg01
+  cmd: apt-get install -y python-pip wget curl tmux byobu iputils-ping traceroute htop tree
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: Install salt formulas, master and minion on cfg01
+  # cmd: apt-get install -y salt-formula-* salt-master salt-minion reclass
+  cmd: apt-get install -y
+    salt-master
+    salt-minion
+    reclass
+    salt-formula-linux
+    salt-formula-reclass
+    salt-formula-salt
+    salt-formula-openssh
+    salt-formula-ntp
+    salt-formula-git
+    salt-formula-nginx
+    salt-formula-collectd
+    salt-formula-sensu
+    salt-formula-heka
+    salt-formula-sphinx
+    salt-formula-keystone
+    salt-formula-mysql
+    salt-formula-grafana
+    salt-formula-haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: Configure salt-master on cfg01
+  cmd: |
+    cat << 'EOF' >> /etc/salt/master.d/master.conf
+    file_roots:
+      base:
+      - /usr/share/salt-formulas/env
+    pillar_opts: False
+    open_mode: True
+    reclass: &reclass
+      storage_type: yaml_fs
+      inventory_base_uri: /srv/salt/reclass
+    ext_pillar:
+      - reclass: *reclass
+    master_tops:
+      reclass: *reclass
+    EOF
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Configure GIT settings and certificates
+  cmd: touch /root/.git_trusted_certs.pem;
+    for server in git.tcpcloud.eu github.com; do
+        openssl s_client -showcerts -connect $server:443 </dev/null
+        | openssl x509 -outform PEM
+        >> /root/.git_trusted_certs.pem;
+    done;
+    HOME=/root git config --global http.sslCAInfo /root/.git_trusted_certs.pem;
+    HOME=/root git config --global user.email "tcp-qa@example.com";
+    HOME=/root git config --global user.name "TCP QA";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Clone reclass models and perform a workaround for https://mirantis.jira.com/browse/PROD-8078
+  cmd: |
+    git clone https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
+    cd /srv/salt/reclass;
+    git checkout master;
+    cat << 'EOF' >> /srv/salt/reclass/nodes/control/{{ HOSTNAME_CFG01 }}.yml
+    # local storage
+      reclass:
+        storage:
+          data_source:
+            engine: local
+    EOF
+    sed -i '/nagios/d' /srv/salt/reclass/classes/system/salt/master/formula/pkg/stacklight.yml
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Configure reclass
+  cmd: |
+    mkdir -p /srv/salt/reclass/classes/service;
+    for i in /usr/share/salt-formulas/reclass/service/*; do
+      ln -s $i /srv/salt/reclass/classes/service/;
+    done;
+    [ ! -d /etc/reclass ] && mkdir /etc/reclass;
+    cat << 'EOF' >> /etc/reclass/reclass-config.yml
+    storage_type: yaml_fs
+    pretty_print: True
+    output: yaml
+    inventory_base_uri: /srv/salt/reclass
+    EOF
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Configure salt-minion on cfg01
+  cmd: |
+    [ ! -d /etc/salt/minion.d ] && mkdir -p /etc/salt/minion.d;
+    cat << "EOF" >> /etc/salt/minion.d/minion.conf
+    id: {{ HOSTNAME_CFG01 }}
+    master: localhost
+    EOF
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+
+# Prepare salt services and nodes settings
+- description: Run 'linux' formula on cfg01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Run 'openssh' formula on cfg01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls openssh;
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh restart";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    '*' cmd.run "echo '    StrictHostKeyChecking no' >> /root/.ssh/config"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Run 'salt' formula on cfg01
+  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls salt.master
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: true
+
+- description: Accept salt keys from all the nodes
+  cmd: salt-key -A -y
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls reclass
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Refresh pillars on all minions
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+
+# Bootstrap all nodes
+
+- description: Workaround for missing kernel modules
+  cmd: salt '*' cmd.run "for module in nf_conntrack_ipv4 ip_tables
+    x_tables nf_defrag_ipv4 nf_nat_ipv4 nf_nat
+    iptable_filter iptable_mangle iptable_nat;
+    do
+    modprobe \$module;
+    echo \$module >> /etc/modules;
+    done"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+
+- description: Configure linux on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
+    linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 5}
+  skip_fail: false
+
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
+    cfg*' state.sls openssh;salt --hard-crash --state-output=mixed --state-verbose=False
+    -C '* and not cfg*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh restart"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: '*Workaround* for the bug https://mirantis.jira.com/browse/PROD-8021'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run 'apt-get
+    -y install linux-image-extra-$(uname -r)'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Configure salt.minion on controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Check salt minion versions on slaves
+  cmd: salt '*' test.version
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Check salt minion versions on slaves
+  cmd: salt '*' state.show_top
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Configure ntp on controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls ntp
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
