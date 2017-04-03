@@ -41,6 +41,12 @@
    - swapon /swapfile
    - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
 
+   ########################################################
+   # Node is ready, allow SSH access
+   - echo "Allow SSH access ..."
+   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ########################################################
+
    ############## TCP Cloud cfg01 node ##################
    #- sleep 120
    - echo "Preparing base OS"
@@ -79,12 +85,6 @@
 
    #- echo "Running complete state ..."
    #- salt-call state.sls linux,openssh,salt
-
-   ########################################################
-   # Node is ready, allow SSH access
-   # - echo "Allow SSH access ..."
-   # - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-  ########################################################
 
   write_files:
    - path: /etc/network/interfaces
