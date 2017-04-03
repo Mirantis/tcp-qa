@@ -313,7 +313,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: eth0
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -364,7 +364,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: eth0
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -390,7 +390,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: eth0
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
