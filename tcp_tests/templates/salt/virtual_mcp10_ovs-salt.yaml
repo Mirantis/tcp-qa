@@ -66,7 +66,7 @@
   skip_fail: false
 
 - description: Configure reclass
-  cmd:
+  cmd: |
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
     FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt.tcpcloud.eu/nightly xenial tcp-salt};
     FORMULA_GPG=${FORMULA_GPG:-http://apt.tcpcloud.eu/public.gpg};
@@ -85,6 +85,7 @@
     [ ! -d /srv/salt/env ] && mkdir -p /srv/salt/env;
     [ ! -L /srv/salt/env/prd ] && ln -s ${FORMULA_PATH}/env /srv/salt/env/prd;
     [ ! -d /etc/reclass ] && mkdir /etc/reclass;
+
     cat << 'EOF' >> /etc/reclass/reclass-config.yml
     storage_type: yaml_fs
     pretty_print: True
