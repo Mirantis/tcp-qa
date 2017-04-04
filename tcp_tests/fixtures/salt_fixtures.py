@@ -68,6 +68,7 @@ def salt_deployed(revert_snapshot, request, config,
     # Create Salt cluster
     if config.salt.salt_master_host == '0.0.0.0':
         commands = utils.read_template(config.salt_deploy.salt_steps_path)
+        LOG.info("##################Executing command ####### {0}".format(commands))
         salt_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.salt_deployed)
 
