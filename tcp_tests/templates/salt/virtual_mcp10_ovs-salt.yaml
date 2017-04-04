@@ -3,8 +3,14 @@
 # Install salt to the config node
 
 
-- description: Configure tcpcloud repository on the cfg01 node
-  cmd: echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+- description: Configure repository on the cfg01 node
+  cmd:
+    echo "172.18.248.114    jenkins.mcp.mirantis.net  gerrit.mcp.mirantis.net" >> /etc/hosts;
+    echo "185.135.196.10    apt-mk.mirantis.com" >> /etc/hosts;
+    echo "nameserver 172.18.208.44 >> /etc/resolv.conf;
+    echo "nameserver 8.8.8.8 >> /etc/resolv.conf;
+    which wget >/dev/null || (apt-get update; apt-get install -y wget);
+    echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
     echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
     wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
@@ -18,40 +24,14 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Install common packages on cfg01
-  cmd: apt-get install -y python-pip wget curl tmux byobu iputils-ping traceroute htop tree
+- description: Installing salt master on cfg01
+  cmd:  apt-get install -y reclass git; apt-get install -y salt-master
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
 
 - description: Install common packages on cfg01
   cmd: apt-get install -y python-pip wget curl tmux byobu iputils-ping traceroute htop tree
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
-- description: Install salt formulas, master and minion on cfg01
-  # cmd: apt-get install -y salt-formula-* salt-master salt-minion reclass
-  cmd: apt-get install -y
-    salt-master
-    salt-minion
-    reclass
-    git
-    salt-formula-linux
-    salt-formula-reclass
-    salt-formula-salt
-    salt-formula-openssh
-    salt-formula-ntp
-    salt-formula-git
-    salt-formula-nginx
-    salt-formula-collectd
-    salt-formula-sensu
-    salt-formula-heka
-    salt-formula-sphinx
-    salt-formula-keystone
-    salt-formula-mysql
-    salt-formula-grafana
-    salt-formula-haproxy
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -79,15 +59,14 @@
 - description: Clone reclass models with submodules
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone --recurse-submodules https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
-    cd /srv/salt/reclass;
-    git checkout master;
+    git clone -b master --recurse-submodules https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
+    mkdir -p /srv/salt/reclass/classes/service;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
 
 - description: Configure reclass
-  cmd: |
+  cmd:
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
     FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt.tcpcloud.eu/nightly xenial tcp-salt};
     FORMULA_GPG=${FORMULA_GPG:-http://apt.tcpcloud.eu/public.gpg};
@@ -100,6 +79,7 @@
     echo -e "\nInstalling all required salt formulas\n";
     apt-get install -y "${formula_services[@]/#/salt-formula-}";
     for formula_service in in "${formula_services[@]}"; do
+      echo -e "\nLink service metadata for formula ${formula_service} ...\n";
       [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
     done;
     [ ! -d /srv/salt/env ] && mkdir -p /srv/salt/env;
@@ -120,7 +100,7 @@
     [ ! -d /etc/salt/minion.d ] && mkdir -p /etc/salt/minion.d;
     cat << "EOF" >> /etc/salt/minion.d/minion.conf
     id: {{ HOSTNAME_CFG01 }}
-    master: localhost
+    master: 127.0.0.1
     EOF
     apt-get install -y salt-minion;
   node_name: {{ HOSTNAME_CFG01 }}
