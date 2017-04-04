@@ -99,8 +99,7 @@
     declare -a formula_services=("linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon");
     echo -e "\nInstalling all required salt formulas\n";
     apt-get install -y "${formula_services[@]/#/salt-formula-}";
-    for formula_service in in "${formula_services[@]}"; do;
-      echo -e "\nLink service metadata for formula ${formula_service} ...\n";
+    for formula_service in in "${formula_services[@]}"; do
       [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
     done;
     [ ! -d /srv/salt/env ] && mkdir -p /srv/salt/env;
