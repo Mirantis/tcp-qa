@@ -97,7 +97,7 @@
 
 - description: Clone reclass models and perform a workaround for https://mirantis.jira.com/browse/PROD-8078
   cmd: |
-    git clone https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
+    git clone --recurse-submodules https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
     cd /srv/salt/reclass;
     git checkout master;
   node_name: {{ HOSTNAME_CFG01 }}
