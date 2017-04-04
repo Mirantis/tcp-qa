@@ -100,15 +100,6 @@
     git clone https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
     cd /srv/salt/reclass;
     git checkout master;
-    cat << 'EOF' >> /srv/salt/reclass/nodes/control/{{ HOSTNAME_CFG01 }}.yml
-    # local storage
-      reclass:
-        storage:
-          data_source:
-            engine: local
-    EOF
-    sed -i '/nagios/d' /srv/salt/reclass/classes/system/salt/master/formula/pkg/stacklight.yml
-
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
