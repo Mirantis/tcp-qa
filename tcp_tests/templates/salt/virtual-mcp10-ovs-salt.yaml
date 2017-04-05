@@ -110,7 +110,7 @@
 
 - description: Configure salt adoptors on cfg01
   cmd: |
-    ln -s /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py /usr/local/sbin/salt-reclass;
+    ln -s /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py /usr/local/sbin/reclass-salt;
     chmod +x /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
@@ -128,27 +128,34 @@
   skip_fail: false
 
 # Prepare salt services and nodes settings
-- description: Run 'linux' and openssh formula on cfg01
+- description: Run 'linux' formula on cfg01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls linux,openssh;
+    -C 'I@salt:master' state.sls linux;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Run 'reclass' formula on cfg01
+- description: Run 'openssh' formula on cfg01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls reclass;
+    -C 'I@salt:master' state.sls openssh;
     salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
     yes/' /etc/ssh/sshd_config && service ssh restart";
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    '*' cmd.run "echo '    StrictHostKeyChecking no' >> /root/.ssh/config"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
   skip_fail: false
 
 - description: Run 'salt' formula on cfg01
   cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls salt.master.service;
-    salt-call --no-color state.sls salt.master,salt.api,salt.minion.ca -l info;
+    salt-call --no-color state.sls salt.master;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
@@ -200,11 +207,32 @@
   skip_fail: false
 
 
-- description: Configure linux on all nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
+- description: Configure linux on controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
     linux
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure linux on proxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'prx*' state.sls
+    linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure linux on gtw
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'gtw*' state.sls
+    linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 20}
+  skip_fail: false
+
+- description: Configure linux on cmp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.sls
+    linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 20}
   skip_fail: false
 
 - description: Configure openssh on all nodes
@@ -220,13 +248,32 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run 'apt-get
     -y install linux-image-extra-$(uname -r)'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
-- description: Configure salt.minion on controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt
+- description: Configure salt.minion on ctl
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Configure salt.minion on prx
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'prx*' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+
+- description: Configure salt.minion on gtw
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'gtw*' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Configure salt.minion on cmp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Check salt minion versions on slaves
@@ -235,14 +282,14 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Check salt minion versions on slaves
+- description: Check salt top states on nodes
   cmd: salt '*' state.show_top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Configure ntp on nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls ntp
+- description: Configure ntp and rsyslog on nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls ntp,rsyslog
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false

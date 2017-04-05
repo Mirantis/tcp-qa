@@ -47,56 +47,56 @@ class TestMCP10OvsVxlanInstall(object):
 
         """
         LOG.info("*************** DONE **************")
-
-    def test_mcp10_ovs_vxlan_install_run_rally(self, underlay,
-                                               openstack_deployed,
-                                               show_step, rally):
-        """Test for deploying an mcp environment and check it
-
-        Scenario:
-            1. Prepare salt on hosts
-            2. Setup controller nodes
-            3. Setup compute nodes
-            4. Run rally
-
-        """
-        # prepare rally
-        rally.prepare()
-        rally.pull_image()
-        rally.run()
-        # run tempest
-        rally.run_tempest()
-
-        res = rally.get_results()
-
-        fail_msg = 'Tempest verification fails {}'.format(res)
-        assert res['failures'] == 0, fail_msg
-
-    # @pytest.mark.snapshot_needed
-    # @pytest.mark.fail_snapshot
-    def test_mcp10_vxlan_install_with_scripts(self, config, underlay,
-                                              salt_deployed,
-                                              show_step, rally):
-        """Test for deploying an mcp environment with scripts and check it
-
-        Scenario:
-            1. Prepare salt on hosts
-            2. Setup controller nodes
-            3. Setup compute nodes
-
-        """
-
-        cmd = 'cd /srv/salt/reclass/scripts/; ./bootstrap_all.sh'
-        underlay.check_call(cmd, host=config.salt.salt_master_host, verbose=True)
-
-        # prepare rally
-        rally.prepare()
-        rally.pull_image()
-        rally.run()
-        # run tempest
-        rally.run_tempest()
-
-        res = rally.get_results()
-
-        fail_msg = 'Tempest verification fails {}'.format(res)
-        assert res['failures'] == 0, fail_msg
+    #
+    # def test_mcp10_ovs_vxlan_install_run_rally(self, underlay,
+    #                                            openstack_deployed,
+    #                                            show_step, rally):
+    #     """Test for deploying an mcp environment and check it
+    #
+    #     Scenario:
+    #         1. Prepare salt on hosts
+    #         2. Setup controller nodes
+    #         3. Setup compute nodes
+    #         4. Run rally
+    #
+    #     """
+    #     # prepare rally
+    #     rally.prepare()
+    #     rally.pull_image()
+    #     rally.run()
+    #     # run tempest
+    #     rally.run_tempest()
+    #
+    #     res = rally.get_results()
+    #
+    #     fail_msg = 'Tempest verification fails {}'.format(res)
+    #     assert res['failures'] == 0, fail_msg
+    #
+    # # @pytest.mark.snapshot_needed
+    # # @pytest.mark.fail_snapshot
+    # def test_mcp10_vxlan_install_with_scripts(self, config, underlay,
+    #                                           salt_deployed,
+    #                                           show_step, rally):
+    #     """Test for deploying an mcp environment with scripts and check it
+    #
+    #     Scenario:
+    #         1. Prepare salt on hosts
+    #         2. Setup controller nodes
+    #         3. Setup compute nodes
+    #
+    #     """
+    #
+    #     cmd = 'cd /srv/salt/reclass/scripts/; ./bootstrap_all.sh'
+    #     underlay.check_call(cmd, host=config.salt.salt_master_host, verbose=True)
+    #
+    #     # prepare rally
+    #     rally.prepare()
+    #     rally.pull_image()
+    #     rally.run()
+    #     # run tempest
+    #     rally.run_tempest()
+    #
+    #     res = rally.get_results()
+    #
+    #     fail_msg = 'Tempest verification fails {}'.format(res)
+    #     assert res['failures'] == 0, fail_msg
