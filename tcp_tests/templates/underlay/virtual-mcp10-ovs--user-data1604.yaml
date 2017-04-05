@@ -25,6 +25,8 @@
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
   runcmd:
+   - export TERM=linux
+   - export LANG=C
    # Configure dhclient
    - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
    - sudo resolvconf -u
