@@ -15,7 +15,7 @@ aliases:
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'virtual_mcp10_ovs') }}
+    env_name: {{ os_env('ENV_NAME', 'virtual-mcp10-ovs') }}
 
     address_pools:
       admin-pool01:
@@ -158,8 +158,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include virtual_mcp10_ovs--meta-data.yaml
-                  cloudinit_user_data: !include virtual_mcp10_ovs--user-data-cfg01.yaml
+                  cloudinit_meta_data: !include virtual-mcp10-ovs--meta-data.yaml
+                  cloudinit_user_data: !include virtual-mcp10-ovs--user-data-cfg01.yaml
 
               interfaces:
                 - label: ens3
@@ -199,8 +199,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include virtual_mcp10_ovs--meta-data.yaml
-                  cloudinit_user_data: !include virtual_mcp10_ovs--user-data1404.yaml
+                  cloudinit_meta_data: !include virtual-mcp10-ovs--meta-data.yaml
+                  cloudinit_user_data: !include virtual-mcp10-ovs--user-data1404.yaml
 
               interfaces: &interfaces
                 - label: eth0
@@ -240,8 +240,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include virtual_mcp10_ovs--meta-data.yaml
-                  cloudinit_user_data: !include virtual_mcp10_ovs--user-data1404.yaml
+                  cloudinit_meta_data: !include virtual-mcp10-ovs--meta-data.yaml
+                  cloudinit_user_data: !include virtual-mcp10-ovs--user-data1404.yaml
 
               interfaces: *interfaces
               network_config: *network_config
@@ -269,8 +269,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include virtual_mcp10_ovs--meta-data.yaml
-                  cloudinit_user_data: !include virtual_mcp10_ovs--user-data1404.yaml
+                  cloudinit_meta_data: !include virtual-mcp10-ovs--meta-data.yaml
+                  cloudinit_user_data: !include virtual-mcp10-ovs--user-data1404.yaml
 
               interfaces: *interfaces
               network_config: *network_config
@@ -298,8 +298,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include virtual_mcp10_ovs--meta-data.yaml
-                  cloudinit_user_data: !include virtual_mcp10_ovs--user-data1404.yaml
+                  cloudinit_meta_data: !include virtual-mcp10-ovs--meta-data.yaml
+                  cloudinit_user_data: !include virtual-mcp10-ovs--user-data1404.yaml
 
               interfaces: *interfaces
               network_config: *network_config
@@ -325,8 +325,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include virtual_mcp10_ovs--meta-data.yaml
-                  cloudinit_user_data: !include virtual_mcp10_ovs--user-data1604.yaml
+                  cloudinit_meta_data: !include virtual-mcp10-ovs--meta-data.yaml
+                  cloudinit_user_data: !include virtual-mcp10-ovs--user-data1604.yaml
 
 
               interfaces: &all_interfaces
@@ -376,8 +376,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include virtual_mcp10_ovs--meta-data.yaml
-                  cloudinit_user_data: !include virtual_mcp10_ovs--user-data1604.yaml
+                  cloudinit_meta_data: !include virtual-mcp10-ovs--meta-data.yaml
+                  cloudinit_user_data: !include virtual-mcp10-ovs--user-data1604.yaml
 
               interfaces: *all_interfaces
               network_config: *all_network_config
@@ -402,8 +402,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include virtual_mcp10_ovs--meta-data.yaml
-                  cloudinit_user_data: !include virtual_mcp10_ovs--user-data1604.yaml
+                  cloudinit_meta_data: !include virtual-mcp10-ovs--meta-data.yaml
+                  cloudinit_user_data: !include virtual-mcp10-ovs--user-data1604.yaml
 
               interfaces: *all_interfaces
               network_config: *all_network_config

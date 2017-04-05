@@ -1,4 +1,4 @@
-{% from 'virtual_mcp10_ovs.jinja' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp10-ovs.jinja' import HOSTNAME_CFG01 with context %}
 
 # Install support services
 
