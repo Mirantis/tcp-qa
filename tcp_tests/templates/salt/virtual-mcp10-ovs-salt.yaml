@@ -124,7 +124,7 @@
      salt-call --no-color grains.items;
      salt-call --no-color pillar.data;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 # Prepare salt services and nodes settings
@@ -132,7 +132,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls linux,openssh;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Run 'reclass' formula on cfg01
@@ -142,7 +142,7 @@
     -C 'I@salt:master' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
     yes/' /etc/ssh/sshd_config && service ssh restart";
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Run 'salt' formula on cfg01
@@ -150,7 +150,7 @@
     -C 'I@salt:master' state.sls salt.master.service;
     salt-call --no-color state.sls salt.master,salt.api,salt.minion.ca -l info;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: true
 
 - description: Accept salt keys from all the nodes
@@ -163,25 +163,25 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls reclass
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Refresh pillars on all minions
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Sync all salt resources
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Show  reclass-salt --top
   cmd: salt-call --no-color state.sls salt.minion.cert -l info
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 
@@ -204,7 +204,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls
     linux
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Configure openssh on all nodes
@@ -213,37 +213,37 @@
     -C '* and not cfg*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
     yes/' /etc/ssh/sshd_config && service ssh restart"
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: '*Workaround* for the bug https://mirantis.jira.com/browse/PROD-8021'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run 'apt-get
     -y install linux-image-extra-$(uname -r)'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Configure salt.minion on controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt.minion
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check salt minion versions on slaves
   cmd: salt '*' test.version
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check salt minion versions on slaves
   cmd: salt '*' state.show_top
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Configure ntp on controllers
+- description: Configure ntp on nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls ntp
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 10}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 

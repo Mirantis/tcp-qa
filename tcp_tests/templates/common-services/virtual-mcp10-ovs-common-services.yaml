@@ -6,14 +6,14 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keepalived:cluster' state.sls keepalived -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 10, delay: 10}
+  retry: {count: 1, delay: 10}
   skip_fail: true
 
 - description: Check the VIP
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keepalived:cluster' cmd.run 'ip a | grep 172.16.10.2' | grep -B1 172.16.10.2
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 
@@ -21,21 +21,21 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server' state.sls glusterfs.server.service
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Setup glusterfs on primary controller
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server' state.sls glusterfs.server.setup -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check the gluster status
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server' cmd.run 'gluster peer status; gluster volume status' -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 
@@ -43,35 +43,35 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@rabbitmq:server' state.sls rabbitmq
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check the rabbitmq status
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@rabbitmq:server' cmd.run 'rabbitmqctl cluster_status'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Install Galera on first server
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@galera:master' state.sls galera
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Install Galera on other servers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@galera:slave' state.sls galera
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check mysql status
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@galera:*' mysql.status | grep -A1 -e "wsrep_incoming_addresses\|wsrep_cluster_size"
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: true
 
 
@@ -79,26 +79,26 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@haproxy:proxy' state.sls haproxy
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check haproxy status
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@haproxy:proxy' service.status haproxy
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Restart rsyslog
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@haproxy:proxy' service.restart rsyslog
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Install memcached on all controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@memcached:server' state.sls memcached
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
