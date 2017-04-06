@@ -108,7 +108,7 @@ template:
         l2_network_devices:
           private:
             address_pool: private-pool01
-            dhcp: true
+            dhcp: false
             forward:
               mode: nat
 
