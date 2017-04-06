@@ -108,7 +108,7 @@ template:
         l2_network_devices:
           private:
             address_pool: private-pool01
-            dhcp: false
+            dhcp: true
 
           admin:
             address_pool: admin-pool01
