@@ -186,7 +186,7 @@
   skip_fail: false
 
 - description: Show  reclass-salt --top
-  cmd: salt-call --no-color state.sls salt.minion.cert -l info
+  cmd: reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
