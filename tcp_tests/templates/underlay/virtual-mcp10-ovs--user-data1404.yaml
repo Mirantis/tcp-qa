@@ -65,7 +65,7 @@
 
    # To be configured from inventory/fuel-devops by operator or autotests
    - 'echo "id: {hostname}" >> /etc/salt/minion'
-   - 'echo "master: 172.16.10.100" >> /etc/salt/minion'
+   - 'echo "master: 192.168.10.100" >> /etc/salt/minion'
 
    - echo "Restarting minion service with workarounds..."
    - rm -f /etc/salt/pki/minion/minion_master.pub
