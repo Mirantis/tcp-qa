@@ -109,12 +109,12 @@ template:
           private:
             address_pool: private-pool01
             dhcp: false
-            forward:
-              mode: nat
 
           admin:
             address_pool: admin-pool01
             dhcp: true
+            forward:
+              mode: nat
 
           tenant:
             address_pool: tenant-pool01
