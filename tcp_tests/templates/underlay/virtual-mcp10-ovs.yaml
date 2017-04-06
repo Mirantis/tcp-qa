@@ -163,18 +163,18 @@ template:
 
               interfaces:
                 - label: ens3
-                  l2_network_device: private
+                  l2_network_device: admin
                   interface_model: *interface_model
                 - label: ens4
-                  l2_network_device: admin
+                  l2_network_device: private
                   interface_model: *interface_model
               network_config:
                 ens3:
                   networks:
-                    - private
+                    - admin
                 ens4:
                   networks:
-                    - admin
+                    - private
 
           - name: {{ HOSTNAME_CTL01 }}
             role: salt_minion
@@ -204,18 +204,18 @@ template:
 
               interfaces: &interfaces
                 - label: eth0
-                  l2_network_device: private
+                  l2_network_device: admin
                   interface_model: *interface_model
                 - label: eth1
-                  l2_network_device: admin
+                  l2_network_device: private
                   interface_model: *interface_model
               network_config: &network_config
                 eth0:
                   networks:
-                    - private
+                    - admin
                 eth1:
                   networks:
-                    - admin
+                    - private
 
           - name: {{ HOSTNAME_CTL02 }}
             role: salt_minion
@@ -331,10 +331,10 @@ template:
 
               interfaces: &all_interfaces
                 - label: ens3
-                  l2_network_device: private
+                  l2_network_device: admin
                   interface_model: *interface_model
                 - label: ens4
-                  l2_network_device: admin
+                  l2_network_device: private
                   interface_model: *interface_model
                 - label: ens5
                   l2_network_device: tenant
@@ -345,10 +345,10 @@ template:
               network_config: &all_network_config
                 ens3:
                   networks:
-                    - private
+                    - admin
                 ens4:
                   networks:
-                    - admin
+                    - private
                 ens5:
                   networks:
                     - tenant
