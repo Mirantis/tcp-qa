@@ -18,7 +18,7 @@ template:
     env_name: {{ os_env('ENV_NAME', 'virtual-mcp10-ovs') }}
 
     address_pools:
-      admin-pool01:
+      private-pool01:
         net: 172.16.10.0/24:24
         params:
           ip_reserved:
@@ -35,7 +35,7 @@ template:
           ip_ranges:
             dhcp: [+90, -10]
 
-      private-pool01:
+      admin-pool01:
         net: 192.168.10.0/24:24
         params:
           ip_reserved:
