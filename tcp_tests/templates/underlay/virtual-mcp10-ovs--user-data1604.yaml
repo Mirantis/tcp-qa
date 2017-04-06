@@ -93,4 +93,6 @@
      content: |
           auto ens3
           iface ens3 inet dhcp
+          auto ens4
+          iface ens4 inet dhcp
 
