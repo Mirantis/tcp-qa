@@ -24,7 +24,7 @@ LOG = logger.logger
 
 
 @pytest.mark.deploy
-class TestMCP10OvsVxlanInstall(object):
+class Testk8sInstall(object):
     """Test class for testing mcp10 vxlan deploy"""
 
     #salt_cmd = 'salt -l debug '  # For debug output
@@ -36,7 +36,7 @@ class TestMCP10OvsVxlanInstall(object):
 
     # @pytest.mark.snapshot_needed
     # @pytest.mark.fail_snapshot
-    def test_mcp10_ovs_vxlan_install(self, underlay, openstack_deployed,
+    def test_k8s_install(self, underlay, openstack_deployed,
                                      show_step):
         """Test for deploying an mcp environment and check it
 
