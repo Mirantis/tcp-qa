@@ -12,18 +12,22 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-class CommonServicesManager(object):
+from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
+
+
+class CommonServicesManager(ExecuteCommandsMixin):
     """docstring for CommonServicesManager"""
 
-    __config = None
-    __underlay = None
+    _config = None
+    _underlay = None
 
-    def __init__(self, config, underlay):
-        self.__config = config
-        self.__underlay = underlay
+    def __init__(self, config, underlay, salt=None):
+        self._config = config
+        self._underlay = underlay
+        self._salt = salt
         super(CommonServicesManager, self).__init__()
 
     def install(self, commands):
-        self.__underlay.execute_commands(commands,
-                                         label='Install common services')
-        self.__config.common_services.common_services_installed = True
+        self.execute_commands(commands,
+                              label='Install common services')
+        self._config.common_services.common_services_installed = True

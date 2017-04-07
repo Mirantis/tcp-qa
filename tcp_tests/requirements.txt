@@ -12,4 +12,4 @@ jinja2>=2.1
 jira
 testrail
 functools32
-
+salt-pepper

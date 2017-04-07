@@ -33,7 +33,7 @@ LOG = logger.logger
 class EnvironmentManager(object):
     """Class-helper for creating VMs via devops environments"""
 
-    __config = None
+    _config = None
 
     def __init__(self, config=None):
         """Initializing class instance and create the environment
@@ -45,7 +45,7 @@ class EnvironmentManager(object):
         """
         self.__devops_config = env_config.EnvironmentConfig()
         self._env = None
-        self.__config = config
+        self._config = config
 
         if config.hardware.conf_path is not None:
             self._devops_config.load_template(config.hardware.conf_path)
@@ -173,9 +173,9 @@ class EnvironmentManager(object):
         msg = "[ Create snapshot '{0}' ] {1}".format(name, description or '')
         LOG.info("\n\n{0}\n{1}".format(msg, '*' * len(msg)))
 
-        self.__config.hardware.current_snapshot = name
+        self._config.hardware.current_snapshot = name
         LOG.info("Set current snapshot in config to '{0}'".format(
-            self.__config.hardware.current_snapshot))
+            self._config.hardware.current_snapshot))
         if self._env is not None:
             LOG.info('trying to suspend ....')
             self._env.suspend()
@@ -185,10 +185,11 @@ class EnvironmentManager(object):
             self._env.resume()
         else:
             raise exceptions.EnvironmentIsNotSet()
-        settings_oslo.save_config(self.__config, name, self._env.name)
+        settings_oslo.save_config(self._config, name, self._env.name)
 
         if settings.VIRTUAL_ENV:
-            venv_msg = "source {0}/bin/activate;\n".format(settings.VIRTUAL_ENV)
+            venv_msg = "source {0}/bin/activate;\n".format(
+                settings.VIRTUAL_ENV)
         else:
             venv_msg = ""
         LOG.info("To revert the snapshot:\n\n"
@@ -204,7 +205,7 @@ class EnvironmentManager(object):
                          snapshot_name=name,
                          login=settings.SSH_NODE_CREDENTIALS['login'],
                          password=settings.SSH_NODE_CREDENTIALS['password'],
-                         salt_master_host=self.__config.salt.salt_master_host))
+                         salt_master_host=self._config.salt.salt_master_host))
 
     def _get_snapshot_config_name(self, snapshot_name):
         """Get config name for the environment"""
@@ -235,13 +236,13 @@ class EnvironmentManager(object):
 
         try:
             test_config_path = self._get_snapshot_config_name(name)
-            settings_oslo.reload_snapshot_config(self.__config,
+            settings_oslo.reload_snapshot_config(self._config,
                                                  test_config_path)
         except cfg.ConfigFilesNotFoundError as conf_err:
             LOG.error("Config file(s) {0} not found!".format(
                 conf_err.config_files))
 
-        self.__config.hardware.current_snapshot = name
+        self._config.hardware.current_snapshot = name
 
     def _create_environment(self):
         """Create environment and start VMs.
@@ -373,12 +374,12 @@ class EnvironmentManager(object):
 
     def set_dns_config(self):
         # Set local nameserver to use by default
-        if not self.__config.underlay.nameservers:
-            self.__config.underlay.nameservers = [self.nameserver]
-        if not self.__config.underlay.upstream_dns_servers:
-            self.__config.underlay.upstream_dns_servers = [self.nameserver]
+        if not self._config.underlay.nameservers:
+            self._config.underlay.nameservers = [self.nameserver]
+        if not self._config.underlay.upstream_dns_servers:
+            self._config.underlay.upstream_dns_servers = [self.nameserver]
 
     def set_address_pools_config(self):
         """Store address pools CIDRs in config object"""
         for ap in self._env.get_address_pools():
-            self.__config.underlay.address_pools[ap.name] = ap.net
+            self._config.underlay.address_pools[ap.name] = ap.net
