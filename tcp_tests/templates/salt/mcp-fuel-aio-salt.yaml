@@ -74,7 +74,7 @@
 - description: Clone reclass models with submodules
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b docker_13 --recurse-submodules https://github.com/TatyankaLeontovich/k8s-salt-model/tree/docker_13 /srv/salt/reclass;
+    git clone --recursive https://github.com/TatyankaLeontovich/k8s-salt-model /srv/salt/reclass -b docker_13;
     mkdir -p /srv/salt/reclass/classes/service;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
