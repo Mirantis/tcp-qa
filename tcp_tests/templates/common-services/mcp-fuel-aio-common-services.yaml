@@ -1,0 +1,96 @@
+{% from 'mcp-fuel-aio.jinja' import HOSTNAME_CFG01 with context %}
+
+# Install support services
+- description: Create and distribute SSL certificates for services using salt state
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description:  Install keepalived
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster' state.sls keepalived -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Check the VIP
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster' cmd.run 'ip a | grep 172.16.10.2' | grep -B1 172.16.10.2
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+- description: Install haproxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' state.sls haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install haproxy.service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.status haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install docker
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@docker:host' state.sls docker.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check docker
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@docker:host' cmd.run 'docker ps'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install etcd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@etcd:server' state.sls etcd.server.service
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check the etcd health
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@etcd:server' cmd.run '. /var/lib/etcd/configenv && etcdctl cluster-health'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Kubernetes and Calico
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons;
+     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' state.sls kubernetes.pool;
+     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' cmd.run 'calicoctl node status';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup NAT for Calico
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@etcd:server' --subset 1 state.sls etcd.server.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Run whole master to check consistency
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+
+- description: Register addons
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
