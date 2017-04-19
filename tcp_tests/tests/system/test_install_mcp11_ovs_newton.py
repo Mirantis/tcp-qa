@@ -24,7 +24,7 @@ LOG = logger.logger
 
 
 @pytest.mark.deploy
-class TestMCP11_Ovs_Newton_install(object):
+class Test_Mcp11_install(object):
     """Test class for testing mcp11 vxlan deploy"""
 
     #salt_cmd = 'salt -l debug '  # For debug output
@@ -47,3 +47,15 @@ class TestMCP11_Ovs_Newton_install(object):
 
         """
         LOG.info("*************** DONE **************")
+
+    def test_mcp11_ocata_ovs_install(self, underlay, openstack_deployed,
+                                          show_step):
+        """Test for deploying an mcp environment and check it
+        Scenario:
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
+
+        """
+        LOG.info("*************** DONE **************")
+
