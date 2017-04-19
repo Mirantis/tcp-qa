@@ -34,28 +34,24 @@ class Test_Mcp11_install(object):
     #salt_cmd = 'salt --state-output=terse --state-verbose=False '  # For reduced output
     #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
 
-    # @pytest.mark.snapshot_needed
-    # @pytest.mark.fail_snapshot
-    def test_mcp11_newton_ovs_install(self, underlay, openstack_deployed,
-                                     show_step):
+    def test_mcp11_ocata_ovs_install(self, underlay, openstack_deployed,
+                                          show_step):
         """Test for deploying an mcp environment and check it
-
         Scenario:
-            1. Prepare salt on hosts
-            2. Setup controller nodes
-            3. Setup compute nodes
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
 
         """
         LOG.info("*************** DONE **************")
 
-    def test_mcp11_newton_dvr_install(self, underlay, openstack_deployed,
-                                     show_step):
+    def test_mcp11_ocata_dvr_install(self, underlay, openstack_deployed,
+                                          show_step):
         """Test for deploying an mcp environment and check it
-
         Scenario:
-            1. Prepare salt on hosts
-            2. Setup controller nodes
-            3. Setup compute nodes
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
 
         """
         LOG.info("*************** DONE **************")
