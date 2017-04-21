@@ -83,10 +83,10 @@
 - description: Configure reclass
   cmd: |
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
-    FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt.tcpcloud.eu/nightly xenial tcp-salt};
-    FORMULA_GPG=${FORMULA_GPG:-http://apt.tcpcloud.eu/public.gpg};
+    FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt-mk.mirantis.com/xenial stable salt};
+    FORMULA_GPG=${FORMULA_GPG:-http://apt-mk.mirantis.com/public.gpg};
     which wget > /dev/null || (apt-get update; apt-get install -y wget);
-    echo "${FORMULA_REPOSITORY}" > /etc/apt/sources.list.d/tcpcloud_salt.list;
+    echo "${FORMULA_REPOSITORY}" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - "${FORMULA_GPG}" | apt-key add -;
     apt-get clean; apt-get update;
     [ ! -d /srv/salt/reclass/classes/service ] && mkdir -p /srv/salt/reclass/classes/service;
