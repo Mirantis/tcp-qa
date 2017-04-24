@@ -1,4 +1,4 @@
-{% from 'virtual-mcp11-dvr.jinja' import HOSTNAME_CFG01 with context %}
+{% from 'underlay/virtual-mcp11-dvr.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install OpenStack control services
 

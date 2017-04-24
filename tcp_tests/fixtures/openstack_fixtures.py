@@ -19,7 +19,6 @@ import yaml
 
 from tcp_tests import logger
 from tcp_tests.helpers import ext
-from tcp_tests.helpers import utils
 from tcp_tests import settings
 from tcp_tests.managers import openstack_manager
 
@@ -71,7 +70,7 @@ def openstack_deployed(revert_snapshot, request, config,
     # Create Salt cluster
     if not config.openstack.openstack_installed:
         steps_path = config.openstack_deploy.openstack_steps_path
-        commands = utils.read_template(steps_path)
+        commands = underlay.read_template(steps_path)
         openstack_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.openstack_deployed)
 

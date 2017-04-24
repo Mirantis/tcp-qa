@@ -35,7 +35,7 @@ class TestTCPInstaller(object):
     #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
 
     # @pytest.mark.snapshot_needed
-    # @pytest.mark.fail_snapshot
+    @pytest.mark.fail_snapshot
     def test_tcp_install_default(self, underlay, openstack_deployed,
                                  show_step, rally):
         """Test for deploying an tcp environment and check it
@@ -71,7 +71,7 @@ class TestTCPInstaller(object):
         assert res['failures'] == 0, fail_msg
 
     # @pytest.mark.snapshot_needed
-    # @pytest.mark.fail_snapshot
+    @pytest.mark.fail_snapshot
     def test_tcp_install_with_scripts(self, config, underlay, salt_deployed,
                                       show_step, rally):
         """Test for deploying an tcp environment with scripts and check it

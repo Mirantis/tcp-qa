@@ -35,7 +35,7 @@ class TestMCP10OvsVxlanInstall(object):
     #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
 
     # @pytest.mark.snapshot_needed
-    # @pytest.mark.fail_snapshot
+    @pytest.mark.fail_snapshot
     def test_mcp10_ovs_vxlan_install(self, underlay, openstack_deployed,
                                      show_step):
         """Test for deploying an mcp environment and check it

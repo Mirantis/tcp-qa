@@ -318,7 +318,7 @@ class YamlEditor(object):
         self.write_content()
 
 
-def render_template(file_path):
+def render_template(file_path, options=None):
     required_env_vars = set()
     optional_env_vars = dict()
     def os_env(var_name, default=None):
@@ -334,9 +334,10 @@ def render_template(file_path):
 
         return var
 
-    options = {
-        'os_env': os_env,
-    }
+    if options is None:
+        options = {}
+    options.update({'os_env': os_env,})
+
     LOG.info("Reading template {0}".format(file_path))
 
     path, filename = os.path.split(file_path)
@@ -353,12 +354,6 @@ def render_template(file_path):
         for var, default in sorted(optional_env_vars.iteritems()):
             LOG.info("    {0} , default value = {1}".format(var, default))
     return template
-
-
-def read_template(file_path):
-    """Read yaml as a jinja template"""
-    template = render_template(file_path)
-    return yaml.load(template)
 
 
 def extract_name_from_mark(mark):

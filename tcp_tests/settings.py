@@ -29,6 +29,9 @@ TIMESTAT_PATH_YAML = os.environ.get(
     'TIMESTAT_PATH_YAML', os.path.join(
         LOGS_DIR, 'timestat_{}.yaml'.format(time.strftime("%Y%m%d"))))
 
+VIRTUAL_ENV = os.environ.get("VIRTUAL_ENV", None)
+ENV_NAME = os.environ.get("ENV_NAME", None)
+
 LAB_CONFIG_NAME = os.environ.get('LAB_CONFIG_NAME', 'mk22-lab-basic')
 #LAB_CONFIGS_NAME = os.environ.get('LAB_NAME', 'mk22-lab-advanced')
 

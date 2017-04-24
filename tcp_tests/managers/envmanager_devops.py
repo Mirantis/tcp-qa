@@ -61,6 +61,7 @@ class EnvironmentManager(object):
             LOG.info("Environment doesn't exist, creating a new one")
             self._create_environment()
         self.set_dns_config()
+        self.set_address_pools_config()
 
     @property
     def _devops_config(self):
@@ -169,9 +170,11 @@ class EnvironmentManager(object):
 
         :name: string
         """
-        LOG.info("Creating snapshot named '{0}'".format(name))
+        msg = "[ Create snapshot '{0}' ] {1}".format(name, description or '')
+        LOG.info("\n\n{0}\n{1}".format(msg, '*' * len(msg)))
+
         self.__config.hardware.current_snapshot = name
-        LOG.info("current config '{0}'".format(
+        LOG.info("Set current snapshot in config to '{0}'".format(
             self.__config.hardware.current_snapshot))
         if self._env is not None:
             LOG.info('trying to suspend ....')
@@ -183,6 +186,25 @@ class EnvironmentManager(object):
         else:
             raise exceptions.EnvironmentIsNotSet()
         settings_oslo.save_config(self.__config, name, self._env.name)
+
+        if settings.VIRTUAL_ENV:
+            venv_msg = "source {0}/bin/activate;\n".format(settings.VIRTUAL_ENV)
+        else:
+            venv_msg = ""
+        LOG.info("To revert the snapshot:\n\n"
+                 "************************************\n"
+                 "{venv_msg}"
+                 "dos.py revert {env_name} {snapshot_name};\n"
+                 "dos.py resume {env_name};\n"
+                 "# dos.py time-sync {env_name};  # Optional\n"
+                 "ssh {login}@{salt_master_host}  # Password: {password}\n"
+                 "************************************\n"
+                 .format(venv_msg=venv_msg,
+                         env_name=settings.ENV_NAME,
+                         snapshot_name=name,
+                         login=settings.SSH_NODE_CREDENTIALS['login'],
+                         password=settings.SSH_NODE_CREDENTIALS['password'],
+                         salt_master_host=self.__config.salt.salt_master_host))
 
     def _get_snapshot_config_name(self, snapshot_name):
         """Get config name for the environment"""
@@ -355,3 +377,8 @@ class EnvironmentManager(object):
             self.__config.underlay.nameservers = [self.nameserver]
         if not self.__config.underlay.upstream_dns_servers:
             self.__config.underlay.upstream_dns_servers = [self.nameserver]
+
+    def set_address_pools_config(self):
+        """Store address pools CIDRs in config object"""
+        for ap in self._env.get_address_pools():
+            self.__config.underlay.address_pools[ap.name] = ap.net

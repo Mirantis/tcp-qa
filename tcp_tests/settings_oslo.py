@@ -77,6 +77,12 @@ underlay_opts = [
            default=[]),
     ct.Cfg('lvm', ct.JSONDict(),
            help="LVM settings for Underlay", default={}),
+    ct.Cfg('address_pools', ct.JSONDict(),
+           help="""Address pools (dynamically) allocated for the environment.
+                   May be used to determine CIDR for a specific network from
+                   tests or during the deployment process.
+                   {'pool_name1': '<cidr>', 'pool_name2': '<cidr>', ...}""",
+           default={}),
 ]
 
 
