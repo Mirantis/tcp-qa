@@ -28,7 +28,7 @@ class TestOpenContrail(object):
     """Test class for testing OpenContrail on a TCP lab"""
 
     # @pytest.mark.snapshot_needed
-    # @pytest.mark.fail_snapshot
+    @pytest.mark.fail_snapshot
     def test_opencontrail(self, config, openstack_deployed,
                                  show_step, opencontrail):
         """Runner for Juniper contrail-tests

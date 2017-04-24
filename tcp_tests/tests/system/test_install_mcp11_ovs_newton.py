@@ -35,7 +35,7 @@ class Test_Mcp11_install(object):
     #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
 
     # @pytest.mark.snapshot_needed
-    # @pytest.mark.fail_snapshot
+    @pytest.mark.fail_snapshot
     def test_mcp11_newton_ovs_install(self, underlay, openstack_deployed,
                                      show_step):
         """Test for deploying an mcp environment and check it

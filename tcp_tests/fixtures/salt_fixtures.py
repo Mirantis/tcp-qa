@@ -19,7 +19,6 @@ import yaml
 
 from tcp_tests import logger
 from tcp_tests.helpers import ext
-from tcp_tests.helpers import utils
 from tcp_tests import settings
 from tcp_tests.managers import saltmanager
 
@@ -67,8 +66,13 @@ def salt_deployed(revert_snapshot, request, config,
     """
     # Create Salt cluster
     if config.salt.salt_master_host == '0.0.0.0':
-        commands = utils.read_template(config.salt_deploy.salt_steps_path)
-        LOG.info("##################Executing command ####### {0}".format(commands))
+        # Temporary workaround. Underlay should be extended with roles
+        salt_nodes = underlay.node_names()
+        config.salt.salt_master_host = \
+            underlay.host_by_node_name(salt_nodes[0])
+
+        commands = underlay.read_template(config.salt_deploy.salt_steps_path)
+        LOG.info("############ Executing command ####### {0}".format(commands))
         salt_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.salt_deployed)
 
