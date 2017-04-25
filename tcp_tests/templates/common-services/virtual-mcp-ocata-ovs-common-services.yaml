@@ -1,10 +1,16 @@
 {% from 'virtual-mcp-ocata-ovs.jinja' import HOSTNAME_CFG01 with context %}
 
 # Install support services
+- description: Install keepalived on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster and *01*' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
 
 - description: Install keepalived
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster' state.sls keepalived -b 1
+    -C 'I@keepalived:cluster' state.sls keepalived
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
@@ -37,7 +43,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
-
 
 - description: Install RabbitMQ
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
