@@ -41,7 +41,7 @@
 
 - description: Install RabbitMQ
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@rabbitmq:server' state.sls rabbitmq
+    -C 'I@rabbitmq:server' state.sls rabbitmq -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
