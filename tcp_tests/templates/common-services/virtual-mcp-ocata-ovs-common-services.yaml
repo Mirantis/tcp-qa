@@ -44,9 +44,16 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Install RabbitMQ on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@rabbitmq:server and *01*' state.sls rabbitmq
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Install RabbitMQ
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@rabbitmq:server' state.sls rabbitmq -b 1
+    -C 'I@rabbitmq:server' state.sls rabbitmq
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
