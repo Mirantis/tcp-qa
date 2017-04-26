@@ -1,5 +1,8 @@
 {% from 'underlay/virtual-mcp11-dvr.yaml' import HOSTNAME_CFG01 with context %}
 
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
+
 # Address pools for reclass cluster model are taken in the following order:
 # 1. environment variables,
 # 2. config.underlay.address_pools based on fuel-devops address pools
@@ -15,6 +18,7 @@
 {% set IPV4_NET_CONTROL_PREFIX = '.'.join(IPV4_NET_CONTROL.split('.')[0:3]) %}
 {% set IPV4_NET_TENANT_PREFIX = '.'.join(IPV4_NET_TENANT.split('.')[0:3]) %}
 {% set IPV4_NET_EXTERNAL_PREFIX = '.'.join(IPV4_NET_EXTERNAL.split('.')[0:3]) %}
+
 
 # Install salt to the config node
 
@@ -89,10 +93,27 @@
 - description: Clone reclass models with submodules
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b master --recurse-submodules https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
-    mkdir -p /srv/salt/reclass/classes/service;
-    cd /srv/salt/reclass; git fetch https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab refs/changes/12/3912/2 && git checkout FETCH_HEAD;
+    git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
 
+    mkdir -p /srv/salt/reclass/classes/service;
+
+    # Replace firstly to an intermediate value to avoid intersection between
+    # already replaced and replacing networks.
+    # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
+    # 192.168.10 -> 10.16.0 (generated network for admin)
+    # 10.16.0 -> <external network>
+    # So let's replace constant networks to the keywords, and then keywords to the desired networks.
+    find /srv/salt/reclass/ -type f -exec sed -i 's/192\.168\.10\./==IPV4_NET_ADMIN_PREFIX==/g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/172\.16\.10\./==IPV4_NET_CONTROL_PREFIX==/g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/10\.1\.0\./==IPV4_NET_TENANT_PREFIX==/g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/10\.16\.0\./==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
+
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}./g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}./g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {} +
+
+    # Disable checkouting the model from remote repository
     cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
     # local storage
       reclass:
@@ -101,14 +122,8 @@
             engine: local
     EOF
 
-    cat << 'EOF' > /srv/salt/reclass/classes/cluster/init.yml
-    parameters:
-      _param:
-        ipv4_net_admin: {{ IPV4_NET_ADMIN_PREFIX }}
-        ipv4_net_control: {{ IPV4_NET_CONTROL_PREFIX }}
-        ipv4_net_tenant: {{ IPV4_NET_TENANT_PREFIX }}
-        ipv4_net_external: {{ IPV4_NET_EXTERNAL_PREFIX }}
-    EOF
+    # Show the changes to the console
+    cd /srv/salt/reclass/; git diff
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
