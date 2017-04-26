@@ -18,6 +18,7 @@ import time
 from devops.helpers import helpers
 from devops.helpers import ssh_client
 from paramiko import rsakey
+import yaml
 
 from tcp_tests import logger
 from tcp_tests.helpers import utils
@@ -366,6 +367,14 @@ class UnderlaySSHManager(object):
             username=ssh_data['login'],
             password=ssh_data['password'],
             private_keys=ssh_data['keys'])
+
+    def read_template(self, file_path):
+        """Read yaml as a jinja template"""
+        options = {
+            'config': self.__config,
+        }
+        template = utils.render_template(file_path, options=options)
+        return yaml.load(template)
 
     def ensure_running_service(self, service_name, host, check_cmd,
                                state_running='start/running'):

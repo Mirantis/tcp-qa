@@ -1,4 +1,4 @@
-{% from 'virtual-mcp11-ovs.jinja' import HOSTNAME_CFG01 with context %}
+{% from 'underlay/virtual-mcp11-ovs.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install OpenStack control services
 

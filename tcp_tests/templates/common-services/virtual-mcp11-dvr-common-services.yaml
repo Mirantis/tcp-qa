@@ -1,4 +1,4 @@
-{% from 'virtual-mcp11-dvr.jinja' import HOSTNAME_CFG01 with context %}
+{% from 'underlay/virtual-mcp11-dvr.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install support services
 - description: Install keepalived on ctl01
@@ -16,8 +16,10 @@
   skip_fail: true
 
 - description: Check the VIP
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster' cmd.run 'ip a | grep 172.16.10.2' | grep -B1 172.16.10.2
+  cmd: |
+    OPENSTACK_CONTROL_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:openstack_control_address`;
+    echo "_param:openstack_control_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster' cmd.run "ip a | grep ${OPENSTACK_CONTROL_ADDRESS}" | grep -B1 ${OPENSTACK_CONTROL_ADDRESS}
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
