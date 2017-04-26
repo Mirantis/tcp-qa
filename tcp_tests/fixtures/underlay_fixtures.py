@@ -137,16 +137,17 @@ def snapshot(request, hardware):
                 and snapshot_needed:
             snapshot_name = utils.extract_name_from_mark(snapshot_needed) or \
                 "{}_passed".format(default_snapshot_name)
+            hardware.create_snapshot(snapshot_name)
 
         elif hasattr(request.node, 'rep_setup') and \
                 request.node.rep_setup.failed and fail_snapshot:
             snapshot_name = "{0}_prep_failed".format(default_snapshot_name)
+            hardware.create_snapshot(snapshot_name)
 
         elif hasattr(request.node, 'rep_call') and \
                 request.node.rep_call.failed and fail_snapshot:
             snapshot_name = "{0}_failed".format(default_snapshot_name)
-
-        hardware.create_snapshot(snapshot_name)
+            hardware.create_snapshot(snapshot_name)
 
     request.addfinalizer(test_fin)
 
