@@ -9,6 +9,18 @@
   retry: {count: 2, delay: 15}
   skip_fail: false
 
+- description: Restart apache due to PROD-10477
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl restart apache2"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Check apache status to PROD-10477
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl status apache2"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
 - description: Populate keystone services/tenants/admins
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:client' state.sls keystone.client
@@ -57,7 +69,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@nova:controller' state.sls nova -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 15}
   skip_fail: false
 
 - description: Check nova service-list
