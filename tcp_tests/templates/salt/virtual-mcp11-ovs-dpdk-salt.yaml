@@ -183,6 +183,13 @@
 {% endfor %}
 
 
+- description: Accept salt keys from all the nodes
+  cmd: salt-key -A -y
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+
 - description: Configure salt adoptors on cfg01
   cmd: |
     ln -s /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py /usr/local/sbin/reclass-salt;
@@ -200,6 +207,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+
 - description: Run 'openssh' formula on cfg01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls openssh;
@@ -210,6 +218,7 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
+
 - description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     '*' cmd.run "echo '    StrictHostKeyChecking no' >> /root/.ssh/config"
@@ -217,29 +226,25 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Run 'reclass' formula on cfg01
-  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' reclass;
-    salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt.master;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+#- description: (duplicate of the next two steps) Run 'reclass' formula on cfg01
+#  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@salt:master' state.sls reclass;
+#    salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt.master;
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: true
 
 
 - description: Run 'salt' formula on cfg01
   cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls salt.master.service;
-    salt-call --no-color state.sls salt.master,salt.api,salt.minion.ca;
+    salt-call --hard-crash --state-output=mixed --state-verbose=False
+        state.sls salt.master,salt.api,salt.minion.ca;
     systemctl restart salt-minion;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-- description: Accept salt keys from all the nodes
-  cmd: salt-key -A -y
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
 
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -270,7 +275,7 @@
 # Bootstrap all nodes
 
 - description: Configure linux on other nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '* and not
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
     cfg01*' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
@@ -286,7 +291,7 @@
   skip_fail: false
 
 - description: Configure salt.minion on other nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '* and not
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
     cfg01*' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
