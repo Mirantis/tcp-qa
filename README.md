@@ -37,7 +37,7 @@ export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
 ```
 
 Run deploy test for virtual-mcp11-dvr
---------------------------------
+-------------------------------------
 Note: This lab is not finished yet. TBD: configure vsrx node
 ```
 export ENV_NAME=virtual-mcp11-dvr  # You can set any env name
@@ -47,13 +47,23 @@ LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
 
 
 Run deploy test for virtual-mcp11-ovs
---------------------------------
+-------------------------------------
 Note: This lab is not finished yet. TBD: configure vsrx node
 ```
 export ENV_NAME=virtual-mcp11-ovs  # You can set any env name
 export LAB_CONFIG_NAME=virtual-mcp11-ovs  # Name of set of templates
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
+
+
+Run deploy test and rally verify (tempest) for virtual-mcp11-ovs
+----------------------------------------------------------------
+Note: This lab is not finished yet. TBD: configure vsrx node
+```
+export ENV_NAME=virtual-mcp11-ovs  # You can set any env name
+export LAB_CONFIG_NAME=virtual-mcp11-ovs  # Name of set of templates
+
+LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_run_rally
 
 
 Run deploy test for mk22-qa-lab01
