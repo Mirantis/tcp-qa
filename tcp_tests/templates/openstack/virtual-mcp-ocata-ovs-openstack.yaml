@@ -1,8 +1,15 @@
-{% from 'virtual-mcp-ocata-ovs.jinja' import HOSTNAME_CFG01 with context %}
+{% from 'underlay/virtual-mcp-ocata-ovs.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install OpenStack control services
 
-- description: Install keystone service
+- description: Install glance on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@glance:server' state.sls glance -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install keystone service (note that different fernet keys are created on different nodes)
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' state.sls keystone.server -b 1
   node_name: {{ HOSTNAME_CFG01 }}
@@ -21,6 +28,20 @@
   retry: {count: 1, delay: 15}
   skip_fail: false
 
+- description: Mount glusterfs.client volumes (resuires created 'keystone' and 'glusterfs' system users)
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glance:server' state.sls glusterfs.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update fernet keys for keystone server on the mounted glusterfs volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' state.sls keystone.server -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Populate keystone services/tenants/admins
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:client' state.sls keystone.client
@@ -31,28 +52,6 @@
 - description: Check keystone service-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; openstack service list'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-
-- description: Install glance on all controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@glance:server' state.sls glance -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Configure glusterfs.client on all controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glance:server' state.sls glusterfs.client
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Update fernet tokens for keystone server
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' state.sls keystone.server -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -69,7 +68,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@nova:controller' state.sls nova -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 15}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Check nova service-list

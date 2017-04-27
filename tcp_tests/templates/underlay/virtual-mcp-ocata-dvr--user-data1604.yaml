@@ -43,11 +43,6 @@
    - swapon /swapfile
    - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
 
-   ########################################################
-   # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-   ########################################################
 
    ############## TCP Cloud cfg01 node ##################
    #- sleep 120
@@ -62,31 +57,16 @@
    - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -
 
    - apt-get clean
-   - apt-get update
-   - apt-get -y upgrade
+   - eatmydata apt-get update && apt-get -y upgrade
 
    # Install common packages
-   - apt-get install -y python-pip git
-   - apt-get install -y curl tmux byobu iputils-ping traceroute htop tree
+   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
 
-   - apt-get install -y salt-minion
-
-   # To be configured from inventory/fuel-devops by operator or autotests
-   - 'echo "id: {hostname}" >> /etc/salt/minion'
-   - 'echo "master: 192.168.10.100" >> /etc/salt/minion'
-
-   - echo "Restarting minion service with workarounds..."
-   - rm -f /etc/salt/pki/minion/minion_master.pub
-   - service salt-minion restart
-   - sleep 5
-   - rm -f /etc/salt/pki/minion/minion_master.pub
-   - service salt-minion restart
-
-   #- echo "Showing node metadata..."
-   #- salt-call pillar.data
-
-   #- echo "Running complete state ..."
-   #- salt-call state.sls linux,openssh,salt
+   ########################################################
+   # Node is ready, allow SSH access
+   - echo "Allow SSH access ..."
+   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ########################################################
 
   write_files:
    - path: /etc/network/interfaces
