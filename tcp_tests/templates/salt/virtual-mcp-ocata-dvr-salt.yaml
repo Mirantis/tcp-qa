@@ -1,40 +1,58 @@
-{% from 'virtual-mcp-ocata-dvr.jinja' import HOSTNAME_CFG01 with context %}
+{% from 'underlay/virtual-mcp-ocata-dvr.yaml' import HOSTNAME_CFG01 with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
+
+# Address pools for reclass cluster model are taken in the following order:
+# 1. environment variables,
+# 2. config.underlay.address_pools based on fuel-devops address pools
+#    (see generated '.ini' file after underlay is created),
+# 3. defaults
+{% set address_pools = config.underlay.address_pools %}
+{% set IPV4_NET_ADMIN = os_env('IPV4_NET_ADMIN', address_pools.get('admin-pool01', '192.168.10.0/24')) %}
+{% set IPV4_NET_CONTROL = os_env('IPV4_NET_CONTROL', address_pools.get('private-pool01', '172.16.10.0/24')) %}
+{% set IPV4_NET_TENANT = os_env('IPV4_NET_TENANT', address_pools.get('tenant-pool01', '10.1.0.0/24')) %}
+{% set IPV4_NET_EXTERNAL = os_env('IPV4_NET_EXTERNAL', address_pools.get('external-pool01', '10.16.0.0/24')) %}
+
+{% set IPV4_NET_ADMIN_PREFIX = '.'.join(IPV4_NET_ADMIN.split('.')[0:3]) %}
+{% set IPV4_NET_CONTROL_PREFIX = '.'.join(IPV4_NET_CONTROL.split('.')[0:3]) %}
+{% set IPV4_NET_TENANT_PREFIX = '.'.join(IPV4_NET_TENANT.split('.')[0:3]) %}
+{% set IPV4_NET_EXTERNAL_PREFIX = '.'.join(IPV4_NET_EXTERNAL.split('.')[0:3]) %}
 
 # Install salt to the config node
 
+#- description: (moved to cloud-init config) Configure repository on the cfg01 node
+#  cmd:
+#    echo "172.18.248.114    jenkins.mcp.mirantis.net  gerrit.mcp.mirantis.net" >> /etc/hosts;
+#    echo "185.135.196.10    apt-mk.mirantis.com" >> /etc/hosts;
+#    echo "nameserver 172.18.208.44 >> /etc/resolv.conf;
+#    echo "nameserver 8.8.8.8 >> /etc/resolv.conf;
+#    which wget >/dev/null || (apt-get update; apt-get install -y wget);
+#    echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+#    wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
+#    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+#    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 1}
+#  skip_fail: false
 
-- description: Configure repository on the cfg01 node
-  cmd:
-    echo "172.18.248.114    jenkins.mcp.mirantis.net  gerrit.mcp.mirantis.net" >> /etc/hosts;
-    echo "185.135.196.10    apt-mk.mirantis.com" >> /etc/hosts;
-    echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
-    echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
-    which wget >/dev/null || (apt-get update; apt-get install -y wget);
-    echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
-    wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
-    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
-    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
-- description: Update packages on cfg01
-  cmd: apt-get clean; apt-get update
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
+#- description: Update packages on cfg01
+#  cmd: apt-get clean; eatmydata apt-get update
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 1}
+#  skip_fail: false
 
 - description: Installing salt master on cfg01
-  cmd:  apt-get install -y reclass git; apt-get install -y salt-master
+  cmd:  eatmydata apt-get install -y reclass git salt-master
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Install common packages on cfg01
-  cmd: apt-get install -y python-pip wget curl tmux byobu iputils-ping traceroute htop tree
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
+#- description: (moved to cloud-init config) Install common packages on cfg01
+#  cmd: eatmydata apt-get install -y python-pip wget curl tmux byobu iputils-ping traceroute htop tree
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 1}
+#  skip_fail: false
 
 - description: Configure salt-master on cfg01
   cmd: |
@@ -74,8 +92,37 @@
 - description: Clone reclass models with submodules
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b master --recurse-submodules https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
+    git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+
     mkdir -p /srv/salt/reclass/classes/service;
+
+    # Replace firstly to an intermediate value to avoid intersection between
+    # already replaced and replacing networks.
+    # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
+    # 192.168.10 -> 10.16.0 (generated network for admin)
+    # 10.16.0 -> <external network>
+    # So let's replace constant networks to the keywords, and then keywords to the desired networks.
+    find /srv/salt/reclass/ -type f -exec sed -i 's/192\.168\.10\./==IPV4_NET_ADMIN_PREFIX==/g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/172\.16\.10\./==IPV4_NET_CONTROL_PREFIX==/g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/10\.1\.0\./==IPV4_NET_TENANT_PREFIX==/g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/10\.16\.0\./==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
+
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}./g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}./g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {} +
+
+    # Disable checkouting the model from remote repository
+    cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
+    # local storage
+      reclass:
+        storage:
+          data_source:
+            engine: local
+    EOF
+
+    # Show the changes to the console
+    cd /srv/salt/reclass/; git diff
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -92,7 +139,7 @@
     [ ! -d /srv/salt/reclass/classes/service ] && mkdir -p /srv/salt/reclass/classes/service;
     declare -a formula_services=("linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon");
     echo -e "\nInstalling all required salt formulas\n";
-    apt-get install -y "${formula_services[@]/#/salt-formula-}";
+    eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
     for formula_service in "${formula_services[@]}"; do
       echo -e "\nLink service metadata for formula ${formula_service} ...\n";
       [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
@@ -111,17 +158,37 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Configure salt-minion on cfg01
+- description: Restart salt-master service
+  cmd: |
+     systemctl restart salt-master;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{% for ssh in config.underlay.ssh %}
+- description: Configure salt-minion on {{ ssh['node_name'] }}
   cmd: |
     [ ! -d /etc/salt/minion.d ] && mkdir -p /etc/salt/minion.d;
     cat << "EOF" >> /etc/salt/minion.d/minion.conf
-    id: {{ HOSTNAME_CFG01 }}
-    master: 127.0.0.1
+    id: {{ ssh['node_name'] }}
+    master: {{ config.salt.salt_master_host }}
     EOF
-    apt-get install -y salt-minion;
-  node_name: {{ HOSTNAME_CFG01 }}
+    eatmydata apt-get install -y salt-minion;
+    echo "Check for system info and metadata availability ...";
+    salt-call --no-color grains.items;
+    salt-call --no-color pillar.items;
+  node_name: {{ ssh['node_name'] }}
   retry: {count: 1, delay: 1}
   skip_fail: false
+{% endfor %}
+
+
+- description: Accept salt keys from all the nodes
+  cmd: salt-key -A -y
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 
 - description: Configure salt adoptors on cfg01
   cmd: |
@@ -131,16 +198,6 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Restart services
-  cmd: |
-     systemctl restart salt-master;
-     systemctl restart salt-minion;
-     echo "Showing system info and metadata ...";
-     salt-call --no-color grains.items;
-     salt-call --no-color pillar.data;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
 
 # Prepare salt services and nodes settings
 - description: Run 'linux' formula on cfg01
@@ -149,6 +206,7 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
 
 - description: Run 'openssh' formula on cfg01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -160,6 +218,7 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
+
 - description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     '*' cmd.run "echo '    StrictHostKeyChecking no' >> /root/.ssh/config"
@@ -167,29 +226,25 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Run 'reclass' formula on cfg01
-  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' reclass;
-    salt-call --no-color state.sls salt.master;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+#- description: (duplicate of the next two steps) Run 'reclass' formula on cfg01
+#  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@salt:master' state.sls reclass;
+#    salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt.master;
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: true
 
 
 - description: Run 'salt' formula on cfg01
   cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls salt.master.service;
-    salt-call --no-color state.sls salt.master,salt.api,salt.minion.ca;
+    salt-call --hard-crash --state-output=mixed --state-verbose=False
+        state.sls salt.master,salt.api,salt.minion.ca;
     systemctl restart salt-minion;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-- description: Accept salt keys from all the nodes
-  cmd: salt-key -A -y
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
 
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -219,64 +274,25 @@
 
 # Bootstrap all nodes
 
-- description: Configure linux on controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls
-    linux
+- description: Configure linux on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
+    cfg01*' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Configure linux on proxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'prx*' state.sls
-    linux
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Configure linux on gtw
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'gtw*' state.sls
-    linux
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 20}
-  skip_fail: false
-
-- description: Configure linux on cmp
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.sls
-    linux
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 20}
   skip_fail: false
 
 - description: Configure openssh on all nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg*' state.sls openssh;salt --hard-crash --state-output=mixed --state-verbose=False
+    cfg01*' state.sls openssh;salt --hard-crash --state-output=mixed --state-verbose=False
     -C '* and not cfg*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
     yes/' /etc/ssh/sshd_config && service ssh restart"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Configure salt.minion on ctl
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' state.sls salt.minion
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
-  skip_fail: false
-
-- description: Configure salt.minion on prx
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'prx*' state.sls salt.minion
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
-  skip_fail: false
-
-
-- description: Configure salt.minion on gtw
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'gtw*' state.sls salt.minion
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
-  skip_fail: false
-
-- description: Configure salt.minion on cmp
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.sls salt.minion
+- description: Configure salt.minion on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
+    cfg01*' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -299,21 +315,20 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-#- description: Hack gtw node
-#  cmd: salt 'gtw*' cmd.run "ip addr del 172.16.10.110/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-#
-#- description: Hack cmp01 node
-#  cmd: salt 'cmp01*' cmd.run "ip addr del 172.16.10.105/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-#
-#- description: Hack cmp02 node
-#  cmd: salt 'cmp02*' cmd.run "ip addr del 172.16.10.106/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-#
+- description: Hack gtw node
+  cmd: salt 'gtw*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Hack cmp01 node
+  cmd: salt 'cmp01*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Hack cmp02 node
+  cmd: salt 'cmp02*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
