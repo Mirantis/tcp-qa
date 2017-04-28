@@ -134,10 +134,6 @@ template:
 
 
         group_volumes:
-         - name: cloudimage1404    # This name is used for 'backing_store' option for node volumes.
-           source_image: !os_env IMAGE_PATH1404  # https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img or
-                                             # http://apt.tcpcloud.eu/images/ubuntu-14-04-x64-201608231134.qcow2
-           format: qcow2
          - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
            source_image: !os_env IMAGE_PATH1604  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img or
                                              # http://apt.tcpcloud.eu/images/ubuntu-16-04-x64-201608231004.qcow2

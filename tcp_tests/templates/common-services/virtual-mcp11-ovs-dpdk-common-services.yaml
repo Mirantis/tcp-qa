@@ -1,4 +1,4 @@
-{% from 'underlay/virtual-mcp-ocata-dvr.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'underlay/virtual-mcp11-ovs-dpdk.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install support services
 - description: Install keepalived on ctl01

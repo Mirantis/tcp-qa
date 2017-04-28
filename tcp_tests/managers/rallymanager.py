@@ -27,7 +27,7 @@ class RallyManager(object):
     """docstring for RallyManager"""
 
     image_name = 'rallyforge/rally'
-    image_version = '0.7.0'
+    image_version = '0.9.1'
 
     def __init__(self, underlay, admin_host):
         super(RallyManager, self).__init__()
@@ -40,9 +40,10 @@ sed -i 's|#swift_operator_role = Member|swift_operator_role=SwiftOperator|g' /et
 source /home/rally/openrc
 rally-manage db recreate
 rally deployment create --fromenv --name=tempest
-rally verify install
-rally verify genconfig
-rally verify showconfig"""
+rally verify create-verifier --type tempest --name tempest-verifier
+rally verify configure-verifier
+rally verify configure-verifier --show
+"""
         cmd = "cat > {path} << EOF\n{content}\nEOF".format(
             path='/root/rally/install_tempest.sh', content=content)
         cmd1 = "chmod +x /root/rally/install_tempest.sh"
@@ -71,7 +72,8 @@ rally verify showconfig"""
 
         with self._underlay.remote(host=self._admin_host) as remote:
             LOG.info("Getting image id")
-            cmd = "docker images | grep 0.7.0| awk '{print $3}'"
+            cmd = "docker images | grep {0}| awk '{print $3}'".format(
+                self.image_version)
             res = remote.check_call(cmd)
             self.image_id = res['stdout'][0].strip()
             LOG.info("Image ID is {}".format(self.image_id))
@@ -101,10 +103,10 @@ rally verify showconfig"""
                     "rally verify start {test}".format(test=test),
                 docker_id=self.docker_id),
             docker_exec.format(
-                cmd="rally verify results --json --output-file result.json",
+                cmd="rally verify report --type json --to result.json",
                 docker_id=self.docker_id),
             docker_exec.format(
-                cmd="rally verify results --html --output-file result.html",
+                cmd="rally verify report --type html --to result.html",
                 docker_id=self.docker_id),
         ]
         with self._underlay.remote(host=self._admin_host) as remote:
@@ -117,7 +119,7 @@ rally verify showconfig"""
         res_file_name = 'result.json'
         file_prefix = 'results_' + datetime.datetime.now().strftime(
             '%Y%m%d_%H%M%S') + '_'
-        file_dst = '{0}/logs/{1}{2}'.format(
+        file_dst = '{0}/{1}{2}'.format(
             settings.LOGS_DIR, file_prefix, res_file_name)
         with self._underlay.remote(host=self._admin_host) as remote:
             remote.download(
