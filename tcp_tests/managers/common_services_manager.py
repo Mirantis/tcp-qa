@@ -18,16 +18,16 @@ from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 class CommonServicesManager(ExecuteCommandsMixin):
     """docstring for CommonServicesManager"""
 
-    _config = None
-    _underlay = None
+    __config = None
+    __underlay = None
 
     def __init__(self, config, underlay, salt=None):
-        self._config = config
-        self._underlay = underlay
+        self.__config = config
+        self.__underlay = underlay
         self._salt = salt
         super(CommonServicesManager, self).__init__()
 
     def install(self, commands):
         self.execute_commands(commands,
                               label='Install common services')
-        self._config.common_services.common_services_installed = True
+        self.__config.common_services.common_services_installed = True

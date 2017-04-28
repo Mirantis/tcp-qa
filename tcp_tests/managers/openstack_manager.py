@@ -18,14 +18,15 @@ from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 class OpenstackManager(ExecuteCommandsMixin):
     """docstring for OpenstackManager"""
 
-    _config = None
-    _underlay = None
+    __config = None
+    __underlay = None
 
     def __init__(self, config, underlay, salt):
-        self._config = config
-        self._underlay = underlay
+        self.__config = config
+        self.__underlay = underlay
         self._salt = salt
-        super(OpenstackManager, self).__init__()
+        super(OpenstackManager, self).__init__(
+            config=config, underlay=underlay)
 
     def install(self, commands):
         self.execute_commands(commands,
