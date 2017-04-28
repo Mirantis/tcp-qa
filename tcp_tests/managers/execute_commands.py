@@ -10,6 +10,14 @@ LOG = logger.logger
 class ExecuteCommandsMixin(object):
     """docstring for ExecuteCommands"""
 
+    __config = None
+    __underlay = None
+
+    def __init__(self, config, underlay):
+        self.__config = config
+        self.__underlay = underlay
+        super(ExecuteCommandsMixin, self).__init__()
+
     def ensure_running_service(self, service_name, host, check_cmd,
                                state_running='start/running'):
         """Check if the service_name running or try to restart it
@@ -21,7 +29,7 @@ class ExecuteCommandsMixin(object):
         """
         cmd = "service {0} status | grep -q '{1}'".format(
             service_name, state_running)
-        with self._underlay.remote(host=host) as remote:
+        with self.__underlay.remote(host=host) as remote:
             result = remote.execute(cmd)
             if result.exit_code != 0:
                 LOG.info("{0} is not in running state on the node {1},"
@@ -97,7 +105,7 @@ class ExecuteCommandsMixin(object):
         retry_delay = retry.get('delay', 1)
         skip_fail = step.get('skip_fail', False)
 
-        with self._underlay.remote(node_name=node_name) as remote:
+        with self.__underlay.remote(node_name=node_name) as remote:
 
             for x in range(retry_count, 0, -1):
                 time.sleep(3)
@@ -122,16 +130,16 @@ class ExecuteCommandsMixin(object):
                         " === RETRY ({0}/{1}) ======================="
                         .format(x - 1, retry_count))
                 else:
-                    if self._config.salt.salt_master_host != '0.0.0.0':
+                    if self.__config.salt.salt_master_host != '0.0.0.0':
                         # Workarounds for crashed services
                         self.ensure_running_service(
                             "salt-master",
-                            self._config.salt.salt_master_host,
+                            self.__config.salt.salt_master_host,
                             "salt-call pillar.items",
                             'active (running)')  # Hardcoded for now
                         self.ensure_running_service(
                             "salt-minion",
-                            self._config.salt.salt_master_host,
+                            self.__config.salt.salt_master_host,
                             "salt 'cfg01*' pillar.items",
                             "active (running)")  # Hardcoded for now
                         break

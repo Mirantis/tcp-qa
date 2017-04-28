@@ -21,12 +21,13 @@ from tcp_tests import logger
 from tcp_tests.helpers import ext
 from tcp_tests import settings
 from tcp_tests.managers import openstack_manager
+from tcp_tests.helpers import utils
 
 LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def openstack_actions(config, underlay, salt_actions):
+def openstack_actions(config, underlay, salt_deployed):
     """Fixture that provides various actions for K8S
 
     :param config: fixture provides oslo.config
@@ -35,7 +36,7 @@ def openstack_actions(config, underlay, salt_actions):
 
     For use in tests or fixtures to deploy a custom K8S
     """
-    return openstack_manager.OpenstackManager(config, underlay, salt_actions)
+    return openstack_manager.OpenstackManager(config, underlay, salt_deployed)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)

@@ -27,8 +27,8 @@ LOG = logger.logger
 class SaltManager(ExecuteCommandsMixin):
     """docstring for SaltManager"""
 
-    _config = None
-    _underlay = None
+    __config = None
+    __underlay = None
     _map = {
         'enforceState': 'enforce_state',
         'enforceStates': 'enforce_states',
@@ -37,8 +37,8 @@ class SaltManager(ExecuteCommandsMixin):
     }
 
     def __init__(self, config, underlay, host=None, port='6969'):
-        self._config = config
-        self._underlay = underlay
+        self.__config = config
+        self.__underlay = underlay
         self._port = port
         self._host = host
         self._api = None
@@ -46,7 +46,7 @@ class SaltManager(ExecuteCommandsMixin):
         self._password = settings.SALT_PASSWORD
         self._salt = self
 
-        super(SaltManager, self).__init__()
+        super(SaltManager, self).__init__(config=config, underlay=underlay)
 
     def install(self, commands):
         if commands[0].get('do'):
@@ -55,23 +55,23 @@ class SaltManager(ExecuteCommandsMixin):
             self.install1(commands)
 
     def install1(self, commands):
-        if self._config.salt.salt_master_host == '0.0.0.0':
+        if self.__config.salt.salt_master_host == '0.0.0.0':
             # Temporary workaround. Underlay should be extended with roles
-            salt_nodes = self._underlay.node_names()
-            self._config.salt.salt_master_host = \
-                self._underlay.host_by_node_name(salt_nodes[0])
+            salt_nodes = self.__underlay.node_names()
+            self.__config.salt.salt_master_host = \
+                self.__underlay.host_by_node_name(salt_nodes[0])
 
-        # self._underlay.execute_commands(commands=commands,
+        # self.__underlay.execute_commands(commands=commands,
         #                                  label="Install and configure salt")
         self.execute_commands(commands=commands,
                               label="Install and configure salt")
 
     def install2(self, commands):
-        if self._config.salt.salt_master_host == '0.0.0.0':
+        if self.__config.salt.salt_master_host == '0.0.0.0':
             # Temporary workaround. Underlay should be extended with roles
-            salt_nodes = self._underlay.node_names()
-            self._config.salt.salt_master_host = \
-                self._underlay.host_by_node_name(salt_nodes[0])
+            salt_nodes = self.__underlay.node_names()
+            self.__config.salt.salt_master_host = \
+                self.__underlay.host_by_node_name(salt_nodes[0])
 
         # self.run_commands(commands=commands,
         #                   label="Install and configure salt")
@@ -86,13 +86,13 @@ class SaltManager(ExecuteCommandsMixin):
     def host(self):
         if self._host:
             return self._host
-        elif self._config.salt.salt_master_host == '0.0.0.0':
+        elif self.__config.salt.salt_master_host == '0.0.0.0':
             # Temporary workaround. Underlay should be extended with roles
-            salt_nodes = self._underlay.node_names()
-            self._config.salt.salt_master_host = \
-                self._underlay.host_by_node_name(salt_nodes[0])
+            salt_nodes = self.__underlay.node_names()
+            self.__config.salt.salt_master_host = \
+                self.__underlay.host_by_node_name(salt_nodes[0])
 
-        return self._config.salt.salt_master_host
+        return self.__config.salt.salt_master_host
 
     @property
     def api(self):
@@ -134,6 +134,8 @@ class SaltManager(ExecuteCommandsMixin):
             raise LookupError("Result is empty or absent")
 
         result = r['return'][0]
+        if len(result) == 0:
+            raise LookupError("Result is empty or absent")
         LOG.info("Job has result for %s nodes", result.keys())
         fails = defaultdict(list)
         for h in result:
