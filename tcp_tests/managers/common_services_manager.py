@@ -25,7 +25,8 @@ class CommonServicesManager(ExecuteCommandsMixin):
         self.__config = config
         self.__underlay = underlay
         self._salt = salt
-        super(CommonServicesManager, self).__init__()
+        super(CommonServicesManager, self).__init__(
+            config=config, underlay=underlay)
 
     def install(self, commands):
         self.execute_commands(commands,
