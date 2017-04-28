@@ -119,7 +119,7 @@ rally verify configure-verifier --show
         res_file_name = 'result.json'
         file_prefix = 'results_' + datetime.datetime.now().strftime(
             '%Y%m%d_%H%M%S') + '_'
-        file_dst = '{0}/logs/{1}{2}'.format(
+        file_dst = '{0}/{1}{2}'.format(
             settings.LOGS_DIR, file_prefix, res_file_name)
         with self._underlay.remote(host=self._admin_host) as remote:
             remote.download(
