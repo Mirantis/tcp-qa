@@ -1,5 +1,5 @@
 {% from 'underlay/virtual-mcp-ocata-ovs.yaml' import HOSTNAME_CFG01 with context %}
-{% from ‘salt/virtual-mcp-ocata-ovs-salt.yaml’ import IPV4_NET_EXTERNAL_PREFIX with context %}
+{% from 'salt/virtual-mcp-ocata-ovs-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 
 # Install OpenStack control services
 
