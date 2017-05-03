@@ -193,7 +193,7 @@
 
 - description: Create subnet_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
+    '. /root/keystonercv3; neutron subnet-create net04_ext 10.16.0.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start=10.16.0.150,end=10.16.0.180 --gateway 10.16.0.1'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -207,7 +207,7 @@
 
 - description: Create subnet_net04
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04 {{ IPV4_NET_TENANT_PREFIX }}.0/24 --name net04__subnet --allocation-pool start={{ IPV4_NET_TENANT_PREFIX }}.120,end={{ IPV4_NET_TENANT_PREFIX }}.240'
+    '. /root/keystonercv3; neutron subnet-create net04 172.16.10.0/24 --name net04__subnet --allocation-pool start=172.16.10.120,end=172.16.10.240'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -248,67 +248,44 @@
   skip_fail: false
 
 # Configure cinder-volume salt-call
-- description: Set disks 01
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 03
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 01
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-
-- description: Create cinder-volume group
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
-    'vgcreate cinder-volumes /dev/vdb1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install cinder-volume
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
-    'apt-get install cinder-volume python-mysqldb -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Restart tgt
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
-    'service tgt restart'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Restart cinder volume
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
-    'service cinder-volume restart'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description: Set disks
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+#    'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Create partitions salt-call
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+#    'pvcreate /dev/vdb1'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Create cinder-volume group
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+#    'vgcreate cinder-volumes /dev/vdb1'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Install cinder-volume
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+#    'apt-get install cinder-volume python-mysqldb -y'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Restart tgt
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+#    'service tgt restart'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Restart cinder volume
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+#    'service cinder-volume restart'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
