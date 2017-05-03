@@ -12,7 +12,7 @@ template:
 
     address_pools:
       admin-pool01:
-        net: 172.16.10.0/24:24
+        net: 192.168.10.0/24:24
         params:
           ip_reserved:
             gateway: +1
@@ -34,7 +34,7 @@ template:
             dhcp: [+100, -2]
 
       private-pool01:
-        net: 192.168.10.0/24:24
+        net: 172.16.10.0/24:24
         params:
           ip_reserved:
             gateway: +1
