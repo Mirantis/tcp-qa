@@ -48,3 +48,6 @@ IFACES = [
     os.environ.get("IFACE_0", "eth0"),
     os.environ.get("IFACE_1", "eth1"),
 ]
+
+SALT_USER = os.environ.get('SALT_USER', 'salt')
+SALT_PASSWORD = os.environ.get('SALT_PASSWORD', 'hovno12345!')

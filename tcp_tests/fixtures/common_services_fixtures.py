@@ -26,14 +26,15 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def common_services_actions(config, underlay):
+def common_services_actions(config, underlay, salt_actions):
     """Fixture that provides various actions for CommonServices
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :rtype: CommonServicesManager
     """
-    return common_services_manager.CommonServicesManager(config, underlay)
+    return common_services_manager.CommonServicesManager(config, underlay,
+                                                         salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.common_services_deployed)
