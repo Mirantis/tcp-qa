@@ -16,58 +16,44 @@ pip install -r ./tcp_tests/requirements.txt
 ```
 * Note: Please read [1] if you don't have fuel-devops installed, because there are required some additional packages and configuration.
 
-Get cloudinit images
---------------------
+Get cloudinit image
+-------------------
 ```
-wget https://cloud-images.ubuntu.com/trusty/current/trusty-server-cloudimg-amd64-disk1.img -O ./trusty-server-cloudimg-amd64.qcow2
 wget https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img -O ./xenial-server-cloudimg-amd64.qcow2
 ```
-Export variables
-----------------
 
-Required:
+Choose the name of the cluster model
+------------------------------------
+LAB_CONFIG_NAME variable maps cluster name from the model repository with
+the set of templates in the ./tcp_tests/templates/ folder.
 ```
-export IMAGE_PATH1404=./trusty-server-cloudimg-amd64.qcow2
+export LAB_CONFIG_NAME=virtual-mcp-ocata-dvr  # OVS-DVR with ocata packages
+export LAB_CONFIG_NAME=virtual-mcp-ocata-ovs  # OVS-NO-DVR with ocata packages
+export LAB_CONFIG_NAME=virtual-mcp11-dvr  # OVS-DVR with neutron packages
+export LAB_CONFIG_NAME=virtual-mcp11-ovs  # OVS-NO-DVR with neutron packages
+export LAB_CONFIG_NAME=virtual-mcp11-dpdk  # OVS-DPDK with neutron packages
+```
+
+Run deploy test
+---------------
+```
 export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
-```
-
-Optional:
-```
 export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
-```
-
-Run deploy test for virtual-mcp11-dvr
--------------------------------------
-Note: This lab is not finished yet. TBD: configure vsrx node
-```
-export ENV_NAME=virtual-mcp11-dvr  # You can set any env name
-export LAB_CONFIG_NAME=virtual-mcp11-dvr  # Name of set of templates
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
-
-
-Run deploy test for virtual-mcp11-ovs
--------------------------------------
-Note: This lab is not finished yet. TBD: configure vsrx node
 ```
-export ENV_NAME=virtual-mcp11-ovs  # You can set any env name
-export LAB_CONFIG_NAME=virtual-mcp11-ovs  # Name of set of templates
 
-LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
-
-
-Run deploy test and rally verify (tempest) for virtual-mcp11-ovs
-----------------------------------------------------------------
-Note: This lab is not finished yet. TBD: configure vsrx node
+Run deploy test and rally verify (tempest)
+------------------------------------------
 ```
-export ENV_NAME=virtual-mcp11-ovs  # You can set any env name
-export LAB_CONFIG_NAME=virtual-mcp11-ovs  # Name of set of templates
+export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
+export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_run_rally
+```
 
-
-Run deploy test for mk22-qa-lab01
----------------------------------
+Run deploy test for mk22-qa-lab01 (outdated)
+--------------------------------------------
 Note: This lab is not finished yet. TBD: configure vsrx node
 ```
 export ENV_NAME=tcpcloud-mk22  # You can set any env name

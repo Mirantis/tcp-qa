@@ -1,6 +1,9 @@
-{% import 'underlay/virtual-mcp11-ovs-dpdk--meta-data.yaml' as CLOUDINIT_META_DATA %}
-{% import 'underlay/virtual-mcp11-ovs-dpdk--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 %}
-{% import 'underlay/virtual-mcp11-ovs-dpdk--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 %}
+# Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'stable') %}
+
+{% import 'underlay/virtual-mcp11-ovs-dpdk--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'underlay/virtual-mcp11-ovs-dpdk--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'underlay/virtual-mcp11-ovs-dpdk--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
 
 ---
 aliases:
@@ -21,7 +24,7 @@ aliases:
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'virtual-mcp11-ovs-dpdk') }}
+    env_name: {{ os_env('ENV_NAME', 'virtual-mcp11-ovs-dpdk_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
 
     address_pools:
       private-pool01:
