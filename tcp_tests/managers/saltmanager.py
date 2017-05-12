@@ -39,86 +39,62 @@ class SaltManager(ExecuteCommandsMixin):
     def __init__(self, config, underlay, host=None, port='6969'):
         self.__config = config
         self.__underlay = underlay
-        self._port = port
-        self._host = host
-        self._api = None
-        self._user = settings.SALT_USER
-        self._password = settings.SALT_PASSWORD
-        self._salt = self
+        self.__port = port
+        self.__host = host
+        self.__api = None
+        self.__user = settings.SALT_USER
+        self.__password = settings.SALT_PASSWORD
 
         super(SaltManager, self).__init__(config=config, underlay=underlay)
 
     def install(self, commands):
-        if commands[0].get('do'):
-            self.install2(commands)
-        else:
-            self.install1(commands)
+        #if self.__config.salt.salt_master_host == '0.0.0.0':
+        #    # Temporary workaround. Underlay should be extended with roles
+        #    salt_nodes = self.__underlay.node_names()
+        #    self.__config.salt.salt_master_host = \
+        #        self.__underlay.host_by_node_name(salt_nodes[0])
 
-    def install1(self, commands):
-        if self.__config.salt.salt_master_host == '0.0.0.0':
-            # Temporary workaround. Underlay should be extended with roles
-            salt_nodes = self.__underlay.node_names()
-            self.__config.salt.salt_master_host = \
-                self.__underlay.host_by_node_name(salt_nodes[0])
-
-        # self.__underlay.execute_commands(commands=commands,
-        #                                  label="Install and configure salt")
-        self.execute_commands(commands=commands,
-                              label="Install and configure salt")
-
-    def install2(self, commands):
-        if self.__config.salt.salt_master_host == '0.0.0.0':
-            # Temporary workaround. Underlay should be extended with roles
-            salt_nodes = self.__underlay.node_names()
-            self.__config.salt.salt_master_host = \
-                self.__underlay.host_by_node_name(salt_nodes[0])
-
-        # self.run_commands(commands=commands,
-        #                   label="Install and configure salt")
         self.execute_commands(commands=commands,
                               label="Install and configure salt")
 
     @property
     def port(self):
-        return self._port
+        return self.__port
 
     @property
     def host(self):
-        if self._host:
-            return self._host
-        elif self.__config.salt.salt_master_host == '0.0.0.0':
-            # Temporary workaround. Underlay should be extended with roles
-            salt_nodes = self.__underlay.node_names()
-            self.__config.salt.salt_master_host = \
-                self.__underlay.host_by_node_name(salt_nodes[0])
-
-        return self.__config.salt.salt_master_host
+        if self.__host:
+            return self.__host
+        else:
+            #TODO(ddmitriev): consider to add a check and raise
+            # exception if 'salt_master_host' is not initialized.
+            return self.__config.salt.salt_master_host
 
     @property
     def api(self):
         def login():
             LOG.info("Authentication in Salt API")
-            self._api.login(
-                username=self._user,
-                password=self._password,
+            self.__api.login(
+                username=self.__user,
+                password=self.__password,
                 eauth='pam')
             return datetime.now()
 
-        if self._api:
+        if self.__api:
             if (datetime.now() - self.__session_start).seconds < 5 * 60:
-                return self._api
+                return self.__api
             else:
                 # FIXXME: Change to debug
                 LOG.info("Session's expired")
                 self.__session_start = login()
-                return self._api
+                return self.__api
 
-        LOG.info("Connect to Salt API")
         url = "http://{host}:{port}".format(
             host=self.host, port=self.port)
-        self._api = Pepper(url)
+        LOG.info("Connecting to Salt API {0}".format(url))
+        self.__api = Pepper(url)
         self.__session_start = login()
-        return self._api
+        return self.__api
 
     def local(self, tgt, fun, args=None, kwargs=None):
         return self.api.local(tgt, fun, args, kwargs, expr_form='compound')

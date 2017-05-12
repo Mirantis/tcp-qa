@@ -44,7 +44,7 @@ class EnvironmentManager(object):
                                                  descriebe environment status.
         """
         self.__devops_config = env_config.EnvironmentConfig()
-        self._env = None
+        self.__env = None
         self.__config = config
 
         if config.hardware.conf_path is not None:
@@ -103,7 +103,7 @@ class EnvironmentManager(object):
         :rtype: dict
         """
         result = {}
-        for node in self._env.get_nodes(role__in=ext.UNDERLAY_NODE_ROLES):
+        for node in self.__env.get_nodes(role__in=ext.UNDERLAY_NODE_ROLES):
             lvm = filter(lambda x: x.volume.name == 'lvm', node.disk_devices)
             if len(lvm) == 0:
                 continue
@@ -130,10 +130,10 @@ class EnvironmentManager(object):
 
         :param name: string
         """
-        self._env = models.Environment.get(name=name)
+        self.__env = models.Environment.get(name=name)
 
     def _get_default_node_group(self):
-        return self._env.get_group(name='default')
+        return self.__env.get_group(name='default')
 
     def _get_network_pool(self, net_pool_name):
         default_node_group = self._get_default_node_group()
@@ -149,7 +149,7 @@ class EnvironmentManager(object):
             raise Exception("No roles specified for the environment!")
 
         config_ssh = []
-        for d_node in self._env.get_nodes(role__in=roles):
+        for d_node in self.__env.get_nodes(role__in=roles):
             ssh_data = {
                 'node_name': d_node.name,
                 'roles': [d_node.role],
@@ -176,16 +176,16 @@ class EnvironmentManager(object):
         self.__config.hardware.current_snapshot = name
         LOG.info("Set current snapshot in config to '{0}'".format(
             self.__config.hardware.current_snapshot))
-        if self._env is not None:
+        if self.__env is not None:
             LOG.info('trying to suspend ....')
-            self._env.suspend()
+            self.__env.suspend()
             LOG.info('trying to snapshot ....')
-            self._env.snapshot(name, description=description, force=True)
+            self.__env.snapshot(name, description=description, force=True)
             LOG.info('trying to resume ....')
-            self._env.resume()
+            self.__env.resume()
         else:
             raise exceptions.EnvironmentIsNotSet()
-        settings_oslo.save_config(self.__config, name, self._env.name)
+        settings_oslo.save_config(self.__config, name, self.__env.name)
 
         if settings.VIRTUAL_ENV:
             venv_msg = "source {0}/bin/activate;\n".format(
@@ -209,7 +209,7 @@ class EnvironmentManager(object):
 
     def _get_snapshot_config_name(self, snapshot_name):
         """Get config name for the environment"""
-        env_name = self._env.name
+        env_name = self.__env.name
         if env_name is None:
             env_name = 'config'
         test_config_path = os.path.join(
@@ -227,10 +227,10 @@ class EnvironmentManager(object):
         :param name: string
         """
         LOG.info("Reverting from snapshot named '{0}'".format(name))
-        if self._env is not None:
-            self._env.revert(name=name)
+        if self.__env is not None:
+            self.__env.revert(name=name)
             LOG.info("Resuming environment after revert")
-            self._env.resume()
+            self.__env.resume()
         else:
             raise exceptions.EnvironmentIsNotSet()
 
@@ -261,7 +261,7 @@ class EnvironmentManager(object):
             LOG.error('Environment name is not set!')
             raise exceptions.EnvironmentNameIsNotSet()
         try:
-            self._env = models.Environment.create_environment(
+            self.__env = models.Environment.create_environment(
                 settings.config
             )
         except db.IntegrityError:
@@ -270,7 +270,7 @@ class EnvironmentManager(object):
                 ' in template.'.format(env_name)
             )
             raise
-        self._env.define()
+        self.__env.define()
         LOG.info(
             'Environment "{0}" created'.format(env_name)
         )
@@ -279,11 +279,11 @@ class EnvironmentManager(object):
         """Method for start environment
 
         """
-        if self._env is None:
+        if self.__env is None:
             raise exceptions.EnvironmentIsNotSet()
-        self._env.start()
-        LOG.info('Environment "{0}" started'.format(self._env.name))
-        for node in self._env.get_nodes(role__in=ext.UNDERLAY_NODE_ROLES):
+        self.__env.start()
+        LOG.info('Environment "{0}" started'.format(self.__env.name))
+        for node in self.__env.get_nodes(role__in=ext.UNDERLAY_NODE_ROLES):
             LOG.info("Waiting for SSH on node '{}...'".format(node.name))
             timeout = 480
             helpers.wait(
@@ -293,28 +293,28 @@ class EnvironmentManager(object):
                     node.name, timeout
                 )
             )
-        LOG.info('Environment "{0}" ready'.format(self._env.name))
+        LOG.info('Environment "{0}" ready'.format(self.__env.name))
 
     def resume(self):
         """Resume environment"""
-        if self._env is None:
+        if self.__env is None:
             raise exceptions.EnvironmentIsNotSet()
-        self._env.resume()
+        self.__env.resume()
 
     def suspend(self):
         """Suspend environment"""
-        if self._env is None:
+        if self.__env is None:
             raise exceptions.EnvironmentIsNotSet()
-        self._env.suspend()
+        self.__env.suspend()
 
     def stop(self):
         """Stop environment"""
-        if self._env is None:
+        if self.__env is None:
             raise exceptions.EnvironmentIsNotSet()
-        self._env.destroy()
+        self.__env.destroy()
 
     def has_snapshot(self, name):
-        return self._env.has_snapshot(name)
+        return self.__env.has_snapshot(name)
 
     def has_snapshot_config(self, name):
         test_config_path = self._get_snapshot_config_name(name)
@@ -325,7 +325,7 @@ class EnvironmentManager(object):
 
         """
         LOG.debug("Deleting environment")
-        self._env.erase()
+        self.__env.erase()
 
     def __get_nodes_by_role(self, node_role):
         """Get node by given role name
@@ -334,7 +334,7 @@ class EnvironmentManager(object):
         :rtype: devops.models.Node
         """
         LOG.debug('Trying to get nodes by role {0}'.format(node_role))
-        return self._env.get_nodes(role=node_role)
+        return self.__env.get_nodes(role=node_role)
 
     @property
     def master_nodes(self):
@@ -370,7 +370,7 @@ class EnvironmentManager(object):
 
     @property
     def nameserver(self):
-        return self._env.router(ext.NETWORK_TYPE.admin)
+        return self.__env.router(ext.NETWORK_TYPE.admin)
 
     def set_dns_config(self):
         # Set local nameserver to use by default
@@ -381,5 +381,5 @@ class EnvironmentManager(object):
 
     def set_address_pools_config(self):
         """Store address pools CIDRs in config object"""
-        for ap in self._env.get_address_pools():
+        for ap in self.__env.get_address_pools():
             self.__config.underlay.address_pools[ap.name] = ap.net

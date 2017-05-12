@@ -1,4 +1,5 @@
 {% from 'virtual-mcp11-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp11-ovs/underlay.yaml' import REPOSITORY_SUITE with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
@@ -111,6 +112,8 @@
     find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
     find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}./g' {} +
     find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {} +
+
+    find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
     # Disable checkouting the model from remote repository
     cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
@@ -226,25 +229,19 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-#- description: (duplicate of the next two steps) Run 'reclass' formula on cfg01
-#  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@salt:master' state.sls reclass;
-#    salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt.master;
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: true
-
-
-- description: Run 'salt' formula on cfg01
+- description: Run 'salt.master' formula on cfg01
   cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls salt.master.service;
-    salt-call --hard-crash --state-output=mixed --state-verbose=False
-        state.sls salt.master,salt.api,salt.minion.ca;
-    systemctl restart salt-minion;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
+- description: Run 'salt' formula on cfg01 with workaround proposed in PROD-10894
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt;
+    systemctl restart salt-minion;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
 
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False

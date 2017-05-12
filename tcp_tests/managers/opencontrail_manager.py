@@ -20,12 +20,12 @@ class OpenContrailManager(ExecuteCommandsMixin):
 
     __config = None
     __underlay = None
-    _openstack_actions = None
+    __openstack_actions = None
 
     def __init__(self, config, underlay, openstack_deployed):
         self.__config = config
         self.__underlay = underlay
-        self._openstack_actions = openstack_deployed
+        self.__openstack_actions = openstack_deployed
         super(OpenContrailManager, self).__init__(
             config=config, underlay=underlay)
 

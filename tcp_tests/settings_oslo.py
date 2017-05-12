@@ -94,6 +94,8 @@ salt_deploy_opts = [
 salt_opts = [
     ct.Cfg('salt_master_host', ct.IPAddress(),
            help="", default='0.0.0.0'),
+    ct.Cfg('salt_master_port', ct.String(),
+           help="", default='6969'),
 ]
 
 common_services_deploy_opts = [

@@ -257,11 +257,11 @@ def set_value_for_dict_by_keypath(source, paths, value, new_on_missing=True):
 class EnvironmentConfig(object):
     def __init__(self):
         super(EnvironmentConfig, self).__init__()
-        self._config = None
+        self.__config = None
 
     @property
     def config(self):
-        return self._config
+        return self.__config
 
     @config.setter
     def config(self, config):
@@ -269,11 +269,11 @@ class EnvironmentConfig(object):
 
         :param config: dict
         """
-        self._config = fix_devops_config(config)
+        self.__config = fix_devops_config(config)
 
     def __getitem__(self, key):
-        if self._config is not None:
-            conf = self._config['template']['devops_settings']
+        if self.__config is not None:
+            conf = self.__config['template']['devops_settings']
             return copy.deepcopy(conf.get(key, None))
         else:
             return None
@@ -287,7 +287,7 @@ class EnvironmentConfig(object):
         """
         if self.config is None:
             raise exceptions.DevopsConfigIsNone()
-        conf = self._config['template']['devops_settings']
+        conf = self.__config['template']['devops_settings']
         set_value_for_dict_by_keypath(conf, keypath, value)
 
     def save(self, filename):
@@ -295,12 +295,12 @@ class EnvironmentConfig(object):
 
         :param filename: string
         """
-        if self._config is None:
+        if self.__config is None:
             raise exceptions.DevopsConfigIsNone()
         with open(filename, 'w') as f:
             f.write(
                 yaml.dump(
-                    self._config, default_flow_style=False
+                    self.__config, default_flow_style=False
                 )
             )
 
