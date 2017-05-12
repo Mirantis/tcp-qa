@@ -26,19 +26,19 @@ print ("\n" + "-" * 10 + " Initialize oslo.config variables with defaults"
        " from environment" + "-" * 10)
 
 _default_conf = pkg_resources.resource_filename(
-    __name__, 'templates/underlay/{0}.yaml'.format(settings.LAB_CONFIG_NAME))
+    __name__, 'templates/{0}/underlay.yaml'.format(settings.LAB_CONFIG_NAME))
 
 _default_salt_steps = pkg_resources.resource_filename(
-    __name__, 'templates/salt/{0}-salt.yaml'.format(settings.LAB_CONFIG_NAME))
+    __name__, 'templates/{0}/salt.yaml'.format(settings.LAB_CONFIG_NAME))
 _default_common_services_steps = pkg_resources.resource_filename(
     __name__,
-    'templates/common-services/{0}-common-services.yaml'.format(
+    'templates/{0}/common-services.yaml'.format(
         settings.LAB_CONFIG_NAME))
 _default_openstack_steps = pkg_resources.resource_filename(
-    __name__, 'templates/openstack/{0}-openstack.yaml'.format(
+    __name__, 'templates/{0}/openstack.yaml'.format(
         settings.LAB_CONFIG_NAME))
 _default_opencontrail_prepare_tests_steps_path = pkg_resources.resource_filename(
-    __name__, 'templates/opencontrail/{0}-opencontrail.yaml'.format(
+    __name__, 'templates/{0}/opencontrail.yaml'.format(
         settings.LAB_CONFIG_NAME))
 
 
