@@ -201,7 +201,7 @@ class EnvironmentManager(object):
                  "ssh {login}@{salt_master_host}  # Password: {password}\n"
                  "************************************\n"
                  .format(venv_msg=venv_msg,
-                         env_name=settings.ENV_NAME,
+                         env_name=self._d_env_name,
                          snapshot_name=name,
                          login=settings.SSH_NODE_CREDENTIALS['login'],
                          password=settings.SSH_NODE_CREDENTIALS['password'],

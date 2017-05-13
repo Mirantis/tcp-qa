@@ -116,6 +116,10 @@ class ExecuteCommandsMixin(object):
                 for s in result['stdout']:
                     if s.startswith("Failed:"):
                         failed += int(s.split("Failed:")[1])
+                    if 'Minion did not return. [No response]' in s:
+                        failed += 1
+                    if s.startswith("[CRITICAL]"):
+                        failed += 1
 
                 if result.exit_code != 0:
                     time.sleep(retry_delay)
