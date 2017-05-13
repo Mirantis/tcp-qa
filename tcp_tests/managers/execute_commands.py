@@ -113,7 +113,7 @@ class ExecuteCommandsMixin(object):
 
                 # Workaround of exit code 0 from salt in case of failures
                 failed = 0
-                for s in result['stdout']:
+                for s in result['stdout'] + result['stderr']:
                     if s.startswith("Failed:"):
                         failed += int(s.split("Failed:")[1])
                     if 'Minion did not return. [No response]' in s:
