@@ -1,0 +1,111 @@
+# Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'stable') %}
+
+{% import 'ironic_standalone/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'ironic_standalone/underlay--user-data-ironic.yaml' as CLOUDINIT_USER_DATA_IRONIC with context %}
+
+---
+aliases:
+ - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
+ - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
+ - &cloudinit_user_data_ironic {{ CLOUDINIT_USER_DATA_IRONIC }}
+
+{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'standalone') + '.local' %}
+{% set HOSTNAME_IRONIC = os_env('HOSTNAME_IRONIC', 'ironic_master') %}
+
+
+template:
+  devops_settings:
+    env_name: {{ os_env('IRONIC_ENV_NAME', 'ironic_' + DOMAIN_NAME + '_' + REPOSITORY_SUITE + '_' + os_env('BUILD_NUMBER', '')) }}
+
+    address_pools:
+
+      ironic-pool01:
+        net: {{ os_env('IRONIC_ADDRESS_POOL01', '10.50.0.0/16:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_IRONIC }}: +2
+          ip_ranges:
+            dhcp: [+90, -10]
+
+      admin-pool01:
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.70.0.0/16:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_IRONIC }}: +2
+
+    groups:
+      - name: default
+        driver:
+          name: devops.driver.libvirt
+          params:
+            connection_string: !os_env CONNECTION_STRING, qemu:///system
+            storage_pool_name: !os_env STORAGE_POOL_NAME, default
+            stp: False
+            hpet: False
+            enable_acpi: true
+            use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
+
+        network_pools:
+          admin: admin-pool01
+
+        l2_network_devices:
+          # Ironic management interface
+          ironic:
+            address_pool: ironic-pool01
+            dhcp: true
+            forward:
+              mode: nat
+
+          # PXE / Salt-master admin network
+          admin:
+            address_pool: admin-pool01
+            dhcp: false
+            parent_iface:
+              phys_dev: !os_env BAREMETAL_ADMIN_IFACE, enp8s0f1
+
+        group_volumes:
+         - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
+           source_image: !os_env IMAGE_PATH1604  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img or
+                                             # http://apt.tcpcloud.eu/images/ubuntu-16-04-x64-201608231004.qcow2
+           format: qcow2
+
+        nodes:
+          - name: {{ HOSTNAME_IRONIC }}
+            role: salt_master
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_ironic
+
+              interfaces:
+                - label: ens3
+                  l2_network_device: ironic
+                  interface_model: *interface_model
+                - label: ens4
+                  l2_network_device: admin
+                  interface_model: *interface_model
+              network_config:
+                ens4:
+                  networks:
+                    - admin
