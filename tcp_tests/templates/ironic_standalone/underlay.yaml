@@ -50,6 +50,10 @@ template:
             enable_acpi: true
             use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
 
+        network_pools:
+          admin: admin-pool01
+          provisioning: provisioning-pool01
+
         l2_network_devices:
           # Ironic management interface
           admin:
@@ -97,3 +101,11 @@ template:
                 - label: ens4
                   l2_network_device: provisioning
                   interface_model: *interface_model
+
+              network_config:
+                ens3:
+                  networks:
+                    - admin
+                ens4:
+                  networks:
+                    - provisioning
