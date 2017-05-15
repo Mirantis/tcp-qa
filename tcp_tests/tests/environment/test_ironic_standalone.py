@@ -33,7 +33,7 @@ class TestIronicStandalone(object):
 
         Before using, please set the correct roles and timeout:
 
-            export ROLES=["ironic_master",]
+            export ROLES='["ironic_master"]'
             export BOOTSTRAP_TIMEOUT=900
 
         , and unset these variables after the bootstrap is completed.

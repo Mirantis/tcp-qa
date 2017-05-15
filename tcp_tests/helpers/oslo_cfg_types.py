@@ -104,7 +104,10 @@ class Cfg(cfg.Opt):
 
         env_var_name = args[0].upper()
         if 'default' in kwargs:
-            kwargs['default'] = os.environ.get(env_var_name, kwargs.get('default', None))
+            # Load a default environment variable with expected type
+            kwargs['default'] = args[1](
+                os.environ.get(env_var_name, kwargs.get('default', None))
+            )
         super(Cfg, self).__init__(*args, **kwargs)
 
         # Print info about default environment variables to console
