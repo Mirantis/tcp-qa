@@ -284,7 +284,8 @@ class EnvironmentManager(object):
         self.__env.start()
         LOG.info('Environment "{0}" started'.format(self.__env.name))
         for node in self.__env.get_nodes(role__in=underlay_node_roles):
-            LOG.info("Waiting for SSH on node '{}...'".format(node.name))
+            LOG.info("Waiting for SSH on node '{0}' / {1} ...".format(
+                node.name, self.node_ip(node)))
             helpers.wait(
                 lambda: helpers.tcp_ping(self.node_ip(node), 22),
                 timeout=timeout,
