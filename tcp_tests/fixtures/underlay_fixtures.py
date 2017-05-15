@@ -73,7 +73,6 @@ def hardware(request, config):
     # for empty manager: do nothing
     # for maas manager: provision nodes and wait for SSH
     if not env.has_snapshot(ext.SNAPSHOT.hardware):
-        env.start()
         env.create_snapshot(ext.SNAPSHOT.hardware)
 
     def fin():
@@ -173,6 +172,13 @@ def underlay(revert_snapshot, config, hardware):
     if not config.underlay.ssh:
         # If config.underlay.ssh wasn't provided from external config, then
         # try to get necessary data from hardware manager (fuel-devops)
+
+        # for devops manager: power on nodes and wait for SSH
+        # for empty manager: do nothing
+        # for maas manager: provision nodes and wait for SSH
+        hardware.start(underlay_node_roles=config.underlay.roles,
+                       timeout=config.underlay.bootstrap_timeout)
+
         config.underlay.ssh = hardware.get_ssh_data(
             roles=config.underlay.roles)
 
