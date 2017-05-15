@@ -45,16 +45,17 @@ class TestIronicStandalone(object):
             4. export environment variables to further use
 
         """
-        cmd = "md5sum /httpboot/xenial-server-cloudimg-amd64.qcow2 | awk '{print $1}'"
-        res = underlay.check_call(cmd, host=config.salt.salt_master_host, verbose=True)
 
-        ironic_url = 'http://{0}:6385/'.format(config.salt.salt_master_host)
-        os.environ['CLOUDINIT_IMAGE_MD5'] = res['stdout']
-        os.environ['OS_AUTH_TOKEN'] = 'fake-token'
-        os.environ['IRONIC_URL'] = ironic_url
+        nodes = underlay.node_names()
+        host = underlay.host_by_node_name(nodes[0])
+        cmd = ("md5sum /httpboot/xenial-server-cloudimg-amd64.qcow2 "
+               "| awk '{print $1}'")
+        res = underlay.check_call(cmd, host=host, verbose=True)
 
-        LOG.info("Ironic standalone server installed, to use it:\n"
-                 "    export OS_AUTH_TOKEN=fake-token\n"
-                 "    export IRONIC_URL={0}\n"
-                 "    export CLOUDINIT_IMAGE_MD5={1}"
-                 .format(ironic_url, res['stdout']))
+        ironic_url = 'http://{0}:6385/'.format(host)
+
+        LOG.info("Ironic standalone server installed, to use it:\n\n"
+                 "export OS_AUTH_TOKEN=fake-token\n"
+                 "export IRONIC_URL={0}\n"
+                 "export CLOUDINIT_IMAGE_MD5={1}"
+                 .format(ironic_url, ''.join(res['stdout'])))
