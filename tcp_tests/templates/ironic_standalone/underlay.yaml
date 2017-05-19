@@ -10,7 +10,7 @@ aliases:
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_ironic {{ CLOUDINIT_USER_DATA_IRONIC }}
 
-{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'standalone') + '.local' %}
+{% set DOMAIN_NAME = os_env('CUSTOM_DOMAIN_NAME', 'ironic_standalone') + '.local' %}
 {% set HOSTNAME_IRONIC = os_env('HOSTNAME_IRONIC', 'ironic_master') %}
 
 

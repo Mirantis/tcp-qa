@@ -21,7 +21,7 @@
 - description: Update packages on cfg01
   cmd: apt-get clean; apt-get update
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
+  retry: {count: 5, delay: 50}
   skip_fail: false
 
 - description: Installing salt master on cfg01
