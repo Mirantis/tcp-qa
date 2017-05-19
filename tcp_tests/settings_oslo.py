@@ -40,6 +40,9 @@ _default_openstack_steps = pkg_resources.resource_filename(
 _default_opencontrail_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/opencontrail.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_sl_prepare_tests_steps_path = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/sl.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 
 
 hardware_opts = [
@@ -134,6 +137,17 @@ opencontrail_opts = [
            default=_default_opencontrail_prepare_tests_steps_path),
 ]
 
+sl_deploy_opts = [
+    ct.Cfg('sl_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy sl",
+           default=_default_sl_prepare_tests_steps_path),
+]
+sl_opts = [
+    ct.Cfg('sl_installed', ct.Boolean(),
+           help="", default=False),
+]
+
+
 _group_opts = [
     ('hardware', hardware_opts),
     ('underlay', underlay_opts),
@@ -144,6 +158,8 @@ _group_opts = [
     ('openstack_deploy', openstack_deploy_opts),
     ('openstack', openstack_opts),
     ('opencontrail', opencontrail_opts),
+    ('stack_light', sl_opts),
+    ('sl_deploy', sl_deploy_opts),
 ]
 
 
@@ -188,6 +204,15 @@ def register_opts(config):
     config.register_group(cfg.OptGroup(name='opencontrail',
                           title="Options for Juniper contrail-tests", help=""))
     config.register_opts(group='opencontrail', opts=opencontrail_opts)
+    config.register_group(cfg.OptGroup(name='stack_light',
+                                       title="StackLight config and credentials", help=""))
+    config.register_opts(group='stack_light', opts=openstack_opts)
+    config.register_group(
+        cfg.OptGroup(name='sl_deploy',
+                 title="SL deploy config and credentials",
+                 help=""))
+    config.register_opts(group='sl_deploy', opts=sl_deploy_opts)
+
     return config
 
 

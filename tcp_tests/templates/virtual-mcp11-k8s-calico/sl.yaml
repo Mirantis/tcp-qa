@@ -1,0 +1,22 @@
+{% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+# Install docker swarm
+- description: Install docker swarm
+  cmd: cd /srv/salt/reclass/scripts; bash docker_swarm_install.sh;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+# Install slv2 infra
+- description: Install slv2 infra
+  cmd: cd /srv/salt/reclass/scripts; bash stacklight_infra_install.sh;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+# Install slv2 monitor
+- description: Install slv2 monitor
+  cmd: cd /srv/salt/reclass/scripts; bash stacklight_monitor_install.sh;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true

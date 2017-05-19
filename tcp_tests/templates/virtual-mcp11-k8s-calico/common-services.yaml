@@ -1,4 +1,4 @@
-{% from 'virtual-mcp11-k8s-calico/map.jinja' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install support services
 - description: Create and distribute SSL certificates for services using salt state
@@ -13,14 +13,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
-
-- description: Check the VIP
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster' cmd.run 'ip a | grep 172.16.10.2' | grep -B1 172.16.10.2
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 
 - description: Install haproxy
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
