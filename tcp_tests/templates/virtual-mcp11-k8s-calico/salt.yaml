@@ -58,7 +58,7 @@
   skip_fail: false
 
 - description: Clone reclass models with submodules
-   cmd: |
+  cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
 
@@ -86,9 +86,13 @@
           data_source:
             engine: local
     EOF
+
+    # Show the changes to the console
+    cd /srv/salt/reclass/; git diff
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
+
 
 - description: Configure reclass
   cmd: |
