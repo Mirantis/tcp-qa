@@ -30,7 +30,7 @@ template:
 
     address_pools:
       admin-pool01:
-        net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.60.0.0/16:24') }}
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.70.0.0/16:24') }}
         params:
           ip_reserved:
             gateway: +1
@@ -49,7 +49,7 @@ template:
             dhcp: [+90, -10]
 
       private-pool01:
-        net: {{ os_env('PRIVATE_ADDRESS_POOL01', '10.70.0.0/16:24') }}
+        net: {{ os_env('PRIVATE_ADDRESS_POOL01', '10.60.0.0/16:24') }}
         params:
           ip_reserved:
             gateway: +1
