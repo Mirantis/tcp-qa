@@ -32,6 +32,8 @@ export LAB_CONFIG_NAME=virtual-mcp-ocata-ovs  # OVS-NO-DVR with ocata packages
 export LAB_CONFIG_NAME=virtual-mcp11-dvr  # OVS-DVR with neutron packages
 export LAB_CONFIG_NAME=virtual-mcp11-ovs  # OVS-NO-DVR with neutron packages
 export LAB_CONFIG_NAME=virtual-mcp11-dpdk  # OVS-DPDK with neutron packages
+export LAB_CONFIG_NAME=virtual-mcp11-k8s-calico  # k8s deploy with calico cni
+
 ```
 
 Run deploy test
