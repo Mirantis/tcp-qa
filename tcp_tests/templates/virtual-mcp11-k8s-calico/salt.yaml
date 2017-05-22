@@ -1,7 +1,8 @@
-{% from 'virtual-mcp11-k8s-calico/map.jinja' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp11-k8s-calico/underlay.yaml' import REPOSITORY_SUITE with context %}
 
-# Install salt to the config node
-
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
 
 - description: Configure repository on the cfg01 node
   cmd:
