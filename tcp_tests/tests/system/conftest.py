@@ -45,4 +45,6 @@ __all__ = sorted([  # sort for documentation
     'openstack_deployed',
     # component fixtures
     'opencontrail',
+    'virtlet_actions',
+    'virtlet_deployed',
 ])
