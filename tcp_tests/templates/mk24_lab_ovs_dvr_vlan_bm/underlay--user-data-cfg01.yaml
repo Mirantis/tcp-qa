@@ -30,9 +30,9 @@
    - sudo resolvconf -u
 
    # Prepare network connection
-   - sudo ifup ens3
+   - sudo ifup enp8s0f0
    #- sudo route add default gw {gateway} {interface_name}
-   - sudo ifup ens4
+   - sudo ifup enp8s0f1
 
    # Create swap
    - fallocate -l 4G /swapfile
@@ -40,6 +40,27 @@
    - mkswap /swapfile
    - swapon /swapfile
    - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
+   ############## TCP Cloud cfg01 node ##################
+   #- sleep 120
+   - echo "Preparing base OS"
+
+   - echo "172.18.248.114    jenkins.mcp.mirantis.net  gerrit.mcp.mirantis.net" >> /etc/hosts;
+   - echo "185.135.196.10    apt-mk.mirantis.com" >> /etc/hosts;
+   - echo "nameserver 172.18.208.44 >> /etc/resolv.conf;
+   - echo "nameserver 8.8.8.8 >> /etc/resolv.conf;
+   - which wget >/dev/null || (apt-get update; apt-get install -y wget);
+
+   - echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+   - wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
+   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+   - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+
+   - apt-get clean
+   - apt-get update
+
+   # Install common packages
+   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree
 
    ########################################################
    # Node is ready, allow SSH access
@@ -50,10 +71,10 @@
   write_files:
    - path: /etc/network/interfaces
      content: |
-          auto ens3
-          iface ens3 inet dhcp
-          auto ens4
-          iface ens4 inet dhcp
+          auto enp8s0f0
+          iface enp8s0f0 inet dhcp
+          auto enp8s0f1
+          iface enp8s0f1 inet manual
 
    - path: /root/.ssh/id_rsa
      owner: root:root
