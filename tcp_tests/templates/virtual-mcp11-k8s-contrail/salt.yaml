@@ -16,17 +16,38 @@
 {% set IPV4_NET_ADMIN_PREFIX = '.'.join(IPV4_NET_ADMIN.split('.')[0:3]) %}
 {% set IPV4_NET_CONTROL_PREFIX = '.'.join(IPV4_NET_CONTROL.split('.')[0:3]) %}
 
+- description: Configure repository on the cfg01 node
+  cmd:
+    echo "172.18.248.114    jenkins.mcp.mirantis.net  gerrit.mcp.mirantis.net" >> /etc/hosts;
+    echo "185.135.196.10    apt-mk.mirantis.com" >> /etc/hosts;
+    echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
+    echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
+    which wget >/dev/null || (apt-get update; apt-get install -y wget);
+    echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+    wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
+    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Update packages on cfg01
+  cmd: apt-get clean; apt-get update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 - description: Installing salt master on cfg01
   cmd:  eatmydata apt-get install -y reclass git salt-master
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-#- description: (moved to cloud-init config) Install common packages on cfg01
-#  cmd: eatmydata apt-get install -y python-pip wget curl tmux byobu iputils-ping traceroute htop tree
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 1}
-#  skip_fail: false
+- description: Install common packages on cfg01
+  cmd: apt-get install -y python-pip wget curl tmux byobu iputils-ping traceroute htop tree
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
 
 - description: Configure salt-master on cfg01
   cmd: |
@@ -67,8 +88,10 @@
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
-
     mkdir -p /srv/salt/reclass/classes/service;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
 
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
@@ -76,12 +99,12 @@
     # 192.168.10 -> 10.16.0 (generated network for admin)
     # 10.16.0 -> <external network>
     # So let's replace constant networks to the keywords, and then keywords to the desired networks.
+- description: Fix model
+  cmd: |
     find /srv/salt/reclass/ -type f -exec sed -i 's/192\.168\.10\./==IPV4_NET_ADMIN_PREFIX==/g' {} +
     find /srv/salt/reclass/ -type f -exec sed -i 's/172\.16\.10\./==IPV4_NET_CONTROL_PREFIX==/g' {} +
-
     find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}./g' {} +
     find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
-
     find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
     # Disable checkouting the model from remote repository
