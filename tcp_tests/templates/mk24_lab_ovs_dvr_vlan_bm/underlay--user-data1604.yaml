@@ -32,9 +32,9 @@
    - sudo resolvconf -u
 
    # Prepare network connection
-   - sudo ifup ens3
+   - sudo ifup enp8s0f0
    #- sudo route add default gw {gateway} {interface_name}
-   - sudo ifup ens4
+   - sudo ifup enp8s0f1
 
    # Create swap
    - fallocate -l 4G /swapfile
@@ -43,56 +43,33 @@
    - swapon /swapfile
    - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
 
+
+   ############## TCP Cloud cfg01 node ##################
+   #- sleep 120
+   - echo "Preparing base OS"
+   - which wget >/dev/null || (apt-get update; apt-get install -y wget)
+ 
+   - echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+   - wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
+   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list
+   - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -
+
+   - apt-get clean
+   - eatmydata apt-get update && apt-get -y upgrade
+
+   # Install common packages
+   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
+
    ########################################################
    # Node is ready, allow SSH access
    - echo "Allow SSH access ..."
    - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    ########################################################
 
-   ############## TCP Cloud cfg01 node ##################
-   #- sleep 120
-   - echo "Preparing base OS"
-   - which wget >/dev/null || (apt-get update; apt-get install -y wget)
-   - echo "deb [arch=amd64] http://apt.tcpcloud.eu/nightly/ xenial main security extra tcp tcp-salt" > /etc/apt/sources.list
-   - wget -O - http://apt.tcpcloud.eu/public.gpg | apt-key add -
-   # saltstack repo is for minions that have the same version in the xenial and trusty (2016.3.3)
-   #- echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest xenial main" > /etc/apt/sources.list.d/saltstack.list
-   #- wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/latest/SALTSTACK-GPG-KEY.pub | apt-key add -
-   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list
-   - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -
-
-   - apt-get clean
-   - apt-get update
-   - apt-get -y upgrade
-
-   # Install common packages
-   - apt-get install -y python-pip git
-   - apt-get install -y curl tmux byobu iputils-ping traceroute htop tree
-
-   - apt-get install -y salt-minion
-
-   # To be configured from inventory/fuel-devops by operator or autotests
-   - 'echo "id: {hostname}" >> /etc/salt/minion'
-   - 'echo "master: 192.168.10.100" >> /etc/salt/minion'
-
-   - echo "Restarting minion service with workarounds..."
-   - rm -f /etc/salt/pki/minion/minion_master.pub
-   - service salt-minion restart
-   - sleep 5
-   - rm -f /etc/salt/pki/minion/minion_master.pub
-   - service salt-minion restart
-
-   #- echo "Showing node metadata..."
-   #- salt-call pillar.data
-
-   #- echo "Running complete state ..."
-   #- salt-call state.sls linux,openssh,salt
-
   write_files:
    - path: /etc/network/interfaces
      content: |
-          auto ens3
-          iface ens3 inet dhcp
-          auto ens4
-          iface ens4 inet dhcp
-
+          auto enp8s0f0
+          iface enp8s0f0 inet dhcp
+          auto enp8s0f1
+          iface enp8s0f1 inet dhcp

@@ -1,4 +1,5 @@
 git+git://github.com/openstack/fuel-devops.git
+git+git://github.com/dis-xcom/fuel-devops-driver-ironic
 paramiko
 six
 requests>=2.2.0
