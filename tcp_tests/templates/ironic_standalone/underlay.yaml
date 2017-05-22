@@ -67,7 +67,7 @@ template:
             address_pool: provisioning-pool01
             dhcp: false
             parent_iface:
-              phys_dev: !os_env BAREMETAL_ADMIN_IFACE, enp8s0f1
+              phys_dev: !os_env IRONIC_LAB_PXE_IFACE
 
 
         nodes:
