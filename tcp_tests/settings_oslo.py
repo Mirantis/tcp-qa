@@ -43,7 +43,9 @@ _default_opencontrail_prepare_tests_steps_path = pkg_resources.resource_filename
 _default_sl_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/sl.yaml'.format(
         settings.LAB_CONFIG_NAME))
-
+_default_virtlet_prepare_tests_steps_path = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/virtlet.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 
 hardware_opts = [
     ct.Cfg('manager', ct.String(),
@@ -147,6 +149,16 @@ sl_opts = [
            help="", default=False),
 ]
 
+virtlet_deploy_opts = [
+    ct.Cfg('virtlet_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy virtlet",
+           default=_default_virtlet_prepare_tests_steps_path)
+]
+
+virtlet_opts = [
+    ct.Cfg('virtlet_installed', ct.Boolean(),
+           help="", default=False),
+]
 
 _group_opts = [
     ('hardware', hardware_opts),
@@ -160,6 +172,8 @@ _group_opts = [
     ('opencontrail', opencontrail_opts),
     ('stack_light', sl_opts),
     ('sl_deploy', sl_deploy_opts),
+    ('virtlet_deploy', virtlet_deploy_opts),
+    ('virtlet', virtlet_opts),
 ]
 
 
@@ -212,7 +226,12 @@ def register_opts(config):
                  title="SL deploy config and credentials",
                  help=""))
     config.register_opts(group='sl_deploy', opts=sl_deploy_opts)
-
+    config.register_group(cfg.OptGroup(name='virtlet_deploy',
+                                       title='Virtlet deploy config', help=""))
+    config.register_opts(group='virtlet_deploy', opts=virtlet_deploy_opts)
+    config.register_group(cfg.OptGroup(name='virtlet',
+                                       title='Virtlet config', help=""))
+    config.register_opts(group='virtlet', opts=virtlet_opts)
     return config
 
 
