@@ -98,7 +98,7 @@
     find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
     # Disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/control/{{ HOSTNAME_CFG01 }}.yml
+    cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
     # local storage
       reclass:
         storage:
