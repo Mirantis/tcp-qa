@@ -257,7 +257,7 @@
 - description: Create VMs for control plane
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls salt.control
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 3, delay: 10}
   skip_fail: false
 
 
