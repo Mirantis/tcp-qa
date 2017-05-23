@@ -31,4 +31,4 @@ class CommonServicesManager(ExecuteCommandsMixin):
     def install(self, commands):
         self.execute_commands(commands,
                               label='Install common services')
-        self.__config.openstack.openstack_installed = True
+        self.__config.common_services.common_services_installed = True
