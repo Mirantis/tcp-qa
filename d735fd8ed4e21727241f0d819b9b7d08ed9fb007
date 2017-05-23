@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a2e0d7a3_b90d3bd9",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/virtlet.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1011290
+      },
+      "writtenOn": "2017-05-23T22:30:27Z",
+      "side": 1,
+      "message": "This is no longer needed in k8s 1.6 (and k8s 1.5 is not compatible with Virtlet)",
+      "revId": "d735fd8ed4e21727241f0d819b9b7d08ed9fb007",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
