@@ -31,4 +31,4 @@ class SLManager(ExecuteCommandsMixin):
     def install(self, commands):
         self.execute_commands(commands,
                               label='Install SL services')
-        self.__config.common_services.common_services_installed = True
+        self.__config.stack_light.sl_installed = True
