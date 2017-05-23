@@ -236,6 +236,18 @@
 
 
 
+- description: Refresh pillars for kvm* nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources for kvm* nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' saltutil.sync_all
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: ovs-dvr-vlan model specific Execute 'libvirt' states to create necessary libvirt networks
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
   node_name: {{ HOSTNAME_CFG01 }}
@@ -247,9 +259,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
-
-
 
 
 
