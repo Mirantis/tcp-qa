@@ -274,8 +274,8 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Show  reclass-salt --top
-  cmd: reclass-salt --top
+- description: Show  reclass-salt --top for generated nodes
+  cmd: reclass-salt --top -u /srv/salt/reclass/nodes/_generated/
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
