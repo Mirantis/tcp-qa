@@ -206,7 +206,7 @@ def register_opts(config):
     config.register_opts(group='opencontrail', opts=opencontrail_opts)
     config.register_group(cfg.OptGroup(name='stack_light',
                                        title="StackLight config and credentials", help=""))
-    config.register_opts(group='stack_light', opts=openstack_opts)
+    config.register_opts(group='stack_light', opts=sl_opts)
     config.register_group(
         cfg.OptGroup(name='sl_deploy',
                  title="SL deploy config and credentials",
