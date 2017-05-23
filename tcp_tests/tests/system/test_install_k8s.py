@@ -36,7 +36,7 @@ class Testk8sInstall(object):
 
     # @pytest.mark.snapshot_needed
     # @pytest.mark.fail_snapshot
-    def test_k8s_install(self, underlay, openstack_deployed,
+    def test_k8s_install(self, underlay, sl_deployed, openstack_deployed,
                                      show_step):
         """Test for deploying an mcp environment and check it
 
@@ -44,6 +44,7 @@ class Testk8sInstall(object):
             1. Prepare salt on hosts
             2. Setup controller nodes
             3. Setup compute nodes
+            4. Setup stack light nodes
 
         """
         LOG.info("*************** DONE **************")
