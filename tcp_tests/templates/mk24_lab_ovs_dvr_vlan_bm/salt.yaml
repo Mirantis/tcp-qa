@@ -236,17 +236,33 @@
 
 
 
-- description: Refresh pillars for kvm* nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' saltutil.refresh_pillar
+- description: Refresh pillars for present baremetal nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Sync all salt resources for kvm* nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' saltutil.sync_all
+- description: Sync all salt resources for present baremetal nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+- description: Configure linux for present baremetal nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
+    cfg01*' state.sls linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-9576 to get bond0-connectivity *without* rebooting nodes'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'cat /etc/network/interfaces | grep bond-slaves | awk -F"bond-slaves" '{print $2}' | xargs -I {} ifenslave bond0 {}'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
 
 - description: ovs-dvr-vlan model specific Execute 'libvirt' states to create necessary libvirt networks
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
