@@ -16,6 +16,24 @@
       "revId": "d735fd8ed4e21727241f0d819b9b7d08ed9fb007",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d307e3ec_93c5b16f",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/virtlet.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1008250
+      },
+      "writtenOn": "2017-05-24T10:14:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "a2e0d7a3_b90d3bd9",
+      "revId": "d735fd8ed4e21727241f0d819b9b7d08ed9fb007",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
