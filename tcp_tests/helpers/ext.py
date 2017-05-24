@@ -41,6 +41,7 @@ SNAPSHOT = enum(
     'openstack_deployed',
     'sl_deployed',
     'virtlet_deployed',
+    'virtlet_ceph_deployed',
 )
 
 LOG_LEVELS = enum(
