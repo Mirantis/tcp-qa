@@ -23,6 +23,8 @@ from tcp_tests.fixtures.openstack_fixtures import *
 from tcp_tests.fixtures.opencontrail_fixtures import *
 from tcp_tests.fixtures.stacklight_fixtures import *
 from tcp_tests.fixtures.virtlet_fixtures import *
+from tcp_tests.fixtures.virtlet_ceph_fixtures import *
+
 
 __all__ = sorted([  # sort for documentation
     # common_fixtures
@@ -52,4 +54,6 @@ __all__ = sorted([  # sort for documentation
     'sl_deployed',
     'virtlet_actions',
     'virtlet_deployed',
+    'virtlet_ceph_actions',
+    'virtlet_ceph_deployed'
 ])

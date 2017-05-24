@@ -46,6 +46,9 @@ _default_sl_prepare_tests_steps_path = pkg_resources.resource_filename(
 _default_virtlet_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/virtlet.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_virtlet_ceph_prepare_tests_steps_path = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/virtlet_ceph.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 
 hardware_opts = [
     ct.Cfg('manager', ct.String(),
@@ -152,12 +155,19 @@ sl_opts = [
 virtlet_deploy_opts = [
     ct.Cfg('virtlet_steps_path', ct.String(),
            help="Path to YAML with steps to deploy virtlet",
-           default=_default_virtlet_prepare_tests_steps_path)
+           default=_default_virtlet_prepare_tests_steps_path),
+    ct.Cfg('virtlet_ceph_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy one-node ceph cluster for "
+                "Virtlet Flexvolumes testing",
+           default=_default_virtlet_ceph_prepare_tests_steps_path)
 ]
 
 virtlet_opts = [
     ct.Cfg('virtlet_installed', ct.Boolean(),
            help="", default=False),
+    ct.Cfg('ceph_installed', ct.Boolean(),
+           help="Determine, installed one-node ceph cluster or not",
+           default=False)
 ]
 
 _group_opts = [
