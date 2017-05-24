@@ -95,18 +95,18 @@ template:
 
               interfaces:
                 - label: eth0
-                  l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_CFG01
                 - label: eth1
+                  l2_network_device: admin
                   mac_address: !os_env ETH1_MAC_ADDRESS_CFG01
 
               network_config:
                 eth0:
                   networks:
-                   - admin
+                   - infra
                 eth1:
                   networks:
-                   - control
+                   - admin
 
           - name: {{ HOSTNAME_KVM01 }}
             role: salt_minion
