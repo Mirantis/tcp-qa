@@ -257,7 +257,7 @@
 
 - description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-9576 to get bond0-connectivity *without* rebooting nodes'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-    'cat /etc/network/interfaces' | grep bond-slaves | awk '{print $2}' | xargs -I {} ifenslave bond0 {}
+    "cat /etc/network/interfaces | grep bond-slaves | awk '{print \$2}' | xargs -I {} ifenslave bond0 {}"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
