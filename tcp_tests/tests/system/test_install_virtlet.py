@@ -48,3 +48,18 @@ class TestVirtletInstall(object):
 
         """
         LOG.info("*************** DONE **************")
+
+    def test_virtlet_install_with_ceph(self, underlay, virtlet_ceph_deployed,
+                                       show_step):
+        """Test for deploying an mcp environment with virtlet and one-node
+        Ceph cluster.
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Setup virtlet
+            5. Launch Ceph one-node cluster in docker
+
+        """
+        LOG.info("*************** DONE **************")

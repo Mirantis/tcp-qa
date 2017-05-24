@@ -1,0 +1,31 @@
+{% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CTL02 with context %}
+
+# Clone virtlet project from git to the ctl02 node to get ceph scripts
+- description: Cloning virtlet project on ctl02
+  cmd: |
+    if [[ ! -d virtlet ]]; then
+      git clone -b master https://github.com/Mirantis/virtlet.git;
+    else;
+      echo "Virtlet project already present on node";
+    fi
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+# Make run_ceph.sh runnable
+- description: Set monitor ip for ceph
+  cmd: |
+    NODE_IP=$(ifconfig | grep -A 1 ens3 | tail -n +2 | awk '{print $2}' | sed 's/addr://g')
+    sed "0,/MON_IP=.*/s//MON_IP=${NODE_IP}/" virtlet/tests/e2e/run_ceph.sh
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+# Run Ceph in docker
+- description: Adding extra parameter for kubelet service on virtlet node
+  cmd: |
+    SCR_DIR=$(realpath virtlet/tests/e2e)
+    virtlet/tests/e2e/run_ceph.sh ${SCR_DIR}
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
