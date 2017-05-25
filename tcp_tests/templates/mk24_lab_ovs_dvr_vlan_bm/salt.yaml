@@ -145,7 +145,7 @@
 
 - description: Restart salt-master service
   cmd: |
-     systemctl restart salt-master;
+     systemctl restart salt-master; sleep 60
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
