@@ -102,14 +102,14 @@
 - description: Configure reclass
   cmd: |
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
-    FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt-mk.mirantis.com/xenial stable salt};
+    FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt-mk.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt};
     FORMULA_GPG=${FORMULA_GPG:-http://apt-mk.mirantis.com/public.gpg};
     which wget > /dev/null || (apt-get update; apt-get install -y wget);
     echo "${FORMULA_REPOSITORY}" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - "${FORMULA_GPG}" | apt-key add -;
     apt-get clean; apt-get update;
     [ ! -d /srv/salt/reclass/classes/service ] && mkdir -p /srv/salt/reclass/classes/service;
-    declare -a formula_services=("linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon");
+    declare -a formula_services=("linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf");
     echo -e "\nInstalling all required salt formulas\n";
     eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
     for formula_service in "${formula_services[@]}"; do
