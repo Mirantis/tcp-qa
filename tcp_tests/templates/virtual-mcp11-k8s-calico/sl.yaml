@@ -150,5 +150,5 @@
 - description: Configure Grafana dashboards and datasources
   cmd: salt -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 15}
   skip_fail: false
