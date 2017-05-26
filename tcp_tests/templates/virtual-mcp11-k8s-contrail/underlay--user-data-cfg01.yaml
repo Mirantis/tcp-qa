@@ -33,6 +33,7 @@
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
    - sudo ifup ens4
+   - sudo ifup ens5
 
    # Create swap
    - fallocate -l 4G /swapfile
@@ -56,8 +57,8 @@
    - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
    - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
 
-   - apt-get clean
-   - apt-get update
+   - eatmydata apt-get clean
+   - eatmydata apt-get update && eatmydata apt-get -y upgrade
 
    # Install common packages
    - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree
@@ -75,6 +76,8 @@
           iface ens3 inet dhcp
           auto ens4
           iface ens4 inet dhcp
+          auto ens5
+          iface ens5 inet dhcp
 
    - path: /root/.ssh/id_rsa
      owner: root:root
