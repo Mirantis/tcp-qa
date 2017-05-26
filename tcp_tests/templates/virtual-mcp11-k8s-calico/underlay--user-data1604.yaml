@@ -44,20 +44,20 @@
    - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
 
 
-   ############## TCP Cloud cfg01 node ##################
+   ############## tcp cloud cfg01 node ##################
    #- sleep 120
-   - echo "Preparing base OS"
+   - echo "preparing base os"
    - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
-   - echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
-   - wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
+   - echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial {{ repository_suite }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+   - wget -o - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
    - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
-   - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+   - wget -o - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/saltstack-gpg-key.pub | apt-key add -;
 
    - apt-get clean
    - eatmydata apt-get update && apt-get -y upgrade
 
-   # Install common packages
+   # install common packages
    - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
 
    ########################################################
