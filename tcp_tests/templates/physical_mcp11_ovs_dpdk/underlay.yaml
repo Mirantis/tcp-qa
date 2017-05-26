@@ -77,6 +77,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -95,18 +96,18 @@ template:
 
               interfaces:
                 - label: enp3s0f0  # Infra interface
+                  l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_CFG01
                 - label: enp3s0f1
-                  l2_network_device: admin
                   mac_address: !os_env ETH1_MAC_ADDRESS_CFG01
 
               network_config:
                 enp3s0f0:
                   networks:
-                   - infra
+                   - admin
                 enp3s0f1:
                   networks:
-                   - admin
+                   - control
 
           - name: {{ HOSTNAME_KVM01 }}
             role: salt_minion
@@ -120,6 +121,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -166,6 +168,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: eno1  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -212,6 +215,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: eno1  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -259,6 +263,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -315,6 +320,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: eno1  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -371,6 +377,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: enp2s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -417,6 +424,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: enp2s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
