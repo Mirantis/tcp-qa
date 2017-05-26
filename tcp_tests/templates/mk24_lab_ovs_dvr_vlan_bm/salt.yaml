@@ -234,8 +234,11 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+########################################
+# Spin up Control Plane VMs on KVM nodes
+########################################
 
-- description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-9576 to get bond0-connectivity *without* rebooting nodes'
+- description: '*Workaround 1/2* of the bug PROD-9576 to get bond0-connectivity *without* rebooting nodes'
   cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False cmd.run
     "mkdir -p /tmp/PROD-9576; cd /tmp/PROD-9576; git clone https://gerrit.mcp.mirantis.net/salt-formulas/linux; cd linux;
     git fetch https://gerrit.mcp.mirantis.net/salt-formulas/linux refs/changes/54/2354/7 && git checkout FETCH_HEAD;
@@ -245,6 +248,11 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: '*Workaround 2/2* of the bug PROD-9576 to get bond0-connectivity on cfg01 *without* reboot'
+  cmd: cat /etc/network/interfaces | grep bond-slaves | awk '{print $2}' | xargs -I {} ifenslave bond0 {}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 - description: Refresh pillars for present baremetal nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
@@ -265,15 +273,6 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
-#- description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-9576 to get bond0-connectivity *without* rebooting nodes'
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-#    "cat /etc/network/interfaces | grep bond-slaves | awk '{print \$2}' | xargs -I {} ifenslave bond0 {}"
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
-
-
 - description: ovs-dvr-vlan model specific Execute 'libvirt' states to create necessary libvirt networks
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
   node_name: {{ HOSTNAME_CFG01 }}
@@ -286,7 +285,17 @@
   retry: {count: 3, delay: 10}
   skip_fail: false
 
+- description: '*Workaround* for waiting the control-plane VMs in the salt-key (instead of sleep)'
+  cmd: |
+    salt-key -l acc| sort > /tmp/current_keys.txt &&
+    salt 'kvm*' cmd.run 'virsh list --name' | grep -v 'kvm'|sort|xargs -I {} fgrep {} /tmp/current_keys.txt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
 
+#########################################
+# Configure all running salt minion nodes
+#########################################
 
 - description: Refresh pillars on all minions
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
@@ -312,8 +321,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-
-# Bootstrap all nodes
 
 - description: Configure linux on other nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
