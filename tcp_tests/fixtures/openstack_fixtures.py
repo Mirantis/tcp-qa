@@ -118,7 +118,7 @@ def deploy_openstack(revert_snapshot, request, config,
     # Create Salt cluster
     if not config.openstack.openstack_installed:
         steps_path = config.openstack_deploy.openstack_steps_path
-        commands = utils.read_template(steps_path)
+        commands = underlay.read_template(steps_path)
         openstack_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.openstack_deployed)
 
