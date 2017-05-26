@@ -10,7 +10,7 @@ aliases:
  - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
- - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
+ - &cloudinit_user_data {{ CLOUDINIT_USER_DATA_1604 }}
 
 {% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'mk24_lab_ovs_dvr_vlan_bm') + '.local' %}
 {% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01.' + DOMAIN_NAME) %}
@@ -135,7 +135,7 @@ template:
                              # for store image with cloud-init metadata.
 
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cfg01
+                  cloudinit_user_data: *cloudinit_user_data
 
               interfaces:
                 - label: enp8s0f1
@@ -178,7 +178,7 @@ template:
                              # for store image with cloud-init metadata.
 
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cfg01
+                  cloudinit_user_data: *cloudinit_user_data
 
               interfaces:
                 - label: enp8s0f1
@@ -221,7 +221,7 @@ template:
                              # for store image with cloud-init metadata.
 
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cfg01
+                  cloudinit_user_data: *cloudinit_user_data
 
               interfaces:
                 - label: enp8s0f1
@@ -264,7 +264,7 @@ template:
                              # for store image with cloud-init metadata.
 
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cfg01
+                  cloudinit_user_data: *cloudinit_user_data
 
               interfaces:
                 - label: enp8s0f1
@@ -307,7 +307,7 @@ template:
                              # for store image with cloud-init metadata.
 
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cfg01
+                  cloudinit_user_data: *cloudinit_user_data
 
               interfaces:
                 - label: enp8s0f1
@@ -350,7 +350,7 @@ template:
                              # for store image with cloud-init metadata.
 
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cfg01
+                  cloudinit_user_data: *cloudinit_user_data
 
               interfaces:
                 - label: enp8s0f1
