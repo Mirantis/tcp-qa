@@ -1,6 +1,5 @@
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import REPOSITORY_SUITE with context %}
-{% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import DOMAIN_NAME with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
@@ -11,8 +10,8 @@
 #    (see generated '.ini' file after underlay is created),
 # 3. defaults
 {% set address_pools = config.underlay.address_pools %}
-{% set IPV4_NET_ADMIN = os_env('IPV4_NET_ADMIN', address_pools.get('admin-pool01', '192.168.10.0/24')) %}
-{% set IPV4_NET_CONTROL = os_env('IPV4_NET_CONTROL', address_pools.get('private-pool01', '172.16.10.0/24')) %}
+{% set IPV4_NET_ADMIN = os_env('IPV4_NET_ADMIN', address_pools.get('admin-pool01', '172.16.10.0/24')) %}
+{% set IPV4_NET_CONTROL = os_env('IPV4_NET_CONTROL', address_pools.get('private-pool01', '192.168.10.0/24')) %}
 
 {% set IPV4_NET_ADMIN_PREFIX = '.'.join(IPV4_NET_ADMIN.split('.')[0:3]) %}
 {% set IPV4_NET_CONTROL_PREFIX = '.'.join(IPV4_NET_CONTROL.split('.')[0:3]) %}
@@ -62,41 +61,7 @@
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
-
     mkdir -p /srv/salt/reclass/classes/service;
-
-    # Replace firstly to an intermediate value to avoid intersection between
-    # already replaced and replacing networks.
-    # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
-    # 192.168.10 -> 10.16.0 (generated network for admin)
-    # 10.16.0 -> <external network>
-    # So let's replace constant networks to the keywords, and then keywords to the desired networks.
-    find /srv/salt/reclass/ -type f -exec sed -i 's/192\.168\.10\./==IPV4_NET_ADMIN_PREFIX==/g' {} +
-    find /srv/salt/reclass/ -type f -exec sed -i 's/172\.16\.10\./==IPV4_NET_CONTROL_PREFIX==/g' {} +
-
-    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}./g' {} +
-    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
-
-    find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
-    # Disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
-    parameters:
-     _param:
-      linux_system_codename: xenial
-      reclass_data_revision: master
-      linux:
-        system:
-          name: {{ HOSTNAME_CFG01 }}
-          domain: {{ DOMAIN_NAME }}.local
-    # local storage
-      reclass:
-        storage:
-          data_source:
-            engine: local
-    EOF
-
-    # Show the changes to the console
-    cd /srv/salt/reclass/; git diff
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -230,7 +195,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Show  reclass-salt --top
+- description: Show reclass-salt --top
   cmd: reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
@@ -246,9 +211,15 @@
 
 - description: Configure linux on other nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg01*' state.sls linux
+    cfg01* and not mon*' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure linux on mon nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'mon*' state.sls linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Configure openssh on all nodes

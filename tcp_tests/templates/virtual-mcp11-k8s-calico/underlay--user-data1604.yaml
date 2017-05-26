@@ -57,7 +57,7 @@
    - apt-get clean
    - eatmydata apt-get update && apt-get -y upgrade
 
-   # Install common packages
+   # install common packages
    - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
 
    ########################################################
