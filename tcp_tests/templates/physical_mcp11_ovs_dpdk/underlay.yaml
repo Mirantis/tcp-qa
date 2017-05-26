@@ -96,18 +96,18 @@ template:
 
               interfaces:
                 - label: enp3s0f0  # Infra interface
-                  l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_CFG01
                 - label: enp3s0f1
+                  l2_network_device: admin
                   mac_address: !os_env ETH1_MAC_ADDRESS_CFG01
 
               network_config:
                 enp3s0f0:
                   networks:
-                   - admin
+                   - infra
                 enp3s0f1:
                   networks:
-                   - control
+                   - admin
 
           - name: {{ HOSTNAME_KVM01 }}
             role: salt_minion
