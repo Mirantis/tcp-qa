@@ -3,6 +3,7 @@
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/qa') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
+{% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 
 # Address pools for reclass cluster model are taken in the following order:
 # 1. environment variables,
@@ -85,6 +86,8 @@
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+    cd /srv/salt/reclass/classes/system;
+    git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
 
     mkdir -p /srv/salt/reclass/classes/service;
 
