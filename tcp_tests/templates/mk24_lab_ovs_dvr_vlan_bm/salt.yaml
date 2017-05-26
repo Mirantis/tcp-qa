@@ -143,6 +143,14 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
+- description: Configure salt adoptors on cfg01
+  cmd: |
+    ln -s /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py /usr/local/sbin/reclass-salt;
+    chmod +x /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 - description: Restart salt-master service
   cmd: |
      systemctl restart salt-master; sleep 60
@@ -174,14 +182,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-
-- description: Configure salt adoptors on cfg01
-  cmd: |
-    ln -s /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py /usr/local/sbin/reclass-salt;
-    chmod +x /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
 
 
 # Prepare salt services and nodes settings
