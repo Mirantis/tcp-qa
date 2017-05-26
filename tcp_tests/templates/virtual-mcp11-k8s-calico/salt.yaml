@@ -16,6 +16,14 @@
 {% set IPV4_NET_ADMIN_PREFIX = '.'.join(IPV4_NET_ADMIN.split('.')[0:3]) %}
 {% set IPV4_NET_CONTROL_PREFIX = '.'.join(IPV4_NET_CONTROL.split('.')[0:3]) %}
 
+# Set custom kube images if ones exported as environment variables
+{% set CUSTOM_IMAGE_hyperkube = os_env('CUSTOM_IMAGE_hyperkube', "") %}
+{% set CUSTOM_IMAGE_calico = os_env('CUSTOM_IMAGE_calico', "") %}
+{% set CUSTOM_IMAGE_calicoctl = os_env('CUSTOM_IMAGE_calicoctl', "") %}
+{% set CUSTOM_IMAGE_calico_cni = os_env('CUSTOM_IMAGE_calico_cni', "") %}
+{% set DOCKER_ENGINE = os_env('DOCKER_ENGINE', "") %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', "virtual-mcp11-k8s-calico") %}
+
 # Install salt to the config node
 - description: Installing salt master on cfg01
   cmd:  apt-get install -y reclass git; apt-get install -y salt-master
@@ -161,6 +169,41 @@
     chmod +x /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
+  skip_fail: false
+
+# Change environment configuration before deploy
+
+- description: Change kubernetes images to custom if need
+  cmd: |
+     export CUSTOM_IMAGE_hyperkube={{ CUSTOM_IMAGE_hyperkube }}
+     export CUSTOM_IMAGE_calico={{ CUSTOM_IMAGE_calico }}
+     export CUSTOM_IMAGE_calicoctl={{ CUSTOM_IMAGE_calicoctl }}
+     export CUSTOM_IMAGE_calico_cni={{ CUSTOM_IMAGE_calico_cni }}
+     FILE="/srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/compute.yml"
+     for img in calicoctl calico calico_cni hyperkube ; do
+       image_name=CUSTOM_IMAGE_${img}
+       if [ -n "${!image_name}" ]; then
+         echo "${img} image changed to ${!image_name}"
+         sed "s#kubernetes_${img}_image: .*#kubernetes_${img}_image: ${!image_name}#" -i.bak ${FILE}
+       else
+         echo "Custom ${img} image is not set, skipped."
+       fi
+     done
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Change docker engine version to custom if need
+  cmd: |
+     FILE="/srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/compute.yml"
+     if [ -n "{{ DOCKER_ENGINE }}" ]; then
+       echo "Change docker engine version to:{{ DOCKER_ENGINE }}"
+       sed "s#docker-engine=.*#docker-engine={{ DOCKER_ENGINE }}#" -i.bak ${FILE}
+     else
+       echo "Custom docker engine version is not set, skipped."
+     fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 # Prepare salt services and nodes settings
