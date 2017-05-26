@@ -61,7 +61,6 @@
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
-
     mkdir -p /srv/salt/reclass/classes/service;
 
     # Replace firstly to an intermediate value to avoid intersection between
@@ -223,7 +222,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Show  reclass-salt --top
+- description: Show reclass-salt --top
   cmd: reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
