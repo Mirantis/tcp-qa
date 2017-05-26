@@ -149,7 +149,7 @@
 - description: Configure salt adoptors on cfg01
   cmd: |
     ln -s /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py /usr/local/sbin/reclass-salt;
-    chmod +x /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py;
+    chmod +x /usr/lib/python2.7/dist-packages/reclass/adapters/salt.py
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -293,7 +293,7 @@
     salt-key -l acc| sort > /tmp/current_keys.txt &&
     salt 'kvm*' cmd.run 'virsh list --name' | grep -v 'kvm'|sort|xargs -I {} fgrep {} /tmp/current_keys.txt
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 10, delay: 30}
+  retry: {count: 20, delay: 30}
   skip_fail: false
 
 #########################################
