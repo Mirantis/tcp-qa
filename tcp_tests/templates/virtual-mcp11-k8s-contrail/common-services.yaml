@@ -7,22 +7,33 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
+- description: Install glusterfs
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' state.sls glusterfs.server.service
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup glusterfs on primary controller
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' state.sls glusterfs.server.setup -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check the gluster status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' cmd.run 'gluster peer status; gluster volume status' -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description:  Install keepalived
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keepalived:cluster' state.sls keepalived -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
-
-- description: Check the VIP
-  cmd: |
-    OPENSTACK_CONTROL_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:openstack_control_address`;
-    echo "_param:openstack_control_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster' cmd.run "ip a | grep ${OPENSTACK_CONTROL_ADDRESS}" | grep -B1 ${OPENSTACK_CONTROL_ADDRESS}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 
 - description: Install haproxy
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -66,47 +77,103 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install Kubernetes and Calico
+- description: Install k8s
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons;
      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' state.sls kubernetes.pool;
-     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' cmd.run 'calicoctl node status';
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Setup NAT for Calico
+- description: Setup etcd server
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@etcd:server' --subset 1 state.sls etcd.server.setup
+     -C 'I@kubernetes:master and *01*' state.sls etcd.server.setup;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Run whole master to check consistency
+- description: Run master without setup
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-
-- description: Register addons
+- description: Run master setup
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
+     -C 'I@kubernetes:master and *01*' state.sls kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Restart kubelet
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:pool' service.restart kubelet
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install contrail
+# install contrail
+- description: Install contrail db
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:compute' state.sls opencontrail
+    -C 'I@opencontrail:database' state.sls opencontrail.database
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 20}
+  skip_fail: false
+
+- description: Install contrail control
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' state.sls opencontrail
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Reboot computes
+- description: Install contrail control with exclude client on node 1
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:compute' system.reboot
+    -C 'I@opencontrail:control and *01*' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install contrail control with exclude client on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=Falsa
+    -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install contrail collector without contrail client
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:collector' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check contrail status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' cmd.run contrail-status
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# install contrail computes
+- description: Configure contrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database:id:1' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Provision vrouter
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nova:compute' cmd.run 'exec 0>&-; exec 1>&-; exec 2>&-; nohup bash -c "ip link | grep vhost && echo no_reboot || sleep 5 && reboot & "'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Compute contrail client on cmp
+  cmd: slepp 300; salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
