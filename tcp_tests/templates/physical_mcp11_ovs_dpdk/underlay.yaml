@@ -77,7 +77,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
+              cloud_init_iface_up: enp3s0f1  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200

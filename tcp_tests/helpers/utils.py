@@ -330,7 +330,7 @@ def render_template(file_path, options=None):
         if default is None:
             required_env_vars.add(var_name)
         else:
-            optional_env_vars[var_name] = default
+            optional_env_vars[var_name] = var
 
         return var
 
@@ -352,7 +352,7 @@ def render_template(file_path, options=None):
     if optional_env_vars:
         LOG.info("Optional environment variables:")
         for var, default in sorted(optional_env_vars.iteritems()):
-            LOG.info("    {0} , default value = {1}".format(var, default))
+            LOG.info("    {0} , value = {1}".format(var, default))
     return template
 
 
