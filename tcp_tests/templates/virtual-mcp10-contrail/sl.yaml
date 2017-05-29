@@ -1,0 +1,6 @@
+# dummy
+- description: dummy
+  cmd: true
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
