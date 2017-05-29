@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b30f56e4_d0f67b8b",
+        "filename": "tcp_tests/templates/virtual-mcp10-contrail/openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 223,
+      "author": {
+        "id": 1011165
+      },
+      "writtenOn": "2017-05-29T15:19:58Z",
+      "side": 1,
+      "message": "sleep",
+      "revId": "70bd45f9d858ca3969124552002ecd5f43500dfc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
