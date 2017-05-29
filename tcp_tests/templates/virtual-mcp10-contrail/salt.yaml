@@ -207,7 +207,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls linux;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 
@@ -283,7 +283,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
     cfg01*' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Configure openssh on all nodes
