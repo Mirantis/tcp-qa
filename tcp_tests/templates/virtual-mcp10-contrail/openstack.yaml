@@ -3,61 +3,61 @@
 # Install OpenStack control services
 
 - description: Install glance on all controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@glance:server' state.sls glance -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Install keystone service (note that different fernet keys are created on different nodes)
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' state.sls keystone.server -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 15}
   skip_fail: false
 
-- description: Restart apache due to PROD-10477
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl restart apache2"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 15}
-  skip_fail: false
-
-- description: Check apache status to PROD-10477
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl status apache2"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 15}
-  skip_fail: false
+#- description: Restart apache due to PROD-10477
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl restart apache2"
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 15}
+#  skip_fail: false
+#
+#- description: Check apache status to PROD-10477
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl status apache2"
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 15}
+#  skip_fail: false
 
 - description: Mount glusterfs.client volumes (resuires created 'keystone' and 'glusterfs' system users)
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glance:server' state.sls glusterfs.client
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Update fernet keys for keystone server on the mounted glusterfs volume
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' state.sls keystone.server -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Populate keystone services/tenants/admins
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:client' state.sls keystone.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check keystone service-list
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; openstack service list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check glance image-list
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; glance image-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
@@ -65,29 +65,29 @@
 
 
 - description: Install nova on all controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@nova:controller' state.sls nova -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Check nova service-list
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; nova service-list'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 
 - description: Install cinder
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@cinder:controller' state.sls cinder -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check cinder list
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; cinder list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
@@ -95,7 +95,7 @@
 
 
 - description: Install neutron service
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@neutron:server' state.sls neutron -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
@@ -119,7 +119,7 @@
 
 # install contrail
 - description: Install contrail db
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:database' state.sls opencontrail.database
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 20}
@@ -161,14 +161,14 @@
   skip_fail: false
 
 - description: Install heat service
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@heat:server' state.sls heat -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check heat service
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; heat resource-type-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
@@ -176,14 +176,14 @@
 
 
 - description: Deploy horizon dashboard
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@horizon:server' state.sls horizon
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
 
 - description: Deploy nginx proxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False \
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@nginx:server' state.sls nginx
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
