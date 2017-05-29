@@ -1,0 +1,8 @@
+{% from 'virtual-mcp10-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+# dummy
+- description: dummy
+  cmd: true
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
