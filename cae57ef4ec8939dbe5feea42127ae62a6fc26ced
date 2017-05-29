@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ef897b1_d4df15cf",
+        "filename": "tcp_tests/templates/virtual-mcp10-contrail/underlay--user-data1604.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1011165
+      },
+      "writtenOn": "2017-05-29T15:26:08Z",
+      "side": 1,
+      "message": "eatmydata apt-get clean",
+      "revId": "cae57ef4ec8939dbe5feea42127ae62a6fc26ced",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1973615d_8eec2c0d",
+        "filename": "tcp_tests/templates/virtual-mcp10-contrail/underlay--user-data1604.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 60,
+      "author": {
+        "id": 1011165
+      },
+      "writtenOn": "2017-05-29T15:26:08Z",
+      "side": 1,
+      "message": "eatmydata apt-get update \u0026\u0026 eatmydata  apt-get -y upgrade",
+      "revId": "cae57ef4ec8939dbe5feea42127ae62a6fc26ced",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
