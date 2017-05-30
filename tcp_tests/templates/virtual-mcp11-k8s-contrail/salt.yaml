@@ -10,8 +10,8 @@
 #    (see generated '.ini' file after underlay is created),
 # 3. defaults
 {% set address_pools = config.underlay.address_pools %}
-{% set IPV4_NET_ADMIN = os_env('IPV4_NET_ADMIN', address_pools.get('admin-pool01', '172.16.10.0/24')) %}
-{% set IPV4_NET_CONTROL = os_env('IPV4_NET_CONTROL', address_pools.get('private-pool01', '192.168.10.0/24')) %}
+{% set IPV4_NET_ADMIN = os_env('IPV4_NET_ADMIN', address_pools.get('public-pool01', '192.168.10.0/24')) %}
+{% set IPV4_NET_CONTROL = os_env('IPV4_NET_CONTROL', address_pools.get('private-pool01', '172.16.10.0/24')) %}
 
 {% set IPV4_NET_ADMIN_PREFIX = '.'.join(IPV4_NET_ADMIN.split('.')[0:3]) %}
 {% set IPV4_NET_CONTROL_PREFIX = '.'.join(IPV4_NET_CONTROL.split('.')[0:3]) %}
@@ -62,6 +62,32 @@
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
     mkdir -p /srv/salt/reclass/classes/service;
+    
+    # Replace firstly to an intermediate value to avoid intersection between
+    # already replaced and replacing networks.
+    # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
+    # 192.168.10 -> 10.16.0 (generated network for admin)
+    # 10.16.0 -> <external network>
+    # So let's replace constant networks to the keywords, and then keywords to the desired networks.
+    find /srv/salt/reclass/ -type f -exec sed -i 's/192\.168\.10\./==IPV4_NET_ADMIN_PREFIX==/g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/172\.16\.10\./==IPV4_NET_CONTROL_PREFIX==/g' {} +
+
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}./g' {} +
+    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
+
+    find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
+
+    find /srv/salt/reclass/ -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: {{ }}/g' {} +
+
+    # Disable checkouting the model from remote repository
+    cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
+    # local storage
+      reclass:
+        storage:
+          data_source:
+            engine: local
+    EOF
+
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
