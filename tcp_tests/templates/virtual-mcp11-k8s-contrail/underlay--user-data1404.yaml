@@ -47,8 +47,8 @@
    - echo "Preparing base OS"
    - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
-   - echo "deb [arch=amd64] http://apt.tcpcloud.eu/nightly trusty tcp-salt tcp extra main" > /etc/apt/sources.list
-   - wget -O - http://apt.tcpcloud.eu/public.gpg | apt-key add -
+   - echo "deb [arch=amd64] http://apt-mk.mirantis.com/trusty nightly salt extra" > /etc/apt/sources.list
+   - wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -
    - echo "deb http://repo.saltstack.com/apt/ubuntu/14.04/amd64/2016.3 trusty main" > /etc/apt/sources.list.d/saltstack.list
    - wget -O - https://repo.saltstack.com/apt/ubuntu/14.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -
 

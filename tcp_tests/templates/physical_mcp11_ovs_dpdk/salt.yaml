@@ -69,7 +69,7 @@
 
 - description: Configure GIT settings and certificates
   cmd: touch /root/.git_trusted_certs.pem;
-    for server in git.tcpcloud.eu github.com; do
+    for server in github.com; do
         openssl s_client -showcerts -connect $server:443 </dev/null
         | openssl x509 -outform PEM
         >> /root/.git_trusted_certs.pem;
