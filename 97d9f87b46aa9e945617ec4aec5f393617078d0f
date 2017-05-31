@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "61eaa447_ea400639",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1011166
+      },
+      "writtenOn": "2017-05-31T13:27:49Z",
+      "side": 1,
+      "message": "export only works with a full shell. I think the exports should be removed.",
+      "revId": "97d9f87b46aa9e945617ec4aec5f393617078d0f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c7cd9d8_5793dccc",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 195,
+      "author": {
+        "id": 1011166
+      },
+      "writtenOn": "2017-05-31T13:27:49Z",
+      "side": 1,
+      "message": "Let\u0027s propose this as a global param so it can be overwritten more easily. It\u0027s ok to add as-is for now and cover later.",
+      "revId": "97d9f87b46aa9e945617ec4aec5f393617078d0f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
