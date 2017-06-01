@@ -104,7 +104,8 @@ template:
             connection_string: !os_env CONNECTION_STRING, qemu:///system
             storage_pool_name: !os_env STORAGE_POOL_NAME, default
             stp: False
-            hpet: False
+            hpet: True
+            use_hugepages: True
             enable_acpi: true
             use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
 
@@ -313,8 +314,13 @@ template:
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              vcpu: !os_env SLAVE_NODE_CPU, 12
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              numa:
+              - cpus: 0,1,2,3,4,5
+                memory: 4096
+              - cpus: 6,7,8,9,10,11
+                memory: 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -364,8 +370,13 @@ template:
           - name: {{ HOSTNAME_CMP02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              vcpu: !os_env SLAVE_NODE_CPU, 12
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              numa:
+              - cpus: 0,1,2,3,4,5
+                memory: 4096
+              - cpus: 6,7,8,9,10,11
+                memory: 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
