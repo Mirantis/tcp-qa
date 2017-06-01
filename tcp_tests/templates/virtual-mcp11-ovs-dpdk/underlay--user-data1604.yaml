@@ -58,7 +58,10 @@
    - eatmydata apt-get update && apt-get -y upgrade
 
    # Install common packages
-   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
+   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc hugepages
+
+   # Enable on nodes hugepages
+   - echo 2048 > /proc/sys/vm/nr_hugepages
 
    ########################################################
    # Node is ready, allow SSH access
