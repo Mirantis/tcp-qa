@@ -69,7 +69,7 @@
 
 - description: Configure GIT settings and certificates
   cmd: touch /root/.git_trusted_certs.pem;
-    for server in github.com; do
+    for server in git.tcpcloud.eu github.com; do
         openssl s_client -showcerts -connect $server:443 </dev/null
         | openssl x509 -outform PEM
         >> /root/.git_trusted_certs.pem;
@@ -101,7 +101,7 @@
     find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
     # Disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/control/{{ HOSTNAME_CFG01 }}.yml
+    cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
     # local storage
       reclass:
         storage:
@@ -259,6 +259,13 @@
 
 - description: Refresh pillars for present baremetal nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: '*Workaround* enable hugepages on cmp* nodes for OVS setup in linux formula'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
+      'sudo apt-get install -y hugepages; sudo echo 2048 > /proc/sys/vm/nr_hugepages'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
