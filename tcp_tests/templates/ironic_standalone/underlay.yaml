@@ -1,5 +1,8 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'stable') %}
+{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'standalone') + '.local' %}
+{% set HOSTNAME_IRONIC = os_env('HOSTNAME_IRONIC', 'ironic_master') %}
+{% set IRONIC_ENV_NAME = os_env('IRONIC_ENV_NAME', 'ironic_' + DOMAIN_NAME + '_' + REPOSITORY_SUITE + '_' + os_env('BUILD_NUMBER', '')) %}
 
 {% import 'ironic_standalone/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'ironic_standalone/underlay--user-data-ironic.yaml' as CLOUDINIT_USER_DATA_IRONIC with context %}
@@ -10,13 +13,10 @@ aliases:
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_ironic {{ CLOUDINIT_USER_DATA_IRONIC }}
 
-{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'standalone') + '.local' %}
-{% set HOSTNAME_IRONIC = os_env('HOSTNAME_IRONIC', 'ironic_master') %}
-
 
 template:
   devops_settings:
-    env_name: {{ os_env('IRONIC_ENV_NAME', 'ironic_' + DOMAIN_NAME + '_' + REPOSITORY_SUITE + '_' + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ IRONIC_ENV_NAME }}
 
     address_pools:
 
@@ -66,9 +66,10 @@ template:
           provisioning:
             address_pool: provisioning-pool01
             dhcp: false
+            forward:
+              mode: !os_env IRONIC_LAB_PXE_IFACE_MODE, bridge
             parent_iface:
               phys_dev: !os_env IRONIC_LAB_PXE_IFACE
-
 
         nodes:
           - name: {{ HOSTNAME_IRONIC }}

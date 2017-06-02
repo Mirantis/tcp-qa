@@ -32,7 +32,7 @@
    - sudo resolvconf -u
 
    # Prepare network connection
-   - sudo ifup eth0
+   #- sudo ifup eth0
 
    # Create swap
    - fallocate -l 4G /swapfile
@@ -63,9 +63,3 @@
    - echo "Allow SSH access ..."
    - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    ########################################################
-
-  write_files:
-   - path: /etc/network/interfaces
-     content: |
-          auto eth0
-          iface eth0 inet dhcp
