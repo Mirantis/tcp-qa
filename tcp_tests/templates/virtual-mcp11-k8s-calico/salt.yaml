@@ -82,10 +82,10 @@
     # Disable checkouting the model from remote repository
     cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
     # local storage
-      reclass:
-        storage:
-          data_source:
-            engine: local
+    reclass:
+      storage:
+        data_source:
+          engine: local
     EOF
 
     # Show the changes to the console
