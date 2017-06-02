@@ -154,7 +154,7 @@ template:
           - name: {{ HOSTNAME_CFG01 }}
             role: salt_master
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -162,7 +162,7 @@ template:
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -199,15 +199,15 @@ template:
           - name: {{ HOSTNAME_CTL01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: cinder
@@ -246,15 +246,15 @@ template:
           - name: {{ HOSTNAME_CTL02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: cinder
@@ -275,15 +275,15 @@ template:
           - name: {{ HOSTNAME_CTL03 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: cinder
@@ -304,15 +304,15 @@ template:
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 1024
               boot:
                 - hd
               cloud_init_volume_name: iso
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -330,15 +330,15 @@ template:
           - name: {{ HOSTNAME_CMP02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 1024
               boot:
                 - hd
               cloud_init_volume_name: iso
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -356,7 +356,7 @@ template:
           - name: {{ HOSTNAME_MON01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 1024
               boot:
                 - hd
@@ -364,7 +364,7 @@ template:
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -382,7 +382,7 @@ template:
           - name: {{ HOSTNAME_MON02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 1024
               boot:
                 - hd
@@ -390,7 +390,7 @@ template:
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -408,7 +408,7 @@ template:
           - name: {{ HOSTNAME_MON03 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 1024
               boot:
                 - hd
@@ -416,7 +416,7 @@ template:
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -435,14 +435,14 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 1024
+              memory: !os_env SLAVE_NODE_MEMORY, 8096
               boot:
                 - hd
               cloud_init_volume_name: iso
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1404
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -461,14 +461,14 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 1024
+              memory: !os_env SLAVE_NODE_MEMORY, 8096
               boot:
                 - hd
               cloud_init_volume_name: iso
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1404
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -487,14 +487,14 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 1024
+              memory: !os_env SLAVE_NODE_MEMORY, 8096
               boot:
                 - hd
               cloud_init_volume_name: iso
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1404
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -512,7 +512,7 @@ template:
           - name: {{ HOSTNAME_PRX01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 1024
               boot:
                 - hd
@@ -520,7 +520,7 @@ template:
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 50
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
@@ -538,13 +538,13 @@ template:
           - name: {{ HOSTNAME_VSRX01 }}
             role: vsrx
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              vcpu: !os_env SLAVE_NODE_CPU, 1
+              memory: !os_env SLAVE_NODE_MEMORY, 512
               boot:
                 - hd
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  capacity: !os_env NODE_VOLUME_SIZE, 10
                   backing_store: vsrx_image
                   format: qcow2
                   #- name: iso
