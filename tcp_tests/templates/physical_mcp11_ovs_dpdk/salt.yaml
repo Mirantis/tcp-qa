@@ -270,6 +270,14 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: '*Workaround* install bridge-utils before running linux formula'
+  # The formula removes default route and then tries to install the package, fails.
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False  -C '* and not
+    cfg01*' cmd.run 'sudo apt-get install -y bridge-utils'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Sync all salt resources for present baremetal nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
   node_name: {{ HOSTNAME_CFG01 }}
