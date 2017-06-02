@@ -1,5 +1,11 @@
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
+- description: Change kubernetes images to custom if need
+  cmd: find /srv/salt/reclass/ -type f -exec sed -i 's/docker-prod-virtual\.sandbox\.mirantis\.net/docker-prod-virtual\.docker\.mirantis.net/g' {} +
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fain: fal.master.kube-addonse
+
 # Install support services
 - description: Create and distribute SSL certificates for services using salt state
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt
@@ -77,10 +83,15 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install k8s
+- description: Install Addons
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons;
-     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' state.sls kubernetes.pool;
+    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Install k8s
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' state.sls kubernetes.pool;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
