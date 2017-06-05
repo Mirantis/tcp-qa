@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e9a87388_04aab211",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1008250
+      },
+      "writtenOn": "2017-06-05T13:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "61eaa447_ea400639",
+      "revId": "97d9f87b46aa9e945617ec4aec5f393617078d0f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5cdc81b4_498cb177",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
         "patchSetId": 5
@@ -30,6 +48,24 @@
       "writtenOn": "2017-05-31T13:29:15Z",
       "side": 1,
       "message": "Use overwrite.yml file please, not directly writing to salt model.",
+      "revId": "97d9f87b46aa9e945617ec4aec5f393617078d0f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "46aef78d_6676394d",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 181,
+      "author": {
+        "id": 1008250
+      },
+      "writtenOn": "2017-06-05T13:43:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5cdc81b4_498cb177",
       "revId": "97d9f87b46aa9e945617ec4aec5f393617078d0f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
