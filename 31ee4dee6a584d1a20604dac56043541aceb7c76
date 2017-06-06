@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "16b47213_859fa2a6",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/common-services.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T16:49:33Z",
+      "side": 1,
+      "message": "Please set proper description, because some time later it would be hard to understand what we are trying to do here )",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 17
+      },
+      "revId": "31ee4dee6a584d1a20604dac56043541aceb7c76",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0c96fab5_ddb24451",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/common-services.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 160,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T16:49:33Z",
+      "side": 1,
+      "message": "sorry but I am still can not understand why do we need rabbit here? I can not find where contrail relays on rabbit (checked formula/reclass)",
+      "range": {
+        "startLine": 160,
+        "startChar": 29,
+        "endLine": 160,
+        "endChar": 30
+      },
+      "revId": "31ee4dee6a584d1a20604dac56043541aceb7c76",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b15ca8fa_da734f24",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/salt.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T16:49:33Z",
+      "side": 1,
+      "message": "As we do changes in the models you need to refresh pillar first, and then check reclass-salt --top command",
+      "range": {
+        "startLine": 203,
+        "startChar": 22,
+        "endLine": 203,
+        "endChar": 25
+      },
+      "revId": "31ee4dee6a584d1a20604dac56043541aceb7c76",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "16f5c6d7_c7fccba5",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/underlay--user-data1404.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T16:49:33Z",
+      "side": 1,
+      "message": "Even if it does not have all the packages we still need to use apt-mirantis + create an issue about missed package. Officially we do not use apt.tcpcloud.eu at all. Also according to release strategy nightly repo should never come into testing, Default value should be testing repo, but it may be configurable",
+      "range": {
+        "startLine": 51,
+        "startChar": 38,
+        "endLine": 51,
+        "endChar": 44
+      },
+      "revId": "31ee4dee6a584d1a20604dac56043541aceb7c76",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "aff939f6_92271a05",
+        "filename": "tcp_tests/tests/system/test_install_k8s.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T16:49:33Z",
+      "side": 1,
+      "message": "you need to create new test without sl, because this one is used for calico and sl must be there from sys team",
+      "range": {
+        "startLine": 39,
+        "startChar": 41,
+        "endLine": 39,
+        "endChar": 59
+      },
+      "revId": "31ee4dee6a584d1a20604dac56043541aceb7c76",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
