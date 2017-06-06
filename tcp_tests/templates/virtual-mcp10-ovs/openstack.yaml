@@ -156,3 +156,120 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 10, delay: 30}
   skip_fail: false
+
+
+  # Upload cirros image
+
+- description: Upload cirros image on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Register image in glance
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; glance image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create net04_external
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron net-create net04_ext --shared --router:external True --provider:physical_network physnet1 --provider:network_type flat'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create subnet_external
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create net04
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron net-create net04'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create subnet_net04
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron subnet-create net04 {{ IPV4_NET_TENANT_PREFIX }}.0/24 --name net04__subnet --allocation-pool start={{ IPV4_NET_TENANT_PREFIX }}.120,end={{ IPV4_NET_TENANT_PREFIX }}.240'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create router
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-create net04_router01'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Set geteway
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Add interface
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Allow all tcp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Allow all icmp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+# Configure cinder-volume salt-call
+- description: Set disks 01
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Set disks 02
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Set disks 03
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL03 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create partitions 01
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create partitions 02
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create partitions 03
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
