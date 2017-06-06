@@ -1,3 +1,5 @@
+{% from 'virtual-mcp-ocata-dvr/salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
+{% from 'virtual-mcp-ocata-dvr/salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
 ################### Install OpenStack control ##########################
 
