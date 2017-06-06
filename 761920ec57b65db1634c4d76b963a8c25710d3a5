@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2ecaf93_db1d9c9a",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1011166
+      },
+      "writtenOn": "2017-06-06T11:26:32Z",
+      "side": 1,
+      "message": "needed or necessary",
+      "range": {
+        "startLine": 244,
+        "startChar": 68,
+        "endLine": 244,
+        "endChar": 72
+      },
+      "revId": "761920ec57b65db1634c4d76b963a8c25710d3a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cb11371c_f10bf02a",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 258,
+      "author": {
+        "id": 1011166
+      },
+      "writtenOn": "2017-06-06T11:26:32Z",
+      "side": 1,
+      "message": "needed or necessary",
+      "range": {
+        "startLine": 258,
+        "startChar": 58,
+        "endLine": 258,
+        "endChar": 61
+      },
+      "revId": "761920ec57b65db1634c4d76b963a8c25710d3a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a81836cb_5adf9644",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1011166
+      },
+      "writtenOn": "2017-06-06T11:26:32Z",
+      "side": 1,
+      "message": "nit: should have a space",
+      "range": {
+        "startLine": 262,
+        "startChar": 44,
+        "endLine": 262,
+        "endChar": 45
+      },
+      "revId": "761920ec57b65db1634c4d76b963a8c25710d3a5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
