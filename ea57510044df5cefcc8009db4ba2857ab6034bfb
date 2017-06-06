@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e5004bf1_f04537df",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/common-services.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T13:06:54Z",
+      "side": 1,
+      "message": "It doesn\u0027t look like changing custom image command and it looks that the right place for this manipulation is the model",
+      "range": {
+        "startLine": 7,
+        "startChar": 13,
+        "endLine": 7,
+        "endChar": 17
+      },
+      "revId": "ea57510044df5cefcc8009db4ba2857ab6034bfb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4f4d9cf8_2ea31815",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/common-services.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 161,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T13:06:54Z",
+      "side": 1,
+      "message": "why do we need rabbit for k8s?",
+      "range": {
+        "startLine": 161,
+        "startChar": 13,
+        "endLine": 161,
+        "endChar": 18
+      },
+      "revId": "ea57510044df5cefcc8009db4ba2857ab6034bfb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48aa76c7_1cd037f8",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T13:06:54Z",
+      "side": 1,
+      "message": "what it is mean? If you do not need stacklight you can exclude it from test. Currently its not a good approach to comment all",
+      "range": {
+        "startLine": 3,
+        "startChar": 15,
+        "endLine": 3,
+        "endChar": 19
+      },
+      "revId": "ea57510044df5cefcc8009db4ba2857ab6034bfb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e8041875_fa9e2ae9",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/underlay--user-data1404.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T13:06:54Z",
+      "side": 1,
+      "message": "we must use apt-mirantis without any compromises",
+      "range": {
+        "startLine": 50,
+        "startChar": 48,
+        "endLine": 50,
+        "endChar": 50
+      },
+      "revId": "ea57510044df5cefcc8009db4ba2857ab6034bfb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
