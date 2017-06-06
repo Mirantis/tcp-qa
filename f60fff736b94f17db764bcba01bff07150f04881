@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1d21d970_c5260375",
+        "filename": "tcp_tests/templates/virtual-mcp-ocata-dvr/openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-06T19:43:37Z",
+      "side": 1,
+      "message": "will fail as you do not import this var you need to add in the top of file:\n{% from \u0027virtual-mcp-ocata-dvr/salt.yaml\u0027 import IPV4_NET_EXTERNAL_PREFIX with context %}\n{% from \u0027virtual-mcp-ocata-dvr/salt.yaml\u0027 import IPV4_NET_TENANT_PREFIX with context %} the same for others reviews",
+      "range": {
+        "startLine": 197,
+        "startChar": 201,
+        "endLine": 197,
+        "endChar": 225
+      },
+      "revId": "f60fff736b94f17db764bcba01bff07150f04881",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
