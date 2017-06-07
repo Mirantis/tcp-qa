@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "235b8bc9_cb53e3af",
+        "filename": "tcp_tests/tests/system/test_install_k8s.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-07T11:07:08Z",
+      "side": 1,
+      "message": "this test is using for calico and we need sl here, could you please add next code below\n\n def test_k8s_contrail_install(self, underlay, openstack_deployed, show_step):\n        \"\"\"Test for deploying k8s with contrail cni\n\n        Scenario:\n            1. Prepare salt on hosts\n            2. Setup controller nodes\n            3. Setup compute nodes\n           \n\n        \"\"\"\n        LOG.info(\"*************** DONE **************\")",
+      "range": {
+        "startLine": 39,
+        "startChar": 31,
+        "endLine": 39,
+        "endChar": 39
+      },
+      "revId": "e15ecba5686ec3ca29fecea8735f1fbda827f276",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
