@@ -2,6 +2,7 @@
 {% from 'virtual-mcp-ocata-ovs/underlay.yaml' import REPOSITORY_SUITE with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_BRANCH = os_env('SALT_MODELS_BRANCH','master') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
 
 # Address pools for reclass cluster model are taken in the following order:
@@ -93,7 +94,8 @@
 - description: Clone reclass models with submodules
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+    git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+    pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
 
     mkdir -p /srv/salt/reclass/classes/service;
 

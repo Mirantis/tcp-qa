@@ -2,6 +2,7 @@
 {% from 'mk24_lab_ovs_dvr_vlan_bm/underlay.yaml' import REPOSITORY_SUITE with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/qa') %}
+{% set SALT_MODELS_BRANCH = os_env('SALT_MODELS_BRANCH','master') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 
@@ -85,7 +86,8 @@
 - description: Clone reclass models with submodules
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b {{ SALT_MODELS_COMMIT }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+    git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+    pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
     cd /srv/salt/reclass/classes/system;
     git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
 
