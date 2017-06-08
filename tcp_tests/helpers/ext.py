@@ -26,6 +26,7 @@ def enum(*values, **kwargs):
 UNDERLAY_NODE_ROLES = enum(
     'salt_master',
     'salt_minion',
+    'virtlet_node',
 )
 
 NETWORK_TYPE = enum(

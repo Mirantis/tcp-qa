@@ -181,7 +181,7 @@ template:
                     - private
 
           - name: {{ HOSTNAME_CTL02 }}
-            role: salt_minion
+            role: virtlet_node
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
               memory: !os_env SLAVE_NODE_MEMORY, 2048
