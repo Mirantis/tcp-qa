@@ -48,15 +48,26 @@ class K8SManager(ExecuteCommandsMixin):
 
     def get_proxy_api(self):
         k8s_proxy_ip_pillars = self._salt.get_pillar(
-            tgt='I@haproxy:proxy:enabled:true',
+            tgt='I@haproxy:proxy:enabled:true and I@kubernetes:master',
             pillar='haproxy:proxy:listen:k8s_secure:binds:address')
+        k8s_hosts = self._salt.get_pillar(
+            tgt='I@haproxy:proxy:enabled:true and I@kubernetes:master',
+            pillar='kubernetes:pool:apiserver:host')
         k8s_proxy_ip = set([ip
                             for item in k8s_proxy_ip_pillars
-                            for node,ip in item.items()])
-        assert len(k8s_proxy_ip) == 1, \
-            ("Found {0} Kubernetes endpoints in pillars,"
-             " expected one!").format(len(k8s_proxy_ip))
-        return k8s_proxy_ip.pop()
+                            for node,ip in item.items() if ip])
+        k8s_hosts = set([ip
+                            for item in k8s_hosts
+                            for node,ip in item.items() if ip])
+        assert len(k8s_hosts) == 1, (
+            "Found more than one Kubernetes API hosts in pillars:{0}, "
+            "expected one!").format(k8s_hosts)
+        k8s_host = k8s_hosts.pop()
+        assert k8s_host in k8s_proxy_ip, (
+            "Kubernetes API host:{0} not found in proxies:{} "
+            "on k8s master nodes. K8s proxies are expected on "
+            "nodes with K8s master").format(k8s_host, k8s_proxy_ip)
+        return k8s_host
 
     @property
     def api(self):
