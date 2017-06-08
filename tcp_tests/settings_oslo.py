@@ -167,7 +167,9 @@ virtlet_opts = [
            help="", default=False),
     ct.Cfg('ceph_installed', ct.Boolean(),
            help="Determine, installed one-node ceph cluster or not",
-           default=False)
+           default=False),
+    ct.Cfg('virtlet_nodes', ct.List(),
+           help="", default=[]),
 ]
 
 k8s_deploy_opts = [

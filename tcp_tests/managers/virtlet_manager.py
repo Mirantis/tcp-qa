@@ -12,7 +12,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from uuid import uuid4
+
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
+
+from devops.helpers import helpers
 
 
 class VirtletManager(ExecuteCommandsMixin):
@@ -32,3 +36,56 @@ class VirtletManager(ExecuteCommandsMixin):
         self.execute_commands(commands,
                               label='Install Virtlet project')
         self.__config.virtlet.virtlet_installed = True
+        self.__config.virtlet.virtlet_nodes = self.get_virtlet_nodes()
+
+    def get_virtlet_nodes(self):
+        cmd = ("kubectl get nodes -l 'extraRuntime=virtlet' "
+               "-o jsonpath=\"{range .items[*]}{.metadata.name} \"")
+        ctl_node = next(
+            i for i in self.__config.underlay.ssh if 'ctl' in i['node_name'])
+        virtlet_nodes = self.__underlay.check_call(
+            cmd, node_name=ctl_node['node_name'])['stdout']
+        return [i for i in self.__config.underlay.ssh
+                for node in virtlet_nodes if node.strip() in i['node_name']]
+
+    def run_vm(self, name=None):
+        if not name:
+            name = 'virtlet-vm-{}'.format(uuid4())
+        node2 = self.__config.virtlet.virtlet_nodes[0]
+        cmd = (
+            "kubectl convert -f virtlet/examples/cirros-vm.yaml --local "
+            "-o json | jq '.metadata.name|=\"{}\"' | kubectl create -f -")
+        self.__underlay.check_call(
+            cmd.format(name),
+            node_name=node2['node_name'])
+        return name
+
+    def get_vm_info(self, name, jsonpath="{.status.phase}", expected=None):
+        node = self.__config.virtlet.virtlet_nodes[0]
+        cmd = "kubectl get po {} -n default".format(name)
+        if jsonpath:
+            cmd += " -o jsonpath={}".format(jsonpath)
+        return self.__underlay.check_call(
+            cmd, node_name=node['node_name'], expected=expected)
+
+    def wait_active_state(self, name, timeout=180):
+        helpers.wait(
+            lambda: self.get_vm_info(name)['stdout'][0] == 'Running',
+            timeout=timeout,
+            timeout_msg="VM {} didn't Running state in {} sec. "
+                        "Current state: ".format(
+                name, timeout, self.get_vm_info(name)['stdout'][0]))
+
+    def delete_vm(self, name, timeout=180):
+        node2 = self.__config.virtlet.virtlet_nodes[0]
+        cmd = "kubectl delete po -n default {}".format(name)
+        self.__underlay.check_call(cmd, node_name=node2['node_name'])
+
+        helpers.wait(
+            lambda:
+            "Error from server (NotFound):" in
+            " ".join(self.get_vm_info(name, expected=[0, 1])['stderr']),
+            timeout=timeout,
+            timeout_msg="VM {} didn't Running state in {} sec. "
+                        "Current state: ".format(
+                name, timeout, self.get_vm_info(name)['stdout'][0]))
