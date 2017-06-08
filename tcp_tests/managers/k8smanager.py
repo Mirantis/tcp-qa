@@ -48,7 +48,7 @@ class K8SManager(ExecuteCommandsMixin):
 
     def get_proxy_api(self):
         k8s_proxy_ip_pillars = self._salt.get_pillar(
-            tgt='I@haproxy:proxy:enabled:true',
+            tgt='I@haproxy:proxy:enabled:true and not mon*',
             pillar='haproxy:proxy:listen:k8s_secure:binds:address')
         k8s_proxy_ip = set([ip
                             for item in k8s_proxy_ip_pillars
