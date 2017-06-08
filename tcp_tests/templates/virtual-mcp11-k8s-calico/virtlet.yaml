@@ -1,4 +1,5 @@
 {% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Clone virtlet project from git to the ctl01 node for start virtlet pod from yaml
 - description: Cloning virtlet project on ctl02
@@ -14,6 +15,21 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
+# Add route for internal kube-services if necessary
+- description: Adding route for internal kube-services if necessary
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' cmd.run "ip r | grep 10.254 || ip ro add 10.254.0.0/16 dev ens4"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+
+# Install jq
+- description: Install jq
+  cmd: apt-get install jq -y
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 # Add extra parameter for kubelet service on virtlet node
 - description: Adding extra parameter for kubelet service on virtlet node
   cmd:  sed -i.bak "s|^\"|--feature-gates=DynamicKubeletConfig=true \\\\\\n\"|" /etc/default/kubelet
@@ -21,16 +37,19 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-# Restart kubelet and kube-api services on virtlet node
-- description: Restart kubelet and kube-api services on ctl02
-  cmd:  systemctl restart kube-apiserver kubelet
+# Restart kubelet service on virtlet node
+- description: Restart kubelet service on ctl02
+  cmd:  systemctl restart kubelet
   node_name: {{ HOSTNAME_CTL02 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
 
 # Create virtlet pod
 - description: Creating virtlet pod
-  cmd:  kubectl create -f virtlet/deploy/virtlet-ds.yaml
+  cmd: |
+    kubectl convert -f virtlet/deploy/virtlet-ds.yaml --local -o json | jq \
+    '.items[0].spec.template.spec.containers[0].env|=.+[{"name":"VIRTLET_DISABLE_KVM","value":"y"}] | .items[0].spec.template.spec.volumes|=.+[{"name":"etcd","hostPath":{"path":"/var/lib/etcd"}},{"name":"kubernetes","hostPath":{"path":"/etc/kubernetes"}}] | .items[0].spec.template.spec.containers[0].volumeMounts|=.+[{"mountPath":"/etc/kubernetes","name":"kubernetes"},{"mountPath":"/var/lib/etcd","name":"etcd"}]' | \
+    kubectl create -f -
   node_name: {{ HOSTNAME_CTL02 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
