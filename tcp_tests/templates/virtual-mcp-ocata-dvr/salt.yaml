@@ -142,7 +142,7 @@
     wget -O - "${FORMULA_GPG}" | apt-key add -;
     apt-get clean; apt-get update;
     [ ! -d /srv/salt/reclass/classes/service ] && mkdir -p /srv/salt/reclass/classes/service;
-    declare -a formula_services=("linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf");
+    declare -a formula_services=("linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch");
     echo -e "\nInstalling all required salt formulas\n";
     eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
     for formula_service in "${formula_services[@]}"; do
