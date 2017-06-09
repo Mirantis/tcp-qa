@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4cb6dd29_a7698db5",
+        "filename": "tcp_tests/tests/system/test_install_k8s.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-09T13:13:19Z",
+      "side": 1,
+      "message": ":) pelase do not change this, Vadim already created test for you",
+      "range": {
+        "startLine": 39,
+        "startChar": 31,
+        "endLine": 39,
+        "endChar": 39
+      },
+      "revId": "c396c4d4c6fbe1b559ecdced18ab26b24c5689e8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
