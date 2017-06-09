@@ -223,7 +223,6 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
-
 - description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     '*' cmd.run "echo '    StrictHostKeyChecking no' >> /root/.ssh/config"
@@ -233,18 +232,9 @@
 
 - description: Run 'salt.master' formula on cfg01
   cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls salt.master.service;
+    -C 'I@salt:master' state.sls salt.master;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
-  skip_fail: false
-
-- description: Run 'salt' formula on cfg01 with workaround proposed in PROD-10894
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls salt;
-    salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' saltutil.sync_all
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 5}
   skip_fail: false
 
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
@@ -260,46 +250,51 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Sync all salt resources
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Show  reclass-salt --top
   cmd: reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Execute salt.minion.cert
-  cmd: salt-call --no-color state.sls salt.minion.cert -l info;
+ description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Configure linux on master
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls 'linux.system'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure minion on master
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls 'salt.minion'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
 
 # Bootstrap all nodes
 
 - description: Configure linux on other nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg01*' state.sls linux
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls 'linux'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Configure openssh on all nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg01*' state.sls openssh;salt --hard-crash --state-output=mixed --state-verbose=False
-    -C '* and not cfg*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
-    yes/' /etc/ssh/sshd_config && service ssh restart"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls openssh;
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Configure salt.minion on other nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg01*' state.sls salt.minion
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -317,7 +312,7 @@
   skip_fail: false
 
 - description: Configure ntp and rsyslog on nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls ntp,rsyslog
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls ntp,rsyslog
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
