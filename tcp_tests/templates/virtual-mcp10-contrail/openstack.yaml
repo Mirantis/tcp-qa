@@ -211,17 +211,23 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
-
-- description: Provision vrouter
+- description: Provision Contrail-vRouter on Computes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nova:compute' cmd.run 'exec 0>&-; exec 1>&-; exec 2>&-; nohup bash -c "ip link | grep vhost && echo no_reboot || sleep 5 && reboot & "'
+    -C 'I@opencontrail:compute' state.sls 'opencontrail.client'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: contrail client on cmp
-  cmd: sleep 300; salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:compute' state.sls opencontrail.client
+- description: Install Opencontrail on computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls 'opencontrail'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Reboot Opencontrail compute nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' system.reboot
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
