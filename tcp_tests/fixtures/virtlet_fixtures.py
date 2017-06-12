@@ -12,43 +12,38 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import os
-
 import pytest
-import yaml
 
 from tcp_tests import logger
 from tcp_tests.helpers import ext
-from tcp_tests import settings
 from tcp_tests.managers import virtlet_manager
 
 LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def virtlet_actions(config, underlay, salt_actions):
+def virtlet_actions(config, underlay):
     """Fixture that provides various actions for Virtlet project
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :rtype: VirtletManager
     """
-    return virtlet_manager.VirtletManager(config, underlay, salt_actions)
+    return virtlet_manager.VirtletManager(config, underlay)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.virtlet_deployed)
 @pytest.fixture(scope='function')
-def virtlet_deployed(revert_snapshot, request, config,
-                             hardware, underlay, common_services_deployed,
-                             virtlet_actions):
+def virtlet_deployed(revert_snapshot, config, hardware, underlay,
+                     k8s_deployed, virtlet_actions):
     """Fixture to get or install Virtlet project on the environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
                             in test with @pytest.mark.revert_snapshot(<name>)
-    :param request: fixture provides pytest data
     :param config: fixture provides oslo.config
     :param hardware: fixture provides enviromnet manager
     :param underlay: fixture provides underlay manager
+    :param k8s_deployed: fixture provides K8SManager instance
     :param virtlet_actions: fixture provides VirtletManager instance
     :rtype: VirtletManager
 
@@ -66,7 +61,7 @@ def virtlet_deployed(revert_snapshot, request, config,
     If you want to revert 'virtlet_deployed' snapshot, please use mark:
     @pytest.mark.revert_snapshot("virtlet_deployed")
     """
-    # Create Salt cluster
+    # Deploy Virtlet for Kubernetes
     if not config.virtlet.virtlet_installed:
         steps_path = config.virtlet_deploy.virtlet_steps_path
         commands = underlay.read_template(steps_path)

@@ -11,7 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-# import time
 
 from collections import defaultdict
 
@@ -151,3 +150,7 @@ class SaltManager(ExecuteCommandsMixin):
             r = self.run_state(tgt=tgt, state=s, args=args, kwargs=kwargs)
             rets.append(r)
         return rets
+
+    def get_pillar(self, tgt, pillar):
+        result = self.local(tgt=tgt, fun='pillar.get', args=pillar)
+        return result['return']

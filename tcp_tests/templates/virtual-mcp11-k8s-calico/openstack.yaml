@@ -1,9 +1,0 @@
-{% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
-
-# Install OpenStack control services
-
-- description: Run tests
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run "docker run --rm --net=host -e API_SERVER='http://127.0.0.1:8080' docker-dev-virtual.docker.mirantis.net/mirantis/kubernetes/k8s-conformance:v1.6.2-2_1493800192393 >> e2e.output"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false

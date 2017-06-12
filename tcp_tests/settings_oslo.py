@@ -49,6 +49,9 @@ _default_virtlet_prepare_tests_steps_path = pkg_resources.resource_filename(
 _default_virtlet_ceph_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/virtlet_ceph.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_k8s_steps = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/k8s.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 
 hardware_opts = [
     ct.Cfg('manager', ct.String(),
@@ -171,6 +174,12 @@ virtlet_opts = [
 ]
 
 k8s_deploy_opts = [
+    ct.Cfg('k8s_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy Kubernetes",
+           default=_default_k8s_steps),
+    ct.Cfg('kubernetes_admin_user', ct.String(), default='admin'),
+    ct.Cfg('kubernetes_admin_password', ct.String(),
+           default='sbPfel23ZigJF3Bm'),
     ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
     ct.Cfg('kubernetes_hyperkube_image', ct.String(),
            default='{}/mirantis/kubernetes/hyperkube-amd64:v1.6.2-2'.format(
@@ -184,6 +193,8 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_calico_cni_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/cni:latest'.format(
                settings.DOCKER_REGISTRY)),
+    ct.Cfg('kubernetes_netchecker_enabled', ct.Boolean(),
+           help="", default=True),
     ct.Cfg('kubernetes_netchecker_agent_image', ct.String(),
            default='mirantis/k8s-netchecker-agent:latest'),
     ct.Cfg('kubernetes_netchecker_server_image', ct.String(),
@@ -191,6 +202,8 @@ k8s_deploy_opts = [
 ]
 
 k8s_opts = [
+    ct.Cfg('k8s_installed', ct.Boolean(),
+           help="", default=False),
     ct.Cfg('kube_host', ct.IPAddress(),
            help="", default='0.0.0.0'),
     ct.Cfg('kube_apiserver_port', ct.Integer(),
