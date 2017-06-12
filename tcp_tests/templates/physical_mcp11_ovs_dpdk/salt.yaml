@@ -343,8 +343,8 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Execute salt.minion.cert
-  cmd: salt-call --no-color state.sls salt.minion.cert -l info;
+- description: Execute salt.minion on config node to generate certificate
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt.minion;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
