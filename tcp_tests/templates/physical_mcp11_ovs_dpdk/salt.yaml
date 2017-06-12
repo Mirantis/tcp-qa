@@ -350,11 +350,11 @@
   skip_fail: false
 
 
-- description: Configure linux on other nodes
+- description: Configure linux on other nodes with re-tries (workaround for locked /var/lib/dpkg/lock)
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
     cfg01*' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 5, delay: 30}
   skip_fail: false
 
 - description: Configure openssh on all nodes
