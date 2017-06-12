@@ -48,3 +48,14 @@ class Testk8sInstall(object):
 
         """
         LOG.info("*************** DONE **************")
+
+    def test_only_k8s_install(self, underlay, openstack_deployed, show_step):
+        """Test for deploying an mcp environment and check it
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+
+        """
+        LOG.info("*************** DONE **************")
