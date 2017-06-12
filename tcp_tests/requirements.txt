@@ -13,4 +13,5 @@ jinja2>=2.1
 jira
 testrail
 functools32
+python-k8sclient==0.4.0
 salt-pepper

@@ -21,10 +21,9 @@ class VirtletManager(ExecuteCommandsMixin):
     __config = None
     __underlay = None
 
-    def __init__(self, config, underlay, salt):
+    def __init__(self, config, underlay):
         self.__config = config
         self.__underlay = underlay
-        self._salt = salt
         super(VirtletManager, self).__init__(
             config=config, underlay=underlay)
 

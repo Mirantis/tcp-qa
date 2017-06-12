@@ -11,13 +11,9 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-import copy
-import time
 
 import pytest
 
-from tcp_tests import settings
-from tcp_tests.helpers import ext
 from tcp_tests import logger
 
 LOG = logger.logger
@@ -25,37 +21,31 @@ LOG = logger.logger
 
 @pytest.mark.deploy
 class Testk8sInstall(object):
-    """Test class for testing mcp10 vxlan deploy"""
+    """Test class for testing Kubernetes deploy"""
 
-    #salt_cmd = 'salt -l debug '  # For debug output
-    #salt_call_cmd = 'salt-call -l debug '  # For debug output
-    salt_cmd = 'salt --hard-crash --state-output=mixed --state-verbose=False '  # For cause only output
-    salt_call_cmd = 'salt-call --hard-crash --state-output=mixed --state-verbose=False '  # For cause only output
-    #salt_cmd = 'salt --state-output=terse --state-verbose=False '  # For reduced output
-    #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
-
-    # @pytest.mark.snapshot_needed
-    # @pytest.mark.fail_snapshot
-    def test_k8s_install(self, underlay, sl_deployed, openstack_deployed,
-                                     show_step):
-        """Test for deploying an mcp environment and check it
+    @pytest.mark.fail_snapshot
+    def test_k8s_install(self, sl_deployed, k8s_deployed):
+        """Test for deploying MCP environment with k8s+stacklight and check it
 
         Scenario:
             1. Prepare salt on hosts
             2. Setup controller nodes
             3. Setup compute nodes
             4. Setup stack light nodes
+            5. Setup Kubernetes cluster
 
         """
         LOG.info("*************** DONE **************")
 
-    def test_only_k8s_install(self, underlay, openstack_deployed, show_step):
-        """Test for deploying an mcp environment and check it
+    @pytest.mark.fail_snapshot
+    def test_only_k8s_install(self, k8s_deployed):
+        """Test for deploying MCP environment with k8s and check it
 
         Scenario:
             1. Prepare salt on hosts
             2. Setup controller nodes
             3. Setup compute nodes
+            4. Setup Kubernetes cluster
 
         """
         LOG.info("*************** DONE **************")
