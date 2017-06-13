@@ -218,7 +218,7 @@
 
 - description: Run 'salt.master' formula on cfg01
   cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls salt.master.service;
+    -C 'I@salt:master' state.sls salt.master;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
@@ -286,6 +286,14 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+
+- description: '*Workaround* Avoid reboot when IP addresses are doubled on interfaces and bridges at the same time. For test environments only!'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'kvm*' cmd.run
+    "salt-call state.sls linux.network.interface && ls -1 /var/run/ | grep dhclient | awk -F'.' '{print \$2}' | xargs -I {} ifconfig {} 0.0.0.0"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
 - description: Configure linux for present baremetal nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
     cfg01*' state.sls linux
@@ -335,18 +343,18 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Execute salt.minion.cert
-  cmd: salt-call --no-color state.sls salt.minion.cert -l info;
+- description: Execute salt.minion on config node to generate certificate
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt.minion;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 
-- description: Configure linux on other nodes
+- description: Configure linux on other nodes with re-tries (workaround for locked /var/lib/dpkg/lock)
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
     cfg01*' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 5, delay: 30}
   skip_fail: false
 
 - description: Configure openssh on all nodes
