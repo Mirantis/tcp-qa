@@ -40,15 +40,15 @@ class VirtletManager(ExecuteCommandsMixin):
                               label='Install Virtlet project')
         self.__config.virtlet.virtlet_installed = True
 
-    def run_vm(self, name=None):
+    def run_vm(self, name=None, yaml_path='virtlet/examples/cirros-vm.yaml'):
         if not name:
             name = 'virtlet-vm-{}'.format(uuid4())
         virt_node = self.virtlet_nodes[0]
         cmd = (
-            "kubectl convert -f virtlet/examples/cirros-vm.yaml --local "
-            "-o json | jq '.metadata.name|=\"{}\"' | kubectl create -f -")
+            "kubectl convert -f {0} --local "
+            "-o json | jq '.metadata.name|=\"{1}\"' | kubectl create -f -")
         self.__underlay.check_call(
-            cmd.format(name),
+            cmd.format(name, yaml_path),
             node_name=virt_node['node_name'])
         return name
 
@@ -81,3 +81,43 @@ class VirtletManager(ExecuteCommandsMixin):
             timeout_msg="VM {} didn't Running state in {} sec. "
                         "Current state: ".format(
                 name, timeout, self.get_vm_info(name)['stdout'][0]))
+
+    def adjust_cirros_resources(
+            self, cpu=2, memory='256',
+            target_yaml='virtlet/examples/cirros-vm-exp.yaml'):
+        virt_node = self.virtlet_nodes[0]
+        # We will need to change params in case of example change
+        cmd = ("cd ~/virtlet/examples && "
+               "cp cirros-vm.yaml {2} && "
+               "sed -r 's/^(\s*)(VirtletVCPUCount\s*:\s*\"1\"\s*$)/ "
+               "\1VirtletVCPUCount: \"{0}\"/' {2} && "
+               "sed -r 's/^(\s*)(memory\s*:\s*128Mi\s*$)/\1memory: "
+               "{1}Mi/' {2}".format(cpu, memory, target_yaml))
+        self.__underlay.check_call(cmd, node_name=virt_node['node_name'])
+
+    def get_domain_name(self, vm_name):
+        virt_node = self.virtlet_nodes[0]
+        cmd = ("cd ~/virtlet/examples && "
+               "./virsh.sh list | grep -i {0} "
+               "| awk {{'print $2'}}".format(vm_name))
+        result = self.__underlay.check_call(cmd,
+                                            node_name=virt_node['node_name'])
+        return result['stdout'].strip()
+
+    def get_vm_cpu_count(self, domain_id):
+        virt_node = self.virtlet_nodes[0]
+        cmd = ("cd ~/virtlet/examples && "
+               "./virsh.sh dumpxml {0} | "
+               "grep 'cpu' | grep -o '[[:digit:]]*'".format(domain_id))
+        result = self.__underlay.check_call(cmd,
+                                            node_name=virt_node['node_name'])
+        return int(result['stdout'].strip())
+
+    def get_vm_memory_count(self, domain_id):
+        virt_node = self.virtlet_nodes[0]
+        cmd = ("cd ~/virtlet/examples && "
+               "./virsh.sh dumpxml {0} | "
+               "grep 'memory unit' | grep -o '[[:digit:]]*'".format(domain_id))
+        result = self.__underlay.check_call(cmd,
+                                            node_name=virt_node['node_name'])
+        return int(result['stdout'].strip())

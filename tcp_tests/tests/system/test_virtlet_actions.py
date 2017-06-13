@@ -46,3 +46,35 @@ class TestVirtletActions(object):
         vm_name = virtlet_actions.run_vm()
         virtlet_actions.wait_active_state(vm_name)
         virtlet_actions.delete_vm(vm_name)
+
+    def test_vm_resource_quotas(self, underlay, virtlet_deployed, show_step,
+                                virtlet_actions):
+        """Test for deploying a VM with specific quotas
+
+        Scenario:
+            1. Prepare VM's yaml
+            2. Start a VM
+            3. Check that VM resources is equal to provided in yaml
+            4. Destroy VM
+
+        """
+
+        target_cpu = 2  # Cores
+        target_memory = 256  # Size in MB
+        target_memory_kb = target_memory*1024
+        target_yaml = 'virtlet/examples/cirros-vm-exp.yaml'
+        virtlet_actions.adjust_cirros_resources(cpu=target_cpu,
+                                                memory=target_memory,
+                                                target_yaml=target_yaml)
+        virtlet_actions.run_vm(target_yaml)
+        virtlet_actions.wait_for_vm_pod_status('Running')
+        domain_id = virtlet_actions.get_domain_name()
+        cpu = virtlet_actions.get_vm_cpu_count(domain_id)
+        mem = virtlet_actions.get_vm_memory_count(domain_id)
+        fail_msg = '{0} is not correct memory unit for VM. Correct is {1}'.\
+            format(mem, target_memory_kb)
+        assert target_memory_kb == mem, fail_msg
+        fail_msg = '{0} is not correct cpu cores count for VM. ' \
+                   'Correct is {1}'.format(cpu, target_cpu)
+        assert target_cpu == cpu, fail_msg
+        virtlet_actions.delete_vm(target_yaml)
