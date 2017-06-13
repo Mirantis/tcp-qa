@@ -170,6 +170,33 @@ virtlet_opts = [
            default=False)
 ]
 
+k8s_deploy_opts = [
+    ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
+    ct.Cfg('kubernetes_hyperkube_image', ct.String(),
+           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.6.2-2'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('kubernetes_calico_image', ct.String(),
+           default='{}/mirantis/projectcalico/calico/node:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('kubernetes_calicoctl_image', ct.String(),
+           default='{}/mirantis/projectcalico/calico/ctl:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('kubernetes_calico_cni_image', ct.String(),
+           default='{}/mirantis/projectcalico/calico/cni:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('kubernetes_netchecker_agent_image', ct.String(),
+           default='mirantis/k8s-netchecker-agent:latest'),
+    ct.Cfg('kubernetes_netchecker_server_image', ct.String(),
+           default='mirantis/k8s-netchecker-server:latest'),
+]
+
+k8s_opts = [
+    ct.Cfg('kube_host', ct.IPAddress(),
+           help="", default='0.0.0.0'),
+    ct.Cfg('kube_apiserver_port', ct.Integer(),
+           help="", default=443),
+]
+
 _group_opts = [
     ('hardware', hardware_opts),
     ('underlay', underlay_opts),
@@ -184,6 +211,8 @@ _group_opts = [
     ('sl_deploy', sl_deploy_opts),
     ('virtlet_deploy', virtlet_deploy_opts),
     ('virtlet', virtlet_opts),
+    ('k8s_deploy', k8s_deploy_opts),
+    ('k8s', k8s_opts),
 ]
 
 
@@ -242,6 +271,14 @@ def register_opts(config):
     config.register_group(cfg.OptGroup(name='virtlet',
                                        title='Virtlet config', help=""))
     config.register_opts(group='virtlet', opts=virtlet_opts)
+
+    config.register_group(cfg.OptGroup(name='k8s_deploy',
+                                       title="K8s deploy configuration"))
+    config.register_opts(group='k8s_deploy', opts=k8s_deploy_opts)
+
+    config.register_group(cfg.OptGroup(name='k8s',
+                                       title="K8s config and credentials"))
+    config.register_opts(group='k8s', opts=k8s_opts)
     return config
 
 
