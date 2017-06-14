@@ -1,5 +1,16 @@
 {% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
+- description: Set k8s deploy parameters
+  cmd: |
+  {% for k8s_opt, value in config.k8s_deploy.items() %}
+    {% if value|string() %}
+    salt-call reclass.cluster_meta_set {{ k8s_opt }} {{ value }};
+    {% endif %}
+  {% endfor %}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 - description: Install etcd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@etcd:server' state.sls etcd.server.service
@@ -40,6 +51,16 @@
 - description: Register addons
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# FIXME(apanchenko): remove this hack as soon as the bug is fixed in MCP
+# Workaround for k8s/calico routing issue on nodes with 2+ NICs (L3 networks)
+# see https://mirantis.jira.com/browse/PROD-12327
+- description: Add missing route for k8s services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:common' cmd.run 'ip route add 10.254.0.0/16 dev ens4'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false

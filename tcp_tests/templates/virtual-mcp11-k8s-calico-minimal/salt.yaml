@@ -205,17 +205,6 @@
   retry: {count: 5, delay: 5}
   skip_fail: false
 
-- description: Set k8s deploy parameters
-  cmd: |
-  {% for k8s_opt, value in config.k8s_deploy.items() %}
-    {% if value|string() %}
-    salt-call reclass.cluster_meta_set {{ k8s_opt }} {{ value }};
-    {% endif %}
-  {% endfor %}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls reclass
