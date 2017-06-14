@@ -86,6 +86,17 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: Check influix db
+  cmd: |
+    INFLUXDB_SERVICE=`salt -C 'I@influxdb:server' test.ping 1>/dev/null 2>&1 && echo true`;
+    echo "Influxdb service presence: ${INFLUXDB_SERVICE}";
+    if [[ "$INFLUXDB_SERVICE" == "true" ]]; then
+        salt -C 'I@influxdb:server' state.sls influxdb
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 # Collect grains needed to configure the services
 
 - description: Get grains
@@ -113,21 +124,10 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Sync modules
-  cmd: salt -C 'I@salt:minion' saltutil.refresh_modules
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Update mine
-  cmd: salt -C 'I@salt:minion' mine.update; sleep 5;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
 
 - description: Pull images
   cmd: salt -C 'I@docker:swarm:role:master' cmd.run 'docker node ls';
-    for img in pushgateway alertmanager prometheus; do
+    for img in pushgateway alertmanager prometheus telegraf remote_storage_adapter; do
         salt -C 'I@docker:swarm' dockerng.pull "docker-sandbox.sandbox.mirantis.net/bkupidura/$img";
         salt -C 'I@docker:swarm' dockerng.tag "docker-sandbox.sandbox.mirantis.net/bkupidura/$img:latest" "$img:latest";
     done;

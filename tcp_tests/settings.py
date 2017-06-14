@@ -51,3 +51,6 @@ IFACES = [
 
 SALT_USER = os.environ.get('SALT_USER', 'salt')
 SALT_PASSWORD = os.environ.get('SALT_PASSWORD', 'hovno12345!')
+
+DOCKER_REGISTRY = os.environ.get('DOCKER_REGISTRY',
+                                 'docker-prod-virtual.docker.mirantis.net')
