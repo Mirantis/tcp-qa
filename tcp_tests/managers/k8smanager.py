@@ -218,6 +218,44 @@ class K8SManager(ExecuteCommandsMixin):
             lambda: self.check_ds_ready(dsname, namespace=namespace),
             timeout=timeout, interval=interval)
 
+    def check_deploy_create(self, body, namespace=None):
+        """Check creating k8s Deployment
+
+        :param body: dict, Deployment spec
+        :param namespace: str
+        :rtype: K8sDeployment object
+        """
+        LOG.info("Creating Deployment in k8s cluster")
+        LOG.debug(
+            "Deployment spec to create:\n{}".format(
+                yaml.dump(body, default_flow_style=False))
+        )
+        deploy = self.api.deployments.create(body=body, namespace=namespace)
+        LOG.info("Deployment '{0}' is created  in '{1}' namespace".format(
+            deploy.name, deploy.namespace))
+        return self.api.deployments.get(name=deploy.name,
+                                        namespace=deploy.namespace)
+
+    def check_deploy_ready(self, deploy_name, namespace=None):
+        """Check if k8s Deployment is ready
+
+        :param deploy_name: str, deploy name
+        :return: bool
+        """
+        deploy = self.api.deployments.get(name=deploy_name, namespace=namespace)
+        return deploy.status.available_replicas == deploy.status.replicas
+
+    def wait_deploy_ready(self, deploy_name, namespace=None, timeout=60, interval=5):
+        """Wait until all pods are scheduled on nodes
+
+        :param deploy_name: str, deploy name
+        :param timeout: int
+        :param interval: int
+        """
+        helpers.wait(
+            lambda: self.check_deploy_ready(deploy_name, namespace=namespace),
+            timeout=timeout, interval=interval)
+
     def check_namespace_create(self, name):
         """Check creating k8s Namespace
 
