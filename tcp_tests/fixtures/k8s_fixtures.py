@@ -72,4 +72,20 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
         k8s_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.k8s_deployed)
 
+    # Workaround for keepalived hang issue after env revert from snapshot
+    # see https://mirantis.jira.com/browse/PROD-12038
+    LOG.warning('Restarting keepalived service on controllers...')
+    k8s_actions._salt.local(tgt='ctl*', fun='cmd.run',
+                            args='systemctl restart keepalived.service')
+
+    # FIXME(apanchenko): remove this hack as soon as the bug is fixed in MCP
+    # Workaround for Calico routing issue on nodes with 2+ NICs / networks
+    # see https://mirantis.jira.com/browse/PROD-12327
+    ips = k8s_actions._salt.get_pillar(
+        tgt='I@kubernetes:master',
+        pillar='kubernetes:master:service_addresses')
+    k8s_actions._salt.local(
+        tgt='I@kubernetes:common', fun='cmd.run',
+        args='ip route add {0} dev ens4'.format(ips[0].values()[0]))
+
     return k8s_actions
