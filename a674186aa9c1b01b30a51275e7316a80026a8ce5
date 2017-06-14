@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d2b81772_09971723",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-06-14T09:12:26Z",
+      "side": 1,
+      "message": "Maybe it is better to mark the virtlet nodes using fuel-devops node roles, and get such nodes by roles instead of hardcoding the node name somewhere else?",
+      "revId": "a674186aa9c1b01b30a51275e7316a80026a8ce5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
