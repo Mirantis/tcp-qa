@@ -72,4 +72,9 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
         k8s_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.k8s_deployed)
 
+    # Workaround for keepalived hang issue after env revert from snapshot
+    LOG.warning('Restarting keepalived service on controllers...')
+    k8s_actions._salt.local(tgt='ctl*', fun='cmd.run',
+                            args='systemctl restart keepalived.service')
+
     return k8s_actions
