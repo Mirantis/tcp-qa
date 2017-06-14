@@ -26,6 +26,10 @@ class K8sDeployment(K8sBaseResource):
     def name(self):
         return self.metadata.name
 
+    @property
+    def namespace(self):
+        return self.metadata.namespace
+
 
 class K8sDeploymentManager(K8sBaseManager):
     """docstring for ClassName"""
