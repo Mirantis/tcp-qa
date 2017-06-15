@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3e8c274a_e366d84c",
+        "filename": "tcp_tests/helpers/ext.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-06-15T17:17:46Z",
+      "side": 1,
+      "message": "I think it\u0027s better to chose the role name that reflects the main component, for example: \u0027k8s_virtlet\u0027.",
+      "revId": "3f4ac5618d424944bdecc3221b56fd8453dcac94",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
