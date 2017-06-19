@@ -116,7 +116,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-
 - description: Install heat service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@heat:server' state.sls heat -b 1
