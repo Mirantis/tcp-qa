@@ -23,9 +23,8 @@ from tcp_tests import logger
 LOG = logger.logger
 
 
-@pytest.mark.deploy
-class Test_Mcp11_install(object):
-    """Test class for testing mcp11 vxlan deploy"""
+class TestVirtletActions(object):
+    """Test class for testing Virtlet actions"""
 
     #salt_cmd = 'salt -l debug '  # For debug output
     #salt_call_cmd = 'salt-call -l debug '  # For debug output
@@ -34,34 +33,16 @@ class Test_Mcp11_install(object):
     #salt_cmd = 'salt --state-output=terse --state-verbose=False '  # For reduced output
     #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
 
-    def test_mcp11_ocata_ovs_install(self, underlay, openstack_deployed,
-                                          show_step):
-        """Test for deploying an mcp environment and check it
+    def test_virtlet_create_delete_vm(self, underlay, virtlet_deployed,
+                                     show_step, virtlet_actions):
+        """Test for deploying an mcp environment with virtlet
+
         Scenario:
-        1. Prepare salt on hosts
-        2. Setup controller nodes
-        3. Setup compute nodes
+            1. Start VM as a virtlet pod
+            2. Wait active state of VM
+            3. Delete VM and wait to delete pod
 
         """
-        LOG.info("*************** DONE **************")
-
-    def test_mcp11_ocata_dvr_install(self, underlay, openstack_deployed,
-                                          show_step):
-        """Test for deploying an mcp environment and check it
-        Scenario:
-        1. Prepare salt on hosts
-        2. Setup controller nodes
-        3. Setup compute nodes
-
-        """
-        LOG.info("*************** DONE **************")
-
-    def test_mcp11_ocata_dpdk_install(self, underlay, openstack_deployed,
-                                      show_step):
-        """Test for deploying an mcp dpdk environment and check it
-        Scenario:
-        1. Prepare salt on hosts
-        2. Setup controller nodes
-        3. Setup compute nodes
-        """
-        LOG.info("*************** DONE **************")
+        vm_name = virtlet_actions.run_vm()
+        virtlet_actions.wait_active_state(vm_name)
+        virtlet_actions.delete_vm(vm_name)
