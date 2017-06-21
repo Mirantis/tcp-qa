@@ -27,6 +27,14 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+# Keepalived without restart blocking further k8s installation
+- description: Restart keepalived service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' service.restart keepalived 
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Install Kubernetes and Calico
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons;
