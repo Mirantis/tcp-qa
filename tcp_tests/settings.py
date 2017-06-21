@@ -54,3 +54,16 @@ SALT_PASSWORD = os.environ.get('SALT_PASSWORD', 'hovno12345!')
 
 DOCKER_REGISTRY = os.environ.get('DOCKER_REGISTRY',
                                  'docker-prod-virtual.docker.mirantis.net')
+HYPERKUBE_IMAGE = os.environ.get(
+    'HYPERKUBE_IMAGE', 'mirantis/kubernetes/hyperkube-amd64:v1.6.2-2')
+CALICO_IMAGE = os.environ.get('CALICO_IMAGE',
+                              'mirantis/projectcalico/calico/node:latest')
+CALICOCTL_IMAGE = os.environ.get('CALICOCTL_IAMGE',
+                                 'mirantis/projectcalico/calico/ctl:latest')
+CALICO_CNI_IMAGE = os.environ.get('CALICO_CNI_IMAGE',
+                                  'mirantis/projectcalico/calico/cni:latest')
+NETCHECKER_AGENT = os.environ.get('NETCHECKER_AGENT',
+                                  'mirantis/k8s-netchecker-agent:latest')
+NETCHECKER_SERVER = os.environ.get('NETCHECKER_SERVER',
+                                   'mirantis/k8s-netchecker-server:latest')
+DOCKER_PACKAGE = os.environ.get('DOCKER_PACKAGE', '')

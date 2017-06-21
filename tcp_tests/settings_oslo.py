@@ -181,25 +181,26 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_admin_user', ct.String(), default='admin'),
     ct.Cfg('kubernetes_admin_password', ct.String(),
            default='sbPfel23ZigJF3Bm'),
-    ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
+    ct.Cfg('kubernetes_docker_package', ct.String(), default='{}'.format(
+               settings.DOCKER_PACKAGE)),
     ct.Cfg('kubernetes_hyperkube_image', ct.String(),
-           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.6.2-2'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{}/{}'.format(
+               settings.DOCKER_REGISTRY, settings.HYPERKUBE_IMAGE)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/node:latest'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{}/{}'.format(
+               settings.DOCKER_REGISTRY, settings.CALICO_IMAGE)),
     ct.Cfg('kubernetes_calicoctl_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/ctl:latest'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{}/{}'.format(
+               settings.DOCKER_REGISTRY, settings.CALICOCTL_IMAGE)),
     ct.Cfg('kubernetes_calico_cni_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/cni:latest'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{}/{}'.format(
+               settings.DOCKER_REGISTRY, settings.CALICO_CNI_IMAGE)),
     ct.Cfg('kubernetes_netchecker_enabled', ct.Boolean(),
            help="", default=True),
     ct.Cfg('kubernetes_netchecker_agent_image', ct.String(),
-           default='mirantis/k8s-netchecker-agent:latest'),
+           default='{}'.format(settings.NETCHECKER_AGENT)),
     ct.Cfg('kubernetes_netchecker_server_image', ct.String(),
-           default='mirantis/k8s-netchecker-server:latest'),
+           default='{}'.format(settings.NETCHECKER_SERVER)),
 ]
 
 k8s_opts = [

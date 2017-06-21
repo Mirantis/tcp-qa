@@ -17,6 +17,10 @@
 {% set IPV4_NET_ADMIN_PREFIX = '.'.join(IPV4_NET_ADMIN.split('.')[0:3]) %}
 {% set IPV4_NET_CONTROL_PREFIX = '.'.join(IPV4_NET_CONTROL.split('.')[0:3]) %}
 
+# Set docker engine version if one exported as environment variables
+{% set DOCKER_ENGINE = os_env('DOCKER_ENGINE', "") %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', "virtual-mcp11-k8s-calico") %}
+
 # Install salt to the config node
 - description: Installing salt master on cfg01
   cmd:  apt-get install -y reclass git; apt-get install -y salt-master
@@ -231,6 +235,19 @@
     -C 'I@salt:master' state.sls 'salt.minion'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
+  skip_fail: false
+
+# Change environment configuration before deploy
+
+- description: Set k8s deploy parameters
+  cmd: |
+  {% for k8s_opt, value in config.k8s_deploy.items() %}
+    {% if value|string() %}
+    salt-call reclass.cluster_meta_set {{ k8s_opt }} {{ value }};
+    {% endif %}
+  {% endfor %}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
   skip_fail: false
 
 # Bootstrap all nodes
