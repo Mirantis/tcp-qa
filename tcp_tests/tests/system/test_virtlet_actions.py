@@ -78,3 +78,23 @@ class TestVirtletActions(object):
                    'Correct is {1}'.format(cpu, target_cpu)
         assert target_cpu == cpu, fail_msg
         virtlet_actions.delete_vm(target_yaml)
+
+    def test_rbd_flexvolume_driver(self, underlay, virtlet_ceph_deployed,
+                                   show_step, virtlet_actions):
+        """Test for deploying a VM with Ceph RBD volume using flexvolumeDriver
+
+        Scenario:
+            1. Start VM with prepared yaml from run-ceph.sh scripts
+            2. Check that RBD volume is listed in virsh domblklist for VM
+            3. Destroy VM
+
+        """
+        # From:
+        # https://github.com/Mirantis/virtlet/blob/master/tests/e2e/run_ceph.sh
+        target_yaml = "virtlet/tests/e2e/cirros-vm-rbd-volume.yaml"
+        vm_name = virtlet_actions.run_vm(target_yaml)
+        virtlet_actions.wait_active_state(vm_name)
+        domain_name = virtlet_actions.get_domain_name(vm_name)
+        vm_volumes_list = virtlet_actions.list_vm_volumes(domain_name)
+        assert 'rbd' in vm_volumes_list
+        virtlet_actions.delete_vm(target_yaml)
