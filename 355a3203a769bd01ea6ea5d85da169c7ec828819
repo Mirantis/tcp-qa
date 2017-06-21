@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "05acb9d5_18da0ae1",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 255,
+      "author": {
+        "id": 1011219
+      },
+      "writtenOn": "2017-06-21T11:20:51Z",
+      "side": 1,
+      "message": "IMHO it\u0027s better to use config for such things, see like here https://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml#L208-L217",
+      "range": {
+        "startLine": 242,
+        "startChar": 0,
+        "endLine": 255,
+        "endChar": 12
+      },
+      "revId": "355a3203a769bd01ea6ea5d85da169c7ec828819",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d21619f2_2862b1cc",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1011219
+      },
+      "writtenOn": "2017-06-21T11:20:51Z",
+      "side": 1,
+      "message": "I\u0027d recommend to use reclass overrides wherever possible. You can modify you model to make \u0027docker-engine\u0027 configurable (see `grep kubernetes_docker_package  classes/cluster/virtual-mcp11-k8s-calico-minimal/ -R`)",
+      "range": {
+        "startLine": 262,
+        "startChar": 14,
+        "endLine": 262,
+        "endChar": 27
+      },
+      "revId": "355a3203a769bd01ea6ea5d85da169c7ec828819",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
