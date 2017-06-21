@@ -31,7 +31,7 @@ class VirtletManager(ExecuteCommandsMixin):
         self.__underlay = underlay
         self.virtlet_nodes = [
             i for i in self.__config.underlay.ssh
-            if ext.UNDERLAY_NODE_ROLES.virtlet_node in i['roles']]
+            if ext.UNDERLAY_NODE_ROLES.k8s_virtlet in i['roles']]
         super(VirtletManager, self).__init__(
             config=config, underlay=underlay)
 
