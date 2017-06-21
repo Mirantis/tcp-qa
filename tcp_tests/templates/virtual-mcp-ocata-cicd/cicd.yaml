@@ -1,0 +1,105 @@
+{% from 'virtual-mcp11-cicd/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+# Install CI/CD infrastructure
+
+- description: Perform initial configuration
+  cmd: salt -C 'ci*' cmd.run 'salt-call state.sls salt.minion'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Perform initial configuration
+  cmd: salt -C 'ci*' state.sls salt.minion,linux,openssh,ntp
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Synchronize modules and states
+  cmd: salt -C 'I@docker:swarm' saltutil.sync_all
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Mount Gluster volumes
+  cmd: salt -C 'I@glusterfs:client and I@docker:host' state.sls glusterfs.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure virtual IP and HAProxy balancing
+  cmd: salt -C 'I@haproxy:proxy and I@docker:host' state.sls haproxy,keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Docker
+  cmd: salt -C 'I@docker:host' state.sls docker.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Initial Docker swarm leader
+  cmd: salt -C 'I@docker:swarm:role:master' state.sls docker.swarm
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update the Salt mine to enable other swarm nodes to connect to leader
+  cmd: salt -C 'I@docker:swarm' state.sls salt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update the Salt mine to enable other swarm nodes to connect to leader
+  cmd: salt -C 'I@docker:swarm' mine.flush
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update the Salt mine to enable other swarm nodes to connect to leader
+  cmd: salt -C 'I@docker:swarm' mine.update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Complete the Docker swarm deployment
+  cmd: salt -C 'I@docker:swarm' state.sls docker.swarm
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Verify that all nodes are in the cluster
+  cmd: salt -C 'I@docker:swarm:role:master' cmd.run 'docker node ls'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Start the CI/CD containers
+  cmd: salt -C 'I@docker:swarm:role:master' state.sls docker.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure the Aptly service
+  cmd: salt -C 'I@aptly:server' state.sls aptly
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure the OpenLDAP service
+  cmd: salt -C 'I@openldap:client' cmd.run 'salt-call state.sls openldap'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure the Gerrit service
+  cmd: salt -C 'I@gerrit:client' cmd.run 'salt-call state.sls gerrit'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure the Jenkins service
+  cmd: salt -C 'I@jenkins:client' cmd.run 'salt-call state.sls jenkins'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
