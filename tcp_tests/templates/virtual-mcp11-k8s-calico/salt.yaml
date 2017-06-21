@@ -242,32 +242,15 @@
 
 # Change environment configuration before deploy
 
-{% for image_prefix in "CALICOCTL CALICO CALICO_CNI HYPERKUBE NETCHECKER_AGENT NETCHECKER_SERVER".split() %}
-- description: Change {{ image_prefix.lower() }} image to custom if necessary
+- description: Set k8s deploy parameters
   cmd: |
-    image_link={{ os_env('CUSTOM_IMAGE_' + image_prefix, "") }}
-    if [ -n "${image_link}" ]; then
-        echo "{{ image_prefix.lower() }} image link changed to "${image_link}""
-        salt -C 'I@salt:master' reclass.cluster_meta_set kubernetes_{{ image_prefix.lower() }}_image ${image_link}
-    else
-        echo "Custom {{ image_prefix.lower() }} image link is not set, skipped."
-    fi
+  {% for k8s_opt, value in config.k8s_deploy.items() %}
+    {% if value|string() %}
+    salt-call reclass.cluster_meta_set {{ k8s_opt }} {{ value }};
+    {% endif %}
+  {% endfor %}
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-{% endfor %}
-
-- description: Change docker engine version to custom if necessary
-  cmd: |
-     FILE="/srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/compute.yml"
-     if [ -n "{{ DOCKER_ENGINE }}" ]; then
-       echo "Change docker engine version to: {{ DOCKER_ENGINE }}"
-       sed "s#docker-engine=.*#docker-engine={{ DOCKER_ENGINE }}#" -i.bak ${FILE}
-     else
-       echo "Custom docker engine version is not set, skipped."
-     fi
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 1, delay: 1}
   skip_fail: false
 
 # Bootstrap all nodes
