@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d0bc07de_f0f7df0a",
+        "filename": "tcp_tests/managers/virtlet_manager.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 101,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-06-21T17:35:24Z",
+      "side": 1,
+      "message": "\u0027virsh\u0027 accepts --name option, so it is no need to use awk:\nvirsh list --name | grep -i {0}",
+      "range": {
+        "startLine": 101,
+        "startChar": 16,
+        "endLine": 101,
+        "endChar": 36
+      },
+      "revId": "bc62d9286fdf2ff2ce8b4263b51f0328623002be",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
