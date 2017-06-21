@@ -97,17 +97,15 @@ class VirtletManager(ExecuteCommandsMixin):
 
     def get_domain_name(self, vm_name):
         virt_node = self.virtlet_nodes[0]
-        cmd = ("cd ~/virtlet/examples && "
-               "./virsh.sh list | grep -i {0} "
-               "| awk {{'print $2'}}".format(vm_name))
+        cmd = ("~/virtlet/examples/virsh.sh list --name | "
+               "grep -i {0} ".format(vm_name))
         result = self.__underlay.check_call(cmd,
                                             node_name=virt_node['node_name'])
         return result['stdout'].strip()
 
     def get_vm_cpu_count(self, domain_name):
         virt_node = self.virtlet_nodes[0]
-        cmd = ("cd ~/virtlet/examples && "
-               "./virsh.sh dumpxml {0} | "
+        cmd = ("~/virtlet/examples/virsh.sh dumpxml {0} | "
                "grep 'cpu' | grep -o '[[:digit:]]*'".format(domain_name))
         result = self.__underlay.check_call(cmd,
                                             node_name=virt_node['node_name'])
@@ -115,10 +113,26 @@ class VirtletManager(ExecuteCommandsMixin):
 
     def get_vm_memory_count(self, domain_name):
         virt_node = self.virtlet_nodes[0]
-        cmd = ("cd ~/virtlet/examples && "
-               "./virsh.sh dumpxml {0} | "
+        cmd = ("~/virtlet/examples/virsh.sh dumpxml {0} | "
                "grep 'memory unit' | "
                "grep -o '[[:digit:]]*'".format(domain_name))
         result = self.__underlay.check_call(cmd,
                                             node_name=virt_node['node_name'])
         return int(result['stdout'].strip())
+
+    def get_domain_id(self, domain_name):
+        virt_node = self.virtlet_nodes[0]
+        cmd = ("virsh dumpxml {} | grep id=\' | "
+               "grep -o [[:digit:]]*".format(domain_name))
+        result = self.__underlay.check_call(cmd,
+                                            node_name=virt_node['node_name'])
+        return int(result['stdout'].strip())
+
+    def list_vm_volumes(self, domain_name):
+        virt_node = self.virtlet_nodes[0]
+        domain_id = self.get_domain_id(domain_name)
+        cmd = ("~/virtlet/examples/virsh.sh domblklist {} | "
+               "tail -n +3 | awk {{'print $2'}}".format(domain_id))
+        result = self.__underlay.check_call(cmd,
+                                            node_name=virt_node['node_name'])
+        return result['stdout'].strip()
