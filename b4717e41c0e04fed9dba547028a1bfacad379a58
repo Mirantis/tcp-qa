@@ -46,6 +46,30 @@
       "revId": "b4717e41c0e04fed9dba547028a1bfacad379a58",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ce73512_96989637",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1011219
+      },
+      "writtenOn": "2017-06-22T16:22:39Z",
+      "side": 1,
+      "message": "ok",
+      "parentUuid": "89d9f2fc_af948453",
+      "range": {
+        "startLine": 291,
+        "startChar": 28,
+        "endLine": 291,
+        "endChar": 32
+      },
+      "revId": "b4717e41c0e04fed9dba547028a1bfacad379a58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
