@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "269eb87f_17e4f60d",
+        "filename": "tcp_tests/fixtures/k8s_fixtures.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1011219
+      },
+      "writtenOn": "2017-06-22T10:41:49Z",
+      "side": 1,
+      "message": "going to add some advanced logic here (determine the interface name, check that routes are absent and so on)",
+      "range": {
+        "startLine": 89,
+        "startChar": 35,
+        "endLine": 89,
+        "endChar": 39
+      },
+      "revId": "6bf0d0cf06d4d5cc745612ab801b893195750f32",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
