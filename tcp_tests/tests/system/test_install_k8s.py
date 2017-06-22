@@ -24,7 +24,7 @@ class Testk8sInstall(object):
     """Test class for testing Kubernetes deploy"""
 
     @pytest.mark.fail_snapshot
-    def test_k8s_install(self, sl_deployed, k8s_deployed):
+    def test_k8s_install(self, sl_deployed, k8s_deployed, k8s_actions):
         """Test for deploying MCP environment with k8s+stacklight and check it
 
         Scenario:
@@ -33,12 +33,14 @@ class Testk8sInstall(object):
             3. Setup compute nodes
             4. Setup stack light nodes
             5. Setup Kubernetes cluster
+            6. Run conformance if need
 
         """
+        k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
-    def test_only_k8s_install(self, k8s_deployed):
+    def test_only_k8s_install(self, k8s_deployed, k8s_actions):
         """Test for deploying MCP environment with k8s and check it
 
         Scenario:
@@ -46,6 +48,8 @@ class Testk8sInstall(object):
             2. Setup controller nodes
             3. Setup compute nodes
             4. Setup Kubernetes cluster
+            5. Run conformance if need
 
         """
+        k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
