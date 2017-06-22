@@ -280,3 +280,15 @@ class K8SManager(ExecuteCommandsMixin):
         pods = [pod.status.container_statuses[0].restart_count
                 for pod in self.get_running_pods(pod_name, namespace)]
         return sum(pods)
+
+    def run_conformance(self, timeout=60 * 60):
+        if not self.__config.k8s.k8s_conformance_run:
+            pass
+        with self.__underlay.remote(
+                host=self.__config.k8s.kube_host) as remote:
+            result = remote.check_call(
+                "docker run --rm --net=host -e API_SERVER="
+                "'http://127.0.0.1:8080' {}".format(
+                    self.__config.k8s.k8s_conformance_image),
+                timeout=timeout)['stdout']
+            return result
