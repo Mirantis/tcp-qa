@@ -8,7 +8,7 @@
 
 ---
 aliases:
- - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
+ - &interface_model {{ os_env('INTERFACE_MODEL', 'e1000') }}
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
@@ -558,13 +558,13 @@ template:
               interfaces:
                 - label: ge-0/0/0
                   l2_network_device: private
-                  interface_model: virtio
+                  interface_model: *interface_model
                   mac_address: 52:54:00:4e:b4:36
                 - label: ge-0/0/1
                   l2_network_device: public
-                  interface_model: virtio
+                  interface_model: *interface_model
                   mac_address: 52:54:00:e1:44:9d
                 - label: ge-0/0/2
                   l2_network_device: admin
-                  interface_model: virtio
+                  interface_model: *interface_model
                   mac_address: 52:54:00:72:08:77

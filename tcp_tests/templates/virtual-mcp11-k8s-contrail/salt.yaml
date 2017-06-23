@@ -87,9 +87,6 @@
 
     # vSRX IPs for tcp-qa images have 172.16.10.90 hardcoded
     find /srv/salt/reclass/ -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: 172.16.10.90/g' {} +
-    # Replace VIP with IP of first controller. It should be removed when Kube-API VIP will be moved out of ens4/vhost0
-    find /srv/salt/reclass/ -type f -exec sed -i 's/ipf_addresses:.*/ipf_addresses: ${_param:cluster_node01_address}/g' {} +
-    perl -pi -e 's/vhost0/ens4/g' /srv/salt/reclass/classes/cluster/virtual-mcp11-k8s-contrail/kubernetes/control.yml
 
     # Disable checkouting the model from remote repository
     cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
