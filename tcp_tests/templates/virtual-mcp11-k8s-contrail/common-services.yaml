@@ -1,12 +1,5 @@
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
-- description: Temporary fix to untie k8s API from Opencontrail haproxy
-    That allows kube-api to be available over private network.
-  cmd: sed -i "s/vhost0/ens4/g" /srv/salt/reclass/classes/cluster/virtual-mcp11-k8s-contrail/kubernetes/control.yml
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
 # Install support services
 - description: Create and distribute SSL certificates for services using salt state
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt
