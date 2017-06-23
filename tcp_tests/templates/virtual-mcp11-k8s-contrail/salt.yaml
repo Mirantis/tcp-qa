@@ -141,8 +141,8 @@
     EOF
     eatmydata apt-get install -y salt-minion;
     echo "Check for system info and metadata availability ...";
-    salt-call --no-color grains.items;
-    salt-call --no-color pillar.items;
+    salt-call --hard-crash --no-color grains.items;
+    salt-call --hard-crash --no-color pillar.items;
   node_name: {{ ssh['node_name'] }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -227,8 +227,7 @@
   skip_fail: false
 
 - description: Configure minion on master
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls 'salt.minion'
+  cmd: salt-call --hard-crash -l debug state.sls 'salt.minion'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
