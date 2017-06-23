@@ -2,6 +2,20 @@
 
 # Change environment configuration before deploy
 
+- description: Add workaround for linklocal incorrect installation
+  cmd: perl -pi -e 's/ipf_addresses:.*/ipf_addresses: \${_param:cluster_node01_address}/g'
+  /srv/salt/reclass/classes/system/opencontrail/client/resource/k8s_api.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Sync time on nodes
+  cmd: salt '*' cmd.run 'service ntp stop; ntpd -gq ;
+  service ntp start; ntp-wait || exit 1'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 1}
+  skip_fail: false
+
 - description: Set k8s deploy parameters
   cmd: |
   {% for k8s_opt, value in config.k8s_deploy.items() %}
@@ -11,35 +25,6 @@
   {% endfor %}
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
-  skip_fail: false
-
-#Kubernetes
-- description: Install docker
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@docker:host' state.sls docker.host
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check docker
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@docker:host' cmd.run 'docker ps'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Install etcd
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@etcd:server' state.sls etcd.server.service
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check the etcd health
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@etcd:server' cmd.run '. /var/lib/etcd/configenv && etcdctl cluster-health'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Install keepalived on primary controller
@@ -63,49 +48,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install Kubernetes Addons
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Install Kubernetes components
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:pool' state.sls kubernetes.pool
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Setup etcd server on primary controller
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master and *01*' state.sls etcd.server.setup
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Run Kubernetes master without setup
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Run Kubernetes master setup
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master and *01*' state.sls kubernetes.master.setup
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Restart Kubelet
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:pool' service.restart 'kubelet'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-# Opencontrail
+# Opencontrail Control Plane
 - description: Install RabbitMQ
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@rabbitmq:server' state.sls rabbitmq
@@ -155,13 +98,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Test Opencontrail
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:control' cmd.run 'contrail-status'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
+# OpenContrail vrouters
 - description: Install Opencontrail client
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:database:id:1' state.sls 'opencontrail.client'
@@ -183,9 +120,87 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Test Opencontrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' cmd.run 'contrail-status'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# Kubernetes
+- description: Install docker
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@docker:host' state.sls docker.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check docker
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@docker:host' cmd.run 'docker ps'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install etcd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@etcd:server' state.sls etcd.server.service
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check the etcd health
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@etcd:server' cmd.run '. /var/lib/etcd/configenv && etcdctl cluster-health'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Kubernetes Addons
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Install Kubernetes components
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:pool' state.sls kubernetes.pool
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Setup etcd server on primary controller
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master and *01*' state.sls etcd.server.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Run Kubernetes master without setup
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Run Kubernetes master setup
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master and *01*' state.sls kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Restart Kubelet
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:pool' service.restart 'kubelet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 - description: Reboot Opencontrail compute nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:compute' system.reboot
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: true
