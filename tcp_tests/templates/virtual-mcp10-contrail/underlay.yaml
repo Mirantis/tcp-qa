@@ -19,6 +19,9 @@ aliases:
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_VSRX01 = os_env('HOSTNAME_VSRX01', 'vsrx01.' + DOMAIN_NAME) %}
@@ -41,6 +44,9 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_MON01 }}: +107
+            default_{{ HOSTNAME_MON02 }}: +108
+            default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_VSRX01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
@@ -58,6 +64,9 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_MON01 }}: +107
+            default_{{ HOSTNAME_MON02 }}: +108
+            default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_VSRX01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
@@ -75,6 +84,9 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_MON01 }}: +107
+            default_{{ HOSTNAME_MON02 }}: +108
+            default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_VSRX01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
@@ -92,6 +104,9 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_MON01 }}: +107
+            default_{{ HOSTNAME_MON02 }}: +108
+            default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_VSRX01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
@@ -398,11 +413,89 @@ template:
               interfaces: *all_interfaces
               network_config: *all_network_config
 
+          - name: {{ HOSTNAME_MON01 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 4098
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 120
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include underlay--meta-data.yaml
+                  cloudinit_user_data: !include underlay--user-data1604.yaml
+
+              interfaces: *all_interfaces
+              network_config: *all_network_config
+
+          - name: {{ HOSTNAME_MON02 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 4098
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 120
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include underlay--meta-data.yaml
+                  cloudinit_user_data: !include underlay--user-data1604.yaml
+
+              interfaces: *all_interfaces
+              network_config: *all_network_config
+
+          - name: {{ HOSTNAME_MON03 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 4098
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 120
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: !include underlay--meta-data.yaml
+                  cloudinit_user_data: !include underlay--user-data1604.yaml
+
+              interfaces: *all_interfaces
+              network_config: *all_network_config
+
           - name: {{ HOSTNAME_VSRX01 }}
             role: vsrx_gtw
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 1048
               boot:
                 - hd
               volumes:
