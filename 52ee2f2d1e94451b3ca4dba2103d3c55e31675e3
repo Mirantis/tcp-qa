@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2a30a028_47afefee",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-06-27T12:02:19Z",
+      "side": 1,
+      "message": "please do not remove default values",
+      "range": {
+        "startLine": 190,
+        "startChar": 68,
+        "endLine": 190,
+        "endChar": 73
+      },
+      "revId": "52ee2f2d1e94451b3ca4dba2103d3c55e31675e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
