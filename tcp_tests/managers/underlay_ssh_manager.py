@@ -13,6 +13,7 @@
 #    under the License.
 
 import random
+import StringIO
 
 from devops.helpers import helpers
 from devops.helpers import ssh_client
@@ -233,7 +234,8 @@ class UnderlaySSHManager(object):
             port=ssh_data['port'] or 22,
             username=ssh_data['login'],
             password=ssh_data['password'],
-            private_keys=ssh_data['keys'])
+            private_keys=[rsakey.RSAKey(file_obj=StringIO.StringIO(key))
+                          for key in ssh_data['keys']])
 
     def check_call(
             self, cmd,

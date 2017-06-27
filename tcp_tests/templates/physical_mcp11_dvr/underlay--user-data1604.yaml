@@ -7,7 +7,9 @@
      sudo: ALL=(ALL) NOPASSWD:ALL
      shell: /bin/bash
      ssh_authorized_keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGwjUlYn9UsmWmAGSuEA2sICad7WqxgsJR0HKcMbbxi0tn96h4Cq2iGYmzlJ48egLm5R5pxyWnFvL4b/2zb+kKTPCMwRc9nv7xEGosEFNQEoSDd+gYu2CO0dgS2bX/7m2DXmzvhqPjxWQUXXsb0OYAS1r9Es65FE8y4rLaegz8V35xfH45bTCA0W8VSKh264XtGz12hacqsttE/UvyjJTZe+/XV+xJy3WAWxe8J/MuW1VqbqNewTmpTE/LJU8i6pG4msU6+wH99UvsGAOKQOduynUHKWG3VZg5YCjpbbV/t/pfW/vHB3b3jiifQmNhulyiG/CNnSQ5BahtV/7qPsYt vagrant@cfg01
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
 
   disable_root: false
   chpasswd:
