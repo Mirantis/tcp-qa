@@ -15,7 +15,11 @@ import os
 
 import pytest
 
+from tcp_tests import logger
 from tcp_tests import settings_oslo
+from tcp_tests.helpers import utils
+
+LOG = logger.logger
 
 
 @pytest.fixture(scope='session')
@@ -29,5 +33,21 @@ def config():
             config_files.append(test_config)
 
     config_opts = settings_oslo.load_config(config_files)
+
+    if os.path.isfile(config_opts.underlay.ssh_key_file):
+        LOG.debug('Loading SSH key from file: {0}'.format(
+            config_opts.underlay.ssh_key_file))
+        key_from_file = utils.load_keyfile(config_opts.underlay.ssh_key_file)
+        if key_from_file not in config_opts.underlay.ssh_keys:
+            config_opts.underlay.ssh_keys.append(key_from_file)
+    else:
+        if not config_opts.underlay.ssh_keys:
+            config_opts.underlay.ssh_keys.append(utils.generate_keys())
+        utils.dump_keyfile(config_opts.underlay.ssh_key_file,
+                           config_opts.underlay.ssh_keys[0])
+        LOG.debug('Saving SSH key to file: {0}'.format(
+            config_opts.underlay.ssh_key_file))
+        utils.dump_keyfile(config_opts.underlay.ssh_key_file,
+                           config_opts.underlay.ssh_keys[0])
 
     return config_opts

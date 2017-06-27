@@ -98,6 +98,11 @@ underlay_opts = [
                    tests or during the deployment process.
                    {'pool_name1': '<cidr>', 'pool_name2': '<cidr>', ...}""",
            default={}),
+    ct.Cfg('ssh_keys', ct.JSONList(), default=[],
+           help="SSH key pair(s) for root. If the option is left empty, "
+                "then a key pair will be generated automatically"),
+    ct.Cfg('ssh_key_file', ct.String(), default=os.path.abspath('./id_rsa'),
+           help='Path (local) to file with private key authorized on nodes'),
 ]
 
 
