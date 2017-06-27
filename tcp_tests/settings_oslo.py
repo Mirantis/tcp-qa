@@ -98,6 +98,9 @@ underlay_opts = [
                    tests or during the deployment process.
                    {'pool_name1': '<cidr>', 'pool_name2': '<cidr>', ...}""",
            default={}),
+    ct.Cfg('ssh_keys', ct.JSONList(),
+           help="SSH key pair(s) for root. If the option is left empty, "
+                "then a key pair will be generated automatically", default=[]),
 ]
 
 

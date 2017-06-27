@@ -15,7 +15,11 @@ import os
 
 import pytest
 
+from tcp_tests import logger
 from tcp_tests import settings_oslo
+from tcp_tests.helpers import utils
+
+LOG = logger.logger
 
 
 @pytest.fixture(scope='session')
@@ -29,5 +33,12 @@ def config():
             config_files.append(test_config)
 
     config_opts = settings_oslo.load_config(config_files)
+
+    if not config_opts.underlay.ssh_keys:
+        config_opts.underlay.ssh_keys.append(utils.generate_keys())
+
+    LOG.debug("SSH private key(s): \n"
+              "{0}".format('\n\n'.join([k['private'] for k in
+                                        config_opts.underlay.ssh_keys])))
 
     return config_opts

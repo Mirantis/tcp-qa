@@ -25,16 +25,6 @@ from tcp_tests.helpers import utils
 LOG = logger.logger
 
 
-@pytest.yield_fixture(scope='session')
-def ssh_keys_dir(request):
-    ssh_keys_dir = utils.generate_keys()
-    LOG.info("SSH keys were generated in {}".format(ssh_keys_dir))
-    yield ssh_keys_dir
-    utils.clean_dir(ssh_keys_dir)
-    LOG.info("Tmp dir {} with generated ssh keys was cleaned".format(
-        ssh_keys_dir))
-
-
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield

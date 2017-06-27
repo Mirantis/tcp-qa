@@ -13,6 +13,7 @@
 #    under the License.
 
 import copy
+import io
 import os
 import shutil
 import tempfile
@@ -148,13 +149,14 @@ def reduce_occurrences(items, text):
 
 
 def generate_keys():
+    file_obj = io.StringIO()
     key = paramiko.RSAKey.generate(1024)
+    key.write_private_key(file_obj)
     public = key.get_base64()
-    dirpath = tempfile.mkdtemp()
-    key.write_private_key_file(os.path.join(dirpath, 'id_rsa'))
-    with open(os.path.join(dirpath, 'id_rsa.pub'), 'w') as pub_file:
-        pub_file.write(public)
-    return dirpath
+    private = file_obj.getvalue()
+    file_obj.close()
+    return {'private': private,
+            'public': public}
 
 
 def clean_dir(dirpath):

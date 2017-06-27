@@ -48,7 +48,11 @@ class EnvironmentManager(object):
         self.__config = config
 
         if config.hardware.conf_path is not None:
-            self._devops_config.load_template(config.hardware.conf_path)
+            options = {
+                'config': self.__config,
+            }
+            self._devops_config.load_template(config.hardware.conf_path,
+                                              options=options)
         else:
             raise Exception("Devops YAML template is not set in config object")
 
@@ -158,6 +162,7 @@ class EnvironmentManager(object):
                 'host': self.node_ip(d_node),
                 'login': settings.SSH_NODE_CREDENTIALS['login'],
                 'password': settings.SSH_NODE_CREDENTIALS['password'],
+                'keys': [k['private'] for k in self.__config.underlay.ssh_keys]
             }
             config_ssh.append(ssh_data)
         return config_ssh
