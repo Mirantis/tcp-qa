@@ -270,7 +270,7 @@
 # Configure cinder-volume salt-call
 - description: Set disks 01
   cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CFG0 }}
+  node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
