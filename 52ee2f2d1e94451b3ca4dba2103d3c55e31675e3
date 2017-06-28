@@ -22,6 +22,47 @@
       "revId": "52ee2f2d1e94451b3ca4dba2103d3c55e31675e3",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f0aecd13_73ef13c1",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1011603
+      },
+      "writtenOn": "2017-06-28T09:56:53Z",
+      "side": 1,
+      "message": "Please use mirantis/k8s-netchecker-agent:stable as default",
+      "parentUuid": "2a30a028_47afefee",
+      "range": {
+        "startLine": 190,
+        "startChar": 68,
+        "endLine": 190,
+        "endChar": 73
+      },
+      "revId": "52ee2f2d1e94451b3ca4dba2103d3c55e31675e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e4ef2d3b_2382811b",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 191,
+      "author": {
+        "id": 1011603
+      },
+      "writtenOn": "2017-06-28T09:56:53Z",
+      "side": 1,
+      "message": "Please use mirantis/k8s-netchecker-server:stable as default",
+      "revId": "52ee2f2d1e94451b3ca4dba2103d3c55e31675e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
