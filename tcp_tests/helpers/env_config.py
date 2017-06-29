@@ -304,7 +304,7 @@ class EnvironmentConfig(object):
                 )
             )
 
-    def load_template(self, filename):
+    def load_template(self, filename, options=None):
         """Method for reading file with devops config
 
         :param filename: string
@@ -317,13 +317,13 @@ class EnvironmentConfig(object):
             )
 
             #self.config = templates.yaml_template_load(filename)
-            self.config = yaml_template_load(filename)
+            self.config = yaml_template_load(filename, options)
         else:
             LOG.error("Template filename is not set, loading config " +
                       "from template aborted.")
 
 
-def yaml_template_load(config_file):
+def yaml_template_load(config_file, options=None):
     """Temporary moved from fuel_devops to use jinja2"""
     dirname = os.path.dirname(config_file)
 
@@ -336,7 +336,7 @@ def yaml_template_load(config_file):
             raise error.DevopsError(
                 "Cannot load the environment template {0} : include file {1} "
                 "doesn't exist.".format(dirname, file_name))
-        inputfile = utils.render_template(file_name)
+        inputfile = utils.render_template(file_name, options)
         return yaml.load(inputfile, TemplateLoader)
 
     def yaml_get_env_variable(loader, node):
@@ -377,5 +377,5 @@ def yaml_template_load(config_file):
     TemplateLoader.add_constructor(
         yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping)
 
-    f = utils.render_template(config_file)
+    f = utils.render_template(config_file, options)
     return yaml.load(f, TemplateLoader)

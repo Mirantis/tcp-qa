@@ -48,7 +48,11 @@ class EnvironmentManager(object):
         self.__config = config
 
         if config.hardware.conf_path is not None:
-            self._devops_config.load_template(config.hardware.conf_path)
+            options = {
+                'config': self.__config,
+            }
+            self._devops_config.load_template(config.hardware.conf_path,
+                                              options=options)
         else:
             raise Exception("Devops YAML template is not set in config object")
 
@@ -158,6 +162,7 @@ class EnvironmentManager(object):
                 'host': self.node_ip(d_node),
                 'login': settings.SSH_NODE_CREDENTIALS['login'],
                 'password': settings.SSH_NODE_CREDENTIALS['password'],
+                'keys': [k['private'] for k in self.__config.underlay.ssh_keys]
             }
             config_ssh.append(ssh_data)
         return config_ssh
@@ -198,14 +203,16 @@ class EnvironmentManager(object):
                  "dos.py revert {env_name} {snapshot_name};\n"
                  "dos.py resume {env_name};\n"
                  "# dos.py time-sync {env_name};  # Optional\n"
-                 "ssh {login}@{salt_master_host}  # Password: {password}\n"
+                 "ssh -i {key_file} {login}@{salt_master_host} "
+                 "# Optional password: {password}\n"
                  "************************************\n"
                  .format(venv_msg=venv_msg,
                          env_name=self._d_env_name,
                          snapshot_name=name,
                          login=settings.SSH_NODE_CREDENTIALS['login'],
                          password=settings.SSH_NODE_CREDENTIALS['password'],
-                         salt_master_host=self.__config.salt.salt_master_host))
+                         salt_master_host=self.__config.salt.salt_master_host,
+                         key_file=self.__config.underlay.ssh_key_file))
 
     def _get_snapshot_config_name(self, snapshot_name):
         """Get config name for the environment"""
