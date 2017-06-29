@@ -26,6 +26,7 @@ class TestMCPCalico(object):
     """Test class for Calico network provider in k8s"""
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.calico_ci
     def test_k8s_netchecker_calico(self, show_step, config, k8s_deployed):
         """Test for deploying k8s environment with Calico plugin and check
            network connectivity between different pods by k8s-netchecker
@@ -60,6 +61,7 @@ class TestMCPCalico(object):
                                       timeout=300)
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.calico_ci
     def test_calico_route_recovery(self, show_step, config, underlay,
                                    k8s_deployed):
         """Test for deploying k8s environment with Calico plugin and check
@@ -146,6 +148,9 @@ class TestMCPCalico(object):
         netchecker.wait_check_network(k8sclient, works=True)
 
     @pytest.mark.fail_snapshot
+    # FIXME(apanchenko): uncomment as soon as the following bug is fixed
+    # FIXME(apanchenko): https://mirantis.jira.com/browse/PROD-12532
+    #@pytest.mark.calico_ci
     def test_calico_network_policies(self, show_step, config, underlay,
                                      k8s_deployed):
         """Test for deploying k8s environment with Calico and check
