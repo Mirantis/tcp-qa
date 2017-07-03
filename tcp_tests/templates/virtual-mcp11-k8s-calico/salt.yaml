@@ -196,13 +196,25 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
+- description: Workaround for PROD-12409
+  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' saltutil.sync_all;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
 - description: Run 'salt' formula on cfg01 with workaround proposed in PROD-10894
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls salt;
-    salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' saltutil.sync_all
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 5, delay: 5}
+  skip_fail: false
+
+- description: Sync modules after salt execution
+  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' saltutil.sync_all;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated

@@ -36,7 +36,7 @@ class Testk8sInstall(object):
             6. Run conformance if need
 
         """
-        if config.k8s_conformance_run:
+        if config.k8s.k8s_conformance_run:
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
 
@@ -52,6 +52,6 @@ class Testk8sInstall(object):
             5. Run conformance if need
 
         """
-        if config.k8s_conformance_run:
+        if config.k8s.k8s_conformance_run:
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
