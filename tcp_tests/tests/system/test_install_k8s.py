@@ -15,6 +15,7 @@
 import pytest
 
 from tcp_tests import logger
+from tcp_tests.helpers import netchecker
 
 LOG = logger.logger
 
@@ -24,7 +25,8 @@ class Testk8sInstall(object):
     """Test class for testing Kubernetes deploy"""
 
     @pytest.mark.fail_snapshot
-    def test_k8s_install(self, config, sl_deployed, k8s_deployed, k8s_actions):
+    def test_k8s_install(self, config, show_step, sl_deployed,
+                         k8s_deployed, k8s_actions):
         """Test for deploying MCP environment with k8s+stacklight and check it
 
         Scenario:
@@ -32,10 +34,25 @@ class Testk8sInstall(object):
             2. Setup controller nodes
             3. Setup compute nodes
             4. Setup stack light nodes
-            5. Setup Kubernetes cluster
-            6. Run conformance if need
+            5. Setup Kubernetes cluster and check it nodes
+            6. Check netchecker server is running
+            7. Check netchecker agent is running
 
         """
+        # STEP #5
+        show_step(5)
+        k8sclient = k8s_deployed.api
+        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
+
+        show_step(6)
+        netchecker.get_netchecker_pod_status(k8s=k8s_deployed,
+                                             namespace='netchecker')
+
+        show_step(7)
+        netchecker.get_netchecker_pod_status(k8s=k8s_deployed,
+                                             pod_name='netchecker-agent',
+                                             namespace='netchecker')
+        
         if config.k8s.k8s_conformance_run:
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
