@@ -15,6 +15,7 @@
 import pytest
 
 from tcp_tests import logger
+from tcp_tests.helpers import netchecker
 
 LOG = logger.logger
 
@@ -24,7 +25,8 @@ class Testk8sInstall(object):
     """Test class for testing Kubernetes deploy"""
 
     @pytest.mark.fail_snapshot
-    def test_k8s_install(self, config, sl_deployed, k8s_deployed, k8s_actions):
+    def test_k8s_install(self, config, show_step, sl_deployed,
+                         k8s_deployed, k8s_actions):
         """Test for deploying MCP environment with k8s+stacklight and check it
 
         Scenario:
@@ -32,10 +34,50 @@ class Testk8sInstall(object):
             2. Setup controller nodes
             3. Setup compute nodes
             4. Setup stack light nodes
-            5. Setup Kubernetes cluster
-            6. Run conformance if need
+            5. Setup Kubernetes cluster and check it nodes
+            6. Check netchecker server is running
+            7. Check netchecker agent is running
+            8. Check connectivity
+            9. Get metrics from netchecker
 
         """
+        # STEP #5
+        show_step(5)
+        k8sclient = k8s_deployed.api
+        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
+
+        show_step(6)
+        netchecker.get_netchecker_pod_status(k8sclient,
+                                             namespace='netchecker')
+
+        show_step(7)
+        netchecker.get_netchecker_pod_status(k8sclient,
+                                             pod_name='netchecker-agent',
+                                             namespace='netchecker')
+
+        show_step(8)
+        netchecker.wait_check_network(k8sclient, namespace='netchecker',
+                                      works=True,
+                                      timeout=300)
+        show_step(9)
+        res = netchecker.get_metric(k8sclient, netchecker_pod_port=80,
+                                    namespace='netchecker')
+
+        assert res.status_code == 200, 'Unexpected response code {}'.format(res)
+        metrics = ['ncagent_error_count_total', 'ncagent_http_probe_code',
+                   'ncagent_http_probe_connect_time_ms',
+                   'ncagent_http_probe_connection_result',
+                   'ncagent_http_probe_content_transfer_time_ms',
+                   'ncagent_http_probe_dns_lookup_time_ms',
+                   'ncagent_http_probe_server_processing_time_ms',
+                   'ncagent_http_probe_tcp_connection_time_ms',
+                   'ncagent_http_probe_total_time_ms',
+                   'ncagent_report_count_tota']
+        for metric in metrics:
+            assert metric in res.text.strip(), \
+                'Mandotory metric {0} is missing in {1}'.format(
+                    metric, res.text)
+
         if config.k8s.k8s_conformance_run:
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
