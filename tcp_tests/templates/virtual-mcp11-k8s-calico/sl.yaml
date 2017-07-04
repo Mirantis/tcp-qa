@@ -1,5 +1,17 @@
 {% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
+# Change environment configuration before deploy
+- description: Set SL docker images deploy parameters
+  cmd: |
+  {% for sl_opt, value in config.sl_deploy.items() %}
+    {% if value|string() %}
+    salt-call reclass.cluster_meta_set {{ sl_opt }} {{ value }};
+    {% endif %}
+  {% endfor %}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 # Install docker swarm
 - description: Configure docker service
   cmd: salt -C 'I@docker:swarm' state.sls docker.host
@@ -45,7 +57,13 @@
 
 # Install slv2 infra
 - description: Install telegraf
-  cmd: salt -C 'I@telegraf:agent' state.sls telegraf
+  cmd: salt -C 'I@telegraf:agentor or I@telegraf:remote_agent' state.sls telegraf
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Configure collector
+  cmd: salt -C 'I@heka:log_collector' state.sls heka.log_collector
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -58,18 +76,6 @@
 
 - description: Install kibana server
   cmd: salt -C 'I@kibana:server' state.sls kibana.server -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Install elasticsearch service
-  cmd: salt -C 'I@elasticsearch:client' state.sls elasticsearch.client.service
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Restart minions
-  cmd: salt -C 'I@elasticsearch:client' --async service.restart salt-minion; sleep 10;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -119,20 +125,9 @@
 
 # Configure the services running in Docker Swarm
 - description: Install prometheus alertmanager
-  cmd: salt -C 'I@docker:swarm' state.sls prometheus.server,prometheus.alertmanager -b 1
+  cmd: salt -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
-  skip_fail: false
-
-
-- description: Pull images
-  cmd: salt -C 'I@docker:swarm:role:master' cmd.run 'docker node ls';
-    for img in pushgateway alertmanager prometheus telegraf remote_storage_adapter; do
-        salt -C 'I@docker:swarm' dockerng.pull "docker-sandbox.sandbox.mirantis.net/bkupidura/$img";
-        salt -C 'I@docker:swarm' dockerng.tag "docker-sandbox.sandbox.mirantis.net/bkupidura/$img:latest" "$img:latest";
-    done;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
   skip_fail: false
 
 - description: run docker state
