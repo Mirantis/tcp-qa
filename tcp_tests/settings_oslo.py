@@ -155,7 +155,23 @@ sl_deploy_opts = [
     ct.Cfg('sl_steps_path', ct.String(),
            help="Path to YAML with steps to deploy sl",
            default=_default_sl_prepare_tests_steps_path),
+    ct.Cfg('docker_image_alertmanager', ct.String(),
+           default='{}/openstack-docker/alertmanager:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('docker_image_pushgateway', ct.String(),
+           default='{}/openstack-docker/pushgateway:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('docker_image_prometheus', ct.String(),
+           default='{}/openstack-docker/prometheus:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('docker_image_remote_agent', ct.String(),
+           default='{}/openstack-docker/telegraf:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('docker_image_remote_storage_adapter', ct.String(),
+           default='{}/openstack-docker/remote_storage_adapter:latest'.format(
+               settings.DOCKER_REGISTRY)),
 ]
+
 sl_opts = [
     ct.Cfg('sl_installed', ct.Boolean(),
            help="", default=False),
@@ -202,9 +218,9 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_netchecker_enabled', ct.Boolean(),
            help="", default=True),
     ct.Cfg('kubernetes_netchecker_agent_image', ct.String(),
-           default='mirantis/k8s-netchecker-agent:latest'),
+           default='mirantis/k8s-netchecker-agent:stable'),
     ct.Cfg('kubernetes_netchecker_server_image', ct.String(),
-           default='mirantis/k8s-netchecker-server:latest'),
+           default='mirantis/k8s-netchecker-server:stable'),
     ct.Cfg('kubernetes_calico_policy_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_calico_policy_image', ct.String(),
