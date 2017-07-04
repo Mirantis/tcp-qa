@@ -45,7 +45,7 @@
 
 # Install slv2 infra
 - description: Install telegraf
-  cmd: salt -C 'I@telegraf:agent' state.sls telegraf
+  cmd: salt -C 'I@telegraf:agentor or I@telegraf:remote_agent' state.sls telegraf
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false

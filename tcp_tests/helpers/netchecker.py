@@ -518,3 +518,25 @@ def kubernetes_allow_traffic_from_agents(underlay, kube_host_ip, namespace):
     cmd_add_policy_hostnet = "echo '{0}' | kubectl create -f -".format(
         json.dumps(kubernetes_policy_hostnet))
     underlay.sudo_check_call(cmd=cmd_add_policy_hostnet, host=kube_host_ip)
+
+
+@utils.retry(3, requests.exceptions.RequestException)
+def get_metric(k8sclient, netchecker_pod_port=NETCHECKER_NODE_PORT,
+               pod_name='netchecker-server', namespace='default'):
+
+    netchecker_srv_pod_names = [pod.name for pod in
+                                k8sclient.pods.list(namespace=namespace)
+                                if pod_name in pod.name]
+
+    assert len(netchecker_srv_pod_names) > 0, \
+        "No netchecker-server pods found!"
+
+    netchecker_srv_pod = k8sclient.pods.get(name=netchecker_srv_pod_names[0],
+                                            namespace=namespace)
+    kube_host_ip = netchecker_srv_pod.status.host_ip
+    net_metrics_url = 'http://{0}:{1}/metrics'.format(
+        kube_host_ip, netchecker_pod_port)
+    response = requests.get(net_metrics_url, timeout=5)
+    LOG.debug('Current metrics: [{0}] {1}'.format(
+        response.status_code, response.text.strip()))
+    return response
