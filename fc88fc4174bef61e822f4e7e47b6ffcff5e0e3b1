@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e65e3bcc_e9516bfb",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/underlay--user-data-cfg01.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-07-06T15:27:23Z",
+      "side": 1,
+      "message": "this change previously brock our deployment , thats why it looks like now, so please - do not change this lines or create separate files for your tests",
+      "range": {
+        "startLine": 62,
+        "startChar": 35,
+        "endLine": 62,
+        "endChar": 36
+      },
+      "revId": "fc88fc4174bef61e822f4e7e47b6ffcff5e0e3b1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
