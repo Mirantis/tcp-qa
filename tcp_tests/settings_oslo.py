@@ -52,6 +52,9 @@ _default_virtlet_ceph_prepare_tests_steps_path = pkg_resources.resource_filename
 _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_cicd_steps = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/cicd.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 
 hardware_opts = [
     ct.Cfg('manager', ct.String(),
@@ -227,6 +230,18 @@ k8s_opts = [
                    'kubernetes/k8s-conformance:v1.6.4-3_1495550936267')
 ]
 
+
+cicd_deploy_opts = [
+    ct.Cfg('cicd_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy Ci/CD",
+           default=_default_cicd_steps),
+]
+cicd_opts = [
+    ct.Cfg('cicd_installed', ct.Boolean(),
+           help="", default=False),
+    ct.Cfg('cicd_master_ip', ct.String(),
+           help="", default=''),
+]
 _group_opts = [
     ('hardware', hardware_opts),
     ('underlay', underlay_opts),
@@ -243,6 +258,8 @@ _group_opts = [
     ('virtlet', virtlet_opts),
     ('k8s_deploy', k8s_deploy_opts),
     ('k8s', k8s_opts),
+    ('cicd', cicd_opts),
+    ('cicd_deploy', cicd_deploy_opts),
 ]
 
 
