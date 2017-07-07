@@ -3,15 +3,15 @@
 # Change environment configuration before deploy
 
 - description: Add workaround for linklocal incorrect installation
-  cmd: perl -pi -e 's/ipf_addresses:.*/ipf_addresses: \${_param:cluster_node01_address}/g'
-  /srv/salt/reclass/classes/system/opencontrail/client/resource/k8s_api.yml
+  cmd: sed -i "s/ipf_addresses:.*/ipf_addresses:\ \${_param:cluster_node01_address}/g"
+    /srv/salt/reclass/classes/system/opencontrail/client/resource/k8s_api.yml
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
 
 - description: Sync time on nodes
-  cmd: salt '*' cmd.run 'service ntp stop; ntpd -gq ;
-  service ntp start; ntp-wait || exit 1'
+  cmd: salt '*' cmd.run "service ntp stop; ntpd -gq ;
+    service ntp start; ntp-wait || exit 1"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 1}
   skip_fail: false
@@ -98,6 +98,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+  - description: Workaround for https://mirantis.jira.com/browse/PROD-12798
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' service.restart 'keepalived'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 # OpenContrail vrouters
 - description: Install Opencontrail client
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -110,7 +117,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:compute' state.sls 'opencontrail.client'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Install Opencontrail on computes
@@ -173,6 +180,13 @@
 - description: Setup etcd server on primary controller
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@kubernetes:master and *01*' state.sls etcd.server.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+  - description: Workaround for https://mirantis.jira.com/browse/PROD-12798
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master' service.restart 'keepalived'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
