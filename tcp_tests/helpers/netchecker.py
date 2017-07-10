@@ -556,3 +556,18 @@ def get_metric(k8sclient, netchecker_pod_port,
     LOG.debug('Metrics: [{0}] {1}'.format(
         response.status_code, response.text.strip()))
     return response
+
+
+def get_service_port(k8sclient, service_name='netchecker',
+                        namespace='netchecker'):
+    full_service_name = [service.name for service
+                         in k8sclient.services.list(namespace=namespace)
+                         if service_name in service.name]
+    assert len(full_service_name) > 0, "No netchecker service run"
+
+    service_details = k8sclient.services.get(name=full_service_name[0],
+                                             namespace=namespace)
+
+    LOG.debug('Necthcecker service details {0}'.format(service_details))
+    netchecker_port = service_details.spec.ports[0].node_port
+    return netchecker_port
