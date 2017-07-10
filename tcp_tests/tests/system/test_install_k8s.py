@@ -76,6 +76,10 @@ class Testk8sInstall(object):
             assert metric in res.text.strip(), \
                 'Mandotory metric {0} is missing in {1}'.format(
                     metric, res.text)
+
+        prometheus_client = sl_deployed.p_client
+        current_targets = prometheus_client.get_targets()
+        LOG.debug('Current targets after install {0}'.format(current_targets))
         
         if config.k8s.k8s_conformance_run:
             k8s_actions.run_conformance()
