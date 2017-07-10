@@ -13,6 +13,7 @@
 #    under the License.
 
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
+from tcp_tests.managers.clients.prometheus import prometheus_client
 
 
 class SLManager(ExecuteCommandsMixin):
@@ -25,6 +26,7 @@ class SLManager(ExecuteCommandsMixin):
         self.__config = config
         self.__underlay = underlay
         self._salt = salt
+        self._p_client = None
         super(SLManager, self).__init__(
             config=config, underlay=underlay)
 
@@ -32,3 +34,26 @@ class SLManager(ExecuteCommandsMixin):
         self.execute_commands(commands,
                               label='Install SL services')
         self.__config.stack_light.sl_installed = True
+        self.__config.stack_light.sl_vip_host = self.get_sl_vip()
+
+    def get_sl_vip(self):
+        sl_vip_address_pillars = self._salt.get_pillar(
+            tgt='I@keepalived:cluster:enabled:true and not ctl*',
+            pillar='keepalived:cluster:instance:prometheus_server_vip:address')
+        sl_vip_ip = set([ip
+                            for item in sl_vip_address_pillars
+                            for node,ip in item.items() if ip])
+        assert len(sl_vip_ip) == 1, (
+            "Found more than one SL VIP in pillars:{0}, "
+            "expected one!").format(sl_vip_ip)
+        sl_vip_ip_host = sl_vip_ip.pop()
+        return sl_vip_ip_host
+
+    @property
+    def api(self):
+        if self._p_client is None:
+            self._p_client = prometheus_client.PrometheusClient(
+                host=self.__config.stack_light.sl_vip_host,
+                port=self.__config.stack_light.sl_prometheus_port,
+                proto=self.__config.stack_light.sl_prometheus_proto)
+        return self._p_client

@@ -130,16 +130,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Pull images
-  cmd: salt -C 'I@docker:swarm:role:master' cmd.run 'docker node ls';
-    for img in pushgateway alertmanager prometheus telegraf remote_storage_adapter; do
-        salt -C 'I@docker:swarm' dockerng.pull "docker-prod-virtual.docker.mirantis.net/openstack-docker/$img";
-        salt -C 'I@docker:swarm' dockerng.tag "docker-prod-virtual.docker.mirantis.net/openstack-docker/$img:latest" "$img:latest";
-    done;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 - description: run docker state
   cmd: salt -C 'I@docker:swarm:role:master' state.sls docker
   node_name: {{ HOSTNAME_CFG01 }}
@@ -153,7 +143,7 @@
   skip_fail: false
 
 - description: Configure Grafana dashboards and datasources
-  cmd: salt -C 'I@grafana:client' state.sls grafana.client
+  cmd: sleep10;  salt -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false

@@ -1,4 +1,4 @@
-{% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install docker swarm
 - description: Configure docker service
@@ -45,7 +45,13 @@
 
 # Install slv2 infra
 - description: Install telegraf
-  cmd: salt -C 'I@telegraf:agent' state.sls telegraf
+  cmd: salt -C 'I@telegraf:agentor or I@telegraf:remote_agent' state.sls telegraf
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Configure collector
+  cmd: salt -C 'I@heka:log_collector' state.sls heka.log_collector
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -62,18 +68,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Install elasticsearch service
-  cmd: salt -C 'I@elasticsearch:client' state.sls elasticsearch.client.service
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Restart minions
-  cmd: salt -C 'I@elasticsearch:client' --async service.restart salt-minion; sleep 10;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
 - description: Install elasticsearch client
   cmd: salt -C 'I@elasticsearch:client' state.sls elasticsearch.client
   node_name: {{ HOSTNAME_CFG01 }}
@@ -85,6 +79,17 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+
+- description: Check influix db
+  cmd: |
+    INFLUXDB_SERVICE=`salt -C 'I@influxdb:server' test.ping 1>/dev/null 2>&1 && echo true`;
+    echo "Influxdb service presence: ${INFLUXDB_SERVICE}";
+    if [[ "$INFLUXDB_SERVICE" == "true" ]]; then
+        salt -C 'I@influxdb:server' state.sls influxdb
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
 
 # Collect grains needed to configure the services
 
@@ -106,33 +111,23 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-# Configure the services running in Docker Swarm
-- description: Install prometheus alertmanager
-  cmd: salt -C 'I@docker:swarm' state.sls prometheus.server,prometheus.alertmanager -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Sync modules
-  cmd: salt -C 'I@salt:minion' saltutil.refresh_modules
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Update mine
-  cmd: salt -C 'I@salt:minion' mine.update; sleep 5;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Pull images
-  cmd: salt -C 'I@docker:swarm:role:master' cmd.run 'docker node ls';
-    for img in pushgateway alertmanager prometheus; do
-        salt -C 'I@docker:swarm' dockerng.pull "docker-sandbox.sandbox.mirantis.net/bkupidura/$img";
-        salt -C 'I@docker:swarm' dockerng.tag "docker-sandbox.sandbox.mirantis.net/bkupidura/$img:latest" "$img:latest";
-    done;
+# Change environment configuration before deploy
+- description: Set SL docker images deploy parameters
+  cmd: |
+  {% for sl_opt, value in config.sl_deploy.items() %}
+    {% if value|string() %}
+    salt-call reclass.cluster_meta_set {{ sl_opt }} {{ value }};
+    {% endif %}
+  {% endfor %}
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
+  skip_fail: false
+
+# Configure the services running in Docker Swarm
+- description: Install prometheus alertmanager
+  cmd: salt -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: run docker state
@@ -148,7 +143,7 @@
   skip_fail: false
 
 - description: Configure Grafana dashboards and datasources
-  cmd: salt -C 'I@grafana:client' state.sls grafana.client
+  cmd: sleep10;  salt -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false

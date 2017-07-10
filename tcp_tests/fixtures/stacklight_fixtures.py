@@ -12,14 +12,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import os
 
 import pytest
-import yaml
 
 from tcp_tests import logger
 from tcp_tests.helpers import ext
-from tcp_tests import settings
 from tcp_tests.managers import sl_manager
 from tcp_tests.helpers import utils
 
@@ -70,6 +67,11 @@ def sl_deployed(revert_snapshot, request, config,
         #    installed TCP API endpoint
         pass
 
+    # Workaround for keepalived hang issue after env revert from snapshot
+    # see https://mirantis.jira.com/browse/PROD-12038
+    LOG.warning('Restarting keepalived service on controllers...')
+    sl_actions._salt.local(tgt='I@keepalived:cluster', fun='service.restart',
+                           args='keepalived')
     return sl_actions
 
 
@@ -106,5 +108,9 @@ def deploy_sl(revert_snapshot, request, config,
         # 3. config.tcp.* options contain access credentials to the already
         #    installed TCP API endpoint
         pass
-
+    # Workaround for keepalived hang issue after env revert from snapshot
+    # see https://mirantis.jira.com/browse/PROD-12038
+    LOG.warning('Restarting keepalived service on controllers...')
+    sl_actions._salt.local(tgt='I@keepalived:cluster*', fun='service.restart',
+                           args='keepalived')
     return sl_actions

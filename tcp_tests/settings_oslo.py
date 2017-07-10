@@ -175,6 +175,12 @@ sl_deploy_opts = [
 sl_opts = [
     ct.Cfg('sl_installed', ct.Boolean(),
            help="", default=False),
+    ct.Cfg('sl_vip_host', ct.IPAddress(),
+           help="Vip address for SL services", default='0.0.0.0'),
+    ct.Cfg('sl_prometheus_port', ct.String(),
+           help="Prometheus port", default='15010'),
+    ct.Cfg('sl_prometheus_proto', ct.String(),
+           help="Proemtheus protocol", default='http'),
 ]
 
 virtlet_deploy_opts = [
