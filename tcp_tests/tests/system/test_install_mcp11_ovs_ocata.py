@@ -35,7 +35,7 @@ class Test_Mcp11_install(object):
     #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
 
     def test_mcp11_ocata_ovs_install(self, underlay, openstack_deployed,
-                                          show_step):
+                                          show_step, rally):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -43,6 +43,16 @@ class Test_Mcp11_install(object):
         3. Setup compute nodes
 
         """
+        rally.prepare()
+        rally.pull_image()
+        rally.run()
+        # run tempest
+        rally.run_tempest()
+
+        res = rally.get_results()
+
+        fail_msg = 'Tempest verification fails {}'.format(res)
+        assert res['failures'] == 0, fail_msg
         LOG.info("*************** DONE **************")
 
     def test_mcp11_ocata_dvr_install(self, underlay, openstack_deployed,

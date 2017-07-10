@@ -72,7 +72,7 @@ rally verify configure-verifier --show
 
         with self._underlay.remote(host=self._admin_host) as remote:
             LOG.info("Getting image id")
-            cmd = "docker images | grep {0}| awk '{print $3}'".format(
+            cmd = "docker images | grep {0}| awk '{{print $3}}'".format(
                 self.image_version)
             res = remote.check_call(cmd)
             self.image_id = res['stdout'][0].strip()
