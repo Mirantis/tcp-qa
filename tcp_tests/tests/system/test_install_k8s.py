@@ -45,7 +45,7 @@ class Testk8sInstall(object):
         show_step(5)
         k8sclient = k8s_deployed.api
         assert k8sclient.nodes.list() is not None, "Can not get nodes list"
-
+        netchecker_port = netchecker.get_service_port(k8sclient)
         show_step(6)
         netchecker.get_netchecker_pod_status(k8s=k8s_deployed,
                                              namespace='netchecker')
@@ -57,9 +57,9 @@ class Testk8sInstall(object):
 
         # show_step(8)
         netchecker.wait_check_network(k8sclient, namespace='netchecker',
-                                      netchecker_pod_port=30811)
+                                      netchecker_pod_port=netchecker_port)
         show_step(9)
-        res = netchecker.get_metric(k8sclient, netchecker_pod_port=30811,
+        res = netchecker.get_metric(k8sclient, netchecker_pod_port=netchecker_port,
                                     namespace='netchecker')
 
         assert res.status_code == 200, 'Unexpected response code {}'.format(res)
@@ -76,6 +76,18 @@ class Testk8sInstall(object):
             assert metric in res.text.strip(), \
                 'Mandotory metric {0} is missing in {1}'.format(
                     metric, res.text)
+
+        prometheus_client = sl_deployed.api
+        current_targets = prometheus_client.get_targets()
+        #todo (tleontovich) add assertion that k8s targets here
+        LOG.debug('Current targets after install {0}'.format(current_targets))
+
+        for metric in metrics:
+            res = prometheus_client.get_query(metric)
+            for entry in res:
+                assert entry["metric"]["job"] == 'kubernetes-service-endpoints'
+            LOG.debug('Metric {} exists'.format(res))
+            # todo (tleontovich) add asserts here and extend the tests with acceptance criteria
         
         if config.k8s.k8s_conformance_run:
             k8s_actions.run_conformance()
