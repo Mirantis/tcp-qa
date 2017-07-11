@@ -147,3 +147,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+
+- description: Run salt minion to create cert files
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False "*" state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
