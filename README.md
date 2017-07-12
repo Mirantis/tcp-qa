@@ -1,6 +1,14 @@
 # tcp-qa
 
-Default template used here requires 20 vCPU and 52Gb host RAM.
+Contribute
+----------
+
+Please send patches using gerrithub.io:
+
+```
+git remote add gerrit ssh://review.gerrithub.io:29418/Mirantis/tcp-qa
+git review
+```
 
 Clone the repo
 --------------
@@ -29,6 +37,7 @@ the set of templates in the ./tcp_tests/templates/ folder.
 ```
 export LAB_CONFIG_NAME=virtual-mcp-ocata-dvr  # OVS-DVR with ocata packages
 export LAB_CONFIG_NAME=virtual-mcp-ocata-ovs  # OVS-NO-DVR with ocata packages
+export LAB_CONFIG_NAME=virtual-mcp-ocata-cicd  # Operational Support System Tools
 export LAB_CONFIG_NAME=virtual-mcp11-dvr  # OVS-DVR with neutron packages
 export LAB_CONFIG_NAME=virtual-mcp11-ovs  # OVS-NO-DVR with neutron packages
 export LAB_CONFIG_NAME=virtual-mcp11-dpdk  # OVS-DPDK with neutron packages
@@ -39,6 +48,7 @@ Run deploy test
 ```
 export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
 export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
+export REPOSITORY_SUITE=testing
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
 ```
@@ -48,8 +58,19 @@ Run deploy test and rally verify (tempest)
 ```
 export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
 export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
+export REPOSITORY_SUITE=testing
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_run_rally
+```
+
+Run OSS deploy
+--------------
+```
+export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
+export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
+export REPOSITORY_SUITE=testing
+
+LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_oss_install_default
 ```
 
 Run deploy test for mk22-qa-lab01 (outdated)

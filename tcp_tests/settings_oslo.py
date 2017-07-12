@@ -34,6 +34,10 @@ _default_common_services_steps = pkg_resources.resource_filename(
     __name__,
     'templates/{0}/common-services.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_oss_steps = pkg_resources.resource_filename(
+    __name__,
+    'templates/{0}/oss.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 _default_openstack_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/openstack.yaml'.format(
         settings.LAB_CONFIG_NAME))
@@ -126,6 +130,17 @@ common_services_deploy_opts = [
 
 common_services_opts = [
     ct.Cfg('common_services_installed', ct.Boolean(),
+           help="", default=False),
+]
+
+oss_deploy_opts = [
+    ct.Cfg('oss_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy OSS Tools",
+           default=_default_oss_steps),
+]
+
+oss_opts = [
+    ct.Cfg('oss_installed', ct.Boolean(),
            help="", default=False),
 ]
 
@@ -260,6 +275,8 @@ _group_opts = [
     ('salt', salt_opts),
     ('common_services_deploy', common_services_deploy_opts),
     ('common_services', common_services_opts),
+    ('oss_deploy', oss_deploy_opts),
+    ('oss', oss_opts),
     ('openstack_deploy', openstack_deploy_opts),
     ('openstack', openstack_opts),
     ('opencontrail', opencontrail_opts),
@@ -299,6 +316,15 @@ def register_opts(config):
                      help=""))
     config.register_opts(group='common_services_deploy',
                          opts=common_services_deploy_opts)
+
+    config.register_group(cfg.OptGroup(name='oss',
+                          title="Operational Support System Tools", help=""))
+    config.register_opts(group='oss', opts=oss_opts)
+
+    config.register_group(cfg.OptGroup(name='oss_deploy',
+                          title="OSS deploy config", help=""))
+    config.register_opts(group='oss_deploy',
+                         opts=oss_deploy_opts)
 
     config.register_group(cfg.OptGroup(name='openstack',
                           title="Openstack config and credentials", help=""))

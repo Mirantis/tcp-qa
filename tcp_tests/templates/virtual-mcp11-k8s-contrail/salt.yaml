@@ -5,6 +5,9 @@
 {% set SALT_MODELS_BRANCH = os_env('SALT_MODELS_BRANCH','master') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
 
+# Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12
+{% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
+
 # Address pools for reclass cluster model are taken in the following order:
 # 1. environment variables,
 # 2. config.underlay.address_pools based on fuel-devops address pools
@@ -63,6 +66,9 @@
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
     pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
+    {%- if SALT_MODELS_REF_CHANGE != '' %}
+    pushd /srv/salt/reclass && git fetch {{ SALT_MODELS_REPOSITORY }} {{ SALT_MODELS_REF_CHANGE }} && git checkout FETCH_HEAD && popd;
+    {%- endif %}
     mkdir -p /srv/salt/reclass/classes/service;
 
     # Replace firstly to an intermediate value to avoid intersection between

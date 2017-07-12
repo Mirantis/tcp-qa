@@ -43,6 +43,7 @@ class SaltManager(ExecuteCommandsMixin):
         self.__api = None
         self.__user = settings.SALT_USER
         self.__password = settings.SALT_PASSWORD
+        self._salt = self
 
         super(SaltManager, self).__init__(config=config, underlay=underlay)
 
