@@ -39,6 +39,7 @@ SNAPSHOT = enum(
     'underlay',
     'salt_deployed',
     'common_services_deployed',
+    'oss_deployed',
     'openstack_deployed',
     'sl_deployed',
     'virtlet_deployed',
