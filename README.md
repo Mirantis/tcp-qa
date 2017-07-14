@@ -90,6 +90,51 @@ LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_with_scripts
 
 Labs with names mk22-lab-basic and mk22-lab-avdanced are deprecated and not recommended to use.
 
+Use HugePages for environments based on qemu-kvm VMs
+----------------------------------------------------
+
+To create VMs using HugePages, configure the server (see below) and then use the following variable:
+
+```
+export DRIVER_USE_HUGEPAGES=true
+```
+
+Configure HugePages without reboot
+==================================
+This is a runtime-based steps. To make it persistent, you need to edit some configs.
+
+1. Remove apparmor
+```
+service apparmor stop
+service apparmor teardown
+update-rc.d -f apparmor remove
+apt-get remove apparmor
+```
+
+2. Allocate memory for Hugepages
+
+2Mb * 30000 = ~60Gb RAM will be used for HugePages.
+Suitable for CI servers with 64Gb RAM and no other heavy services except libvirt.
+
+WARNING! Too high value will hang your server, be carefull and try lower values first.
+```
+echo 30000 | sudo  tee  /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+apt-get install -y hugepages
+hugeadm --set-recommended-shmmax
+cat /proc/meminfo | grep HugePages
+```
+
+3. Mount hugetlbfs to use it with qemu-kvm
+```
+mkdir -p /mnt/hugepages2M
+mount -t hugetlbfs hugetlbfs /mnt/hugepages2M
+```
+
+4. Enable HugePages for libvirt
+```
+echo "hugetlbfs_mount = '/mnt/hugepages2M'" > /etc/libvirt/qemu.conf
+service libvirt-bin restart
+```
 
 Create and start the env for manual tests
 -----------------------------------------

@@ -108,6 +108,7 @@ template:
             use_hugepages: True
             enable_acpi: true
             use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
+            use_hugepages: !os_env DRIVER_USE_HUGEPAGES, false
 
         network_pools:
           admin: admin-pool01
