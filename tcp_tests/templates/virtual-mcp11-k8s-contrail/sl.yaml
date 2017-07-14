@@ -143,9 +143,9 @@
   skip_fail: false
 
 - description: Configure Grafana dashboards and datasources
-  cmd: sleep10;  salt -C 'I@grafana:client' state.sls grafana.client
+  cmd: sleep 30;  salt -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 - description: Run salt minion to create cert files
