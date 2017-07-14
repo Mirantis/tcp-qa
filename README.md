@@ -118,7 +118,7 @@ Suitable for CI servers with 64Gb RAM and no other heavy services except libvirt
 
 WARNING! Too high value will hang your server, be carefull and try lower values first.
 ```
-echo 30000 | sudo  tee  /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
+echo 28000 | sudo  tee  /sys/kernel/mm/hugepages/hugepages-2048kB/nr_hugepages
 apt-get install -y hugepages
 hugeadm --set-recommended-shmmax
 cat /proc/meminfo | grep HugePages
