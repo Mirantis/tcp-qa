@@ -360,7 +360,7 @@
   skip_fail: false
 
 - description: Run tests
-  cmd: salt-call cmd.run "docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3  -e CUSTOM='--pattern smoke'  -v /root/:/root/rally sandriichenko/rally_tempest_docker:mcp11_docker  >> image.output"
+  cmd: salt-call cmd.run "docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3  -e CUSTOM='--pattern smoke'  -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output"
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
