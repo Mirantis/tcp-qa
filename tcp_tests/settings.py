@@ -12,7 +12,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 import os
-import pkg_resources
 import time
 
 _boolean_states = {'1': True, 'yes': True, 'true': True, 'on': True,
@@ -54,3 +53,4 @@ SALT_PASSWORD = os.environ.get('SALT_PASSWORD', 'hovno12345!')
 
 DOCKER_REGISTRY = os.environ.get('DOCKER_REGISTRY',
                                  'docker-prod-virtual.docker.mirantis.net')
+
