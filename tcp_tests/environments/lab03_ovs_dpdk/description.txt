@@ -1,0 +1,23 @@
+MCP BM LAB03, see [1]
+
+This environment is designed to test ovs-dpdk, but can be used for
+testing other models that fit the nodes in this lab.
+
+Lab contains the following hosts:
+
+kvm01: cz8113.bud.mirantis.net
+kvm02: cz7168.bud.mirantis.net
+kvm03: cz7169.bud.mirantis.net
+cmp001: cz7395.bud.mirantis.net
+cmp002: cz7166.bud.mirantis.net
+gtw01: cz7636.bud.mirantis.net
+gtw02: cz7637.bud.mirantis.net
+
+reclass.storage definitions that are created from the cluster model
+after the first salt-inventory generation and placed to init.yml here.
+
+To create a new 'environmet' model with additional classes is used reclass_tools [2]
+while the 'environment' model is at the PoC stage.
+
+[1] https://docs.google.com/document/d/1RrC8MYBL2yJjlf7IjAh8zlzcS4ejVt_5gf9sPNcPMbQ/
+[2] https://github.com/dis-xcom/reclass_tools
