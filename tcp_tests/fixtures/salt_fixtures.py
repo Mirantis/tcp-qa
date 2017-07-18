@@ -12,14 +12,10 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import os
-
 import pytest
-import yaml
 
 from tcp_tests import logger
 from tcp_tests.helpers import ext
-from tcp_tests import settings
 from tcp_tests.managers import saltmanager
 
 LOG = logger.logger
