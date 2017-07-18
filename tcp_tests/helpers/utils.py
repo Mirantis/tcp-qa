@@ -23,12 +23,10 @@ import traceback
 import jinja2
 import paramiko
 import yaml
-from devops.helpers import helpers
 from devops.helpers import ssh_client
 
 from tcp_tests import logger
 from tcp_tests import settings
-from tcp_tests.helpers import ext
 
 LOG = logger.logger
 

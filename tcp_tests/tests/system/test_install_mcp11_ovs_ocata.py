@@ -11,13 +11,9 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-import copy
-import time
-
+import os
 import pytest
 
-from tcp_tests import settings
-from tcp_tests.helpers import ext
 from tcp_tests import logger
 
 LOG = logger.logger
@@ -44,6 +40,14 @@ class Test_Mcp11_install(object):
 
         """
         LOG.info("*************** DONE **************")
+        gtw01 = [node_name for node_name in
+                 underlay.node_names() if 'gtw01' in node_name]
+        with underlay.remote(node_name=gtw01[0]) as gtw_remote:
+            result = gtw_remote.execute('find /root -name "report_*.xml"')
+            LOG.debug("Finde result {0}".format(result))
+            file_name = result['stdout'][0].rtrip()
+            LOG.debug("Founded files {0}".format(file_name))
+            gtw_remote.download(destination=file_name, target=os.getcwd())
 
     def test_mcp11_ocata_dvr_install(self, underlay, openstack_deployed,
                                           show_step):
