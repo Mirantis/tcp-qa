@@ -44,7 +44,7 @@ class Test_Mcp11_install(object):
                  underlay.node_names() if 'gtw01' in node_name]
         with underlay.remote(node_name=gtw01[0]) as gtw_remote:
             result = gtw_remote.execute('find /root -name "report_*.xml"')
-            LOG.debug("Finde result {0}".format(result))
+            LOG.debug("Find result {0}".format(result))
             file_name = result['stdout'][0].rstrip()
             LOG.debug("Founded files {0}".format(file_name))
             gtw_remote.download(destination=file_name, target=os.getcwd())
@@ -59,6 +59,14 @@ class Test_Mcp11_install(object):
 
         """
         LOG.info("*************** DONE **************")
+        gtw01 = [node_name for node_name in
+                 underlay.node_names() if 'gtw01' in node_name]
+        with underlay.remote(node_name=gtw01[0]) as gtw_remote:
+            result = gtw_remote.execute('find /root -name "report_*.xml"')
+            LOG.debug("Find result {0}".format(result))
+            file_name = result['stdout'][0].rstrip()
+            LOG.debug("Founded files {0}".format(file_name))
+            gtw_remote.download(destination=file_name, target=os.getcwd())
 
     def test_mcp11_ocata_dpdk_install(self, underlay, openstack_deployed,
                                       show_step):
