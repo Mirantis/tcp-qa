@@ -65,6 +65,7 @@ parameters:
                 name: enp2s0f1
                 proto: manual
                 type: slave
+                ipflush_onchange: true
               prv-to-floating:
                 bridge: br-prv
                 enabled: true
@@ -125,6 +126,7 @@ parameters:
                 name: enp2s0f1
                 proto: manual
                 type: slave
+                ipflush_onchange: true
               prv-to-floating:
                 bridge: br-prv
                 enabled: true
@@ -207,11 +209,13 @@ parameters:
                 name: enp3s0f1
                 proto: manual
                 type: slave
+                ipflush_onchange: true
               eth2:
                 enabled: true
                 name: enp3s0f0
                 proto: manual
                 type: eth
+                ipflush_onchange: true
 
           classes:
           - environment.lab03_ovs_dpdk.common
@@ -276,11 +280,13 @@ parameters:
                 name: eno2
                 proto: manual
                 type: slave
+                ipflush_onchange: true
               eth2:
                 enabled: true
                 name: eno1
                 proto: manual
                 type: eth
+                ipflush_onchange: true
 
           classes:
           - environment.lab03_ovs_dpdk.common
@@ -429,6 +435,7 @@ parameters:
                 name: enp2s0f1
                 proto: manual
                 type: slave
+                ipflush_onchange: true
               prv-to-floating:
                 bridge: br-prv
                 enabled: true
@@ -551,11 +558,13 @@ parameters:
                 name: eno2
                 proto: manual
                 type: slave
+                ipflush_onchange: true
               eth2:
                 enabled: true
                 name: eno1
                 proto: manual
                 type: eth
+                ipflush_onchange: true
 
           classes:
           - environment.lab03_ovs_dpdk.common
