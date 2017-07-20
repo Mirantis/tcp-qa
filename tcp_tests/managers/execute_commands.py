@@ -22,7 +22,6 @@ class ExecuteCommandsMixin(object):
                                state_running='start/running'):
         """Check if the service_name running or try to restart it
 
-        :param service_name: name of the service that will be checked
         :param node_name: node on which the service will be checked
         :param check_cmd: shell command to ensure that the service is running
         :param state_running: string for check the service state
@@ -117,6 +116,8 @@ class ExecuteCommandsMixin(object):
                     if s.startswith("Failed:"):
                         failed += int(s.split("Failed:")[1])
                     if 'Minion did not return. [No response]' in s:
+                        failed += 1
+                    if 'Minion did not return. [Not connected]' in s:
                         failed += 1
                     if s.startswith("[CRITICAL]"):
                         failed += 1

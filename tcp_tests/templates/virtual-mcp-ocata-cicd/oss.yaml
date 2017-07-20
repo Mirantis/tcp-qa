@@ -130,7 +130,7 @@
   skip_fail: false
 
 - description: Install Docker client
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker.client
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ CICD_NODES_SELECTOR }}' state.sls docker.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -145,7 +145,7 @@
 # Aptly
 #------
 
-- description: Install Aptly and check it's API
+- description: "Install Aptly and check it's API"
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' state.sls aptly &&
     timeout 90 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
@@ -157,7 +157,7 @@
 # OpenLDAP
 #---------
 
-- description: Install LDAP and check it's availability
+- description: "Install LDAP and check it's availability"
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@openldap:client' state.sls openldap &&
     timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@openldap:client' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
@@ -170,7 +170,7 @@
 # Gerrit
 #-------
 
-- description: Install Gerrit and check it's availability
+- description: "Install Gerrit and check it's availability"
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gerrit:client' state.sls gerrit &&
     timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gerrit:client' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
@@ -183,13 +183,16 @@
 #--------
 
 
-- description: Install Jenkins and check it's availability
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' state.sls jenkins
-  # TODO: Jenkins requires authenticate token. Remove -f from curl for now.
+- description: "Install Jenkins and check it's availability"
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' state.sls jenkins &&
     timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
-       while true; do curl -s http://${CICD_CONTROL_ADDRESS}:8081 >/dev/null && break; sleep 2; done'
+       export JENKINS_CLIENT_USER=$(salt-call --out=newline_values_only pillar.get _param:jenkins_client_user);
+       export JENKINS_CLIENT_PASSWORD=$(salt-call --out=newline_values_only pillar.get _param:jenkins_client_password);
+       while true; do
+         curl -f -u ${JENKINS_CLIENT_USER}:${JENKINS_CLIENT_PASSWORD} http://${CICD_CONTROL_ADDRESS}:8081/api/json?pretty=true && break;
+         sleep 2;
+       done'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
@@ -211,7 +214,7 @@
 - description: Check Pushkin API availability
   cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' cmd.run
     'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
-     while true; do curl -s http://${CICD_CONTROL_ADDRESS}:8887 && break; sleep 2; done'
+     while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8887/apps && break; sleep 2; done'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
