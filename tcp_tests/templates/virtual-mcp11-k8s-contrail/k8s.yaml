@@ -1,14 +1,5 @@
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
-# Change environment configuration before deploy
-
-- description: Add workaround for linklocal incorrect installation
-  cmd: sed -i "s/ipf_addresses:.*/ipf_addresses:\ \${_param:cluster_node01_address}/g"
-    /srv/salt/reclass/classes/system/opencontrail/client/resource/k8s_api.yml
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 - description: Sync time on nodes
   cmd: salt '*' cmd.run "service ntp stop; ntpd -gq ;
     service ntp start; ntp-wait || exit 1"
