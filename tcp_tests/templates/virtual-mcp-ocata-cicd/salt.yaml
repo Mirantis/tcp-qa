@@ -274,9 +274,16 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Configure minion on master
+- description: Configure salt.minion on master
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls 'salt.minion'
+    -C 'I@salt:master' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: Run state 'salt' on master (for salt.api, etc)
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls salt
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
