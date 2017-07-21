@@ -27,14 +27,6 @@ LOG = logger.logger
 class Test_Mcp11_install(object):
     """Test class for testing mcp11 vxlan deploy"""
 
-    #salt_cmd = 'salt -l debug '  # For debug output
-    #salt_call_cmd = 'salt-call -l debug '  # For debug output
-    salt_cmd = 'salt --hard-crash --state-output=mixed --state-verbose=False '  # For cause only output
-    salt_call_cmd = 'salt-call --hard-crash --state-output=mixed --state-verbose=False '  # For cause only output
-    #salt_cmd = 'salt --state-output=terse --state-verbose=False '  # For reduced output
-    #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
-
-    # @pytest.mark.snapshot_needed
     @pytest.mark.fail_snapshot
     def test_mcp11_newton_ovs_install(self, underlay, openstack_deployed,
                                      show_step):
@@ -48,6 +40,7 @@ class Test_Mcp11_install(object):
         """
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.fail_snapshot
     def test_mcp11_newton_dvr_install(self, underlay, openstack_deployed,
                                      show_step):
         """Test for deploying an mcp environment and check it
