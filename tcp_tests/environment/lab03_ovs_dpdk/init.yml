@@ -1,7 +1,8 @@
 parameters:
   # Simulate escape sequence to not interpolate some values,
   # so these values may get into the node yamls as ${_param:...}
-  _esc: $
+  _param:
+    _esc: $
 
   reclass:
     storage:
@@ -9,19 +10,19 @@ parameters:
         stacklight_telemetry_node03:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_telemetry_node03:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_message_queue_node02:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_gateway_node03:
@@ -50,7 +51,7 @@ parameters:
                 enabled: true
                 type: ovs_bridge
               br_ctl:
-                address: ${_esc}{_param:single_address}
+                address: ${_param:_esc}{_param:single_address}
                 bridge: br-floating
                 enabled: true
                 netmask: 255.255.255.0
@@ -82,7 +83,7 @@ parameters:
         openstack_database_node02:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_gateway_node02:
@@ -111,7 +112,7 @@ parameters:
                 enabled: true
                 type: ovs_bridge
               br_ctl:
-                address: ${_esc}{_param:single_address}
+                address: ${_param:_esc}{_param:single_address}
                 bridge: br-floating
                 enabled: true
                 netmask: 255.255.255.0
@@ -143,25 +144,25 @@ parameters:
         openstack_control_node02:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         stacklight_monitor_node02:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         stacklight_telemetry_node01:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_message_queue_node03:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         infra_kvm_node01:
@@ -188,7 +189,7 @@ parameters:
                 use_interfaces:
                 - bond0
               br_ctl:
-                address: ${_esc}{_param:single_address}
+                address: ${_param:_esc}{_param:single_address}
                 enabled: true
                 netmask: 255.255.255.0
                 proto: static
@@ -196,7 +197,7 @@ parameters:
                 use_interfaces:
                 - bond0.2416
               br_mgm:
-                address: ${_esc}{_param:deploy_address}
+                address: ${_param:_esc}{_param:deploy_address}
                 enabled: true
                 gateway: 172.16.49.1
                 name_servers:
@@ -226,13 +227,13 @@ parameters:
         openstack_proxy_node02:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_telemetry_node01:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         infra_kvm_node02:
@@ -259,7 +260,7 @@ parameters:
                 use_interfaces:
                 - bond0
               br_ctl:
-                address: ${_esc}{_param:single_address}
+                address: ${_param:_esc}{_param:single_address}
                 enabled: true
                 netmask: 255.255.255.0
                 proto: static
@@ -267,7 +268,7 @@ parameters:
                 use_interfaces:
                 - bond0.2416
               br_mgm:
-                address: ${_esc}{_param:deploy_address}
+                address: ${_param:_esc}{_param:deploy_address}
                 enabled: true
                 gateway: 172.16.49.1
                 name_servers:
@@ -297,49 +298,49 @@ parameters:
         stacklight_monitor_node03:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_telemetry_node02:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         stacklight_log_node02:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_proxy_node01:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_message_queue_node01:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         stacklight_log_node01:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_database_node01:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_control_node03:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_compute_node02:
@@ -358,12 +359,12 @@ parameters:
                 use_interfaces:
                 - bond0
               br-prv:
-                address: ${_esc}{_param:tenant_address}
+                address: ${_param:_esc}{_param:tenant_address}
                 enabled: true
                 netmask: 255.255.255.0
                 type: dpdk_ovs_bridge
               br_ctl:
-                address: ${_esc}{_param:control_address}
+                address: ${_param:_esc}{_param:control_address}
                 enabled: true
                 netmask: 255.255.255.0
                 proto: static
@@ -420,7 +421,7 @@ parameters:
                 enabled: true
                 type: ovs_bridge
               br_ctl:
-                address: ${_esc}{_param:single_address}
+                address: ${_param:_esc}{_param:single_address}
                 bridge: br-floating
                 enabled: true
                 netmask: 255.255.255.0
@@ -452,7 +453,7 @@ parameters:
         stacklight_log_node03:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_compute_node01:
@@ -471,12 +472,12 @@ parameters:
                 use_interfaces:
                 - bond0
               br-prv:
-                address: ${_esc}{_param:tenant_address}
+                address: ${_param:_esc}{_param:tenant_address}
                 enabled: true
                 netmask: 255.255.255.0
                 type: dpdk_ovs_bridge
               br_ctl:
-                address: ${_esc}{_param:control_address}
+                address: ${_param:_esc}{_param:control_address}
                 enabled: true
                 netmask: 255.255.255.0
                 proto: static
@@ -510,7 +511,7 @@ parameters:
         openstack_database_node03:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         infra_kvm_node03:
@@ -537,7 +538,7 @@ parameters:
                 use_interfaces:
                 - bond0
               br_ctl:
-                address: ${_esc}{_param:single_address}
+                address: ${_param:_esc}{_param:single_address}
                 enabled: true
                 netmask: 255.255.255.0
                 proto: static
@@ -545,7 +546,7 @@ parameters:
                 use_interfaces:
                 - bond0.2416
               br_mgm:
-                address: ${_esc}{_param:deploy_address}
+                address: ${_param:_esc}{_param:deploy_address}
                 enabled: true
                 gateway: 172.16.49.1
                 name_servers:
@@ -575,18 +576,18 @@ parameters:
         stacklight_monitor_node01:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         openstack_control_node01:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
         stacklight_telemetry_node02:
           params:
             linux_network_interfaces:
-              ens3: ${_esc}{_param:linux_single_interface}
+              ens3: ${_param:_esc}{_param:linux_single_interface}
           classes:
           - environment.lab03_ovs_dpdk.common
