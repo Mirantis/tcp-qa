@@ -23,13 +23,7 @@ LOG = logger.logger
 class Test_Mcp11_install(object):
     """Test class for testing mcp11 vxlan deploy"""
 
-    #salt_cmd = 'salt -l debug '  # For debug output
-    #salt_call_cmd = 'salt-call -l debug '  # For debug output
-    salt_cmd = 'salt --hard-crash --state-output=mixed --state-verbose=False '  # For cause only output
-    salt_call_cmd = 'salt-call --hard-crash --state-output=mixed --state-verbose=False '  # For cause only output
-    #salt_cmd = 'salt --state-output=terse --state-verbose=False '  # For reduced output
-    #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
-
+    @pytest.mark.fail_snapshot
     def test_mcp11_ocata_ovs_install(self, underlay, openstack_deployed,
                                           show_step):
         """Test for deploying an mcp environment and check it
@@ -49,6 +43,7 @@ class Test_Mcp11_install(object):
             LOG.debug("Founded files {0}".format(file_name))
             gtw_remote.download(destination=file_name, target=os.getcwd())
 
+    @pytest.mark.fail_snapshot
     def test_mcp11_ocata_dvr_install(self, underlay, openstack_deployed,
                                           show_step):
         """Test for deploying an mcp environment and check it
@@ -68,6 +63,7 @@ class Test_Mcp11_install(object):
             LOG.debug("Founded files {0}".format(file_name))
             gtw_remote.download(destination=file_name, target=os.getcwd())
 
+    @pytest.mark.fail_snapshot
     def test_mcp11_ocata_dpdk_install(self, underlay, openstack_deployed,
                                       show_step):
         """Test for deploying an mcp dpdk environment and check it

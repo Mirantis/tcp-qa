@@ -161,9 +161,22 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Restart salt-master service
+- description: "*Workaround* remove all cfg01 nodes except {{ HOSTNAME_CFG01 }} to not depend on other clusters in 'reclass --top'"
   cmd: |
-     systemctl restart salt-master;
+    # Remove all other nodes except {{ HOSTNAME_CFG01 }} to not rely on them for 'reclass --top'
+    find /srv/salt/reclass/nodes/ -type f -not -name {{ HOSTNAME_CFG01 }}.yml -delete
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show reclass-salt --top for cfg01 node
+  cmd: reclass-salt --top
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Restart salt-master service
+  cmd: systemctl restart salt-master;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -243,10 +256,7 @@
   skip_fail: false
 
 - description: Show  reclass-salt --top
-  cmd: |
-    # Remove all other nodes except {{ HOSTNAME_CFG01 }} to not rely on them for 'reclass --top'
-    find /srv/salt/reclass/nodes/ -type f -not -name {{ HOSTNAME_CFG01 }}.yml -delete
-    reclass-salt --top
+  cmd: reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
