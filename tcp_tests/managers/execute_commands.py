@@ -75,11 +75,13 @@ class ExecuteCommandsMixin(object):
         """
         for n, step in enumerate(commands):
             # Required fields
-            cmd = step.get('cmd')
-            do = step.get('do')
+            action_cmd = step.get('cmd')
+            action_do = step.get('do')
+            action_upload = step.get('upload')
+            action_download = step.get('download')
             # node_name = step.get('node_name')
             # Optional fields
-            description = step.get('description', cmd)
+            description = step.get('description', action_cmd)
             # retry = step.get('retry', {'count': 1, 'delay': 1})
             # retry_count = retry.get('count', 1)
             # retry_delay = retry.get('delay', 1)
@@ -88,10 +90,14 @@ class ExecuteCommandsMixin(object):
             msg = "[ {0} #{1} ] {2}".format(label, n + 1, description)
             LOG.info("\n\n{0}\n{1}".format(msg, '=' * len(msg)))
 
-            if cmd:
+            if action_cmd:
                 self.execute_command(step)
-            elif do:
+            elif action_do:
                 self.command2(step)
+            elif action_upload:
+                self.action_upload(step)
+            elif action_download:
+                self.action_download(step)
 
     def execute_command(self, step):
         # Required fields
@@ -202,3 +208,87 @@ class ExecuteCommandsMixin(object):
                 # In the last retry iteration, raise an exception
                 raise Exception("Step '{0}' failed"
                                 .format(description))
+
+    def action_upload(self, step):
+        """Upload from local host to environment node
+
+        Example:
+
+        - description: Upload a file
+          upload:
+            local_path: /tmp/
+            local_filename: cirros*.iso
+            remote_path: /tmp/
+          node_name: ctl01
+          skip_fail: False
+        """
+        node_name = step.get('node_name')
+        local_path = step.get('upload', {}).get('local_path', None)
+        local_filename = step.get('upload', {}).get('local_filename', None)
+        remote_path = step.get('upload', {}).get('remote_path', None)
+        description = step.get('description', local_path)
+        skip_fail = step.get('skip_fail', False)
+
+        if not local_path or not local_filename or not remote_path:
+            raise Exception("Step '{0}' failed: please specify 'local_path', "
+                            "'local_filename' and 'remote_path' correctly"
+                            .format(description))
+
+        result = {}
+        with self.__underlay.local() as local:
+            result = local.execute('find {0} -type f -name {1}'
+                                   .format(local_path, local_filename))
+            LOG.info("Found files to upload:\n{0}".format(result))
+
+        if not result['stdout'] and not skip_fail:
+            raise Exception("Nothing to upload on step {0}"
+                            .format(description))
+
+        with self.__underlay.remote(node_name=node_name) as remote:
+            file_names = result['stdout']
+            for file_name in file_names:
+                LOG.info("Uploading {0} to {1}:{2}"
+                         .format(local_path, node_name, file_name))
+                remote.upload(source=local_path, target=file_name.rstrip())
+
+    def action_download(self, step):
+        """Download from environment node to local host
+
+        Example:
+
+        - description: Download a file
+          download:
+            remote_path: /tmp/
+            remote_filename: report*.html
+            local_path: /tmp/
+          node_name: ctl01
+          skip_fail: False
+        """
+        node_name = step.get('node_name')
+        remote_path = step.get('download', {}).get('remote_path', None)
+        remote_filename = step.get('download', {}).get('remote_filename', None)
+        local_path = step.get('download', {}).get('local_path', None)
+        description = step.get('description', remote_path)
+        skip_fail = step.get('skip_fail', False)
+
+        if not remote_path or not remote_filename or not local_path:
+            raise Exception("Step '{0}' failed: please specify 'remote_path', "
+                            "'remote_filename' and 'local_path' correctly"
+                            .format(description))
+
+        with self.__underlay.remote(node_name=node_name) as remote:
+
+            result = remote.execute('find {0} -type f -name {1}'
+                                    .format(remote_path, remote_filename))
+            LOG.info("Found files to download:\n{0}".format(result))
+
+            if not result['stdout'] and not skip_fail:
+                raise Exception("Nothing to download on step {0}"
+                                .format(description))
+
+            file_names = result['stdout']
+            for file_name in file_names:
+                LOG.info("Downloading {0}:{1} to {2}"
+                         .format(node_name, file_name, local_path))
+                remote.download(destination=file_name.rstrip(),
+                                target=local_path)

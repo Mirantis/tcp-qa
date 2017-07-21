@@ -17,6 +17,7 @@ import StringIO
 
 from devops.helpers import helpers
 from devops.helpers import ssh_client
+from devops.helpers import subprocess_runner
 from paramiko import rsakey
 import yaml
 
@@ -236,6 +237,19 @@ class UnderlaySSHManager(object):
             password=ssh_data['password'],
             private_keys=[rsakey.RSAKey(file_obj=StringIO.StringIO(key))
                           for key in ssh_data['keys']])
+
+    def local(self):
+        """Get Subprocess instance for local operations like:
+
+        underlay.local.execute(command, verbose=False, timeout=None)
+        underlay.local.check_call(
+            command, verbose=False, timeout=None,
+            error_info=None, expected=None, raise_on_err=True)
+        underlay.local.check_stderr(
+            command, verbose=False, timeout=None,
+            error_info=None, raise_on_err=True)
+        """
+        return subprocess_runner.Subprocess()
 
     def check_call(
             self, cmd,

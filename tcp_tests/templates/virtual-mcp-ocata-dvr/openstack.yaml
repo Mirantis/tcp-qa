@@ -363,3 +363,11 @@
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+- description: Download results
+  download:
+    remote_path: /root
+    remote_filename: "report_*.xml"
+    local_path: {{ os_env('PWD') }}
+  node_name: {{ HOSTNAME_GTW01 }}
+  skip_fail: false
