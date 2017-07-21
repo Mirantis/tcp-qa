@@ -26,13 +26,6 @@ LOG = logger.logger
 class TestVirtletActions(object):
     """Test class for testing Virtlet actions"""
 
-    #salt_cmd = 'salt -l debug '  # For debug output
-    #salt_call_cmd = 'salt-call -l debug '  # For debug output
-    salt_cmd = 'salt --hard-crash --state-output=mixed --state-verbose=False '  # For cause only output
-    salt_call_cmd = 'salt-call --hard-crash --state-output=mixed --state-verbose=False '  # For cause only output
-    #salt_cmd = 'salt --state-output=terse --state-verbose=False '  # For reduced output
-    #salt_call_cmd = 'salt-call --state-output=terse --state-verbose=False '  # For reduced output
-
     def test_virtlet_create_delete_vm(self, underlay, virtlet_deployed,
                                      show_step, virtlet_actions):
         """Test for deploying an mcp environment with virtlet
