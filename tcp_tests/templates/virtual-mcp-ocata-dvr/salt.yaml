@@ -273,22 +273,22 @@
 # Bootstrap all nodes
 
 - description: Configure linux on other nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls 'linux'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not cfg01*' state.sls 'linux'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Configure openssh on all nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh;
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not cfg01*' state.sls openssh;
     salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    -C '* and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
     yes/' /etc/ssh/sshd_config && service ssh reload"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Configure salt.minion on other nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls salt.minion
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not cfg01*' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -306,7 +306,7 @@
   skip_fail: false
 
 - description: Configure ntp and rsyslog on nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls ntp,rsyslog
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '*' state.sls ntp,rsyslog
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
