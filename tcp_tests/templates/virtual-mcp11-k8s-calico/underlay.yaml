@@ -105,7 +105,7 @@ template:
           - name: {{ HOSTNAME_CFG01 }}
             role: salt_master
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 1536
               boot:
                 - hd
@@ -143,7 +143,7 @@ template:
           - name: {{ HOSTNAME_CTL01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -184,7 +184,7 @@ template:
           - name: {{ HOSTNAME_CTL02 }}
             role: k8s_virtlet
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -213,7 +213,7 @@ template:
           - name: {{ HOSTNAME_CTL03 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -242,7 +242,7 @@ template:
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 3
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -280,7 +280,7 @@ template:
           - name: {{ HOSTNAME_CMP02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 3
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -306,7 +306,7 @@ template:
           - name: {{ HOSTNAME_MON01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 3
               memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
@@ -332,7 +332,7 @@ template:
           - name: {{ HOSTNAME_MON02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 3
               memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
@@ -358,7 +358,7 @@ template:
           - name: {{ HOSTNAME_MON03 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 3
               memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
@@ -384,7 +384,7 @@ template:
           - name: {{ HOSTNAME_PRX01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 1024
               boot:
                 - hd
