@@ -267,7 +267,21 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-# Configure cinder-volume salt-call
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Temp workaround of  PROD-13167
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'apt-get install python-pymysql -y'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+# Configure cinder-volume salt-call PROD-13167
 - description: Set disks 01
   cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
   node_name: {{ HOSTNAME_CTL01 }}
