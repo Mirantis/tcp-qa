@@ -15,4 +15,4 @@ testrail
 functools32
 python-k8sclient==0.4.0
 salt-pepper
-setuptools!=36.2.1
+setuptools<=36.2.0
