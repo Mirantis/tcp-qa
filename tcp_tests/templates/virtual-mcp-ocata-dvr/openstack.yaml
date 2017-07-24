@@ -275,7 +275,7 @@
   skip_fail: false
 
 - description: Temp workaround of  PROD-13167
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
     'apt-get install python-pymysql -y'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
