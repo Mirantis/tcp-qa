@@ -268,6 +268,20 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Temp workaround of  PROD-13167
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+    'apt-get install python-pymysql -y'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
 # Configure cinder-volume salt-call
 - description: Set disks 01
   cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
@@ -360,9 +374,15 @@
   skip_fail: false
 
 - description: Run tests
-  cmd: salt-call cmd.run "docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3  -e CUSTOM='--pattern smoke'  -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output"
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
+  pattern = {{ os_env('PATTERN') }}
+  cmd: |
+    if [[ -n "$pattern" ]]; then
+        salt-call cmd.run 'docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3  -e CUSTOM="--pattern $pattern"  -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output'
+    else
+        salt-call cmd.run 'docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output'
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Download results
