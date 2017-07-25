@@ -54,3 +54,5 @@ SALT_PASSWORD = os.environ.get('SALT_PASSWORD', 'hovno12345!')
 DOCKER_REGISTRY = os.environ.get('DOCKER_REGISTRY',
                                  'docker-prod-virtual.docker.mirantis.net')
 
+PATTERN = os.environ.get('PATTERN', 'smoke')
+
