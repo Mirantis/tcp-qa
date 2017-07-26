@@ -376,10 +376,10 @@
 - description: Run tests
   cmd: |
     pattern={{ PATTERN }};
-    if [[ -n "$pattern" ]]; then
-        salt-call cmd.run 'docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3  -e CUSTOM="--pattern $pattern"  -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output'
-    else
+    if [[ "$pattern" == "false" ]]; then
         salt-call cmd.run 'docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output'
+    else
+        salt-call cmd.run 'docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3  -e CUSTOM="--pattern $pattern"  -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output'
     fi
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 5}
