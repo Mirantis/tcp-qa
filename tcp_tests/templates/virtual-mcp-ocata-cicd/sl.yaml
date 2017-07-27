@@ -1,7 +1,7 @@
 {% from 'virtual-mcp-ocata-cicd/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Pattern that helps salt to select Stacklight nodes
-{% set SL_NODES_SELECTOR = os_env('SL_NODES_SELECTOR','mon*') %}
+{% set SL_NODES_SELECTOR = os_env('SL_NODES_SELECTOR','cid*') %}
 
 # Install docker swarm
 - description: Prepare Docker host
