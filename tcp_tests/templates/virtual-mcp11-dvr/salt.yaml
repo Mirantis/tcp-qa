@@ -269,7 +269,7 @@
   skip_fail: false
 
 - description: Configure minion on master
-  cmd: salt --timeout=60 --hard-crash --state-output=mixed --state-verbose=False
+  cmd: salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls 'salt.minion'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}

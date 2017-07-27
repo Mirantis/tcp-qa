@@ -395,7 +395,7 @@
   skip_fail: false
 
 - description: Configure salt.minion on other nodes
-  cmd: salt  --timeout=60 --hard-crash --state-output=mixed --state-verbose=False -C '* and not
+  cmd: salt  --timeout=120 --hard-crash --state-output=mixed --state-verbose=False -C '* and not
     cfg01*' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
