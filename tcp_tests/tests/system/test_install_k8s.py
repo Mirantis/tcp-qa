@@ -26,7 +26,7 @@ class Testk8sInstall(object):
 
     @pytest.mark.fail_snapshot
     def test_k8s_install(self, config, show_step,
-                         k8s_deployed, k8s_actions, sl_deployed):
+                         k8s_deployed, k8s_actions, sl_deployed, sl_actions):
         """Test for deploying MCP environment with k8s+stacklight and check it
 
         Scenario:
@@ -78,10 +78,21 @@ class Testk8sInstall(object):
                     metric, res.text)
 
         prometheus_client = sl_deployed.api
-        current_targets = prometheus_client.get_targets()
-        #todo (tleontovich) add assertion that k8s targets here
-        LOG.debug('Current targets after install {0}'.format(current_targets))
+        try:
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'.format(current_targets))
+        except:
+            LOG.warning('Restarting keepalived service on mon nodes...')
+            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
+                                   args='systemctl restart keepalived')
+            LOG.warning(
+                'Ip states after forset restart {0}'.format(
+                    sl_actions._salt.local(tgt='mon*',
+                                           fun='cmd.run', args='ip a')))
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'.format(current_targets))
 
+        #todo (tleontovich) add assertion that k8s targets here
         for metric in metrics:
             res = prometheus_client.get_query(metric)
             for entry in res:

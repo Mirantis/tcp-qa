@@ -72,6 +72,7 @@ def sl_deployed(revert_snapshot, request, config,
     LOG.warning('Restarting keepalived service on controllers...')
     sl_actions._salt.local(tgt='ctl*', fun='cmd.run',
                            args='systemctl restart keepalived.service')
+    LOG.warning('Restarting keepalived service on mon nodes...')
     sl_actions._salt.local(tgt='mon*', fun='cmd.run',
                        args='systemctl restart keepalived.service')
     return sl_actions
