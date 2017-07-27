@@ -1,9 +1,12 @@
 {% from 'virtual-mcp-ocata-cicd/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Pattern that helps salt to select Stacklight nodes
-{% set SL_NODES_SELECTOR = os_env('SL_NODES_SELECTOR','mon*') %}
+{% set SL_NODES_SELECTOR = os_env('SL_NODES_SELECTOR','cid*') %}
 
+#=====================
 # Install docker swarm
+#=====================
+
 - description: Prepare Docker host
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:host and {{ SL_NODES_SELECTOR }}' state.sls docker.host
   node_name: {{ HOSTNAME_CFG01 }}
@@ -16,18 +19,20 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Setup salt-minion on docker swarm master
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' state.sls salt &&
+- description: Collect grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' state.sls salt.minion.grains &&
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' mine.flush &&
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' mine.update
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' mine.update &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and {{ SL_NODES_SELECTOR }}' saltutil.refresh_modules &&
+    sleep 5
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 15}
   skip_fail: false
 
 - description: Install Docker Swarm on other nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and {{ SL_NODES_SELECTOR }}' state.sls docker.swarm
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:manager and {{ SL_NODES_SELECTOR }}' state.sls docker.swarm
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Show Docker Swarm nodes
@@ -36,27 +41,50 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# Install slv2 infra
+#===================
+# Install StackLight
+#===================
+
+# Haproxy: installed in common-services
+#--------------------------------------
+
 - description: Install telegraf
   cmd: salt -C 'I@telegraf:agent or I@telegraf:remote_agent' state.sls telegraf
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Configure collector
-  cmd: salt -C 'I@heka:log_collector' state.sls heka.log_collector
+- description: Install Prometheus exporters, if pillar 'prometheus:exporters' exists on any server
+  cmd: |
+    if salt -C 'I@prometheus:exporters' match.pillar 'prometheus:exporters' ; then
+      salt -C 'I@prometheus:exporters' state.sls prometheus
+    fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+
+
+
+# Elasticsearch
+- description: Waiting for Elasticsearch to come up in container...
+  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:server' cmd.run
+      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
+       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:9200 && break; sleep 2; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 30}
+  skip_fail: false
+
 - description: Install elasticsearch server
-  cmd: salt -C 'I@elasticsearch:server' state.sls elasticsearch.server -b 1
+  cmd: salt -C 'I@elasticsearch:server and *01*' state.sls elasticsearch.server &&
+    salt -C 'I@elasticsearch:server' state.sls elasticsearch.server -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Install kibana server
-  cmd: salt -C 'I@kibana:server' state.sls kibana.server -b 1
+  cmd: salt -C 'I@kibana:server and *01*' state.sls kibana.server &&
+    salt -C 'I@kibana:server' state.sls kibana.server -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -73,36 +101,25 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Check influix db
-  cmd: |
-    INFLUXDB_SERVICE=`salt -C 'I@influxdb:server' test.ping 1>/dev/null 2>&1 && echo true`;
-    echo "Influxdb service presence: ${INFLUXDB_SERVICE}";
-    if [[ "$INFLUXDB_SERVICE" == "true" ]]; then
-        salt -C 'I@influxdb:server' state.sls influxdb
-    fi
+- description: Install influixdb
+  cmd: salt -C 'I@influxdb:server' state.sls influxdb
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
-
-# Collect grains needed to configure the services
-
-- description: Get grains
-  cmd: salt -C 'I@salt:minion' state.sls salt.minion.grains
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Sync modules
-  cmd: salt -C 'I@salt:minion' saltutil.refresh_modules
+
+
+# Collect grains. Looks like this is an excess step, but it is present in the pipeline at the moment.
+- description: Collect grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' state.sls salt.minion.grains &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and {{ SL_NODES_SELECTOR }}' saltutil.refresh_modules &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' mine.flush &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' mine.update &&
+    sleep 5
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 3, delay: 15}
   skip_fail: false
 
-- description: Update mine
-  cmd: salt -C 'I@salt:minion' mine.update; sleep 5;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
 
 # Change environment configuration before deploy
 - description: Set SL docker images deploy parameters
@@ -135,10 +152,26 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+
+- description: Waiting for Elasticsearch to come up in container...
+  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and {{ SL_NODES_SELECTOR }}' cmd.run
+      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
+       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:15013 && break; sleep 2; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 30}
+  skip_fail: false
+
+
 - description: Configure Grafana dashboards and datasources
   cmd: sleep 30;  salt -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 10}
+  skip_fail: false
+
+- description: Configure collector
+  cmd: salt -C 'I@heka:log_collector' state.sls heka.log_collector
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Run salt minion to create cert files

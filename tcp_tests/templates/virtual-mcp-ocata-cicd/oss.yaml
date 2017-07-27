@@ -77,10 +77,12 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Setup salt-minion on docker swarm master
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ CICD_NODES_SELECTOR }}' state.sls salt &&
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ CICD_NODES_SELECTOR }}' mine.flush &&
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ CICD_NODES_SELECTOR }}' mine.update
+- description: Collect grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' state.sls salt.minion.grains &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' mine.flush &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and {{ SL_NODES_SELECTOR }}' mine.update &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and {{ SL_NODES_SELECTOR }}' saltutil.refresh_modules &&
+    sleep 5
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 15}
   skip_fail: false
@@ -88,7 +90,7 @@
 - description: Install Docker Swarm on other nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and {{ CICD_NODES_SELECTOR }}' state.sls docker.swarm
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Show Docker Swarm nodes
@@ -145,11 +147,16 @@
 # Aptly
 #------
 
-- description: "Install Aptly and check it's API"
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' state.sls aptly &&
-    timeout 90 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' cmd.run
+- description: "Wait for Aptly to come up in container..."
+  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
        while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8084/api/version  && break; sleep 2; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 15}
+  skip_fail: false
+
+- description: "Setup Aptly"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' state.sls aptly
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
@@ -157,11 +164,16 @@
 # OpenLDAP
 #---------
 
-- description: "Install LDAP and check it's availability"
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@openldap:client' state.sls openldap &&
-    timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@openldap:client' cmd.run
+- description: "Waiting for OpenLDAP to come up in container..."
+  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@openldap:client' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
-       while true; do curl -sf ldap://${CICD_CONTROL_ADDRESS} >/dev/null && break; sleep 2; done' &&
+       while true; do curl -sf ldap://${CICD_CONTROL_ADDRESS} && break; sleep 2; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: "Setup OpenLDAP"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@openldap:client' state.sls openldap &&
     sleep 20
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
@@ -170,11 +182,16 @@
 # Gerrit
 #-------
 
-- description: "Install Gerrit and check it's availability"
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gerrit:client' state.sls gerrit &&
-    timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gerrit:client' cmd.run
+- description: "Waiting for Gerrit to come up in container..."
+  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gerrit:client' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
-       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8080 >/dev/null && break; sleep 2; done'
+       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8080/config/server/version && break; sleep 2; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: "Setup Gerrit"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gerrit:client' state.sls gerrit
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
@@ -182,10 +199,8 @@
 # Jenkins
 #--------
 
-
-- description: "Install Jenkins and check it's availability"
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' state.sls jenkins &&
-    timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' cmd.run
+- description: "Waiting for Jenkins to come up in container..."
+  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
        export JENKINS_CLIENT_USER=$(salt-call --out=newline_values_only pillar.get _param:jenkins_client_user);
        export JENKINS_CLIENT_PASSWORD=$(salt-call --out=newline_values_only pillar.get _param:jenkins_client_password);
@@ -197,39 +212,68 @@
   retry: {count: 3, delay: 10}
   skip_fail: false
 
-# Postgres
-#---------
+- description: "Setup Jenkins"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' state.sls jenkins
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
 
-- description: Install PostgreSQL and create databases
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' state.sls postgresql.client -b 1&&
-    timeout 300 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' cmd.run
+# Postgres && Pushkin
+#--------------------
+
+- description: "Waiting for postgresql database to come up in container..."
+  cmd: timeout 300 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' cmd.run
       'while true; do if docker service logs postgresql_db | grep -q "ready to accept"; then break; else sleep 5; fi; done'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
 
-# Pushkin
-#--------
-
-- description: Check Pushkin API availability
-  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' cmd.run
+- description: ("Create PostgreSQL databases, it fails at first run because of known deadlock:\n"
+                "1. State postgresql.client cannot insert values into 'pushkin' database because it is created empty,\n"
+                "2. Container with Pushkin cannot start and fill the database scheme until state postgresql.client created users.")
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' state.sls postgresql.client -b 1 &&
+    timeout 300 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' cmd.run
     'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
      while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8887/apps && break; sleep 2; done'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 3, delay: 100}
   skip_fail: false
 
 # Rundeck
 #--------
 
-- description: Install Rundeck and check availability
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@rundeck:client' state.sls rundeck.client &&
-    timeout 30 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@rundeck:client' cmd.run
+- description: Waiting for Rundeck to come up in container...
+  cmd: timeout 30 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@rundeck:client' cmd.run
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
        while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:4440 && break; sleep 2; done'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
+
+- description: Setup Rundeck
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@rundeck:client' state.sls rundeck.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+# Elasticsearch
+#--------------
+
+- description: 'Waiting for Elasticsearch to come up in container...'
+  cmd: timeout 30 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' cmd.run
+      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cicd_control_address);
+       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:9200/?pretty && break; sleep 2; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: Setup Elasticsearch
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+
 
 # Generate docs
 #--------------
