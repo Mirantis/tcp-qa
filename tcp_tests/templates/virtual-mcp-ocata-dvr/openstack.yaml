@@ -80,9 +80,9 @@
 
 - description: Check nova service-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; nova service-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; nova --debug service-list'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 
@@ -384,10 +384,18 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Download results
+- description: Download xml results
   download:
     remote_path: /root
     remote_filename: "report_*.xml"
     local_path: {{ os_env('PWD') }}
   node_name: {{ HOSTNAME_GTW01 }}
-  skip_fail: false
+  skip_fail: true
+
+- description: Download html results
+  download:
+    remote_path: /root
+    remote_filename: "report_*.html"
+    local_path: {{ os_env('PWD') }}
+  node_name: {{ HOSTNAME_GTW01 }}
+  skip_fail: true
