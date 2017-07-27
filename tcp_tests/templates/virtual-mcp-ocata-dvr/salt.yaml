@@ -150,7 +150,7 @@
     [ ! -d /srv/salt/env ] && mkdir -p /srv/salt/env;
     [ ! -L /srv/salt/env/prd ] && ln -s ${FORMULA_PATH}/env /srv/salt/env/prd;
     [ ! -d /etc/reclass ] && mkdir /etc/reclass;
-
+    wget https://paste.mirantis.net/raw/11468/ -O /usr/share/salt-formulas/env/salt/minion/service.sls;
     cat << 'EOF' >> /etc/reclass/reclass-config.yml
     storage_type: yaml_fs
     pretty_print: True
