@@ -4,6 +4,7 @@
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 {% set SALT_MODELS_BRANCH = os_env('SALT_MODELS_BRANCH','master') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
+{% set UPDATE_RECLASS = os_env('UPDATE_RECLASS','False') %}
 
 # Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12
 {% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
@@ -91,7 +92,11 @@
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+    {%- if UPDATE_RECLASS != 'False' %}
     pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
+    {% else %}
+    pushd /srv/salt/reclass && popd;
+    {%- endif %}
     {%- if SALT_MODELS_REF_CHANGE != '' %}
     pushd /srv/salt/reclass && git fetch {{ SALT_MODELS_REPOSITORY }} {{ SALT_MODELS_REF_CHANGE }} && git checkout FETCH_HEAD && popd;
     {%- endif %}

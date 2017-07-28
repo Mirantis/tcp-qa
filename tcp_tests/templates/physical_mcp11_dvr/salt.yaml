@@ -7,6 +7,7 @@
 
 # Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12
 {% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
+{% set UPDATE_RECLASS = os_env('UPDATE_RECLASS','False') %}
 
 # Address pools for reclass cluster model are taken in the following order:
 # 1. environment variables,
@@ -89,7 +90,11 @@
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+    {%- if UPDATE_RECLASS != 'False' %}
     pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
+    {% else %}
+    pushd /srv/salt/reclass && popd;
+    {%- endif %}
     {%- if SALT_MODELS_REF_CHANGE != '' %}
     pushd /srv/salt/reclass && git fetch {{ SALT_MODELS_REPOSITORY }} {{ SALT_MODELS_REF_CHANGE }} && git checkout FETCH_HEAD && popd;
     {%- endif %}
