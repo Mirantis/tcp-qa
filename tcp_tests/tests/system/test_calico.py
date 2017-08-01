@@ -135,8 +135,8 @@ class TestMCPCalico(object):
         helpers.wait_pass(
             lambda: underlay.sudo_check_call(cmd=route_chk_cmd,
                                              node_name=first_node_name),
-            timeout=30,
-            interval=1
+            timeout=120,
+            interval=2
         )
         pod_ping_cmd = 'sleep 3 && ping -q -c 1 -w 3 {0}'.format(target_pod_ip)
         underlay.sudo_check_call(cmd=pod_ping_cmd, node_name=first_node_name)
