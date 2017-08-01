@@ -49,13 +49,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Restart rsyslog
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@haproxy:proxy' service.restart rsyslog
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 # Isntall SL core services
 
 - description: Install gluserfs client
@@ -92,3 +85,11 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+- description: Restart rsyslog
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.restart rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
