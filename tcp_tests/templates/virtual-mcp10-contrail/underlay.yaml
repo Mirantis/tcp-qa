@@ -1,10 +1,10 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'stable') %}
 
-{% import 'virtual-mcp10-contrail/underlay--meta-data.yaml' as CLOUDINIT_META_DATA %}
-{% import 'virtual-mcp10-contrail/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 %}
-{% import 'virtual-mcp10-contrail/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 %}
-{% import 'virtual-mcp10-contrail/underlay--user-data1404.yaml' as CLOUDINIT_USER_DATA_1404 %}
+{% import 'virtual-mcp10-contrail/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'virtual-mcp10-contrail/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'virtual-mcp10-contrail/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+{% import 'virtual-mcp10-contrail/underlay--user-data1404.yaml' as CLOUDINIT_USER_DATA_1404 with context %}
 
 ---
 aliases:
@@ -29,7 +29,7 @@ aliases:
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'virtual-contrail_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ os_env('ENV_NAME', 'virtual-mcp10-contrail_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
 
     address_pools:
       private-pool01:
