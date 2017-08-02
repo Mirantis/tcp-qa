@@ -97,6 +97,8 @@
           engine: local
     EOF
 
+    # Show the changes to the console
+    cd /srv/salt/reclass/; git diff
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -175,7 +177,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls linux;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Run 'openssh' formula on cfg01
@@ -260,17 +262,17 @@
   skip_fail: false
 
 - description: Configure salt.minion on all nodes
-  cmd: salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@linux:system' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Configure ntp and rsyslog on nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@linux:system' state.sls ntp,rsyslog
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 - description: Check salt minion versions on slaves
