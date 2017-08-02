@@ -65,7 +65,7 @@
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
-    pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd
+    pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
     {%- if SALT_MODELS_REF_CHANGE != '' %}
     pushd /srv/salt/reclass && git fetch {{ SALT_MODELS_REPOSITORY }} {{ SALT_MODELS_REF_CHANGE }} && git checkout FETCH_HEAD && popd;
     {%- endif %}
@@ -88,10 +88,10 @@
     # Disable checkouting the model from remote repository
     cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
     # local storage
-      reclass:
-        storage:
-          data_source:
-            engine: local
+    reclass:
+      storage:
+        data_source:
+          engine: local
     EOF
 
     # Show the changes to the console
@@ -99,7 +99,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
-
 
 - description: Configure reclass
   cmd: |
@@ -111,7 +110,7 @@
     wget -O - "${FORMULA_GPG}" | apt-key add -;
     apt-get clean; apt-get update;
     [ ! -d /srv/salt/reclass/classes/service ] && mkdir -p /srv/salt/reclass/classes/service;
-    declare -a formula_services=("linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf");
+    declare -a formula_services=("linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch");
     echo -e "\nInstalling all required salt formulas\n";
     eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
     for formula_service in "${formula_services[@]}"; do
@@ -149,8 +148,8 @@
     EOF
     eatmydata apt-get install -y salt-minion;
     echo "Check for system info and metadata availability ...";
-    salt-call --no-color grains.items;
-    salt-call --no-color pillar.items;
+    salt-call --hard-crash --no-color grains.items;
+    salt-call --hard-crash --no-color pillar.items;
   node_name: {{ ssh['node_name'] }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -170,20 +169,12 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-# Patch linux formula to workaround https://mirantis.jira.com/browse/PROD-12327
-- description:
-  cmd: salt '*' cmd.run 'wget https://raw.githubusercontent.com/saltstack/salt/2017.7/salt/templates/debian_ip/route_eth.jinja -O
-    /usr/lib/python2.7/dist-packages/salt/templates/debian_ip/route_eth.jinja'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 # Prepare salt services and nodes settings
 - description: Run 'linux' formula on cfg01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls linux;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Run 'openssh' formula on cfg01
@@ -205,18 +196,9 @@
 
 - description: Run 'salt.master' formula on cfg01
   cmd: timeout 120 salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls salt.master.service;
+    -C 'I@salt:master' state.sls salt.master;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
-  skip_fail: false
-
-- description: Run 'salt' formula on cfg01 with workaround proposed in PROD-10894
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls salt;
-    salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' saltutil.sync_all
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 5}
   skip_fail: false
 
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
@@ -232,47 +214,62 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Sync all salt resources
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Show reclass-salt --top
   cmd: reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Execute salt.minion.cert
-  cmd: salt-call --no-color state.sls salt.minion.cert -l info;
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure linux on master
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls 'linux.system'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure minion on master
+  cmd: salt-call --hard-crash -l debug state.sls 'salt.minion'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
   skip_fail: false
 
 # Bootstrap all nodes
 
 - description: Configure linux on other nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg01*' state.sls linux
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system' state.sls 'linux'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Configure openssh on all nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg01*' state.sls openssh;salt --hard-crash --state-output=mixed --state-verbose=False
-    -C '* and not cfg*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
-    yes/' /etc/ssh/sshd_config && service ssh restart"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system' state.sls openssh;
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Configure salt.minion on other nodes
-  cmd: salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg01*' state.sls salt.minion
+- description: Configure salt.minion on all nodes
+  cmd: salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Configure ntp and rsyslog on nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system' state.sls ntp,rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 - description: Check salt minion versions on slaves
@@ -285,10 +282,4 @@
   cmd: salt '*' state.show_top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Configure ntp and rsyslog on nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls ntp,rsyslog
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
   skip_fail: false
