@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f980516_52507ac1",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-02T18:22:16Z",
+      "side": 1,
+      "message": "Why you removed \u0027-minimal\u0027 ? This template belongs to virtual-mcp11-k8s-calico-minimal model, not to virtual-mcp11-k8s-calico.",
+      "range": {
+        "startLine": 1,
+        "startChar": 9,
+        "endLine": 1,
+        "endChar": 33
+      },
+      "revId": "f38d3ab525db56bac8f76a6e04f2e0d498462432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "112cf4d2_a169ae15",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-02T18:22:16Z",
+      "side": 1,
+      "message": "\u0027reclass\u0027 object must be intended to be nested under \u0027parameters\u0027:\n\nparameters:\n  reclass:\n  ...\n\nRemoving spaces from here lead to ignore this block because it is not under \u0027parameters\u0027 anymore:\n\nparameters:\n  ...\nreclass:  # won\u0027t come to pillars\n  ...",
+      "revId": "f38d3ab525db56bac8f76a6e04f2e0d498462432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
