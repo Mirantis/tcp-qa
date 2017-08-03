@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "491c39a8_5645c564",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1011165
+      },
+      "writtenOn": "2017-08-03T12:51:20Z",
+      "side": 1,
+      "message": "I fixed them in accordance with other templates (virtual-mcp11-k8s-(contrail|calico*)",
+      "parentUuid": "0a9bd16b_91ede2de",
+      "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "96d52177_0f13d434",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
         "patchSetId": 4
@@ -30,6 +48,24 @@
       "writtenOn": "2017-08-03T12:14:08Z",
       "side": 1,
       "message": "timeout from patch set #2 disappeared ...",
+      "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a7c9eb3c_7abb9bac",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1011165
+      },
+      "writtenOn": "2017-08-03T12:51:20Z",
+      "side": 1,
+      "message": "I removed it... We don\u0027t need it anymore",
+      "parentUuid": "96d52177_0f13d434",
       "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
@@ -53,6 +89,24 @@
     },
     {
       "key": {
+        "uuid": "3167c23c_4f847630",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1011165
+      },
+      "writtenOn": "2017-08-03T12:51:20Z",
+      "side": 1,
+      "message": "I removed it",
+      "parentUuid": "54d12064_b39332c9",
+      "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9b3d6066_57afe689",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/salt.yaml",
         "patchSetId": 4
@@ -64,6 +118,24 @@
       "writtenOn": "2017-08-03T12:14:08Z",
       "side": 1,
       "message": "timeout from patchset #2 disappeared",
+      "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "040bc0e9_19af4c84",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1011165
+      },
+      "writtenOn": "2017-08-03T12:51:20Z",
+      "side": 1,
+      "message": "I removed it",
+      "parentUuid": "9b3d6066_57afe689",
       "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
