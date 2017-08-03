@@ -352,6 +352,16 @@ parameters:
             # in an additional dict inventory[inventory_node_name] loaded from custom_inventory.yaml,
             # or skip the original context from 'cookiecutter' object and iterate only custom inventory.
             linux_network_interfaces:
+              bond0:
+                enabled: true
+                mode: active-backup
+                ovs_bridge: br-floating
+                ovs_type: OVSPort
+                proto: manual
+                slaves: enp2s0f1
+                type: bond
+                use_interfaces:
+                - enp2s0f1
               bond0.2416:
                 enabled: true
                 proto: manual
@@ -465,6 +475,16 @@ parameters:
             # in an additional dict inventory[inventory_node_name] loaded from custom_inventory.yaml,
             # or skip the original context from 'cookiecutter' object and iterate only custom inventory.
             linux_network_interfaces:
+              bond0:
+                enabled: true
+                mode: active-backup
+                ovs_bridge: br-floating
+                ovs_type: OVSPort
+                proto: manual
+                slaves: enp2s0f1
+                type: bond
+                use_interfaces:
+                - enp2s0f1
               bond0.2416:
                 enabled: true
                 proto: manual
