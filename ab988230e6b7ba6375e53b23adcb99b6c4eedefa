@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0a9bd16b_91ede2de",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-03T12:14:08Z",
+      "side": 1,
+      "message": "Indents are still not fixed as it were.",
+      "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "96d52177_0f13d434",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-03T12:14:08Z",
+      "side": 1,
+      "message": "timeout from patch set #2 disappeared ...",
+      "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "54d12064_b39332c9",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 262,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-03T12:14:08Z",
+      "side": 1,
+      "message": "timeout from patchset #2 disappeared",
+      "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9b3d6066_57afe689",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 265,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-03T12:14:08Z",
+      "side": 1,
+      "message": "timeout from patchset #2 disappeared",
+      "revId": "ab988230e6b7ba6375e53b23adcb99b6c4eedefa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
