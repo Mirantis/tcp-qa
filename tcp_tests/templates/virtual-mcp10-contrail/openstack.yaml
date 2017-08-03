@@ -1,6 +1,12 @@
 {% from 'virtual-mcp10-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install OpenStack control services
+- description: Downgrade libc for glance
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@glance:server' cmd.run ' apt install libc6=2.19-0ubuntu6.11 -y --force-yes'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 - description: Install glance on all controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
