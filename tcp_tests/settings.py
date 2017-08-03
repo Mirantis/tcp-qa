@@ -11,8 +11,11 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+
+import logging
 import os
 import time
+
 
 _boolean_states = {'1': True, 'yes': True, 'true': True, 'on': True,
                    '0': False, 'no': False, 'false': False, 'off': False}
@@ -24,6 +27,7 @@ def get_var_as_bool(name, default):
 
 
 LOGS_DIR = os.environ.get('LOGS_DIR', os.getcwd())
+LOG_CON_LEVEL = os.environ.get('LOG_CON_LEVEL', logging.INFO)
 TIMESTAT_PATH_YAML = os.environ.get(
     'TIMESTAT_PATH_YAML', os.path.join(
         LOGS_DIR, 'timestat_{}.yaml'.format(time.strftime("%Y%m%d"))))

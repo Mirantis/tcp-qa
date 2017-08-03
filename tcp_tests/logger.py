@@ -28,7 +28,7 @@ logging.basicConfig(level=logging.DEBUG,
                     filemode='w')
 
 console = logging.StreamHandler()
-console.setLevel(logging.INFO)
+console.setLevel(settings.LOG_CON_LEVEL)
 formatter = logging.Formatter('%(asctime)s - %(levelname)s %(filename)s:'
                               '%(lineno)d -- %(message)s')
 console.setFormatter(formatter)
