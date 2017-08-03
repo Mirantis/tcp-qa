@@ -97,6 +97,8 @@
           engine: local
     EOF
 
+    # Show the changes to the console
+    cd /srv/salt/reclass/; git diff
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -149,8 +151,8 @@
     EOF
     eatmydata apt-get install -y salt-minion;
     echo "Check for system info and metadata availability ...";
-    salt-call --no-color grains.items;
-    salt-call --no-color pillar.items;
+    salt-call --hard-crash --no-color grains.items;
+    salt-call --hard-crash --no-color pillar.items;
   node_name: {{ ssh['node_name'] }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -175,7 +177,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls linux;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Run 'openssh' formula on cfg01
@@ -196,7 +198,7 @@
   skip_fail: false
 
 - description: Run 'salt.master' formula on cfg01
-  cmd: timeout 120 salt --hard-crash --state-output=mixed --state-verbose=False
+  cmd: timeout 120 salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls salt.master;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
@@ -235,8 +237,7 @@
   skip_fail: false
 
 - description: Configure minion on master
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls 'salt.minion'
+  cmd: salt-call --hard-crash -l debug state.sls 'salt.minion'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
@@ -264,14 +265,14 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@linux:system' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Configure ntp and rsyslog on nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@linux:system' state.sls ntp,rsyslog
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 - description: Check salt minion versions on slaves
