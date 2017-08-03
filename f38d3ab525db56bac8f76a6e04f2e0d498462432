@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "ac0dcb32_89a0d3fd",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1011165
+      },
+      "writtenOn": "2017-08-03T08:39:47Z",
+      "side": 1,
+      "message": "Good catch. I\u0027ll fix in next patchset. Thanks",
+      "parentUuid": "8f980516_52507ac1",
+      "range": {
+        "startLine": 1,
+        "startChar": 9,
+        "endLine": 1,
+        "endChar": 33
+      },
+      "revId": "f38d3ab525db56bac8f76a6e04f2e0d498462432",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "112cf4d2_a169ae15",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico-minimal/salt.yaml",
         "patchSetId": 2
