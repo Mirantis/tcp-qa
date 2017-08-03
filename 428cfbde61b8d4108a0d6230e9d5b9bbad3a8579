@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d6647d35_b7947f03",
+        "filename": "tcp_tests/templates/virtual-mcp10-contrail/salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-03T12:09:40Z",
+      "side": 1,
+      "message": "Are you sure the debug is required here?",
+      "range": {
+        "startLine": 240,
+        "startChar": 30,
+        "endLine": 240,
+        "endChar": 39
+      },
+      "revId": "428cfbde61b8d4108a0d6230e9d5b9bbad3a8579",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
