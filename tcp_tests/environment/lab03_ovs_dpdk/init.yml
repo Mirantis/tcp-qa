@@ -42,7 +42,9 @@ parameters:
                 proto: manual
                 slaves: enp2s0f1
                 type: bond
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - enp2s0f1
+                require_interfaces:
                 - enp2s0f1
               br-floating:
                 enabled: true
@@ -103,7 +105,9 @@ parameters:
                 proto: manual
                 slaves: enp2s0f1
                 type: bond
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - enp2s0f1
+                require_interfaces:
                 - enp2s0f1
               br-floating:
                 enabled: true
@@ -180,13 +184,17 @@ parameters:
                 proto: manual
                 slaves: enp3s0f1
                 type: bond
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - enp3s0f1
+                require_interfaces:
                 - enp3s0f1
               bond0.2416:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0
+                require_interfaces:
                 - bond0
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
@@ -194,7 +202,9 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0.2416
+                require_interfaces:
                 - bond0.2416
               br_mgm:
                 address: ${_param:_esc}{_param:deploy_address}
@@ -206,7 +216,9 @@ parameters:
                 netmask: 255.255.255.192
                 proto: static
                 type: bridge
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - enp3s0f0
+                require_interfaces:
                 - enp3s0f0
               eth1:
                 enabled: true
@@ -251,13 +263,17 @@ parameters:
                 proto: manual
                 slaves: eno2
                 type: bond
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - eno2
+                require_interfaces:
                 - eno2
               bond0.2416:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0
+                require_interfaces:
                 - bond0
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
@@ -265,7 +281,9 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0.2416
+                require_interfaces:
                 - bond0.2416
               br_mgm:
                 address: ${_param:_esc}{_param:deploy_address}
@@ -277,7 +295,9 @@ parameters:
                 netmask: 255.255.255.192
                 proto: static
                 type: bridge
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - eno1
+                require_interfaces:
                 - eno1
               eth1:
                 enabled: true
@@ -360,13 +380,17 @@ parameters:
                 proto: manual
                 slaves: enp2s0f1
                 type: bond
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - enp2s0f1
+                require_interfaces:
                 - enp2s0f1
               bond0.2416:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0
+                require_interfaces:
                 - bond0
               br-prv:
                 address: ${_param:_esc}{_param:tenant_address}
@@ -379,7 +403,9 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0.2416
+                require_interfaces:
                 - bond0.2416
               dpdk0:
                 bond: dpdkbond1
@@ -422,7 +448,9 @@ parameters:
                 proto: manual
                 slaves: enp2s0f1
                 type: bond
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - enp2s0f1
+                require_interfaces:
                 - enp2s0f1
               br-floating:
                 enabled: true
@@ -483,13 +511,17 @@ parameters:
                 proto: manual
                 slaves: enp2s0f1
                 type: bond
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - enp2s0f1
+                require_interfaces:
                 - enp2s0f1
               bond0.2416:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0
+                require_interfaces:
                 - bond0
               br-prv:
                 address: ${_param:_esc}{_param:tenant_address}
@@ -502,7 +534,9 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0.2416
+                require_interfaces:
                 - bond0.2416
               dpdk0:
                 bond: dpdkbond1
@@ -549,13 +583,17 @@ parameters:
                 proto: manual
                 slaves: eno2
                 type: bond
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - eno2
+                require_interfaces:
                 - eno2
               bond0.2416:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0
+                require_interfaces:
                 - bond0
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
@@ -563,7 +601,9 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - bond0.2416
+                require_interfaces:
                 - bond0.2416
               br_mgm:
                 address: ${_param:_esc}{_param:deploy_address}
@@ -575,7 +615,9 @@ parameters:
                 netmask: 255.255.255.192
                 proto: static
                 type: bridge
-                use_interfaces:
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - eno1
+                require_interfaces:
                 - eno1
               eth1:
                 enabled: true
