@@ -4,7 +4,6 @@
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/qa') %}
 {% set SALT_MODELS_BRANCH = os_env('SALT_MODELS_BRANCH','master') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
-{% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 
 # Address pools for reclass cluster model are taken in the following order:
 # 1. environment variables,
@@ -12,6 +11,17 @@
 #    (see generated '.ini' file after underlay is created),
 # 3. defaults
 {% set address_pools = config.underlay.address_pools %}
+{% set IPV4_NET_ADMIN = os_env('IPV4_NET_ADMIN', address_pools.get('admin-pool01', '172.18.173.96/27')) %}
+{% set IPV4_NET_CONTROL = os_env('IPV4_NET_CONTROL', address_pools.get('private-pool01', '172.16.10.0/24')) %}
+{% set IPV4_NET_TENANT = os_env('IPV4_NET_TENANT', address_pools.get('tenant-pool01', '10.1.0.0/24')) %}
+{% set IPV4_NET_EXTERNAL = os_env('IPV4_NET_EXTERNAL', address_pools.get('external-pool01', '10.16.0.0/24')) %}
+
+{% set IPV4_NET_ADMIN_PREFIX = '.'.join(IPV4_NET_ADMIN.split('.')[0:3]) %}
+{% set IPV4_NET_CONTROL_PREFIX = '.'.join(IPV4_NET_CONTROL.split('.')[0:3]) %}
+{% set IPV4_NET_TENANT_PREFIX = '.'.join(IPV4_NET_TENANT.split('.')[0:3]) %}
+{% set IPV4_NET_EXTERNAL_PREFIX = '.'.join(IPV4_NET_EXTERNAL.split('.')[0:3]) %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
 
 # Install salt to the config node
 
@@ -58,32 +68,7 @@
 
 - description: Clone reclass models with submodules
   cmd: |
-    ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
-    pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
-    cd /srv/salt/reclass/classes/system;
-    git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
-
-    mkdir -p /srv/salt/reclass/classes/service;
-
-    # Replace firstly to an intermediate value to avoid intersection between
-    # already replaced and replacing networks.
-    # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
-    # 192.168.10 -> 10.16.0 (generated network for admin)
-    # 10.16.0 -> <external network>
-    # So let's replace constant networks to the keywords, and then keywords to the desired networks.
-
-    find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
-
-    # Disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/control/{{ HOSTNAME_CFG01 }}.yml
-    # local storage
-      reclass:
-        storage:
-          data_source:
-            engine: local
-    EOF
-
+{{  SHARED.MACRO_CLONE_RECLASS_MODELS() }}
     # Show the changes to the console
     cd /srv/salt/reclass/; git diff
   node_name: {{ HOSTNAME_CFG01 }}

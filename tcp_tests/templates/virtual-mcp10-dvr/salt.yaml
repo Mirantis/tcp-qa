@@ -1,7 +1,12 @@
 {% from 'virtual-mcp10-dvr/map.jinja' import HOSTNAME_CFG01 with context %}
 
-# Install salt to the config node
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_BRANCH = os_env('SALT_MODELS_BRANCH','master') %}
+{% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
 
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+# Install salt to the config node
 
 - description: Configure repository on the cfg01 node
   cmd:
@@ -71,9 +76,7 @@
 
 - description: Clone reclass models with submodules
   cmd: |
-    ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b master --recurse-submodules https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab /srv/salt/reclass;
-    mkdir -p /srv/salt/reclass/classes/service;
+{{  SHARED.MACRO_CLONE_RECLASS_MODELS() }}
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
