@@ -2,8 +2,8 @@
 {% from 'virtual-mcp-ocata-cicd/underlay.yaml' import HOSTNAME_CTL01 with context %}
 {% from 'virtual-mcp-ocata-cicd/underlay.yaml' import HOSTNAME_CTL02 with context %}
 {% from 'virtual-mcp-ocata-cicd/underlay.yaml' import HOSTNAME_CTL03 with context %}
-{% from 'virtual-mcp-ocata-cicd/salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
-{% from 'virtual-mcp-ocata-cicd/salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
 # Install OpenStack control services
 
