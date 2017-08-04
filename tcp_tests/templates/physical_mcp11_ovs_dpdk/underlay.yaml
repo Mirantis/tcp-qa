@@ -62,6 +62,26 @@ template:
             virtual_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
           #ip_ranges:
           #    dhcp: [+2, -4]
+      private-pool01:
+        net: {{ os_env('PRIVATE_ADDRESS_POOL01', '10.167.4.0/24:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+
+      tenant-pool01:
+        net: {{ os_env('TENANT_ADDRESS_POOL01', '10.167.6.0/24:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+
+      external-pool01:
+        net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '10.167.16.0/24:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
 
     groups:
 

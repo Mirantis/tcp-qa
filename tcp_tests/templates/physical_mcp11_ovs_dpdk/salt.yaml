@@ -2,22 +2,12 @@
 {% from 'physical_mcp11_ovs_dpdk/underlay.yaml' import REPOSITORY_SUITE with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-baremetal-lab') %}
-{% set SALT_MODELS_BRANCH = os_env('SALT_MODELS_BRANCH','master') %}
-{% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
-{% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
+# Other salt model repository parameters see in shared-salt.yaml
 
 # Environment model name stored in https://github.com/Mirantis/tcp-qa/tree/master/tcp_tests/environments
 {% set ENVIRONMENT_MODEL_NAME = os_env('ENVIRONMENT_MODEL_NAME','lab03_ovs_dpdk') %}
 
-# Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12
-{% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
-
-# Address pools for reclass cluster model are taken in the following order:
-# 1. environment variables,
-# 2. config.underlay.address_pools based on fuel-devops address pools
-#    (see generated '.ini' file after underlay is created),
-# 3. defaults
-{% set address_pools = config.underlay.address_pools %}
+{% import 'shared-salt.yaml' as SHARED with context %}
 
 # Install salt to the config node
 
@@ -64,35 +54,7 @@
 
 - description: Clone reclass models with submodules
   cmd: |
-    ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
-    pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
-    {%- if SALT_MODELS_REF_CHANGE != '' %}
-    pushd /srv/salt/reclass && git fetch {{ SALT_MODELS_REPOSITORY }} {{ SALT_MODELS_REF_CHANGE }} && git checkout FETCH_HEAD && popd;
-    {%- endif %}
-    cd /srv/salt/reclass/classes/system;
-    git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
-
-    mkdir -p /srv/salt/reclass/classes/service;
-
-    # Replace firstly to an intermediate value to avoid intersection between
-    # already replaced and replacing networks.
-    # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
-    # 192.168.10 -> 10.16.0 (generated network for admin)
-    # 10.16.0 -> <external network>
-    # So let's replace constant networks to the keywords, and then keywords to the desired networks.
-
-    find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
-
-    # Disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
-    # local storage
-      reclass:
-        storage:
-          data_source:
-            engine: local
-    EOF
-
+{{  SHARED.MACRO_CLONE_RECLASS_MODELS() }}
     # Show the changes to the console
     cd /srv/salt/reclass/; git diff
   node_name: {{ HOSTNAME_CFG01 }}
@@ -393,22 +355,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
-
-#- description: Hack gtw node
-#  cmd: salt 'gtw*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
-#- description: Hack cmp01 node
-#  cmd: salt 'cmp01*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
-#- description: Hack cmp02 node
-#  cmd: salt 'cmp02*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
