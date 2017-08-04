@@ -20,12 +20,12 @@
 #- description: (moved to cloud-init config) Configure repository on the cfg01 node
 #  cmd:
 #    echo "172.18.248.114    jenkins.mcp.mirantis.net  gerrit.mcp.mirantis.net" >> /etc/hosts;
-#    echo "185.135.196.10    apt-mk.mirantis.com" >> /etc/hosts;
+#    echo "176.74.218.105    apt.mirantis.com" >> /etc/hosts;
 #    echo "nameserver 172.18.208.44 >> /etc/resolv.conf;
 #    echo "nameserver 8.8.8.8 >> /etc/resolv.conf;
 #    which wget >/dev/null || (apt-get update; apt-get install -y wget);
-#    echo "deb [arch=amd64] http://apt-mk.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
-#    wget -O - http://apt-mk.mirantis.com/public.gpg | apt-key add -;
+#    echo "deb [arch=amd64] http://apt.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+#    wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
 #    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
 #    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
 #  node_name: {{ HOSTNAME_CFG01 }}
@@ -122,8 +122,8 @@
 - description: Configure reclass
   cmd: |
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
-    FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt-mk.mirantis.com/xenial stable salt};
-    FORMULA_GPG=${FORMULA_GPG:-http://apt-mk.mirantis.com/public.gpg};
+    FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt.mirantis.com/xenial stable salt};
+    FORMULA_GPG=${FORMULA_GPG:-http://apt.mirantis.com/public.gpg};
     which wget > /dev/null || (apt-get update; apt-get install -y wget);
     echo "${FORMULA_REPOSITORY}" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - "${FORMULA_GPG}" | apt-key add -;
