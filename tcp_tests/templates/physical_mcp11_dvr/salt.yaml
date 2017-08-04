@@ -62,10 +62,16 @@
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
-    pushd /srv/salt/reclass && git checkout {{ SALT_MODELS_COMMIT }} && popd;
+    pushd /srv/salt/reclass && \
     {%- if SALT_MODELS_REF_CHANGE != '' %}
-    pushd /srv/salt/reclass && git fetch {{ SALT_MODELS_REPOSITORY }} {{ SALT_MODELS_REF_CHANGE }} && git checkout FETCH_HEAD && popd;
+    {%- for item in SALT_MODELS_REF_CHANGE.split(";") %}
+    git fetch {{ SALT_MODELS_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD && \
+    {%- endfor %}
+    {%- elif SALT_MODELS_COMMIT != 'master' %}
+    git checkout {{ SALT_MODELS_COMMIT }} && \
     {%- endif %}
+    git submodule update --init --recursive && \
+    popd;
     mkdir -p /srv/salt/reclass/classes/service;
 
     # Replace firstly to an intermediate value to avoid intersection between
