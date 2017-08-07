@@ -381,9 +381,9 @@ parameters:
                 slaves: enp2s0f1
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp2s0f1
+                - enp5s0f2
                 require_interfaces:
-                - enp2s0f1
+                - enp5s0f2
               bond0.2416:
                 enabled: true
                 proto: manual
@@ -512,9 +512,9 @@ parameters:
                 slaves: enp2s0f1
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp2s0f1
+                - enp5s0f2
                 require_interfaces:
-                - enp2s0f1
+                - enp5s0f2
               bond0.2416:
                 enabled: true
                 proto: manual
