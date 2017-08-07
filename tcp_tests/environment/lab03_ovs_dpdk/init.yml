@@ -378,12 +378,14 @@ parameters:
                 ovs_bridge: br-floating
                 ovs_type: OVSPort
                 proto: manual
-                slaves: enp2s0f1
+                slaves: eth0 eth3
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp2s0f1
+                - eth0
+                - eth3
                 require_interfaces:
-                - enp2s0f1
+                - eth0
+                - eth3
               bond0.2416:
                 enabled: true
                 proto: manual
@@ -509,12 +511,14 @@ parameters:
                 ovs_bridge: br-floating
                 ovs_type: OVSPort
                 proto: manual
-                slaves: enp2s0f1
+                slaves: enp3s0f1 enp5s0f0
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp2s0f1
+                - enp3s0f1
+                - enp5s0f0
                 require_interfaces:
-                - enp2s0f1
+                - enp3s0f1
+                - enp5s0f0
               bond0.2416:
                 enabled: true
                 proto: manual
