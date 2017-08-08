@@ -65,6 +65,7 @@
    #- echo "Allow SSH access ..."
    #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    - update-initramfs -u
+   - apt-get install linux-generic-hwe-16.04 -y
    - reboot
    ########################################################
 
