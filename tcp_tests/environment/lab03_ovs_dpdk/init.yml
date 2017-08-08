@@ -372,6 +372,20 @@ parameters:
             # in an additional dict inventory[inventory_node_name] loaded from custom_inventory.yaml,
             # or skip the original context from 'cookiecutter' object and iterate only custom inventory.
             linux_network_interfaces:
+              iface1:
+                enabled: true
+                master: bond0
+                name: eth0
+                proto: manual
+                type: slave
+                ipflush_onchange: true
+              iface2:
+                enabled: true
+                master: bond0
+                name: eth3
+                proto: manual
+                type: slave
+                ipflush_onchange: true
               bond0:
                 enabled: true
                 mode: active-backup
@@ -430,6 +444,18 @@ parameters:
                 enabled: true
                 mode: active-backup
                 type: dpdk_ovs_bond
+              eth0:
+                enabled: true
+                type: slave
+                proto: manual
+                name:
+                master:
+              eth3:
+                enabled: true
+                type: slave
+                proto: manual
+                name:
+                master:
 
           classes:
           - environment.lab03_ovs_dpdk.common
@@ -505,6 +531,20 @@ parameters:
             # in an additional dict inventory[inventory_node_name] loaded from custom_inventory.yaml,
             # or skip the original context from 'cookiecutter' object and iterate only custom inventory.
             linux_network_interfaces:
+              iface1:
+                enabled: true
+                master: bond0
+                name: enp3s0f1
+                proto: manual
+                type: slave
+                ipflush_onchange: true
+              iface2:
+                enabled: true
+                master: bond0
+                name: enp5s0f0
+                proto: manual
+                type: slave
+                ipflush_onchange: true
               bond0:
                 enabled: true
                 mode: active-backup
