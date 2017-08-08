@@ -228,7 +228,8 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls salt;
     salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' saltutil.sync_all
+    -C 'I@salt:master' saltutil.sync_all;
+    sleep 10
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 5, delay: 5}
   skip_fail: false
@@ -369,7 +370,8 @@
 
 - description: Configure salt.minion on other nodes
   cmd: salt  --timeout=120 --hard-crash --state-output=mixed --state-verbose=False -C '* and not
-    cfg01*' state.sls salt.minion
+    cfg01*' state.sls salt.minion;
+    sleep 10
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
