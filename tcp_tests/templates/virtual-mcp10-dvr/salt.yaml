@@ -26,59 +26,15 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Installing salt master on cfg01
-  cmd:  apt-get install -y reclass git; apt-get install -y salt-master
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 - description: Install common packages on cfg01
   cmd: apt-get install -y python-pip wget curl tmux byobu iputils-ping traceroute htop tree
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Configure salt-master on cfg01
-  cmd: |
-    cat << 'EOF' >> /etc/salt/master.d/master.conf
-    file_roots:
-      base:
-      - /usr/share/salt-formulas/env
-    pillar_opts: False
-    open_mode: True
-    reclass: &reclass
-      storage_type: yaml_fs
-      inventory_base_uri: /srv/salt/reclass
-    ext_pillar:
-      - reclass: *reclass
-    master_tops:
-      reclass: *reclass
-    EOF
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
-- description: Configure GIT settings and certificates
-  cmd: touch /root/.git_trusted_certs.pem;
-    for server in git.tcpcloud.eu github.com; do
-        openssl s_client -showcerts -connect $server:443 </dev/null
-        | openssl x509 -outform PEM
-        >> /root/.git_trusted_certs.pem;
-    done;
-    HOME=/root git config --global http.sslCAInfo /root/.git_trusted_certs.pem;
-    HOME=/root git config --global user.email "tcp-qa@example.com";
-    HOME=/root git config --global user.name "TCP QA";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
-
-- description: Clone reclass models with submodules
-  cmd: |
-{{  SHARED.MACRO_CLONE_RECLASS_MODELS() }}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
 
 - description: Configure reclass
   cmd: |
