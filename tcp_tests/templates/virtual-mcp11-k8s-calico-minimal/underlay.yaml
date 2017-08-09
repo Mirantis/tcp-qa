@@ -1,5 +1,5 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
-{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'stable') %}
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
 {% import 'virtual-mcp11-k8s-calico-minimal/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'virtual-mcp11-k8s-calico-minimal/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}

@@ -1,8 +1,7 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
-{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'stable') %}
 {% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'standalone') + '.local' %}
 {% set HOSTNAME_IRONIC = os_env('HOSTNAME_IRONIC', 'ironic_master') %}
-{% set IRONIC_ENV_NAME = os_env('IRONIC_ENV_NAME', 'ironic_' + DOMAIN_NAME + '_' + REPOSITORY_SUITE + '_' + os_env('BUILD_NUMBER', '')) %}
+{% set IRONIC_ENV_NAME = os_env('IRONIC_ENV_NAME', 'ironic_' + DOMAIN_NAME + '_' + os_env('BUILD_NUMBER', '')) %}
 
 {% import 'ironic_standalone/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'ironic_standalone/underlay--user-data-ironic.yaml' as CLOUDINIT_USER_DATA_IRONIC with context %}
