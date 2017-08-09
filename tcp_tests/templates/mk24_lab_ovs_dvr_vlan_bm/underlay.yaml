@@ -1,5 +1,5 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
-{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'stable') %}
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
 {% import 'mk24_lab_ovs_dvr_vlan_bm/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'mk24_lab_ovs_dvr_vlan_bm/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}

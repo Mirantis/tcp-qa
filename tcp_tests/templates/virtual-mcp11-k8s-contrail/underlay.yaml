@@ -1,5 +1,5 @@
 # This environment requires 50.5 GB of RAM and 270GB of Storage. Run with caution.
-{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'stable') %}
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
 {% import 'virtual-mcp11-k8s-contrail/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'virtual-mcp11-k8s-contrail/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
