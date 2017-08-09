@@ -223,7 +223,7 @@
 - description: Check salt minion versions on slaves
   cmd: salt '*' test.version
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Check salt top states on nodes
