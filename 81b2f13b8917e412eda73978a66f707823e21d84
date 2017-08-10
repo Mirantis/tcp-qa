@@ -1,0 +1,308 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe16172e_b3e11b92",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "This is not needed here. SALT_FORMULAS_REFS is a template-related environment variable, it\u0027s not going to be used in python code",
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f2817acc_415824b0",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 386,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "It\u0027s not required: https://github.com/openstack/fuel-devops/blob/master/devops/helpers/ssh_client.py#L266",
+      "range": {
+        "startLine": 386,
+        "startChar": 4,
+        "endLine": 386,
+        "endChar": 9
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3f4ba7cc_84745262",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "1. Please add an environment variable SALT_FORMULAS_REPO\u003dos_env(\u0027SALT_FORMULAS_REPO\u0027, \u0027https://gerrit.mcp.mirantis.net\u0027) and use it here and below.\n\n2. It\u0027s better to clone the formulas to /tmp instead of crowding the current (/root) folder:\n\n{% set formula_dir \u003d /tmp/salt-formula-{{ formula_name }} %}\ngit clone \u003cformula\u003e {{ formula_dir }}\npushd {{ formula_dir }}\n...",
+      "range": {
+        "startLine": 391,
+        "startChar": 14,
+        "endLine": 391,
+        "endChar": 45
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "839633a0_ffacd23a",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 391,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "please use \u0026\u0026",
+      "range": {
+        "startLine": 391,
+        "startChar": 110,
+        "endLine": 391,
+        "endChar": 111
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "05354b98_d6dcf233",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "please use \u0026\u0026 , so the whole step could be failed if any of the command in the step failed.\nWe don\u0027t want to skip \u0027false positive\u0027 results when the step passed without making it\u0027s job.",
+      "range": {
+        "startLine": 392,
+        "startChar": 28,
+        "endLine": 392,
+        "endChar": 29
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0bbd7fa7_7e67e39a",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 393,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "please use \u0026\u0026",
+      "range": {
+        "startLine": 393,
+        "startChar": 96,
+        "endLine": 393,
+        "endChar": 97
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cdae68d3_51afcab6",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 394,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "checkout",
+      "range": {
+        "startLine": 394,
+        "startChar": 8,
+        "endLine": 394,
+        "endChar": 16
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "121aa1f7_7d2838d4",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 395,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "please use \u0026\u0026",
+      "range": {
+        "startLine": 395,
+        "startChar": 8,
+        "endLine": 395,
+        "endChar": 9
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13f8f7a5_ccacce68",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 396,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "{{ formula_dir }}\n\n, but do you actually expecting to reach this place if formula haven\u0027t been cloned?",
+      "range": {
+        "startLine": 396,
+        "startChar": 4,
+        "endLine": 396,
+        "endChar": 59
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8b5c88d6_006184f4",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 397,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "please use \u0026\u0026",
+      "range": {
+        "startLine": 397,
+        "startChar": 63,
+        "endLine": 397,
+        "endChar": 64
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "44a6a9be_72bf9737",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 400,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "the same, use \u0026\u0026",
+      "range": {
+        "startLine": 398,
+        "startChar": 0,
+        "endLine": 400,
+        "endChar": 137
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d609a2ad_b4d32219",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "\u0026\u0026",
+      "range": {
+        "startLine": 402,
+        "startChar": 83,
+        "endLine": 402,
+        "endChar": 84
+      },
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6ab9ab7c_23e79c8f",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "1. Forgot about other step arguments:\n  node_name: {{ HOSTNAME_CFG01 }}\n  retry: {count: 1, delay: 10}\n  skip_fail: false\n\n2. forgot about {%- endmacro %}",
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "16093c7d_3d209cd0",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-10T10:17:21Z",
+      "side": 1,
+      "message": "It\u0027s not the right place for such code.\nSee https://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/templates/shared-salt.yaml#L261",
+      "revId": "81b2f13b8917e412eda73978a66f707823e21d84",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
