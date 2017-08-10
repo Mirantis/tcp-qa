@@ -38,6 +38,10 @@ _default_oss_steps = pkg_resources.resource_filename(
     __name__,
     'templates/{0}/oss.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_decapod_steps = pkg_resources.resource_filename(
+    __name__,
+    'templates/{0}/decapod.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 _default_openstack_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/openstack.yaml'.format(
         settings.LAB_CONFIG_NAME))
@@ -141,6 +145,17 @@ oss_deploy_opts = [
 
 oss_opts = [
     ct.Cfg('oss_installed', ct.Boolean(),
+           help="", default=False),
+]
+
+decapod_deploy_opts = [
+    ct.Cfg('decapod_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy Ceph with Decapod",
+           default=_default_decapod_steps),
+]
+
+decapod_opts = [
+    ct.Cfg('decapod_installed', ct.Boolean(),
            help="", default=False),
 ]
 
@@ -277,6 +292,8 @@ _group_opts = [
     ('common_services', common_services_opts),
     ('oss_deploy', oss_deploy_opts),
     ('oss', oss_opts),
+    ('decapod_deploy', decapod_deploy_opts),
+    ('decapod', decapod_opts),
     ('openstack_deploy', openstack_deploy_opts),
     ('openstack', openstack_opts),
     ('opencontrail', opencontrail_opts),
@@ -326,6 +343,15 @@ def register_opts(config):
     config.register_opts(group='oss_deploy',
                          opts=oss_deploy_opts)
 
+    config.register_group(cfg.OptGroup(name='decapod',
+                          title="Decapod options for Ceph", help=""))
+    config.register_opts(group='decapod', opts=decapod_opts)
+
+    config.register_group(cfg.OptGroup(name='decapod_deploy',
+                          title="Decapod deploy config", help=""))
+    config.register_opts(group='decapod_deploy',
+                         opts=decapod_deploy_opts)
+
     config.register_group(cfg.OptGroup(name='openstack',
                           title="Openstack config and credentials", help=""))
     config.register_opts(group='openstack', opts=openstack_opts)
@@ -344,8 +370,8 @@ def register_opts(config):
     config.register_opts(group='stack_light', opts=sl_opts)
     config.register_group(
         cfg.OptGroup(name='sl_deploy',
-                 title="SL deploy config and credentials",
-                 help=""))
+                     title="SL deploy config and credentials",
+                     help=""))
     config.register_opts(group='sl_deploy', opts=sl_deploy_opts)
     config.register_group(cfg.OptGroup(name='virtlet_deploy',
                                        title='Virtlet deploy config', help=""))
