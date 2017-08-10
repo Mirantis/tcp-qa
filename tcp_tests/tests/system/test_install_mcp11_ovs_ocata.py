@@ -57,3 +57,14 @@ class Test_Mcp11_install(object):
         3. Setup compute nodes
         """
         LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
+    def test_mcp11_ocata_dvr_decapod_install(self, underlay, decapod_deployed,
+                                             openstack_deployed, show_step):
+        """Test for deploying an mcp dpdk environment and check it
+        Scenario:
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
+        """
+        LOG.info("*************** DONE **************")
