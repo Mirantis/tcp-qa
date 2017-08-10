@@ -24,6 +24,13 @@
 {% set IPV4_NET_TENANT_PREFIX = '.'.join(IPV4_NET_TENANT.split('.')[0:3]) %}
 {% set IPV4_NET_EXTERNAL_PREFIX = '.'.join(IPV4_NET_EXTERNAL.split('.')[0:3]) %}
 
+{# Format for formula replacement:
+ # space separated string:
+ # export SALT_FORMULAS_REFS='apache:refs/changes/xxxx kubernetes:refs/changes/xxxx' #}
+
+{% set SALT_FORMULAS_REFS = os_env('SALT_FORMULAS_REFS', '') %}
+{% set SALT_FORMULAS_REPO = os_env('SALT_FORMULAS_REPO', 'https://gerrit.mcp.mirantis.net/salt-formulas') %}
+
 
 {%- macro MACRO_INSTALL_SALT_MASTER() %}
 {######################################}
@@ -259,6 +266,32 @@
   skip_fail: false
 
 # TODO(ddmitriev): apply custom patches for formulas here
+{%- if SALT_FORMULAS_REFS != '' %}
+- description: Replace needed formulas to desired version
+  cmd: |
+    set -e;
+    {%- for formula in SALT_FORMULAS_REFS.split(' ') %}
+    {% set formula_name = formula.0 %}
+    {% set formula_ref = formula.1 %}
+    {% set formula_dir = /tmp/salt-formula-{{ formula_name }} %}
+    git clone {{ SALT_FORMULAS_REPO }}/{{ formula_name }} {{ formula_dir }} &&
+    pushd {{ formula_dir }} &&
+    git fetch {{ SALT_FORMULAS_REPO }}/{{ formula_name }} {{ formula_ref }} &&
+    git checkout FETCH_HEAD &&
+    popd &&
+    if [ -d "{{ formula_dir }}" ]; then
+    echo "Going to replace packaged formula {{ formula_name }}" &&
+    rm -rfv /usr/share/salt-formulas/{env,reclass/service}/{{ formula_name }} &&
+    ln -v -s \"{{ formula_dir }}/{{ formula_name }}\" \"/usr/share/salt-formulas/env/{{ formula_name }}\" &&
+    ln -v -s \"{{ formula_dir }}/metadata/service/\" \"/usr/share/salt-formulas/reclass/service/{{ formula_name }}\";
+    else
+    echo "Stopped, directory /root/salt-formula-{{ formula_name }} does not exist!";
+    fi
+    {%- endfor %}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+{%- endif %}
 
 - description: Refresh pillars on salt-master minion
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' saltutil.refresh_pillar
