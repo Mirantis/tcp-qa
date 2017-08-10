@@ -27,6 +27,9 @@ UNDERLAY_NODE_ROLES = enum(
     'salt_master',
     'salt_minion',
     'k8s_virtlet',
+    'decapod_mon',
+    'decapod_osd',
+    'decapod_all',
 )
 
 NETWORK_TYPE = enum(
@@ -45,6 +48,7 @@ SNAPSHOT = enum(
     'virtlet_deployed',
     'virtlet_ceph_deployed',
     'k8s_deployed'
+    'decapod_deployed'
 )
 
 LOG_LEVELS = enum(

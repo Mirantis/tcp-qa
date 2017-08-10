@@ -22,6 +22,7 @@ from tcp_tests.fixtures.common_services_fixtures import *
 from tcp_tests.fixtures.openstack_fixtures import *
 from tcp_tests.fixtures.opencontrail_fixtures import *
 from tcp_tests.fixtures.oss_fixtures import *
+from tcp_tests.fixtures.decapod_fixtures import *
 from tcp_tests.fixtures.stacklight_fixtures import *
 from tcp_tests.fixtures.virtlet_fixtures import *
 from tcp_tests.fixtures.virtlet_ceph_fixtures import *
@@ -52,6 +53,9 @@ __all__ = sorted([  # sort for documentation
     # oss_fixtures
     'oss_actions',
     'oss_deployed',
+    # decapod_fixtures
+    'decapod_actions',
+    'decapod_deployed',
     # component fixtures
     'opencontrail',
     # stacklight_fixtures
