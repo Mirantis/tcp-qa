@@ -122,6 +122,11 @@ salt_opts = [
            help="", default='6969'),
 ]
 
+salt_formulas_opts = [
+    ct.Cfg('salt_formulas_refs', ct.String(),
+           help="Map salt-formulas with its refspecs for replacement")
+]
+
 common_services_deploy_opts = [
     ct.Cfg('common_services_steps_path', ct.String(),
            help="Path to YAML with steps to deploy common services",
@@ -273,6 +278,7 @@ _group_opts = [
     ('underlay', underlay_opts),
     ('salt_deploy', salt_deploy_opts),
     ('salt', salt_opts),
+    ('salt_formulas', salt_formulas_opts),
     ('common_services_deploy', common_services_deploy_opts),
     ('common_services', common_services_opts),
     ('oss_deploy', oss_deploy_opts),
@@ -305,6 +311,10 @@ def register_opts(config):
     config.register_group(cfg.OptGroup(name='salt',
                           title="salt config and credentials", help=""))
     config.register_opts(group='salt', opts=salt_opts)
+
+    config.register_group(cfg.OptGroup(name='salt_formulas',
+                          title="ssalt formulas params", help=""))
+    config.register_opts(group='salt_formulas', opts=salt_formulas_opts)
 
     config.register_group(cfg.OptGroup(name='common_services',
                           title="Common services for Openstack", help=""))
