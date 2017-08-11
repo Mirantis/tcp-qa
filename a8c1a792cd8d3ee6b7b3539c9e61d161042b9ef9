@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a0a375f6_f9c01076",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-11T15:33:08Z",
+      "side": 1,
+      "message": "Please move this \"if SALT_FORMULAS_REFS !\u003d \u0027\u0027\" before the step (to L268).\nNow, if SALT_FORMULAS_REFS is empty, then the \u0027cmd:\u0027 will be empty.",
+      "range": {
+        "startLine": 272,
+        "startChar": 4,
+        "endLine": 272,
+        "endChar": 38
+      },
+      "revId": "a8c1a792cd8d3ee6b7b3539c9e61d161042b9ef9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dc343f3f_f3c91fab",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 291,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-08-11T15:33:08Z",
+      "side": 1,
+      "message": "Please move endif after the step, to L295",
+      "range": {
+        "startLine": 291,
+        "startChar": 4,
+        "endLine": 291,
+        "endChar": 16
+      },
+      "revId": "a8c1a792cd8d3ee6b7b3539c9e61d161042b9ef9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
