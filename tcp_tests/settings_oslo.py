@@ -266,7 +266,7 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_virtlet_enabled', ct.Boolean(),
            help="", default=True),
     ct.Cfg('kubernetes_virtlet_image', ct.String(),
-           help="", default='mirantis/virtlet:latest')
+           help="", default='mirantis/virtlet:v0.7.0')
 ]
 
 k8s_opts = [
