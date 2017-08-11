@@ -28,7 +28,7 @@ aliases:
 {% set HOSTNAME_NTW02 = os_env('HOSTNAME_NTW02', 'ntw02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_NTW03 = os_env('HOSTNAME_NTW03', 'ntw03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_VSRX01 = os_env('HOSTNAME_VSRX01', 'vsrx01' + DOMAIN_NAME) %}
+{% set HOSTNAME_VSRX01 = os_env('HOSTNAME_VSRX01', 'vsrx01.' + DOMAIN_NAME) %}
 
 template:
   devops_settings:
