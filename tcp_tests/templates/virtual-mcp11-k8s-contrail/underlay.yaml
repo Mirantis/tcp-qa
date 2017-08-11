@@ -539,7 +539,7 @@ template:
           - name: {{ HOSTNAME_VSRX01 }}
             role: vsrx
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 1
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 512
               boot:
                 - hd
