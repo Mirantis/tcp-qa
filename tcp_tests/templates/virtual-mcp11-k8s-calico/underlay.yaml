@@ -122,8 +122,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data-cfg01.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_cfg01
 
               interfaces:
                 - label: ens3
@@ -163,8 +163,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: &interfaces
                 - label: ens3
@@ -204,8 +204,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: *interfaces
               network_config: *network_config
@@ -233,8 +233,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: *interfaces
               network_config: *network_config
@@ -259,8 +259,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: &all_interfaces
                 - label: ens3
@@ -297,8 +297,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: *interfaces
               network_config: *network_config
@@ -323,8 +323,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: *interfaces
               network_config: *network_config
@@ -349,8 +349,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: *interfaces
               network_config: *network_config
@@ -375,8 +375,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: *interfaces
               network_config: *network_config
@@ -401,8 +401,8 @@ template:
                   format: raw
                   device: cdrom
                   bus: ide
-                  cloudinit_meta_data: !include underlay--meta-data.yaml
-                  cloudinit_user_data: !include underlay--user-data1604.yaml
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: *interfaces
               network_config: *network_config
