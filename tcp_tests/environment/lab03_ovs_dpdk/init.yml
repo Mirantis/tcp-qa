@@ -372,34 +372,35 @@ parameters:
             # in an additional dict inventory[inventory_node_name] loaded from custom_inventory.yaml,
             # or skip the original context from 'cookiecutter' object and iterate only custom inventory.
             linux_network_interfaces:
-              iface1:
+              eth1:
                 enabled: true
                 master: bond0
                 name: eth0
                 proto: manual
                 type: slave
                 ipflush_onchange: true
-              iface2:
-                enabled: true
-                master: bond0
-                name: eth3
-                proto: manual
-                type: slave
-                ipflush_onchange: true
+#              eth2:
+#                enabled: true
+#                master: bond0
+#                name: eth3
+#                proto: manual
+#                type: slave
+#                ipflush_onchange: true
               bond0:
                 enabled: true
                 mode: active-backup
                 ovs_bridge: br-floating
                 ovs_type: OVSPort
                 proto: manual
-                slaves: eth0 eth3
+#                slaves: eth0 eth3
+                slaves: eth0
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
                 - eth0
-                - eth3
+#                - eth3
                 require_interfaces:
                 - eth0
-                - eth3
+#                - eth3
               bond0.2416:
                 enabled: true
                 proto: manual
