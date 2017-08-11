@@ -19,8 +19,7 @@
   skip_fail: false
 
 - description: Replace kube-api VIP with IP of one controller
-  cmd: find /srv/salt/reclass/ -type f -exec sed -i
-    's/ipf_addresses: \${_param:kubernetes_control_address}/ipf_addresses: \${_param:kubernetes_control_node01_address}/g' {} +
+  cmd: find /srv/salt/reclass/ -type f -exec sed -i 's/ipf_addresses:\ \${_param:kubernetes_control_address}/ipf_addresses:\ \${_param:kubernetes_control_node01_address}/g' {} +
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
