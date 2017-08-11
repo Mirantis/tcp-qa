@@ -435,7 +435,7 @@ template:
           - name: {{ HOSTNAME_NTW01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 8192
               boot:
                 - hd
@@ -461,7 +461,7 @@ template:
           - name: {{ HOSTNAME_NTW02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 8192
               boot:
                 - hd
@@ -487,7 +487,7 @@ template:
           - name: {{ HOSTNAME_NTW03 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 8192
               boot:
                 - hd
@@ -539,7 +539,7 @@ template:
           - name: {{ HOSTNAME_VSRX01 }}
             role: vsrx
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 512
               boot:
                 - hd
