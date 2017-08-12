@@ -1,0 +1,158 @@
+classes:
+- environment.lab03_ovs_dpdk.physical_nodes
+- environment.lab03_ovs_dpdk.virtual_nodes
+parameters:
+  # Simulate escape sequence to not interpolate some values,
+  # so these values may get into the node yamls as ${_param:...}
+  _param:
+    _esc: $
+
+  reclass:
+    storage:
+      node:
+        openstack_control_node01:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_control_node02:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_control_node03:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+
+        openstack_database_node01:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_database_node02:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_database_node03:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+
+        openstack_message_queue_node01:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_message_queue_node02:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_message_queue_node03:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+
+        openstack_telemetry_node01:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_telemetry_node02:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_telemetry_node03:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+
+        openstack_proxy_node01:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        openstack_proxy_node02:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+
+
+        stacklight_monitor_node01:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        stacklight_monitor_node02:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        stacklight_monitor_node03:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+
+        stacklight_telemetry_node01:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        stacklight_telemetry_node02:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        stacklight_telemetry_node03:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+
+        stacklight_log_node01:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        stacklight_log_node02:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
+        stacklight_log_node03:
+          params:
+            linux_network_interfaces:
+              ens3: ${_param:_esc}{_param:linux_single_interface}
+          classes:
+          - environment.lab03_ovs_dpdk.common
