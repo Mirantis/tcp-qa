@@ -138,7 +138,7 @@
   skip_fail: false
 
 - description: "Workaround from the pipeline: sync all salt objects"
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
