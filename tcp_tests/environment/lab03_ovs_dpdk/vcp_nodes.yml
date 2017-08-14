@@ -1,6 +1,3 @@
-classes:
-- environment.lab03_ovs_dpdk.physical_nodes
-- environment.lab03_ovs_dpdk.virtual_nodes
 parameters:
   # Simulate escape sequence to not interpolate some values,
   # so these values may get into the node yamls as ${_param:...}
