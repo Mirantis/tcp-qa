@@ -43,12 +43,18 @@ export LAB_CONFIG_NAME=virtual-mcp11-ovs  # OVS-NO-DVR with neutron packages
 export LAB_CONFIG_NAME=virtual-mcp11-dpdk  # OVS-DPDK with neutron packages
 ```
 
+Set packages repository
+-----------------------
+Note: The recommended repo is `testing`. Possible choices: stable, testing, nightly. Nightly contains latest packages.
+```
+export REPOSITORY_SUITE=testing
+```
+
 Run deploy test
 ---------------
 ```
 export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
 export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
-export REPOSITORY_SUITE=testing
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_default
 ```
@@ -58,7 +64,6 @@ Run deploy test and rally verify (tempest)
 ```
 export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
 export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
-export REPOSITORY_SUITE=testing
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_tcp_install_run_rally
 ```
@@ -68,10 +73,10 @@ Run OSS deploy
 ```
 export IMAGE_PATH1604=./xenial-server-cloudimg-amd64.qcow2
 export SHUTDOWN_ENV_ON_TEARDOWN=false  # Optional
-export REPOSITORY_SUITE=testing
 
 LC_ALL=en_US.UTF-8  py.test -vvv -s -k test_oss_install_default
 ```
+
 
 Run deploy test for mk22-qa-lab01 (outdated)
 --------------------------------------------
