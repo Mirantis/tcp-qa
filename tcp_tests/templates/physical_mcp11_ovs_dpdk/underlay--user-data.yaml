@@ -69,6 +69,15 @@
    ########################################################
 
   write_files:
+   - path: /etc/network/interfaces
+     content: |
+          # The loopback network interface
+          auto lo
+          iface lo inet loopback
+
+          auto {interface_name}
+          iface {interface_name} inet dhcp
+
    - path: /etc/udev/rules.d/70-persistent-net.rules
      owner: root:root
      permissions: '0644'
