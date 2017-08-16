@@ -62,10 +62,14 @@
    # install common packages
    - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
 
+   # Install hwe kernel
+   - eatmydata apt-get install -y linux-generic-hwe-16.04
+
    ########################################################
    # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   #- echo "Allow SSH access ..."
+   #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   - reboot
    ########################################################
 
   write_files:
