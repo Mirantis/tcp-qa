@@ -60,10 +60,9 @@ parameters:
                 - enp3s0f0
               eth1:
                 enabled: true
-                master: bond0
                 name: enp3s0f1
                 proto: manual
-                type: slave
+                type: eth
                 ipflush_onchange: true
               eth2:
                 enabled: true
@@ -128,10 +127,9 @@ parameters:
                 - eno1
               eth1:
                 enabled: true
-                master: bond0
                 name: eno2
                 proto: manual
-                type: slave
+                type: eth
                 ipflush_onchange: true
               eth2:
                 enabled: true
@@ -196,10 +194,9 @@ parameters:
                 - eno1
               eth1:
                 enabled: true
-                master: bond0
                 name: eno2
                 proto: manual
-                type: slave
+                type: eth
                 ipflush_onchange: true
               eth2:
                 enabled: true
