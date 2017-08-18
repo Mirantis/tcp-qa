@@ -1,0 +1,21 @@
+parameters:
+  reclass:
+    storage:
+      node:
+      {%- for inventory_node_name, node in nodes.items()|sort %}
+        {{ node['reclass_storage_name'] }}:
+        {%- set params = {} %}
+          classes:
+          {#- Default role linux_network_interface is added to each node #}
+          {%- for role in node.get('roles', []) + ['linux_network_interface'] %}
+            {%- include ("{# roles #}/" + role) %}
+          {%- endfor %}
+
+        {%- if params %}
+          params:
+          {%- for param_name, param in params.items() %}
+            {{ param_name }}: {{ param }}
+          {%- endfor %}
+        {%- endif %}
+
+      {%- endfor %}
