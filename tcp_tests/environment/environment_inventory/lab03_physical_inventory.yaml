@@ -1,0 +1,95 @@
+nodes:
+    # Physical nodes
+
+    kvm01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: infra_kvm_node01
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: management_single
+        enp3s0f1:
+          role: control_bond0
+
+    kvm02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: infra_kvm_node02
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        eno1:
+          role: management_single
+        eno2:
+          role: control_bond0
+
+    kvm03.mcp11-ovs-dpdk.local:
+      reclass_storage_name: infra_kvm_node03
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        eno1:
+          role: management_single
+        eno2:
+          role: control_bond0
+
+    cmp001.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_compute_node01
+      roles:
+      - openstack_compute
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: management_single
+        enp3s0f1:
+          role: control_bond0
+        enp5s0f0:
+          role: control_bond0
+        enp5s0f1:
+          role: private_dpdk_ovs
+          dpdk_pci: '0000:05:00.1'
+        enp5s0f2:
+          role: private_dpdk_ovs
+          dpdk_pci: '0000:05:00.2'
+
+    cmp002.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_compute_node02
+      roles:
+      - openstack_compute
+      - linux_system_codename_xenial
+      interfaces:
+        eno1:
+          role: management_single
+        eth0:
+          role: control_bond0
+        eth3:
+          role: control_bond0
+        eth2:
+          role: private_dpdk_ovs
+          dpdk_pci: '0000:05:00.1'
+        eth4:
+          role: private_dpdk_ovs
+          dpdk_pci: '0000:0b:00.0'
+
+    gtw01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_gateway_node01
+      roles:
+      - openstack_gateway
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f0:
+          role: management_single
+        enp2s0f1:
+          role: control_floating_bond0_ovs
+
+    gtw02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_gateway_node02
+      roles:
+      - openstack_gateway
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f0:
+          role: management_single
+        enp2s0f1:
+          role: control_floating_bond0_ovs
