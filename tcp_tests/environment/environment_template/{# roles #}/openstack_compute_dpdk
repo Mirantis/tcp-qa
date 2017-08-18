@@ -1,0 +1,9 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+          - cluster.${_param:cluster_name}.openstack.compute.dpdk
