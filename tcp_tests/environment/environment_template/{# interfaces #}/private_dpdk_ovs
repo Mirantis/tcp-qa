@@ -1,0 +1,22 @@
+
+              # {{ interfaces_role }}
+              {%- for interface_name, interface in interfaces.items() %}
+              {{ interface_name }}:
+                bond: dpdkbond1
+                driver: igb_uio
+                enabled: true
+                n_rxq: 2
+                name: {{ interface_name }}
+                pci: '{{ interface['dpdk_pci'] }}'
+                type: dpdk_ovs_port
+              {%- endfor %}
+              dpdkbond1:
+                bridge: br-prv
+                enabled: true
+                mode: active-backup
+                type: dpdk_ovs_bond
+              br-prv:
+                address: ${_param:_esc}{_param:tenant_address}
+                enabled: true
+                netmask: 255.255.255.0
+                type: dpdk_ovs_bridge

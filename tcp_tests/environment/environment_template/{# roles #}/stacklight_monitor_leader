@@ -1,0 +1,11 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+          - cluster.${_param:cluster_name}.stacklight.monitor
+          - system.grafana.client.single
+          - system.kibana.client.single

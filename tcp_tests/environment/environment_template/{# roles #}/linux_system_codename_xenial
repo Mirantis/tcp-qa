@@ -1,0 +1,9 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+          - environment.{{ cookiecutter._env_name }}.linux_system_codename_xenial
