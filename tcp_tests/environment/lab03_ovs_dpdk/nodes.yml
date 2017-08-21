@@ -20,12 +20,12 @@ parameters:
                 enabled: true
                 mode: active-backup
                 proto: manual
-                slaves: enp3s0f1
+                slaves: enp2s0f1
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp3s0f1
+                - enp2s0f1
                 require_interfaces:
-                - enp3s0f1
+                - enp2s0f1
               bond0.2416:
                 enabled: true
                 proto: manual
@@ -55,18 +55,18 @@ parameters:
                 proto: static
                 type: bridge
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp3s0f0
+                - enp2s0f0
                 require_interfaces:
-                - enp3s0f0
+                - enp2s0f0
               eth1:
                 enabled: true
-                name: enp3s0f1
+                name: enp2s0f1
                 proto: manual
                 type: eth
                 ipflush_onchange: true
               eth2:
                 enabled: true
-                name: enp3s0f0
+                name: enp2s0f0
                 proto: manual
                 type: eth
                 ipflush_onchange: true
@@ -87,12 +87,12 @@ parameters:
                 enabled: true
                 mode: active-backup
                 proto: manual
-                slaves: eno2
+                slaves: enp2s0f1
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - eno2
+                - enp2s0f1
                 require_interfaces:
-                - eno2
+                - enp2s0f1
               bond0.2416:
                 enabled: true
                 proto: manual
@@ -122,18 +122,18 @@ parameters:
                 proto: static
                 type: bridge
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - eno1
+                - enp2s0f0
                 require_interfaces:
-                - eno1
+                - enp2s0f0
               eth1:
                 enabled: true
-                name: eno2
+                name: enp2s0f1
                 proto: manual
                 type: eth
                 ipflush_onchange: true
               eth2:
                 enabled: true
-                name: eno1
+                name: enp2s0f0
                 proto: manual
                 type: eth
                 ipflush_onchange: true
@@ -394,12 +394,12 @@ parameters:
                 ovs_bridge: br-floating
                 ovs_type: OVSPort
                 proto: manual
-                slaves: enp2s0f1
+                slaves: enp3s0f1
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp2s0f1
+                - enp3s0f1
                 require_interfaces:
-                - enp2s0f1
+                - enp3s0f1
               br-floating:
                 enabled: true
                 type: ovs_bridge
@@ -423,7 +423,7 @@ parameters:
               primary_first_nic:
                 enabled: true
                 master: bond0
-                name: enp2s0f1
+                name: enp3s0f1
                 proto: manual
                 type: slave
                 ipflush_onchange: true
@@ -452,12 +452,12 @@ parameters:
                 ovs_bridge: br-floating
                 ovs_type: OVSPort
                 proto: manual
-                slaves: enp2s0f1
+                slaves: eno2
                 type: bond
                 use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp2s0f1
+                - eno2
                 require_interfaces:
-                - enp2s0f1
+                - eno2
               br-floating:
                 enabled: true
                 type: ovs_bridge
@@ -481,65 +481,7 @@ parameters:
               primary_first_nic:
                 enabled: true
                 master: bond0
-                name: enp2s0f1
-                proto: manual
-                type: slave
-                ipflush_onchange: true
-              prv-to-floating:
-                bridge: br-prv
-                enabled: true
-                peer: floating-to-prv
-                port_type: patch
-                type: ovs_port
-
-          classes:
-          - environment.lab03_ovs_dpdk.common
-
-        openstack_gateway_node03:
-          params:
-            # Use interfaces configuration from the context file,
-            # or generate your own 'linux.network.interface' object using
-            # additional inventory.
-            # For example, you can take the 'inventory_node_name' and find it's config
-            # in an additional dict inventory[inventory_node_name] loaded from custom_inventory.yaml,
-            # or skip the original context from 'cookiecutter' object and iterate only custom inventory.
-            linux_network_interfaces:
-              bond0:
-                enabled: true
-                mode: active-backup
-                ovs_bridge: br-floating
-                ovs_type: OVSPort
-                proto: manual
-                slaves: enp2s0f1
-                type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp2s0f1
-                require_interfaces:
-                - enp2s0f1
-              br-floating:
-                enabled: true
-                type: ovs_bridge
-              br-prv:
-                enabled: true
-                type: ovs_bridge
-              br_ctl:
-                address: ${_param:_esc}{_param:single_address}
-                bridge: br-floating
-                enabled: true
-                netmask: 255.255.255.0
-                ovs_options: tag=2416
-                proto: static
-                type: ovs_port
-              floating-to-prv:
-                bridge: br-floating
-                enabled: true
-                peer: prv-to-floating
-                port_type: patch
-                type: ovs_port
-              primary_first_nic:
-                enabled: true
-                master: bond0
-                name: enp2s0f1
+                name: eno2
                 proto: manual
                 type: slave
                 ipflush_onchange: true
