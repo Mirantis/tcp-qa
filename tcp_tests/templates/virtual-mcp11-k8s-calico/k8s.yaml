@@ -50,6 +50,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+- description: Restart kubelet
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:pool' service.restart kubelet
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Register addons
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
