@@ -51,8 +51,8 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: '*Workaround 2/2* of the bug PROD-9576 to get bond0-connectivity on cfg01 *without* reboot'
-  cmd: cat /etc/network/interfaces | grep bond-slaves | awk '{print $2}' | xargs -I {} ifenslave bond0 {}
+- description: '*Workaround: Load bonding module before call state.linux'
+  cmd: salt -C "I@linux:network:interface:*:type:bond" cmd.run 'modprobe bonding'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
