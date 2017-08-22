@@ -83,11 +83,11 @@
      permissions: '0644'
      content: |
        # kvm01
-       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_KVM01') }}", NAME="enp3s0f0"
-       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_KVM01') }}", NAME="enp3s0f1"
+       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_KVM01') }}", NAME="enp2s0f0"
+       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_KVM01') }}", NAME="enp2s0f1"
        # kvm02
-       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_KVM02') }}", NAME="eno1"
-       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_KVM02') }}", NAME="eno2"
+       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_KVM02') }}", NAME="enp2s0f0"
+       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_KVM02') }}", NAME="enp2s0f1"
        # kvm03
        SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_KVM03') }}", NAME="eno1"
        SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_KVM03') }}", NAME="eno2"
@@ -104,8 +104,8 @@
        SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH3_MAC_ADDRESS_CMP002') }}", NAME="eth2"
        SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH4_MAC_ADDRESS_CMP002') }}", NAME="eth4"
        # gtw01
-       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_GTW01') }}", NAME="enp2s0f0"
-       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_GTW01') }}", NAME="enp2s0f1"
+       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_GTW01') }}", NAME="enp3s0f0"
+       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_GTW01') }}", NAME="enp3s0f1"
        # gtw02
-       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_GTW02') }}", NAME="enp2s0f0"
-       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_GTW02') }}", NAME="enp2s0f1"
+       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH0_MAC_ADDRESS_GTW02') }}", NAME="eno1"
+       SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{{ '{{address}}' }}=="{{ os_env('ETH1_MAC_ADDRESS_GTW02') }}", NAME="eno2"
