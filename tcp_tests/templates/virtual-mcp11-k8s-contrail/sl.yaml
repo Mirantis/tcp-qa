@@ -31,6 +31,12 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description:  Rerun swarm on slaves to proper token population
+  cmd: salt -C 'I@docker:swarm:role:master' state.sls docker.swarm
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description:  Configure slave nodes
   cmd: salt -C 'I@docker:swarm:role:manager' state.sls docker.swarm -b 1
   node_name: {{ HOSTNAME_CFG01 }}
@@ -46,6 +52,12 @@
 # Install slv2 infra
 - description: Install telegraf
   cmd: salt -C 'I@telegraf:agentor or I@telegraf:remote_agent' state.sls telegraf
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+- description: Configure Prometheus exporters
+  cmd: salt -C 'I@prometheus:exporters' state.sls prometheus
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
