@@ -5,7 +5,9 @@
 {# Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12 #}
 {% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
 {# Pin to a specified commit in salt-models/reclass-system #}
+{% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/reclass-system') %}
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
+{% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
@@ -93,6 +95,12 @@
     {%- if SALT_MODELS_SYSTEM_COMMIT != '' %}
     pushd classes/system/ && \
     git checkout {{ SALT_MODELS_SYSTEM_COMMIT }} && \
+    popd && \
+    {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' -%}
+    pushd classes/system/ && \
+    {%- for item in SALT_MODELS_SYSTEM_REF_CHANGE.split(" ") %}
+    git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD && \
+    {%- endfor %}
     popd && \
     {%- else %}
     git submodule update --init --recursive && \
