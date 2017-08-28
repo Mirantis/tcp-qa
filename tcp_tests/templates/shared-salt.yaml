@@ -83,7 +83,7 @@
 - description: Clone reclass models with submodules
   cmd: |
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+    export GIT_SSL_NO_VERIFY=true; git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
     pushd /srv/salt/reclass && \
     {%- if SALT_MODELS_REF_CHANGE != '' %}
     {%- for item in SALT_MODELS_REF_CHANGE.split(" ") %}
