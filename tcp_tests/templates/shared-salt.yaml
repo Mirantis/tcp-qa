@@ -63,10 +63,12 @@
   skip_fail: false
 
 - description: Configure GIT settings and certificates
-  cmd: touch /root/.git_trusted_certs.pem;
-    for server in github.com; do
-        openssl s_client -showcerts -connect $server:443 </dev/null
-        | openssl x509 -outform PEM
+  cmd: |
+    set -e;
+    touch /root/.git_trusted_certs.pem;
+    for server in github.com; do \
+        openssl s_client -showcerts -connect $server:443 </dev/null \
+        | openssl x509 -outform PEM \
         >> /root/.git_trusted_certs.pem;
     done;
     HOME=/root git config --global http.sslCAInfo /root/.git_trusted_certs.pem;
@@ -82,6 +84,7 @@
 {############################################################}
 - description: Clone reclass models with submodules
   cmd: |
+    set -e;
     ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     export GIT_SSL_NO_VERIFY=true; git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
     pushd /srv/salt/reclass && \
@@ -152,6 +155,7 @@
 {#######################################################}
 - description: Configure reclass
   cmd: |
+    set -e;
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
     FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt};
     FORMULA_GPG=${FORMULA_GPG:-http://apt.mirantis.com/public.gpg};
@@ -222,9 +226,7 @@
     master: {{ config.salt.salt_master_host }}
     EOF
     eatmydata apt-get install -y salt-minion;
-    echo "Check for system info and metadata availability ...";
-    salt-call --no-color grains.items;
-    salt-call --no-color pillar.items;
+    service salt-minion restart;  # For case if salt-minion was already installed
   node_name: {{ ssh['node_name'] }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -252,10 +254,10 @@
 
 - description: Run 'openssh' formula on cfg01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls openssh;
+    -C 'I@salt:master' state.sls openssh &&
     salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
-    yes/' /etc/ssh/sshd_config && service ssh reload";
+    yes/' /etc/ssh/sshd_config && service ssh reload"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -273,7 +275,6 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-# TODO(ddmitriev): apply custom patches for formulas here
 {%- if SALT_FORMULAS_REFS != '' %}
 - description: Replace needed formulas to desired version
   cmd: |
@@ -307,7 +308,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Show  reclass-salt --top for all generated nodes
+- description: Show reclass-salt --top for salt-master node
   cmd: reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
@@ -355,8 +356,8 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Show  reclass-salt --top for all generated nodes
-  cmd: reclass-salt --top
+- description: Show reclass-salt --top for all generated nodes
+  cmd: salt-call reclass.validate_nodes_params && reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -379,7 +380,7 @@
   skip_fail: false
 
 - description: Configure openssh on all nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh;
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh &&
     salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
     yes/' /etc/ssh/sshd_config && service ssh reload"
