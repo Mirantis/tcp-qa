@@ -36,6 +36,65 @@ class Test_Mcp11_install(object):
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
+    def test_mcp11_ocata_ovs_sl_install(self, underlay, config,
+                                        openstack_deployed,
+                                        sl_deployed, sl_actions, show_step):
+        """Test for deploying an mcp environment and check it
+        Scenario:
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
+        4. Get monitoring nodes
+        5. Check that docker services are running
+        6. Check current targets are UP
+        7. Check grafana dashboards
+
+        """
+        expected_service_list = ['monitoring_remote_storage_adapter',
+                                 'monitoring_server',
+                                 'monitoring_remote_agent',
+                                 'dashboard_grafana',
+                                 'monitoring_alertmanager',
+                                 'monitoring_remote_collector',
+                                 'monitoring_pushgateway']
+        # STEP #4
+        mon_nodes = sl_actions.get_monitoring_nodes()
+        LOG.debug('Mon nodes list {0}'.format(mon_nodes))
+        for node in mon_nodes:
+            services_status = sl_actions.get_service_info_from_node(node)
+            assert len(services_status) == len(expected_service_list), \
+                'Some services are missed on node {0}. ' \
+                'Current service list {1}'.format(node, services_status)
+            for service in expected_service_list:
+                assert service in services_status, \
+                    'Missing service {0} in {1}'.format(service, services_status)
+                assert '0' not in services_status.get(service), \
+                    'Service {0} failed to start'.format(service)
+        prometheus_client = sl_deployed.api
+        cluster_hosts = []
+        for node in underlay.node_names():
+            node_host = underlay.host_by_node_name(node_name=node)['host']
+            cluster_hosts.append(node_host)
+        try:
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'.format(current_targets))
+        except:
+            LOG.info('Restarting keepalived service on mon nodes...')
+            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
+                                   args='systemctl restart keepalived')
+            LOG.warning(
+                'Ip states after force restart {0}'.format(
+                    sl_actions._salt.local(tgt='mon*',
+                                           fun='cmd.run', args='ip a')))
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'.format(current_targets))
+        # Assert that targets are up
+        for entry in current_targets:
+            assert 'up' in entry['health'], \
+                'Next target is down {}'.format(entry)
+        LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
     def test_mcp11_ocata_dvr_install(self, underlay, openstack_deployed,
                                           show_step):
         """Test for deploying an mcp environment and check it
@@ -48,15 +107,62 @@ class Test_Mcp11_install(object):
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
-    def test_mcp11_ocata_dvr_sl_install(self, underlay, openstack_deployed,
+    def test_mcp11_ocata_dvr_sl_install(self, underlay, config,
+                                        openstack_deployed,
                                         sl_deployed, sl_actions, show_step):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
         2. Setup controller nodes
         3. Setup compute nodes
+        4. Get monitoring nodes
+        5. Check that docker services are running
+        6. Check current targets are UP
+        7. Check grafana dashboards
 
         """
+        expected_service_list = ['monitoring_remote_storage_adapter',
+                                 'monitoring_server',
+                                 'monitoring_remote_agent',
+                                 'dashboard_grafana',
+                                 'monitoring_alertmanager',
+                                 'monitoring_remote_collector',
+                                 'monitoring_pushgateway']
+        # STEP #4
+        mon_nodes = sl_actions.get_monitoring_nodes()
+        LOG.debug('Mon nodes list {0}'.format(mon_nodes))
+        for node in mon_nodes:
+            services_status = sl_actions.get_service_info_from_node(node)
+            assert len(services_status) == len(expected_service_list), \
+                'Some services are missed on node {0}. ' \
+                'Current service list {1}'.format(node, services_status)
+            for service in expected_service_list:
+                assert service in services_status,\
+                    'Missing service {0} in {1}'.format(service, services_status)
+                assert '0' not in services_status.get(service),\
+                    'Service {0} failed to start'.format(service)
+        prometheus_client = sl_deployed.api
+        cluster_hosts = []
+        for node in underlay.node_names():
+            node_host = underlay.host_by_node_name(node_name=node)['host']
+            cluster_hosts.append(node_host)
+        try:
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'.format(current_targets))
+        except:
+            LOG.info('Restarting keepalived service on mon nodes...')
+            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
+                                   args='systemctl restart keepalived')
+            LOG.warning(
+                'Ip states after force restart {0}'.format(
+                    sl_actions._salt.local(tgt='mon*',
+                                           fun='cmd.run', args='ip a')))
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'.format(current_targets))
+        # Assert that targets are up
+        for entry in current_targets:
+            assert 'up' in entry['health'], \
+                'Next target is down {}'.format(entry)
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
