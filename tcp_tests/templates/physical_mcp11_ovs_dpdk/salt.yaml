@@ -41,21 +41,7 @@
 # Spin up Control Plane VMs on KVM nodes
 ########################################
 
-- description: '*Workaround 1/2* of the bug PROD-9576 to get bond0-connectivity *without* rebooting nodes'
-  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False cmd.run
-    "mkdir -p /tmp/PROD-9576; cd /tmp/PROD-9576; git clone https://gerrit.mcp.mirantis.net/salt-formulas/linux; cd linux;
-    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/linux refs/changes/54/2354/12 && git checkout FETCH_HEAD;
-    cp -f linux/network/interface.sls /srv/salt/env/prd/linux/network/;
-    cp -f linux/map.jinja /srv/salt/env/prd/linux/;"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: '*Workaround: Load bonding module before call state.linux'
-  cmd: salt -C "I@linux:network:interface:*:type:bond" cmd.run 'modprobe bonding'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
 
 - description: Refresh pillars for present baremetal nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
@@ -66,14 +52,6 @@
 - description: '*Workaround* enable hugepages on cmp* nodes for OVS setup in linux formula'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
       'sudo apt-get install -y hugepages; sudo echo 2048 > /proc/sys/vm/nr_hugepages'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: '*Workaround* install bridge-utils before running linux formula'
-  # The formula removes default route and then tries to install the package, fails.
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False  -C '* and not
-    cfg01*' cmd.run 'sudo apt-get install -y bridge-utils'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false

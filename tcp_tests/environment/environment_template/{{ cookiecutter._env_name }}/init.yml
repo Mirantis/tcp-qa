@@ -1,4 +1,6 @@
 parameters:
+  _param:
+    _esc: $
   reclass:
     storage:
       node:
