@@ -30,6 +30,8 @@ _default_conf = pkg_resources.resource_filename(
 
 _default_salt_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/salt.yaml'.format(settings.LAB_CONFIG_NAME))
+_default_environment_template_dir = pkg_resources.resource_filename(
+    __name__, 'environment/')
 _default_common_services_steps = pkg_resources.resource_filename(
     __name__,
     'templates/{0}/common-services.yaml'.format(
@@ -118,6 +120,9 @@ salt_deploy_opts = [
     ct.Cfg('salt_steps_path', ct.String(),
            help="Path to YAML with steps to deploy salt",
            default=_default_salt_steps),
+    ct.Cfg('environment_template_dir', ct.String(),
+           help="Path to directory with Environment template and inventory",
+           default=_default_environment_template_dir),
 ]
 salt_opts = [
     ct.Cfg('salt_master_host', ct.IPAddress(),
