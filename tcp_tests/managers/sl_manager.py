@@ -14,6 +14,9 @@
 
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 from tcp_tests.managers.clients.prometheus import prometheus_client
+from tcp_tests import logger
+
+LOG = logger.logger
 
 
 class SLManager(ExecuteCommandsMixin):
@@ -57,3 +60,20 @@ class SLManager(ExecuteCommandsMixin):
                 port=self.__config.stack_light.sl_prometheus_port,
                 proto=self.__config.stack_light.sl_prometheus_proto)
         return self._p_client
+
+    def get_monitoring_nodes(self):
+        return [node_name for node_name
+                in self.__underlay.node_names() if 'mon' in node_name]
+
+    def get_service_info_from_node(self, node_name):
+        service_stat_dict = {}
+        with self.__underlay.remote(node_name=node_name) as node_remote:
+            result = node_remote.execute(
+                "docker service ls --format '{{.Name}}:{{.Replicas}}'")
+            LOG.debug("Service ls result {0} from node {1}".format(
+                result['stdout'][0], node_name))
+            formatted_res = result['stdout'][0]
+            for line in formatted_res:
+                tmp = line.split(':')
+                service_stat_dict.update({tmp[0]: tmp[1]})
+        return service_stat_dict
