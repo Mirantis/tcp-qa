@@ -1,0 +1,220 @@
+nodes:
+    ctl01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_control_node01
+      roles:
+      - openstack_control_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    ctl02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_control_node02
+      roles:
+      - openstack_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    ctl03.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_control_node03
+      roles:
+      - openstack_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    dbs01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_database_node01
+      roles:
+      - openstack_database_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    dbs02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_database_node01
+      roles:
+      - openstack_database
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    dbs03.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_database_node01
+      roles:
+      - openstack_database
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    msg01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_message_queue_node01
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    msg02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_message_queue_node02
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    msg03.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_message_queue_node03
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    mdb01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_telemetry_node01
+      roles:
+      - openstack_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    mdb02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_telemetry_node02
+      roles:
+      - openstack_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    mdb03.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_telemetry_node03
+      roles:
+      - openstack_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    prx01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_proxy_node01
+      roles:
+      - openstack_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    prx02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_proxy_node02
+      roles:
+      - openstack_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    mtr01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: stacklight_telemetry_node01
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    mtr02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: stacklight_telemetry_node02
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    mtr03.mcp11-ovs-dpdk.local:
+      reclass_storage_name: stacklight_telemetry_node03
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    log01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: stacklight_log_node01
+      roles:
+      - stacklight_log_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    log02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: stacklight_log_node02
+      roles:
+      - stacklight_log
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    log03.mcp11-ovs-dpdk.local:
+      reclass_storage_name: stacklight_log_node03
+      roles:
+      - stacklight_log
+      - linux_system_codename_xenial
+      interfaces:
+        ens4:
+          role: control_vcp_single
+
+    # Generator-based computes. For compatibility only
+    cmp000.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_compute_rack01
+      roles:
+      - openstack_compute
+      - linux_system_codename_xenial
+      interfaces:
+        #ens3:
+        #  role: management_single
+        ens4:
+          role: control_bond0
+        #TBD: ens5: tenant
+
+    gtw01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_gateway_node01
+      roles:
+      - openstack_gateway
+      - linux_system_codename_xenial
+      interfaces:
+        #ens3:
+        #  role: management_single
+        ens4:
+          role: control_bond0
+        #TBD: ens5: tenant
+        #TBD: ens6: external
+
+    gtw02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: openstack_gateway_node02
+      roles:
+      - openstack_gateway
+      - linux_system_codename_xenial
+      interfaces:
+        #ens3:
+        #  role: management_single
+        ens4:
+          role: control_bond0
+        #TBD: ens5: tenant
+        #TBD: ens6: external
+

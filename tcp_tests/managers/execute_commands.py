@@ -18,30 +18,6 @@ class ExecuteCommandsMixin(object):
         self.__underlay = underlay
         super(ExecuteCommandsMixin, self).__init__()
 
-    def ensure_running_service(self, service_name, host, check_cmd,
-                               state_running='start/running'):
-        """Check if the service_name running or try to restart it
-
-        :param node_name: node on which the service will be checked
-        :param check_cmd: shell command to ensure that the service is running
-        :param state_running: string for check the service state
-        """
-        cmd = "service {0} status | grep -q '{1}'".format(
-            service_name, state_running)
-        with self.__underlay.remote(host=host) as remote:
-            result = remote.execute(cmd)
-            if result.exit_code != 0:
-                LOG.info("{0} is not in running state on the node {1},"
-                         " trying to start".format(service_name, host))
-                cmd = ("service {0} stop;"
-                       " sleep 3; killall -9 {0};"
-                       "service {0} start; sleep 5;"
-                       .format(service_name))
-                remote.execute(cmd)
-
-                remote.execute(check_cmd)
-                remote.execute(check_cmd)
-
     def execute_commands(self, commands, label="Command"):
         """Execute a sequence of commands
 
@@ -141,19 +117,7 @@ class ExecuteCommandsMixin(object):
                         " === RETRY ({0}/{1}) ======================="
                         .format(x - 1, retry_count))
                 else:
-                    if self.__config.salt.salt_master_host != '0.0.0.0':
-                        # Workarounds for crashed services
-                        self.ensure_running_service(
-                            "salt-master",
-                            self.__config.salt.salt_master_host,
-                            "salt-call pillar.items",
-                            'active (running)')  # Hardcoded for now
-                        self.ensure_running_service(
-                            "salt-minion",
-                            self.__config.salt.salt_master_host,
-                            "salt 'cfg01*' pillar.items",
-                            "active (running)")  # Hardcoded for now
-                        break
+                    break
 
                 if x == 1 and skip_fail is False:
                     # In the last retry iteration, raise an exception
@@ -229,14 +193,22 @@ class ExecuteCommandsMixin(object):
         description = step.get('description', local_path)
         skip_fail = step.get('skip_fail', False)
 
-        if not local_path or not local_filename or not remote_path:
+        if not local_path or not remote_path:
             raise Exception("Step '{0}' failed: please specify 'local_path', "
                             "'local_filename' and 'remote_path' correctly"
                             .format(description))
 
+        if not local_filename:
+            # If local_path is not specified then uploading a directory
+            with self.__underlay.remote(node_name=node_name) as remote:
+                LOG.info("Uploading directory {0} to {1}:{2}"
+                         .format(local_path, node_name, remote_path))
+                remote.upload(source=local_path.rstrip(), target=remote_path.rstrip())
+                return
+
         result = {}
         with self.__underlay.local() as local:
-            result = local.execute('find {0} -type f -name {1}'
+            result = local.execute('cd {0} && find . -type f -name "{1}"'
                                    .format(local_path, local_filename))
             LOG.info("Found files to upload:\n{0}".format(result))
 
@@ -247,9 +219,11 @@ class ExecuteCommandsMixin(object):
         with self.__underlay.remote(node_name=node_name) as remote:
             file_names = result['stdout']
             for file_name in file_names:
-                LOG.info("Uploading {0} to {1}:{2}"
-                         .format(local_path, node_name, file_name))
-                remote.upload(source=local_path, target=file_name.rstrip())
+                source_path = local_path + file_name.rstrip()
+                destination_path = remote_path.rstrip() + file_name.rstrip()
+                LOG.info("Uploading file {0} to {1}:{2}"
+                         .format(source_path, node_name, remote_path))
+                remote.upload(source=source_path, target=destination_path)
 
     def action_download(self, step):
         """Download from environment node to local host
