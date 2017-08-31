@@ -103,6 +103,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Install nginx on prx nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls nginx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Restart rsyslog
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@haproxy:proxy' service.restart rsyslog
