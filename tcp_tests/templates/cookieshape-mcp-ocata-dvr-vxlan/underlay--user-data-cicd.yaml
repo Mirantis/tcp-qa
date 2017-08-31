@@ -37,12 +37,12 @@
    - update-grub
 
    # Prepare network connection
-   - sudo ifup ens3
-   #- sudo route add default gw {gateway} {interface_name}
+   # WARNING! On CID* nodes, admin network is connected to ens4, and control network to ens3 (as in the model)
+   # On other nodes (cfg01 and openstack), admin network is connected to ens3, and control network to ens4
    - sudo ifup ens4
 
    # Create swap
-   - fallocate -l 4G /swapfile
+   - fallocate -l 8G /swapfile
    - chmod 600 /swapfile
    - mkswap /swapfile
    - swapon /swapfile
@@ -88,7 +88,7 @@
    - path: /etc/network/interfaces
      content: |
           auto ens3
-          iface ens3 inet dhcp
+          iface ens3 inet manual
           auto ens4
           iface ens4 inet dhcp
 
