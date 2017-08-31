@@ -34,14 +34,14 @@
     # 192.168.10 -> 10.16.0 (generated network for admin)
     # 10.16.0 -> <external network>
     # So let's replace constant networks to the keywords, and then keywords to the desired networks.
-    sed -i 's/10\.167\.5\./==IPV4_NET_ADMIN_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/10\.167\.4\./==IPV4_NET_CONTROL_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/10\.167\.6\./==IPV4_NET_TENANT_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/10\.167\.5/==IPV4_NET_ADMIN_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/10\.167\.4/==IPV4_NET_CONTROL_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
     sed -i 's/172\.17\.16\./==IPV4_NET_EXTERNAL_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
 
-    sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ SHARED.IPV4_NET_ADMIN_PREFIX }}./g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ SHARED.IPV4_NET_CONTROL_PREFIX }}./g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ SHARED.IPV4_NET_TENANT_PREFIX }}./g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ SHARED.IPV4_NET_ADMIN_PREFIX }}/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ SHARED.IPV4_NET_CONTROL_PREFIX }}/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ SHARED.IPV4_NET_TENANT_PREFIX }}/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
     sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ SHARED.IPV4_NET_EXTERNAL_PREFIX }}./g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
 
     for i in $(ls /tmp/cookiecutter-templates/cluster_product/); do
