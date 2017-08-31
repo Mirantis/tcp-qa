@@ -22,6 +22,14 @@
                 {%- for interface_name in interfaces.keys() %}
                 - {{ interface_name }}
                 {%- endfor %}
+              bond0.2416:
+                enabled: true
+                proto: manual
+                type: vlan
+                use_interfaces:
+                - bond0
+                require_interfaces:
+                - bond0
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
                 enabled: true
@@ -29,6 +37,6 @@
                 proto: static
                 type: bridge
                 use_interfaces:
-                - bond0
+                - bond0.2416
                 require_interfaces:
-                - bond0
+                - bond0.2416
