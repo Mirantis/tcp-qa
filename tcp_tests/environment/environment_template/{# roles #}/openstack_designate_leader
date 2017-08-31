@@ -1,0 +1,9 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+          - environment.{{ cookiecutter._env_name }}.features.designate_openstack_control_init
