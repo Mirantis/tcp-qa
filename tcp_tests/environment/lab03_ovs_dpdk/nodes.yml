@@ -234,7 +234,7 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br_floating
+                ovs_bridge: br_fl
                 ovs_type: OVSPort
                 proto: manual
                 slaves: enp3s0f1 enp5s0f0
@@ -319,7 +319,7 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br_floating
+                ovs_bridge: br_fl
                 ovs_type: OVSPort
                 proto: manual
 #                slaves: eth0 eth3
@@ -391,7 +391,7 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br_floating
+                ovs_bridge: br_fl
                 ovs_type: OVSPort
                 proto: manual
                 slaves: enp3s0f1
@@ -400,12 +400,13 @@ parameters:
                 - enp3s0f1
                 require_interfaces:
                 - enp3s0f1
-              br_floating:
+              br_fl:
                 enabled: true
                 type: ovs_bridge
-              br_floating.2417:
+              br_fl.2417:
                 address: 172.17.42.135
                 netmask: 255.255.255.192
+                gateway: 172.17.42.129
                 enabled: true
                 proto: static
                 type: vlan
@@ -414,14 +415,14 @@ parameters:
                 type: ovs_bridge
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
-                bridge: br_floating
+                bridge: br_fl
                 enabled: true
                 netmask: 255.255.255.0
                 ovs_options: tag=2416
                 proto: static
                 type: ovs_port
               floating_to_prv:
-                bridge: br_floating
+                bridge: br_fl
                 enabled: true
                 peer: prv_to_floating
                 port_type: patch
@@ -455,7 +456,7 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br_floating
+                ovs_bridge: br_fl
                 ovs_type: OVSPort
                 proto: manual
                 slaves: eno2
@@ -464,12 +465,13 @@ parameters:
                 - eno2
                 require_interfaces:
                 - eno2
-              br_floating:
+              br_fl:
                 enabled: true
                 type: ovs_bridge
-              br_floating.2417:
+              br_fl.2417:
                 address: 172.17.42.136
                 netmask: 255.255.255.192
+                gateway: 172.17.42.129
                 enabled: true
                 proto: static
                 type: vlan
@@ -478,14 +480,14 @@ parameters:
                 type: ovs_bridge
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
-                bridge: br_floating
+                bridge: br_fl
                 enabled: true
                 netmask: 255.255.255.0
                 ovs_options: tag=2416
                 proto: static
                 type: ovs_port
               floating_to_prv:
-                bridge: br_floating
+                bridge: br_fl
                 enabled: true
                 peer: prv_to_floating
                 port_type: patch
