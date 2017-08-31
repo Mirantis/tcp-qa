@@ -1,51 +1,3 @@
-classes:
-{%- if cookiecutter.get('local_repositories', 'False') == 'True' %}
-- system.linux.system.repo_local.ubuntu
-- system.linux.system.repo_local.mcp.openstack
-- system.linux.system.repo_local.mcp.extra
-{%- if cookiecutter.openstack_network_engine == 'opencontrail' %}
-- system.linux.system.repo_local.mcp.contrail
-{%- endif %}
-{%- else %}
-- system.linux.system.repo.ubuntu
-- system.linux.system.repo.saltstack.xenial
-- system.linux.system.repo.mcp.openstack
-- system.linux.system.repo.mcp.extra
-{%- if cookiecutter.openstack_network_engine == 'opencontrail' %}
-- system.linux.system.repo.mcp.contrail
-{%- endif %}
-{%- endif %}
-{%- if cookiecutter.get('openstack_nova_compute_nfv_req_enabled', 'False') == 'True' or cookiecutter.get('openstack_nfv_dpdk_enabled', 'False') == 'True' %}
-- system.nova.compute.nfv.hugepages
-- system.nova.compute.nfv.cpu_pinning
-{%- endif %}
-- system.nova.compute.cluster
-{%- if cookiecutter.openstack_network_engine == 'opencontrail' %}
-- system.opencontrail.compute.cluster
-- system.opencontrail.client.cluster
-- system.opencontrail.client.resource.virtual_router
-{%- elif cookiecutter.openstack_network_engine == 'ovs' %}
-- system.neutron.compute.cluster
-{%- endif %}
-- system.ceilometer.agent.cluster
-- cluster.{{ cookiecutter.cluster_name }}.infra
-parameters:
-  _param:
-    cluster_vip_address: ${_param:openstack_control_address}
-    cluster_local_address: ${_param:single_address}
-    cluster_node01_hostname: ${_param:openstack_control_node01_hostname}
-    cluster_node01_address: ${_param:openstack_control_node01_address}
-    cluster_node02_hostname: ${_param:openstack_control_node02_hostname}
-    cluster_node02_address: ${_param:openstack_control_node02_address}
-    cluster_node03_hostname: ${_param:openstack_control_node03_hostname}
-    cluster_node03_address: ${_param:openstack_control_node03_address}
-{%- if cookiecutter.openstack_network_engine == 'opencontrail' %}
-    opencontrail_compute_address: ${_param:tenant_address}
-{%- endif %}
-    nova_vncproxy_url: https://${_param:cluster_public_host}:6080
-    primary_first_nic: {{ cookiecutter.compute_primary_first_nic }}
-    primary_second_nic: {{ cookiecutter.compute_primary_second_nic }}
-
   linux:
     network:
       host:
@@ -70,7 +22,15 @@ parameters:
           proto: manual
           name: ${_param:primary_second_nic}
           master: bond0
+
+
     {%- if cookiecutter.openstack_network_engine == 'ovs' %}
+
+
+
+
+
+      bridge: openvswitch
       {%- if not cookiecutter.openstack_ovs_dvr_enabled == 'True' %}
         {%- if cookiecutter.openstack_ovs_encapsulation_type == 'vxlan' %}
         bond0:
@@ -128,6 +88,7 @@ parameters:
           address: ${_param:single_address}
           netmask: ${_param:control_network_netmask}
         {%- endif %}
+
       {%- elif cookiecutter.openstack_ovs_dvr_enabled == 'True' %}
         bond0:
           enabled: true
@@ -178,7 +139,13 @@ parameters:
           peer: floating-to-prv
         {%- endif %}
       {%- endif %}
-      bridge: openvswitch
+    
+    
+    
+    
+    
+    
+    
     {%- elif cookiecutter.openstack_network_engine == 'opencontrail' %}
         bond0:
           mtu: 9000
@@ -223,4 +190,8 @@ parameters:
           - ${_param:dns_server01}
           - ${_param:dns_server02}
     {%- endif %}
+
+
+
+
   {%- endif %}
