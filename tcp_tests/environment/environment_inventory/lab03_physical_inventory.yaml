@@ -10,7 +10,7 @@ nodes:
         enp3s0f0:
           role: management_single
         enp3s0f1:
-          role: control_bond0
+          role: control_vlan_bond0
 
     kvm02.mcp11-ovs-dpdk.local:
       reclass_storage_name: infra_kvm_node02
@@ -21,7 +21,7 @@ nodes:
         eno1:
           role: management_single
         eno2:
-          role: control_bond0
+          role: control_vlan_bond0
 
     kvm03.mcp11-ovs-dpdk.local:
       reclass_storage_name: infra_kvm_node03
@@ -32,7 +32,7 @@ nodes:
         eno1:
           role: management_single
         eno2:
-          role: control_bond0
+          role: control_vlan_bond0
 
     cmp001.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_compute_node01
@@ -43,9 +43,9 @@ nodes:
         enp3s0f0:
           role: management_single
         enp3s0f1:
-          role: control_bond0
+          role: control_vlan_bond0
         enp5s0f0:
-          role: control_bond0
+          role: control_vlan_bond0
         enp5s0f1:
           role: private_dpdk_ovs
           dpdk_pci: '0000:05:00.1'
@@ -62,9 +62,9 @@ nodes:
         eno1:
           role: management_single
         eth0:
-          role: control_bond0
+          role: control_vlan_bond0
         eth3:
-          role: control_bond0
+          role: control_vlan_bond0
         eth2:
           role: private_dpdk_ovs
           dpdk_pci: '0000:05:00.1'
