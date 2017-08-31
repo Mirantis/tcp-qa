@@ -1,3 +1,5 @@
+{# 'infra_config_classes' list object is dynamically generated from 'roles' to add on the cfg node #}
+{%- set infra_config_classes = [] %}
 parameters:
   _param:
     _esc: $
@@ -6,6 +8,7 @@ parameters:
       node:
       {%- for inventory_node_name, node in nodes.items()|sort %}
         {{ node['reclass_storage_name'] }}:
+        {# 'params' dict object is dynamically generated from 'roles' to add on the node #}
         {%- set params = {} %}
           classes:
           {#- Default role linux_network_interface is added to each node #}
@@ -21,3 +24,8 @@ parameters:
         {%- endif %}
 
       {%- endfor %}
+
+classes:
+{%- for infra_config_class in infra_config_classes %}
+- {{ infra_config_class }}
+{%- endfor %}
