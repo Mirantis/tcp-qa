@@ -1,0 +1,3 @@
+classes:
+- system.galera.server.database.designate
+- environment.{{ cookiecutter._env_name }}.features.designate
