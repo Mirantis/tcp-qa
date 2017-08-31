@@ -1,0 +1,38 @@
+{%- macro password(size=16) -%}
+{% for index in range(size) %}{{ 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'|random }}{% endfor %}
+{%- endmacro -%}
+parameters:
+  _param:
+    # Put overrides for any environment-specific variables here
+    powerdns_webserver_password: {{ password(12) }}
+    powerdns_webserver_port: 8081
+    designate_domain_id: 5186883b-91fb-4891-bd49-e6769234a8fc
+    designate_pdns_api_key: {{ password(12) }}
+    designate_pdns_api_endpoint: "http://${_param:openstack_control_node01_address}:${_param:powerdns_webserver_port}"
+    designate_pool_ns_records:
+      - hostname: 'ns1.example.org.'
+        priority: 10
+    designate_pool_nameservers:
+      - host: ${_param:openstack_control_node01_address}
+        port: 53
+      - host: ${_param:openstack_control_node02_address}
+        port: 53
+      - host: ${_param:openstack_control_node03_address}
+        port: 53
+    designate_pool_target_type: pdns4
+    designate_pool_target_masters:
+      - host: ${_param:openstack_control_node01_address}
+        port: 5354
+      - host: ${_param:openstack_control_node02_address}
+        port: 5354
+      - host: ${_param:openstack_control_node03_address}
+        port: 5354
+    designate_pool_target_options:
+      host: ${_param:openstack_control_node01_address}
+      port: 53
+      api_token: ${_param:designate_pdns_api_key}
+      api_endpoint: ${_param:designate_pdns_api_endpoint}
+    designate_version: ${_param:openstack_version}
+    designate_service_host: ${_param:openstack_control_address}
+    mysql_designate_password: {{ password(16) }}
+    keystone_designate_password: {{ password(16) }}
