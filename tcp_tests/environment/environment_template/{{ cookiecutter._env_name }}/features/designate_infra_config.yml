@@ -1,0 +1,3 @@
+classes:
+- system.keystone.client.service.designate
+- environment.{{ cookiecutter._env_name }}.features.designate_init
