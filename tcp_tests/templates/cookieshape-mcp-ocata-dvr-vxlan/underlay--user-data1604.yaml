@@ -72,6 +72,12 @@
    ########################################################
 
   write_files:
+   - path: /etc/default/grub.d/97-enable-grub-menu.cfg
+     content: |
+         GRUB_RECORDFAIL_TIMEOUT=30
+         GRUB_TIMEOUT=3
+         GRUB_TIMEOUT_STYLE=menu
+
    - path: /etc/network/interfaces
      content: |
           auto ens3

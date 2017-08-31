@@ -27,29 +27,29 @@
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
   runcmd:
+   - export TERM=linux
+   - export LANG=C
    # Configure dhclient
    - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
    - sudo resolvconf -u
 
    # Prepare network connection
-   - sudo ifup ens3
-   #- sudo route add default gw {gateway} {interface_name}
+   # WARNING! On CID* nodes, admin network is connected to ens4, and control network to ens3 (as in the model)
+   # On other nodes (cfg01 and openstack), admin network is connected to ens3, and control network to ens4
    - sudo ifup ens4
 
    # Create swap
-   - fallocate -l 4G /swapfile
+   - fallocate -l 8G /swapfile
    - chmod 600 /swapfile
    - mkswap /swapfile
    - swapon /swapfile
-   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+   - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
+
 
    ############## TCP Cloud cfg01 node ##################
    #- sleep 120
    - echo "Preparing base OS"
-
-   - echo "nameserver 172.18.208.44 >> /etc/resolv.conf;
-   - echo "nameserver 8.8.8.8 >> /etc/resolv.conf;
-   - which wget >/dev/null || (apt-get update; apt-get install -y wget);
+   - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
    - echo "deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
    - wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
@@ -57,18 +57,19 @@
    - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
 
    - apt-get clean
-   - apt-get update
+   - eatmydata apt-get update && apt-get -y upgrade
 
    # Install common packages
    - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
 
-   # Install salt-minion and stop it until it is configured
-   - eatmydata apt-get install -y salt-minion && service salt-minion stop
+   # Install kernel 4.8
+   - eatmydata apt-get install -y linux-generic-hwe-16.04
 
    ########################################################
    # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   #- echo "Allow SSH access ..."
+   #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   - reboot
    ########################################################
 
   write_files:
@@ -81,16 +82,7 @@
    - path: /etc/network/interfaces
      content: |
           auto ens3
-          iface ens3 inet dhcp
+          iface ens3 inet manual
           auto ens4
           iface ens4 inet dhcp
 
-   - path: /root/.ssh/config
-     owner: root:root
-     permissions: '0600'
-     content: |
-          Host *
-            ServerAliveInterval 300
-            ServerAliveCountMax 10
-            StrictHostKeyChecking no
-            UserKnownHostsFile /dev/null

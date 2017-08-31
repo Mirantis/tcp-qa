@@ -1,0 +1,13 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+{%- set class_name = 'environment.' + cookiecutter._env_name + '.features.designate_infra_config' %}
+{%- if class_name not in infra_config_classes %}
+  {%- set _ = infra_config_classes.append(class_name) %}
+{%- endif %}
+          - environment.{{ cookiecutter._env_name }}.features.designate_openstack_control
