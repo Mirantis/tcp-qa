@@ -56,8 +56,11 @@
   retry: {count: 2, delay: 10}
   skip_fail: false
 
-- description: Configure Prometheus exporters
-  cmd: salt -C 'I@prometheus:exporters' state.sls prometheus
+- description: Configure Prometheus exporters, if pillar 'prometheus:exporters' exists on any server
+  cmd: |
+    if salt -C 'I@prometheus:exporters' match.pillar 'prometheus:exporters' ; then
+      salt -C 'I@prometheus:exporters' state.sls prometheus
+    fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false

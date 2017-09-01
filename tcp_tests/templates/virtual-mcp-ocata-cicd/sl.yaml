@@ -54,7 +54,7 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Install Prometheus exporters, if pillar 'prometheus:exporters' exists on any server
+- description: Configure Prometheus exporters, if pillar 'prometheus:exporters' exists on any server
   cmd: |
     if salt -C 'I@prometheus:exporters' match.pillar 'prometheus:exporters' ; then
       salt -C 'I@prometheus:exporters' state.sls prometheus
@@ -62,8 +62,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
-
 
 
 # Elasticsearch
