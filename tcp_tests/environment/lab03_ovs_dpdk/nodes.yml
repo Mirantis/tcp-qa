@@ -234,7 +234,7 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br_fl
+                ovs_bridge: br-fl
                 ovs_type: OVSPort
                 proto: manual
                 slaves: enp3s0f1 enp5s0f0
@@ -253,7 +253,7 @@ parameters:
                 - bond0
                 require_interfaces:
                 - bond0
-              br_prv:
+              br-prv:
                 address: ${_param:_esc}{_param:tenant_address}
                 enabled: true
                 netmask: 255.255.255.0
@@ -285,7 +285,7 @@ parameters:
                 pci: '0000:05:00.2'
                 type: dpdk_ovs_port
               dpdkbond1:
-                bridge: br_prv
+                bridge: br-prv
                 enabled: true
                 mode: active-backup
                 type: dpdk_ovs_bond
@@ -319,7 +319,7 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br_fl
+                ovs_bridge: br-fl
                 ovs_type: OVSPort
                 proto: manual
 #                slaves: eth0 eth3
@@ -339,7 +339,7 @@ parameters:
                 - bond0
                 require_interfaces:
                 - bond0
-              br_prv:
+              br-prv:
                 address: ${_param:_esc}{_param:tenant_address}
                 enabled: true
                 netmask: 255.255.255.0
@@ -371,7 +371,7 @@ parameters:
                 pci: 0000:0b:00.0
                 type: dpdk_ovs_port
               dpdkbond1:
-                bridge: br_prv
+                bridge: br-prv
                 enabled: true
                 mode: active-backup
                 type: dpdk_ovs_bond
@@ -391,7 +391,7 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br_fl
+                ovs_bridge: br-fl
                 ovs_type: OVSPort
                 proto: manual
                 slaves: enp3s0f1
@@ -400,31 +400,31 @@ parameters:
                 - enp3s0f1
                 require_interfaces:
                 - enp3s0f1
-              br_fl:
+              br-fl:
                 enabled: true
                 type: ovs_bridge
-              br_fl.2417:
+              br-fl.2417:
                 address: 172.17.42.135
                 netmask: 255.255.255.192
                 gateway: 172.17.42.129
                 enabled: true
                 proto: static
                 type: vlan
-              br_prv:
+              br-prv:
                 enabled: true
                 type: ovs_bridge
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
-                bridge: br_fl
+                bridge: br-fl
                 enabled: true
                 netmask: 255.255.255.0
                 ovs_options: tag=2416
                 proto: static
                 type: ovs_port
-              floating_to_prv:
-                bridge: br_fl
+              floating-to-prv:
+                bridge: br-fl
                 enabled: true
-                peer: prv_to_floating
+                peer: prv-to-floating
                 port_type: patch
                 type: ovs_port
               primary_first_nic:
@@ -434,10 +434,10 @@ parameters:
                 proto: manual
                 type: slave
                 ipflush_onchange: true
-              prv_to_floating:
-                bridge: br_prv
+              prv-to-floating:
+                bridge: br-prv
                 enabled: true
-                peer: floating_to_prv
+                peer: floating-to-prv
                 port_type: patch
                 type: ovs_port
 
@@ -456,7 +456,7 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br_fl
+                ovs_bridge: br-fl
                 ovs_type: OVSPort
                 proto: manual
                 slaves: eno2
@@ -465,31 +465,31 @@ parameters:
                 - eno2
                 require_interfaces:
                 - eno2
-              br_fl:
+              br-fl:
                 enabled: true
                 type: ovs_bridge
-              br_fl.2417:
+              br-fl.2417:
                 address: 172.17.42.136
                 netmask: 255.255.255.192
                 gateway: 172.17.42.129
                 enabled: true
                 proto: static
                 type: vlan
-              br_prv:
+              br-prv:
                 enabled: true
                 type: ovs_bridge
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
-                bridge: br_fl
+                bridge: br-fl
                 enabled: true
                 netmask: 255.255.255.0
                 ovs_options: tag=2416
                 proto: static
                 type: ovs_port
-              floating_to_prv:
-                bridge: br_fl
+              floating-to-prv:
+                bridge: br-fl
                 enabled: true
-                peer: prv_to_floating
+                peer: prv-to-floating
                 port_type: patch
                 type: ovs_port
               primary_first_nic:
@@ -499,10 +499,10 @@ parameters:
                 proto: manual
                 type: slave
                 ipflush_onchange: true
-              prv_to_floating:
-                bridge: br_prv
+              prv-to-floating:
+                bridge: br-prv
                 enabled: true
-                peer: floating_to_prv
+                peer: floating-to-prv
                 port_type: patch
                 type: ovs_port
 
