@@ -1,4 +1,4 @@
-{% from 'cookieshape-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install docker swarm
 - description: Install keepalived on mon nodes

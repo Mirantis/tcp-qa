@@ -1,7 +1,7 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
-{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'virtual-mcp-ocata-dvr') %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-mcp-ocata-dvr-vxlan') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CID01 = os_env('HOSTNAME_CID01', 'cid01.' + DOMAIN_NAME) %}
@@ -24,10 +24,10 @@
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
 
-{% import 'cookieshape-mcp-ocata-dvr-vxlan/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
-{% import 'cookieshape-mcp-ocata-dvr-vxlan/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
-{% import 'cookieshape-mcp-ocata-dvr-vxlan/underlay--user-data-cicd.yaml' as CLOUDINIT_USER_DATA_CICD with context %}
-{% import 'cookieshape-mcp-ocata-dvr-vxlan/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+{% import 'cookied-mcp-ocata-dvr-vxlan/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'cookied-mcp-ocata-dvr-vxlan/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'cookied-mcp-ocata-dvr-vxlan/underlay--user-data-cicd.yaml' as CLOUDINIT_USER_DATA_CICD with context %}
+{% import 'cookied-mcp-ocata-dvr-vxlan/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
 
 ---
 aliases:
