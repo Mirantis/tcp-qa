@@ -425,7 +425,7 @@
 - description: '*Workaround 1/2* of the bug PROD-9576 to get bond0-connectivity *without* rebooting nodes'
   cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False cmd.run
     "mkdir -p /tmp/PROD-9576; cd /tmp/PROD-9576; git clone https://gerrit.mcp.mirantis.net/salt-formulas/linux; cd linux;
-    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/linux refs/changes/54/2354/13 && git checkout FETCH_HEAD;
+    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/linux refs/changes/54/2354/15 && git checkout FETCH_HEAD;
     cp -f linux/network/interface.sls /srv/salt/env/prd/linux/network/;
     cp -f linux/map.jinja /srv/salt/env/prd/linux/;"
   node_name: {{ HOSTNAME_CFG01 }}
