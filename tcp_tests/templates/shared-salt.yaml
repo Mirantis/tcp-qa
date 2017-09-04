@@ -357,7 +357,11 @@
   skip_fail: false
 
 - description: Show reclass-salt --top for all generated nodes
-  cmd: salt-call reclass.validate_nodes_params && reclass-salt --top
+  cmd: |
+    set -e
+    if salt-call sys.doc reclass.validate_node_params | grep -q reclass.validate_node_params ; then salt-call reclass.validate_nodes_params ; fi
+    if salt-call sys.doc reclass.validate_pillar | grep -q reclass.validate_pillar ; then salt-call reclass.validate_pillar ; fi
+    reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
