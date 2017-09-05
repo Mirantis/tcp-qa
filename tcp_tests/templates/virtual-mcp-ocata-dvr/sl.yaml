@@ -1,5 +1,5 @@
 {% from 'virtual-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
-
+{% import 'shared-sl-salt.yaml' as SHARED_SL_TESTS with context %}
 # Install docker swarm
 - description: Install keepalived on mon nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -185,3 +185,14 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+{{  SHARED_SL_TESTS.MACRO_CLONE_SL_TESTS() }}
+{{  SHARED_SL_TESTS.MACRO_CONFIGURE_TESTS() }}
+{{  SHARED_SL_TESTS. RUN_SL_TESTS()}}
+
+- description: Download xml results
+  download:
+    remote_path: /root/stacklight-pytest/stacklight_tests
+    remote_filename: "report.xml"
+    local_path: {{ os_env('PWD') }}
+  node_name: {{ HOSTNAME_GFG01 }}
+  skip_fail: true
