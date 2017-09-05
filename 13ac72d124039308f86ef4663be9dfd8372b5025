@@ -45,6 +45,30 @@
       "revId": "13ac72d124039308f86ef4663be9dfd8372b5025",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "28fbcc91_2f2dfa91",
+        "filename": "tcp_tests/templates/virtual-mcp-ocata-dvr/openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2017-09-05T13:28:49Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "298064e4_2df80029",
+      "range": {
+        "startLine": 26,
+        "startChar": 4,
+        "endLine": 26,
+        "endChar": 6
+      },
+      "revId": "13ac72d124039308f86ef4663be9dfd8372b5025",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
