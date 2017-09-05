@@ -88,6 +88,14 @@ class Test_Mcp11_install(object):
         for entry in current_targets:
             assert 'up' in entry['health'], \
                 'Next target is down {}'.format(entry)
+        # Run SL component tetsts
+        sl_actions.run_sl_functional_tests(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+        # Download report
+        sl_actions.download_sl_test_report(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
