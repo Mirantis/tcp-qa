@@ -25,12 +25,17 @@
     mkdir -p /srv/salt/reclass/classes/service/
     mkdir -p /srv/salt/reclass/nodes/
 
-    sed -i 's/cluster_name:.*/cluster_name: {{ LAB_CONFIG_NAME }}/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/cluster_domain:.*/cluster_domain: {{ DOMAIN_NAME }}/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    {%- set CONTEXT_PATH = '/tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml' %}
+
+    # Override some context parameters
+    sed -i 's/cluster_name:.*/cluster_name: {{ LAB_CONFIG_NAME }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/cluster_domain:.*/cluster_domain: {{ DOMAIN_NAME }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/control_vlan:.*/control_vlan: \"2416\"/g' {{ CONTEXT_PATH }}
+    sed -i 's/tenant_vlan:.*/tenant_vlan: \"2417\"/g' {{ CONTEXT_PATH }}
 
     # Temporary workaround (with hardcoded address .90 -> .15) of bug https://mirantis.jira.com/browse/PROD-14377
-    sed -i 's/salt_master_address:.*/salt_master_address: {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.15/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ SHARED.IPV4_NET_ADMIN_PREFIX }}.15/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/salt_master_address:.*/salt_master_address: {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CONTEXT_PATH }}
+    sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ SHARED.IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CONTEXT_PATH }}
 
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
@@ -38,19 +43,19 @@
     # 192.168.10 -> 10.16.0 (generated network for admin)
     # 10.16.0 -> <external network>
     # So let's replace constant networks to the keywords, and then keywords to the desired networks.
-    sed -i 's/10\.167\.5/==IPV4_NET_ADMIN_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/10\.167\.4/==IPV4_NET_CONTROL_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/172\.17\.16\./==IPV4_NET_EXTERNAL_PREFIX==/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/10\.167\.5/==IPV4_NET_ADMIN_PREFIX==/g' {{ CONTEXT_PATH }}
+    sed -i 's/10\.167\.4/==IPV4_NET_CONTROL_PREFIX==/g' {{ CONTEXT_PATH }}
+    sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' {{ CONTEXT_PATH }}
+    sed -i 's/172\.17\.16\./==IPV4_NET_EXTERNAL_PREFIX==/g' {{ CONTEXT_PATH }}
 
-    sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ SHARED.IPV4_NET_ADMIN_PREFIX }}/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ SHARED.IPV4_NET_CONTROL_PREFIX }}/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ SHARED.IPV4_NET_TENANT_PREFIX }}/g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
-    sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ SHARED.IPV4_NET_EXTERNAL_PREFIX }}./g' /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml
+    sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ SHARED.IPV4_NET_ADMIN_PREFIX }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ SHARED.IPV4_NET_CONTROL_PREFIX }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ SHARED.IPV4_NET_TENANT_PREFIX }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ SHARED.IPV4_NET_EXTERNAL_PREFIX }}./g' {{ CONTEXT_PATH }}
 
     for i in $(ls /tmp/cookiecutter-templates/cluster_product/); do
       cookiecutter /tmp/cookiecutter-templates/cluster_product/$i \
-        --config-file /tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml \
+        --config-file {{ CONTEXT_PATH }} \
         --output-dir /srv/salt/reclass/classes/cluster/ \
         --no-input -f;
     done

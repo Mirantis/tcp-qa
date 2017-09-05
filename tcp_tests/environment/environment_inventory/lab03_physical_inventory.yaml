@@ -8,9 +8,9 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp3s0f0:
-          role: management_single
+          role: single_mgm
         enp3s0f1:
-          role: control_vlan_bond0
+          role: bond0_ab_ctl
 
     kvm02.mcp11-ovs-dpdk.local:
       reclass_storage_name: infra_kvm_node02
@@ -19,9 +19,9 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         eno1:
-          role: management_single
+          role: single_mgm
         eno2:
-          role: control_vlan_bond0
+          role: bond0_ab_ctl
 
     kvm03.mcp11-ovs-dpdk.local:
       reclass_storage_name: infra_kvm_node03
@@ -30,9 +30,9 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         eno1:
-          role: management_single
+          role: single_mgm
         eno2:
-          role: control_vlan_bond0
+          role: bond0_ab_ctl
 
     cmp001.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_compute_node01
@@ -41,16 +41,16 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp3s0f0:
-          role: management_single
+          role: single_mgm
         enp3s0f1:
-          role: control_vlan_bond0
+          role: bond0_ab_ctl
         enp5s0f0:
-          role: control_vlan_bond0
+          role: bond0_ab_ctl
         enp5s0f1:
-          role: private_dpdk_ovs
+          role: bond1_dpdk_prv
           dpdk_pci: '0000:05:00.1'
         enp5s0f2:
-          role: private_dpdk_ovs
+          role: bond1_dpdk_prv
           dpdk_pci: '0000:05:00.2'
 
     cmp002.mcp11-ovs-dpdk.local:
@@ -60,16 +60,16 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         eno1:
-          role: management_single
+          role: single_mgm
         eth0:
-          role: control_vlan_bond0
+          role: bond0_ab_ctl
         eth3:
-          role: control_vlan_bond0
+          role: bond0_ab_ctl
         eth2:
-          role: private_dpdk_ovs
+          role: bond1_dpdk_prv
           dpdk_pci: '0000:05:00.1'
         eth4:
-          role: private_dpdk_ovs
+          role: bond1_dpdk_prv
           dpdk_pci: '0000:0b:00.0'
 
     gtw01.mcp11-ovs-dpdk.local:
@@ -79,9 +79,9 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp2s0f0:
-          role: management_single
+          role: single_mgm
         enp2s0f1:
-          role: control_floating_bond0_ovs
+          role: bond0_ab_dvr_vlan_ctl_prv_floating
 
     gtw02.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_gateway_node02
@@ -90,6 +90,6 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp2s0f0:
-          role: management_single
+          role: single_mgm
         enp2s0f1:
-          role: control_floating_bond0_ovs
+          role: bond0_ab_dvr_vlan_ctl_prv_floating

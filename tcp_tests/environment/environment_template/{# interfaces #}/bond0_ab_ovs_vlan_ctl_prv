@@ -1,16 +1,28 @@
+{#- Tenant over VLAN. For gateway and compute nodes #}
+{#- Provides:                         #}
+{#-   br_ctl (OVS bridge) + control address #}
+{#-   br_prv (OVS bridge) #}
+{#- Requirements:                     #}
+{#-   _param:single_address         #}
+{#-   _param:control_network_netmask         #}
+{#-   _param:control_vlan           #}
 
               # {{ interfaces_role }}
               {%- for interface_name, interface in interfaces.items() %}
               {{ interface_name }}:
+                mtu: 9000
                 enabled: true
+                master: bond0  # ?
                 name: {{ interface_name }}
                 proto: manual
-                type: eth
+                type: slave  # ?
                 ipflush_onchange: true
               {%- endfor %}
               bond0:
                 enabled: true
                 mode: active-backup
+                ovs_bridge: br-prv
+                ovs_type: OVSPort
                 proto: manual
                 slaves: {{ ' '.join(interfaces.keys()) }}
                 type: bond
@@ -22,21 +34,16 @@
                 {%- for interface_name in interfaces.keys() %}
                 - {{ interface_name }}
                 {%- endfor %}
-              bond0.2416:
+              br-prv:
                 enabled: true
-                proto: manual
-                type: vlan
-                use_interfaces:
-                - bond0
-                require_interfaces:
-                - bond0
+                type: ovs_bridge
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
+                bridge: br-prv
                 enabled: true
-                netmask: 255.255.255.0
+                netmask: ${_param:_esc}{_param:control_network_netmask}
+                ovs_options: tag=${_param:_esc}{_param:control_vlan}
                 proto: static
-                type: bridge
-                use_interfaces:
-                - bond0.2416
+                type: ovs_port
                 require_interfaces:
-                - bond0.2416
+                - br-prv
