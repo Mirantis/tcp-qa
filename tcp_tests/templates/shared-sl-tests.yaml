@@ -1,0 +1,44 @@
+{# Collection of sl tests macroses shared across different deployments #}
+
+{% set SL_TEST_BRANCH = os_env('SL_TEST_BRANCH','master') %}
+{% set SL_TEST_REPO = os_env('SL_TEST_REPO','https://github.com/dkalashnik/stacklight-pytest') %}
+{% set SL_TEST_TO_RUN = os_env('set SL_TEST_TO_RUN','stacklight_tests/tests/prometheus/test_smoke.py') %}
+
+{%- macro MACRO_CLONE_SL_TESTS() %}
+{############################################################}
+- description: Clone repo and install tests on cfg node
+  cmd: |
+    set -e;
+    git clone -b {{ SL_TEST_BRANCH }} {{ SL_TEST_REPO }} /root/stacklight-pytest;
+    cd /root/stacklight-pytest;
+    python setup.py sdist;
+    pip install dist/stacklight_tests-1.0.tar.gz --process-dependency-links
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{%- endmacro %}
+
+
+{%- macro MACRO_CONFIGURE_TESTS() %}
+{#######################################################}
+- description: Configure tests
+  cmd: |
+    set -e;
+    stl-tests gen-config-mk;
+    cp /usr/local/lib/python2.7/dist-packages/stacklight_tests/fixtures/config.yaml /root/stacklight-pytest/stacklight_tests/fixtures/config.yaml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{%- endmacro %}
+
+
+{%- macro RUN_SL_TESTS() %}
+{#######################################}
+- description: Run all tests
+  cmd: pytest -k {{ SL_TEST_TO_RUN }}
+  node_name: {count: 1, delay: 5}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{%- endmacro %}
+
+
+
