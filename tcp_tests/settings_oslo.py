@@ -32,6 +32,8 @@ _default_salt_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/salt.yaml'.format(settings.LAB_CONFIG_NAME))
 _default_environment_template_dir = pkg_resources.resource_filename(
     __name__, 'environment/')
+_default_templates_dir = pkg_resources.resource_filename(
+    __name__, 'templates/')
 _default_common_services_steps = pkg_resources.resource_filename(
     __name__,
     'templates/{0}/common-services.yaml'.format(
@@ -123,6 +125,9 @@ salt_deploy_opts = [
     ct.Cfg('environment_template_dir', ct.String(),
            help="Path to directory with Environment template and inventory",
            default=_default_environment_template_dir),
+    ct.Cfg('templates_dir', ct.String(),
+           help="Path to directory with templates",
+           default=_default_templates_dir),
 ]
 salt_opts = [
     ct.Cfg('salt_master_host', ct.IPAddress(),
@@ -370,8 +375,9 @@ def register_opts(config):
     config.register_group(cfg.OptGroup(name='opencontrail',
                           title="Options for Juniper contrail-tests", help=""))
     config.register_opts(group='opencontrail', opts=opencontrail_opts)
-    config.register_group(cfg.OptGroup(name='stack_light',
-                                       title="StackLight config and credentials", help=""))
+    config.register_group(
+        cfg.OptGroup(name='stack_light',
+                     title="StackLight config and credentials", help=""))
     config.register_opts(group='stack_light', opts=sl_opts)
     config.register_group(
         cfg.OptGroup(name='sl_deploy',

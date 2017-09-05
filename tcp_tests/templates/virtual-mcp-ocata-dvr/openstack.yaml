@@ -6,8 +6,27 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set PATTERN = os_env('PATTERN', 'smoke') %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
 
 # Install OpenStack control services
+
+- description: Upload policy override
+  upload:
+    local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
+    local_filename: overrides-policy.yml
+    remote_path: /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/
+  node_name: {{ HOSTNAME_CFG01 }}
+
+- description: Create custom cluster control class
+  cmd: echo -e "classes:\n- cluster.{{ LAB_CONFIG_NAME }}.openstack.control_orig\n$(cat /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml)" > /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+
+- description: Rename control classes
+  cmd: mv /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control_orig.yml &&
+    mv /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
 
 - description: Install glance on all controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
