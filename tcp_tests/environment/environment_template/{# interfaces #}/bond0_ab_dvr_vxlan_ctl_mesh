@@ -1,7 +1,20 @@
+{#- Tenant over VXLAN. For gateway nodes and computes with dvr #}
+{#- Provides:                         #}
+{#-   br_ctl (OVS bridge) + control address #}
+{#-   br_mesh (OVS bridge) + tenant address #}
+{#-   br_floating (OVS bridge) #}
+{#- Requirements:                     #}
+{#-   _param:single_address         #}
+{#-   _param:control_network_netmask         #}
+{#-   _param:control_vlan           #}
+{#-   _param:tenant_address         #}
+{#-   _param:tenant_netmask         #}
+{#-   _param:tenant_vlan           #}
 
               # {{ interfaces_role }}
               {%- for interface_name, interface in interfaces.items() %}
               {{ interface_name }}:
+                mtu: 9000
                 enabled: true
                 master: bond0  # ?
                 name: {{ interface_name }}
@@ -28,34 +41,23 @@
               br-floating:
                 enabled: true
                 type: ovs_bridge
-              br-prv:
-                enabled: true
-                type: ovs_bridge
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
                 bridge: br-floating
                 enabled: true
-                netmask: 255.255.255.0
-                ovs_options: tag=2416
+                netmask: ${_param:_esc}{_param:control_network_netmask}
+                ovs_options: tag=${_param:_esc}{_param:control_vlan}
                 proto: static
                 type: ovs_port
                 require_interfaces:
                 - br-floating
-              floating-to-prv:
+              br-mesh:
+                enabled: true
+                type: ovs_port
                 bridge: br-floating
-                enabled: true
-                peer: prv-to-floating
-                port_type: patch
-                type: ovs_port
+                proto: static
+                ovs_options: tag=${_param:_esc}{_param:tenant_vlan}
+                address: ${_param:_esc}{_param:tenant_address}
+                netmask: ${_param:_esc}{_param:tenant_network_netmask}
                 require_interfaces:
-                - br-prv
-                - br-floating
-              prv-to-floating:
-                bridge: br-prv
-                enabled: true
-                peer: floating-to-prv
-                port_type: patch
-                type: ovs_port
-                require_interfaces:
-                - br-prv
                 - br-floating
