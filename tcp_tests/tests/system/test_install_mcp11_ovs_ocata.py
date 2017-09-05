@@ -24,6 +24,7 @@ class Test_Mcp11_install(object):
     """Test class for testing mcp11 vxlan deploy"""
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.cz8119
     def test_mcp11_ocata_ovs_install(self, underlay, openstack_deployed,
                                           show_step):
         """Test for deploying an mcp environment and check it
@@ -36,6 +37,7 @@ class Test_Mcp11_install(object):
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.cz8119
     def test_mcp11_ocata_ovs_sl_install(self, underlay, config,
                                         openstack_deployed,
                                         sl_deployed, sl_actions, show_step):
@@ -88,9 +90,18 @@ class Test_Mcp11_install(object):
         for entry in current_targets:
             assert 'up' in entry['health'], \
                 'Next target is down {}'.format(entry)
+        # Run SL component tetsts
+        sl_actions.run_sl_functional_tests(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+        # Download report
+        sl_actions.download_sl_test_report(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.cz8120
     def test_mcp11_ocata_dvr_install(self, underlay, openstack_deployed,
                                           show_step):
         """Test for deploying an mcp environment and check it
@@ -103,6 +114,7 @@ class Test_Mcp11_install(object):
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.cz8120
     def test_mcp11_ocata_dvr_sl_install(self, underlay, config,
                                         openstack_deployed,
                                         sl_deployed, sl_actions, show_step):
@@ -155,9 +167,23 @@ class Test_Mcp11_install(object):
         for entry in current_targets:
             assert 'up' in entry['health'], \
                 'Next target is down {}'.format(entry)
+
+            # Assert that targets are up
+            for entry in current_targets:
+                assert 'up' in entry['health'], \
+                    'Next target is down {}'.format(entry)
+        # Run SL component tetsts
+        sl_actions.run_sl_functional_tests(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+        # Download report
+        sl_actions.download_sl_test_report(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.cz8117
     def test_mcp11_ocata_dpdk_install(self, underlay, openstack_deployed,
                                       show_step):
         """Test for deploying an mcp dpdk environment and check it
@@ -169,6 +195,7 @@ class Test_Mcp11_install(object):
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.cz8117
     def test_mcp11_ocata_dvr_decapod_install(self, underlay, decapod_deployed,
                                              openstack_deployed, show_step):
         """Test for deploying an mcp dpdk environment and check it

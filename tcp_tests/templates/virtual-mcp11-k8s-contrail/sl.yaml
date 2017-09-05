@@ -123,19 +123,7 @@
 - description: Update mine
   cmd: salt -C 'I@salt:minion' mine.update; sleep 5;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-# Change environment configuration before deploy
-- description: Set SL docker images deploy parameters
-  cmd: |
-  {% for sl_opt, value in config.sl_deploy.items() %}
-    {% if value|string() %}
-    salt-call reclass.cluster_meta_set {{ sl_opt }} {{ value }};
-    {% endif %}
-  {% endfor %}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
+  retry: {count: 3, delay: 10}
   skip_fail: false
 
 # Configure the services running in Docker Swarm
