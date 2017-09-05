@@ -92,9 +92,9 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp3s0f0:
-          role: management_single
+          role: single_mgm
         enp3s0f1:
-          role: control_bond0
+          role: bond0_ab_nondvr_vxlan_ctl_mesh
 ```
 
 Virtual Control Plane node example:
@@ -107,5 +107,5 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 ```

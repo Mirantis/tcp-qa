@@ -1,4 +1,0 @@
-
-              # {{ interfaces_role }}
-              {%- set interface_name = interfaces.keys()[0] %}
-              {{ interface_name }}: ${_param:_esc}{_param:linux_single_interface}

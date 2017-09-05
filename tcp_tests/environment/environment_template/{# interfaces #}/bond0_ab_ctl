@@ -1,7 +1,16 @@
+{#- Control network with bond. For control plane nodes #}
+{#- Provides:     #}
+{#-   br_ctl (linux bridge) + control address #}
+{#-   _param:keepalived_vip_interface = 'br_ctl' #}
+{#- Requirements:                     #}
+{#-   _param:single_address         #}
+{#-   _param:control_network_netmask         #}
+{#-   _param:control_vlan           #}
 
               # {{ interfaces_role }}
               {%- for interface_name, interface in interfaces.items() %}
               {{ interface_name }}:
+                mtu: 9000
                 enabled: true
                 name: {{ interface_name }}
                 proto: manual
@@ -22,13 +31,24 @@
                 {%- for interface_name in interfaces.keys() %}
                 - {{ interface_name }}
                 {%- endfor %}
+
               br_ctl:
                 address: ${_param:_esc}{_param:single_address}
                 enabled: true
-                netmask: 255.255.255.0
+                netmask: ${_param:_esc}{_param:control_network_netmask}
                 proto: static
                 type: bridge
+                use_interfaces:
+                - bond0.${_param:_esc}{_param:control_vlan}
+                require_interfaces:
+                - bond0.${_param:_esc}{_param:control_vlan}
+              bond0.control_vlan:
+                name: bond0.${_param:_esc}{_param:control_vlan}
+                enabled: true
+                proto: manual
+                type: vlan
                 use_interfaces:
                 - bond0
                 require_interfaces:
                 - bond0
+{%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}
