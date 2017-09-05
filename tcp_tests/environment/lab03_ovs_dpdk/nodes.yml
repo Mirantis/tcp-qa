@@ -234,8 +234,6 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br-fl
-                ovs_type: OVSPort
                 proto: manual
                 slaves: enp3s0f1 enp5s0f0
                 type: bond
@@ -319,8 +317,6 @@ parameters:
               bond0:
                 enabled: true
                 mode: active-backup
-                ovs_bridge: br-fl
-                ovs_type: OVSPort
                 proto: manual
 #                slaves: eth0 eth3
                 slaves: eth0
@@ -388,45 +384,6 @@ parameters:
             # in an additional dict inventory[inventory_node_name] loaded from custom_inventory.yaml,
             # or skip the original context from 'cookiecutter' object and iterate only custom inventory.
             linux_network_interfaces:
-              bond0:
-                enabled: true
-                mode: active-backup
-                ovs_bridge: br-fl
-                ovs_type: OVSPort
-                proto: manual
-                slaves: enp3s0f1
-                type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - enp3s0f1
-                require_interfaces:
-                - enp3s0f1
-              br-fl:
-                enabled: true
-                type: ovs_bridge
-              br-fl.2417:
-                address: 172.17.42.135
-                netmask: 255.255.255.192
-                gateway: 172.17.42.129
-                enabled: true
-                proto: static
-                type: vlan
-              br-prv:
-                enabled: true
-                type: ovs_bridge
-              br_ctl:
-                address: ${_param:_esc}{_param:single_address}
-                bridge: br-fl
-                enabled: true
-                netmask: 255.255.255.0
-                ovs_options: tag=2416
-                proto: static
-                type: ovs_port
-              floating-to-prv:
-                bridge: br-fl
-                enabled: true
-                peer: prv-to-floating
-                port_type: patch
-                type: ovs_port
               primary_first_nic:
                 enabled: true
                 master: bond0
@@ -434,12 +391,72 @@ parameters:
                 proto: manual
                 type: slave
                 ipflush_onchange: true
-              prv-to-floating:
-                bridge: br-prv
+              bond0:
                 enabled: true
-                peer: floating-to-prv
-                port_type: patch
+                mode: active-backup
+                proto: manual
+                slaves: enp3s0f1
+                type: bond
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - enp3s0f1
+                require_interfaces:
+                - enp3s0f1
+              bond0.2416:
+                enabled: true
+                proto: manual
+                type: vlan
+                use_interfaces:
+                - bond0
+              bond0.2417:
+                enabled: true
+                proto: manual
+                type: vlan
+                use_interfaces:
+                - bond0
+
+              br_ctl:
+                enabled: true
+                proto: static
+                type: bridge
+                address: ${_param:_esc}{_param:single_address}
+                netmask: 255.255.255.0
+                use_interfaces:
+                - bond0.2416
+
+              br-floating:
+                enabled: true
+                type: ovs_bridge
+              br-ex:
+                enabled: true
+                proto: static
+                type: bridge
+                address: 172.17.42.135
+                netmask: 255.255.255.192
+                gateway: 172.17.42.129
+                use_interfaces:
+                - bond0.2417
+                use_ovs_ports:
+                - float-to-ex
+              float-to-ex:
+                enabled: true
                 type: ovs_port
+                bridge: br-floating
+
+              br-prv:
+                enabled: true
+                type: ovs_bridge
+              br_ten:
+                enabled: true
+                proto: static
+                type: bridge
+                use_interfaces:
+                - bond0
+                use_ovs_ports:
+                - prv-to-tenant
+              prv-to-tenant:
+                enabled: true
+                type: ovs_port
+                bridge: br-prv
 
           classes:
           - environment.lab03_ovs_dpdk.common
@@ -453,45 +470,6 @@ parameters:
             # in an additional dict inventory[inventory_node_name] loaded from custom_inventory.yaml,
             # or skip the original context from 'cookiecutter' object and iterate only custom inventory.
             linux_network_interfaces:
-              bond0:
-                enabled: true
-                mode: active-backup
-                ovs_bridge: br-fl
-                ovs_type: OVSPort
-                proto: manual
-                slaves: eno2
-                type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
-                - eno2
-                require_interfaces:
-                - eno2
-              br-fl:
-                enabled: true
-                type: ovs_bridge
-              br-fl.2417:
-                address: 172.17.42.136
-                netmask: 255.255.255.192
-                gateway: 172.17.42.129
-                enabled: true
-                proto: static
-                type: vlan
-              br-prv:
-                enabled: true
-                type: ovs_bridge
-              br_ctl:
-                address: ${_param:_esc}{_param:single_address}
-                bridge: br-fl
-                enabled: true
-                netmask: 255.255.255.0
-                ovs_options: tag=2416
-                proto: static
-                type: ovs_port
-              floating-to-prv:
-                bridge: br-fl
-                enabled: true
-                peer: prv-to-floating
-                port_type: patch
-                type: ovs_port
               primary_first_nic:
                 enabled: true
                 master: bond0
@@ -499,12 +477,72 @@ parameters:
                 proto: manual
                 type: slave
                 ipflush_onchange: true
-              prv-to-floating:
-                bridge: br-prv
+              bond0:
                 enabled: true
-                peer: floating-to-prv
-                port_type: patch
+                mode: active-backup
+                proto: manual
+                slaves: eno2
+                type: bond
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                - eno2
+                require_interfaces:
+                - eno2
+              bond0.2416:
+                enabled: true
+                proto: manual
+                type: vlan
+                use_interfaces:
+                - bond0
+              bond0.2417:
+                enabled: true
+                proto: manual
+                type: vlan
+                use_interfaces:
+                - bond0
+
+              br_ctl:
+                enabled: true
+                proto: static
+                type: bridge
+                address: ${_param:_esc}{_param:single_address}
+                netmask: 255.255.255.0
+                use_interfaces:
+                - bond0.2416
+
+              br-floating:
+                enabled: true
+                type: ovs_bridge
+              br-ex:
+                enabled: true
+                proto: static
+                type: bridge
+                address: 172.17.42.136
+                netmask: 255.255.255.192
+                gateway: 172.17.42.129
+                use_interfaces:
+                - bond0.2417
+                use_ovs_ports:
+                - float-to-ex
+              float-to-ex:
+                enabled: true
                 type: ovs_port
+                bridge: br-floating
+
+              br-prv:
+                enabled: true
+                type: ovs_bridge
+              br_ten:
+                enabled: true
+                proto: static
+                type: bridge
+                use_interfaces:
+                - bond0
+                use_ovs_ports:
+                - prv-to-tenant
+              prv-to-tenant:
+                enabled: true
+                type: ovs_port
+                bridge: br-prv
 
           classes:
           - environment.lab03_ovs_dpdk.common
