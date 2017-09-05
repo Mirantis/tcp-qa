@@ -58,7 +58,7 @@ class K8sCluster(object):
             auth = base64.encodestring(auth_string.encode()).decode()[:-1]
             auth = "Basic {}".format(auth)
             self._client = api_client.ApiClient(
-                '{schema}://{host}:{port}/'.format(
+                '{schema}://{host}:{port}'.format(
                     schema=schema, host=host, port=port))
             self._client.set_default_header('Authorization', auth)
             restcli_impl = self._client.RESTClient.IMPL
@@ -67,7 +67,7 @@ class K8sCluster(object):
 
         else:
             self._client = api_client.ApiClient(
-                '{schema}://{host}:{port}/'.format(
+                '{schema}://{host}:{port}'.format(
                     schema=schema, host=host, port=port))
         self._api = apiv_api.ApivApi(self._client)
         self._bapi = apisbatchv_api.ApisbatchvApi(self._client)
