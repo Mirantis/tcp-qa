@@ -8,7 +8,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     ctl02.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_control_node02
@@ -17,7 +17,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     ctl03.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_control_node03
@@ -26,7 +26,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     dbs01.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_database_node01
@@ -35,7 +35,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     dbs02.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_database_node01
@@ -44,7 +44,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     dbs03.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_database_node01
@@ -53,7 +53,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     msg01.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_message_queue_node01
@@ -62,7 +62,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     msg02.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_message_queue_node02
@@ -71,7 +71,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     msg03.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_message_queue_node03
@@ -80,7 +80,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mdb01.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_telemetry_node01
@@ -89,7 +89,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mdb02.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_telemetry_node02
@@ -98,7 +98,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mdb03.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_telemetry_node03
@@ -107,7 +107,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     prx01.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_proxy_node01
@@ -116,7 +116,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     prx02.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_proxy_node02
@@ -125,7 +125,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mon01.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_monitor_node01
@@ -134,7 +134,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mon02.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_monitor_node02
@@ -143,7 +143,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mon03.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_monitor_node03
@@ -152,7 +152,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mtr01.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_telemetry_node01
@@ -161,7 +161,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mtr02.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_telemetry_node02
@@ -170,7 +170,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     mtr03.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_telemetry_node03
@@ -179,7 +179,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     log01.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_log_node01
@@ -188,7 +188,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     log02.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_log_node02
@@ -197,7 +197,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl
 
     log03.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_log_node03
@@ -206,4 +206,4 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: control_vcp_single
+          role: single_ctl

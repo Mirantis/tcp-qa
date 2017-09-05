@@ -436,7 +436,7 @@
   cmd: salt -C "I@linux:network:interface:*:type:bond" cmd.run 'modprobe bonding'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: true
 
 - description: '*Workaround* install bridge-utils before running linux formula'
   # The formula removes default route and then tries to install the package, fails.
