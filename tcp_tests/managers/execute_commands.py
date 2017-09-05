@@ -203,7 +203,8 @@ class ExecuteCommandsMixin(object):
             with self.__underlay.remote(node_name=node_name) as remote:
                 LOG.info("Uploading directory {0} to {1}:{2}"
                          .format(local_path, node_name, remote_path))
-                remote.upload(source=local_path.rstrip(), target=remote_path.rstrip())
+                remote.upload(source=local_path.rstrip(),
+                              target=remote_path.rstrip())
                 return
 
         result = {}
