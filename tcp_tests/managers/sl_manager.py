@@ -12,6 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import os
+
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 from tcp_tests.managers.clients.prometheus import prometheus_client
 from tcp_tests import logger
@@ -76,3 +78,22 @@ class SLManager(ExecuteCommandsMixin):
                 tmp = line.split(':')
                 service_stat_dict.update({tmp[0]: tmp[1]})
         return service_stat_dict
+
+    def run_sl_functional_tests(self, node_to_run, path_tests_to_run):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if node_to_run in node_name]
+        with self.__underlay.remote(node_name=target_node_name[0]) as node_remote:
+            cmd = "python -k {}".format(path_tests_to_run)
+            result = node_remote.execute(cmd)
+            LOG.debug("Test execution result is {}".format(result))
+        return result
+
+    def download_sl_test_report(self, stored_node, file_path):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if stored_node in node_name]
+        with self.__underlay.remote(node_name=target_node_name[0]) as r:
+            r.download(
+                destination=file_path,
+                target=os.getcwd())
