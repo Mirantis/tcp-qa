@@ -7,6 +7,7 @@ parameters:
     storage:
       node:
       {%- for inventory_node_name, node in nodes.items()|sort %}
+        {%- set node_name = inventory_node_name.split('.')[0] %}
         {{ node['reclass_storage_name'] }}:
         {# 'params' dict object is dynamically generated from 'roles' to add on the node #}
         {%- set params = {} %}
@@ -22,7 +23,8 @@ parameters:
             {{ param_name }}: {{ param }}
           {%- endfor %}
         {%- endif %}
-
+          name: {{ node_name }}
+          domain: ${_param:cluster_domain}
       {%- endfor %}
 
 classes:
