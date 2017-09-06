@@ -7,3 +7,7 @@ parameters:
           classes:
 #}
           - cluster.${_param:cluster_name}.infra.config
+          - environment.{{ cookiecutter._env_name }}.reclass_datasource_local
+          - environment.{{ cookiecutter._env_name }}
+{%- set _ = params.update({'name': "${_param:infra_config_hostname}"}) %}
+{%- set _ = params.update({'domain': "${_param:cluster_domain}"}) %}
