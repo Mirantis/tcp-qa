@@ -295,7 +295,8 @@ template:
 
               interfaces: *interfaces
               network_config: *network_config
-              - name: {{ HOSTNAME_MON01 }}
+
+          - name: {{ HOSTNAME_MON01 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 3
@@ -401,7 +402,6 @@ template:
 
               interfaces: *interfaces
               network_config: *network_config
-
 
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
