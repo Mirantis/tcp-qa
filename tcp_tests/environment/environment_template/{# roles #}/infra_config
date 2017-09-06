@@ -7,3 +7,5 @@ parameters:
           classes:
 #}
           - cluster.${_param:cluster_name}.infra.config
+          - environment.{{ cookiecutter._env_name }}.reclass_datasource_local
+          - environment.{{ cookiecutter._env_name }}
