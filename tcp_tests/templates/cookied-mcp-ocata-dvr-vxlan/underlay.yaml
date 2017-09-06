@@ -288,23 +288,23 @@ template:
           external: external-pool01
 
         l2_network_devices:
-          private:
-            address_pool: private-pool01
-            dhcp: true
-
           admin:
             address_pool: admin-pool01
             dhcp: true
             forward:
               mode: nat
 
-          tenant:
-            address_pool: tenant-pool01
-            dhcp: true
+          private:
+            address_pool: private-pool01
+            dhcp: false
+
+          #tenant:
+          #  address_pool: tenant-pool01
+          #  dhcp: false
 
           external:
             address_pool: external-pool01
-            dhcp: true
+            dhcp: false
             forward:
               mode: nat
 
@@ -362,7 +362,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens4
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -375,22 +375,22 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cicd
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: &cid_interfaces
+              interfaces: &interfaces
                 - label: ens3
-                  l2_network_device: private
-                  interface_model: *interface_model
-                - label: ens4
                   l2_network_device: admin
                   interface_model: *interface_model
-              network_config: &cid_network_config
+                - label: ens4
+                  l2_network_device: private
+                  interface_model: *interface_model
+              network_config: &network_config
                 ens3:
                   networks:
-                    - private
+                    - admin
                 ens4:
                   networks:
-                    - admin
+                    - private
 
 #          - name: {{ HOSTNAME_CID02 }}
 #            role: salt_minion
@@ -400,7 +400,7 @@ template:
 #              boot:
 #                - hd
 #              cloud_init_volume_name: iso
-#              cloud_init_iface_up: ens4
+#              cloud_init_iface_up: ens3
 #              volumes:
 #                - name: system
 #                  capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -413,10 +413,10 @@ template:
 #                  device: cdrom
 #                  bus: ide
 #                  cloudinit_meta_data: *cloudinit_meta_data
-#                  cloudinit_user_data: *cloudinit_user_data_cicd
+#                  cloudinit_user_data: *cloudinit_user_data_1604
 #
-#              interfaces: *cid_interfaces
-#              network_config: *cid_network_config
+#              interfaces: *interfaces
+#              network_config: *network_config
 
 #          - name: {{ HOSTNAME_CID03 }}
 #            role: salt_minion
@@ -426,7 +426,7 @@ template:
 #              boot:
 #                - hd
 #              cloud_init_volume_name: iso
-#              cloud_init_iface_up: ens4
+#              cloud_init_iface_up: ens3
 #              volumes:
 #                - name: system
 #                  capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -439,10 +439,10 @@ template:
 #                  device: cdrom
 #                  bus: ide
 #                  cloudinit_meta_data: *cloudinit_meta_data
-#                  cloudinit_user_data: *cloudinit_user_data_cicd
+#                  cloudinit_user_data: *cloudinit_user_data_1604
 #
-#              interfaces: *cid_interfaces
-#              network_config: *cid_network_config
+#              interfaces: *interfaces
+#              network_config: *network_config
 
           # KVM* nodes required for services like glusterfs.server
           - name: {{ HOSTNAME_KVM01 }}
@@ -543,7 +543,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens4
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -556,10 +556,10 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cicd
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *cid_interfaces
-              network_config: *cid_network_config
+              interfaces: *interfaces
+              network_config: *network_config
 
           - name: {{ HOSTNAME_DBS02 }}
             role: salt_minion
@@ -569,7 +569,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens4
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -582,10 +582,10 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cicd
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *cid_interfaces
-              network_config: *cid_network_config
+              interfaces: *interfaces
+              network_config: *network_config
 
           - name: {{ HOSTNAME_DBS03 }}
             role: salt_minion
@@ -595,7 +595,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens4
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -608,10 +608,10 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cicd
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *cid_interfaces
-              network_config: *cid_network_config
+              interfaces: *interfaces
+              network_config: *network_config
 
           - name: {{ HOSTNAME_MSG01 }}
             role: salt_minion
@@ -621,7 +621,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens4
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -634,10 +634,10 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cicd
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *cid_interfaces
-              network_config: *cid_network_config
+              interfaces: *interfaces
+              network_config: *network_config
 
 #          - name: {{ HOSTNAME_MSG02 }}
 #            role: salt_minion
@@ -647,7 +647,7 @@ template:
 #              boot:
 #                - hd
 #              cloud_init_volume_name: iso
-#              cloud_init_iface_up: ens4
+#              cloud_init_iface_up: ens3
 #              volumes:
 #                - name: system
 #                  capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -660,10 +660,10 @@ template:
 #                  device: cdrom
 #                  bus: ide
 #                  cloudinit_meta_data: *cloudinit_meta_data
-#                  cloudinit_user_data: *cloudinit_user_data_cicd
+#                  cloudinit_user_data: *cloudinit_user_data_1604
 #
-#              interfaces: *cid_interfaces
-#              network_config: *cid_network_config
+#              interfaces: *interfaces
+#              network_config: *network_config
 
 #          - name: {{ HOSTNAME_MSG03 }}
 #            role: salt_minion
@@ -673,7 +673,7 @@ template:
 #              boot:
 #                - hd
 #              cloud_init_volume_name: iso
-#              cloud_init_iface_up: ens4
+#              cloud_init_iface_up: ens3
 #              volumes:
 #                - name: system
 #                  capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -686,10 +686,10 @@ template:
 #                  device: cdrom
 #                  bus: ide
 #                  cloudinit_meta_data: *cloudinit_meta_data
-#                  cloudinit_user_data: *cloudinit_user_data_cicd
+#                  cloudinit_user_data: *cloudinit_user_data_1604
 #
-#              interfaces: *cid_interfaces
-#              network_config: *cid_network_config
+#              interfaces: *interfaces
+#              network_config: *network_config
 
           - name: {{ HOSTNAME_CTL01 }}
             role: salt_minion
@@ -699,7 +699,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens4
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -715,10 +715,10 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cicd
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *cid_interfaces
-              network_config: *cid_network_config
+              interfaces: *interfaces
+              network_config: *network_config
 
           - name: {{ HOSTNAME_CTL02 }}
             role: salt_minion
@@ -728,7 +728,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens4
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -744,10 +744,10 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cicd
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *cid_interfaces
-              network_config: *cid_network_config
+              interfaces: *interfaces
+              network_config: *network_config
 
 #          - name: {{ HOSTNAME_CTL03 }}
 #            role: salt_minion
@@ -757,7 +757,7 @@ template:
 #              boot:
 #                - hd
 #              cloud_init_volume_name: iso
-#              cloud_init_iface_up: ens4
+#              cloud_init_iface_up: ens3
 #              volumes:
 #                - name: system
 #                  capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -773,10 +773,10 @@ template:
 #                  device: cdrom
 #                  bus: ide
 #                  cloudinit_meta_data: *cloudinit_meta_data
-#                  cloudinit_user_data: *cloudinit_user_data_cicd
+#                  cloudinit_user_data: *cloudinit_user_data_1604
 #
-#              interfaces: *cid_interfaces
-#              network_config: *cid_network_config
+#              interfaces: *interfaces
+#              network_config: *network_config
 
           - name: {{ HOSTNAME_PRX01 }}
             role: salt_minion
@@ -786,7 +786,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens4
+              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -802,10 +802,10 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cicd
+                  cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *cid_interfaces
-              network_config: *cid_network_config
+              interfaces: *interfaces
+              network_config: *network_config
 
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
@@ -839,7 +839,7 @@ template:
                   l2_network_device: private
                   interface_model: *interface_model
                 - label: ens5
-                  l2_network_device: tenant
+                  l2_network_device: private
                   interface_model: *interface_model
                 - label: ens6
                   l2_network_device: external
@@ -853,7 +853,7 @@ template:
                     - private
                 ens5:
                   networks:
-                    - tenant
+                    - private
                 ens6:
                   networks:
                     - external

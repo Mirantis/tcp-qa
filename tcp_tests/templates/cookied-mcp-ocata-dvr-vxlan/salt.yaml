@@ -23,7 +23,7 @@
     mkdir -p /srv/salt/reclass/classes/cluster/
     mkdir -p /srv/salt/reclass/classes/system/
     mkdir -p /srv/salt/reclass/classes/service/
-    mkdir -p /srv/salt/reclass/nodes/
+    mkdir -p /srv/salt/reclass/nodes/_generated
 
     {%- set CONTEXT_PATH = '/tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml' %}
 
@@ -63,23 +63,11 @@
     export GIT_SSL_NO_VERIFY=true; git clone https://gerrit.mcp.mirantis.net/salt-models/reclass-system /srv/salt/reclass/classes/system/
 
     # Create the cfg01 node and disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
+    cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
     classes:
     - cluster.{{ LAB_CONFIG_NAME }}.infra.config
-    parameters:
-      _param:
-        linux_system_codename: xenial
-        reclass_data_revision: master
-      linux:
-        system:
-          name: cfg01
-          domain: {{ DOMAIN_NAME }}
-    # local storage
-      reclass:
-        storage:
-          data_source:
-            engine: local
-    EOF
+    - environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local
+    - environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
@@ -92,7 +80,7 @@
     pip install git+https://github.com/dis-xcom/reclass-tools;
 
     # Enable 'root' user
-    reclass-tools add-key classes system.openssh.server.team.lab /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge
+    reclass-tools add-key classes system.openssh.server.team.all /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
@@ -109,6 +97,22 @@
   node_name: {{ HOSTNAME_CFG01 }}
   skip_fail: false
 
+- description: "[EXPERIMENTAL] Remove linux.network.interface object from the cluster/system models and use fixed 'environment' model instead"
+  cmd: |
+    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    pip install git+https://github.com/dis-xcom/reclass-tools;
+    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/cluster/;
+    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
+    reclass-tools del-key parameters.linux.network.interface /usr/share/salt-formulas/reclass/;
+
+    #if ! reclass-tools get-key 'classes' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
+    #  reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml --merge ;
+    #fi;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: "[EXPERIMENTAL] Create environment model for virtual environment"
   cmd: |
     set -e;
@@ -118,22 +122,6 @@
                          --output-dir /srv/salt/reclass/classes/environment/ \
                          --context /tmp/environment/environment_inventory/{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.yaml \
                          --env-name {{ ENVIRONMENT_MODEL_INVENTORY_NAME }}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: "[EXPERIMENTAL] Remove linux.network.interface object from the cluster/system models and use fixed 'environment' model instead"
-  cmd: |
-    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
-    pip install git+https://github.com/dis-xcom/reclass-tools;
-    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/cluster/;
-    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
-    reclass-tools del-key parameters.linux.network.interface /usr/share/salt-formulas/reclass/;
-
-    if ! reclass-tools get-key 'classes' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
-      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml --merge ;
-    fi;
-
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
