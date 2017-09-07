@@ -1,6 +1,6 @@
 # Do not delete! This file is for global parameters overrides over all the nodes in the environment.
 # Example: salt-call reclass.cluster_meta_set foo bar
-parameters:
-  _param:
-    cluster_public_protocol: http
-    neutron_public_protocol: http
+#parameters:
+#  _param:
+#    cluster_public_protocol: http
+#    neutron_public_protocol: http
