@@ -81,7 +81,6 @@
 
     # Enable 'root' user
     reclass-tools add-key classes system.openssh.server.team.all /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge
-
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
