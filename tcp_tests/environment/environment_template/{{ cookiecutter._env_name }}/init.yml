@@ -12,8 +12,9 @@ parameters:
         {# 'params' dict object is dynamically generated from 'roles' to add on the node #}
         {%- set params = {} %}
           classes:
-          {#- Default role linux_network_interface is added to each node #}
-          {%- for role in node.get('roles', []) + ['linux_network_interface'] %}
+          {#- Default roles are added to each node #}
+          {#- 'overrides' must be the very last role for each node #}
+          {%- for role in node.get('roles', []) + ['linux_network_interface', 'overrides'] %}
             {%- include ("{# roles #}/" + role) %}
           {%- endfor %}
 

@@ -1,0 +1,5 @@
+# Do not delete! This file is for global parameters overrides over all the nodes in the environment.
+# Example: salt-call reclass.cluster_meta_set foo bar
+#parameters:
+#  _param:
+#    foo: bar
