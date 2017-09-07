@@ -82,6 +82,10 @@
     # Enable 'root' user
     reclass-tools add-key classes system.openssh.server.team.all /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge
 
+    # Use HTTP instead of HTTPS for OpenStack API services
+    salt-call reclass.cluster_meta_set cluster_public_protocol http /srv/salt/reclass/classes/environment/{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}/overrides.yml
+    salt-call reclass.cluster_meta_set neutron_public_protocol http /srv/salt/reclass/classes/environment/{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}/overrides.yml
+
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
