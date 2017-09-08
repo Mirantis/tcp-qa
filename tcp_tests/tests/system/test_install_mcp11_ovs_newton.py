@@ -24,12 +24,12 @@ LOG = logger.logger
 
 
 @pytest.mark.deploy
-class Test_Mcp11_install(object):
+class TestMcp11Install(object):
     """Test class for testing mcp11 vxlan deploy"""
 
     @pytest.mark.fail_snapshot
     def test_mcp11_newton_ovs_install(self, underlay, openstack_deployed,
-                                     show_step):
+                                      openstack_actions, show_step):
         """Test for deploying an mcp environment and check it
 
         Scenario:
@@ -38,11 +38,15 @@ class Test_Mcp11_install(object):
             3. Setup compute nodes
 
         """
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.download_tempest_report()
+
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
     def test_mcp11_newton_dvr_install(self, underlay, openstack_deployed,
-                                     show_step):
+                                      openstack_actions, show_step):
         """Test for deploying an mcp environment and check it
 
         Scenario:
@@ -51,4 +55,7 @@ class Test_Mcp11_install(object):
             3. Setup compute nodes
 
         """
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
