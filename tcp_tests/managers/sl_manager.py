@@ -84,7 +84,7 @@ class SLManager(ExecuteCommandsMixin):
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
         with self.__underlay.remote(node_name=target_node_name[0]) as node_remote:
-            cmd = "python -k {}".format(path_tests_to_run)
+            cmd = "pytest -k {}".format(path_tests_to_run)
             result = node_remote.execute(cmd)
             LOG.debug("Test execution result is {}".format(result))
         return result
