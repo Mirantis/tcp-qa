@@ -15,6 +15,7 @@ import os
 import pytest
 
 from tcp_tests import logger
+from tcp_tests import settings
 
 LOG = logger.logger
 
@@ -25,15 +26,20 @@ class Test_Mcp11_install(object):
 
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8119
-    def test_mcp11_ocata_ovs_install(self, underlay, openstack_deployed,
-                                          show_step):
+    def test_mcp11_ocata_ovs_install(self, underlay,
+                                     openstack_deployed,
+                                     sl_deployed, openstack_actions):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
         2. Setup controller nodes
         3. Setup compute nodes
+        4. Run tempest
 
         """
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
