@@ -8,3 +8,4 @@ parameters:
 #}
           - cluster.${_param:cluster_name}.stacklight.log
           - cluster.${_param:cluster_name}.stacklight.log_curator
+{%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}

@@ -6,5 +6,5 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.openstack.database
+          - cluster.${_param:cluster_name}.openstack.baremetal
 {%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}

@@ -1,0 +1,18 @@
+{#- Management (admin) network. For nodes where deploy address provided by DHCP server #}
+{#- Provides:                         #}
+{#-   br_mgm (linux bridge) + DHCP address #}
+
+              # {{ interfaces_role }}
+              {%- set interface_name = interfaces.keys()[0] %}
+              {{ interface_name }}:
+                enabled: true
+                type: eth
+                proto: manual
+                ipflush_onchange: true
+                name: {{ interface_name }}
+              br_mgm:
+                enabled: true
+                proto: dhcp
+                type: bridge
+                use_interfaces:
+                - {{ interface_name }}
