@@ -6,4 +6,4 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - environment.{{ cookiecutter._env_name }}.features.designate.database
+          - cluster.${_param:cluster_name}.openstack.upgrade

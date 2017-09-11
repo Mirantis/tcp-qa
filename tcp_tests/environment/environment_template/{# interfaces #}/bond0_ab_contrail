@@ -1,6 +1,7 @@
 {#- Provides:     #}
 {#-   br_ctl (linux bridge) + control address #}
 {#-   br_mesh (linux bridge) + tenant address #}
+{#-   vhost0  #}
 {#- Requirements:                     #}
 {#-   _param:single_address         #}
 {#-   _param:control_vlan           #}

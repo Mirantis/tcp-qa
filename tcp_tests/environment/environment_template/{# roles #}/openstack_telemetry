@@ -7,3 +7,5 @@ parameters:
           classes:
 #}
           - cluster.${_param:cluster_name}.openstack.telemetry
+{%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}
+{%- set _ = local_metadata.update({'keepalived_vip_priority': True}) %}
