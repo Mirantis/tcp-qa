@@ -1,0 +1,34 @@
+{#- Collect interface roles and params into the following dict:
+ # interface_role:             # filename that will be included
+ #  interface_name:            # interface (eth0)
+ #    interface_param1: value  # optional parameters or empty dict
+ #    interface_param2: value
+ #    ...
+ #}
+
+1. Check if 'local_metadata' matches to something in 'global_metadata'.
+   If yes, fetch and process the data.
+   If no, initialize necessary data.
+   If partially intersects (keepalived roles for different clusters): add a fail-state warning to the YAML to avoid using the wrong config
+2. Set necessary 'params' using the 'local_metadata'
+3. Store the 'local_metadata' to the 'global_metadata' if required.
+4. Increment/decrement the 'global_metadata' objects if necessary (next IP address, next vrouter ID, master->slave, etc)
+
+
+
+
+{%- set interface_roles = {} %}
+{%- for interface_name, interface in node['interfaces'].items() %}
+  {%- if interface['role'] not in interface_roles %}
+    {%- set _ = interface_roles.update({interface['role']: {}}) %}
+  {%- endif %}
+  {%- set _ = interface_roles[interface['role']].update({interface_name: {}}) %}
+  {%- for param_name, param in interface.items() %}
+    {%- set _ = interface_roles[interface['role']][interface_name].update({param_name: param}) %}
+  {%- endfor %}
+{%- endfor %}
+{%- set _ = params.update({'linux_network_interfaces': "\n"}) %}
+{%- for interfaces_role, interfaces in interface_roles.items() %}
+  {%- import ("{# interfaces #}/" + interfaces_role) as interface with context %}
+  {%- set _ = params.update({'linux_network_interfaces': params['linux_network_interfaces'] + interface|string }) %}
+{%- endfor %}

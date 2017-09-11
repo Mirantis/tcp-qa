@@ -6,7 +6,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -17,7 +17,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -28,7 +28,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -39,7 +39,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -50,7 +50,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -61,7 +61,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -72,7 +72,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -85,7 +85,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -97,7 +97,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -109,7 +109,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -121,7 +121,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -133,7 +133,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -145,7 +145,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -156,7 +156,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -167,7 +167,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -178,7 +178,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -189,7 +189,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -200,7 +200,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -211,7 +211,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -222,7 +222,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -233,7 +233,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -244,7 +244,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -255,7 +255,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -266,7 +266,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -277,7 +277,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -288,7 +288,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -299,7 +299,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: single_vlan_ctl
 
@@ -311,7 +311,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: bond0_ab_ovs_vxlan_ctl_mesh
         ens5:
@@ -326,7 +326,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: bond0_ab_ovs_vxlan_ctl_mesh
         ens5:
@@ -341,7 +341,7 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         ens3:
-          role: single_dhcp
+          role: single_mgm_dhcp
         ens4:
           role: bond0_ab_ovs_vxlan_ctl_mesh
         ens5:
