@@ -6,8 +6,9 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.openstack.database
-          - cluster.${_param:cluster_name}.openstack.database_init
+          - system.docker.swarm.master
+          - cluster.${_param:cluster_name}.stacklight.server
+          - cluster.${_param:cluster_name}.stacklight.client
 {%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}
 {%- set _ = local_metadata.update({'keepalived_vip_priority': True}) %}
-{%- set _ = local_metadata.update({'mysql_cluster_role': True}) %}
+{%- set _ = local_metadata.update({'redis_cluster_role': True}) %}

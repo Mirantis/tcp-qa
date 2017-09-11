@@ -1,0 +1,1 @@
+{%- set _ = params.update({'linux_system_codename': 'centos'}) %}
