@@ -1,6 +1,3 @@
-classes:
-# Enable root and *ALL* users access
-- system.openssh.server.team.all
 parameters:
   # _param:
   # Put overrides for any environment-specific variables here

@@ -1,0 +1,10 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+          - cluster.${_param:cluster_name}.kubernetes.control
+{%- set _ = params.update({'keepalived_vip_interface': 'br_mgm'}) %}
