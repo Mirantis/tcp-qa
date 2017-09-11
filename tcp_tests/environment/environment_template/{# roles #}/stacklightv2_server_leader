@@ -6,6 +6,8 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.openstack.message_queue
+          - system.docker.swarm.master
+          - cluster.${_param:cluster_name}.stacklight.server
+          - cluster.${_param:cluster_name}.stacklight.client
 {%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}
 {%- set _ = local_metadata.update({'keepalived_vip_priority': True}) %}
