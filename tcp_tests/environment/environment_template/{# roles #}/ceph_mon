@@ -6,6 +6,6 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.openstack.message_queue
+          - cluster.${_param:cluster_name}.ceph.mon
 {%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}
 {%- set _ = local_metadata.update({'keepalived_vip_priority': True}) %}

@@ -6,4 +6,4 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - environment.{{ cookiecutter._env_name }}.features.designate.system
+          - environment.{{ cookiecutter._env_name }}.features.designate.keystone

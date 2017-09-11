@@ -39,4 +39,3 @@
                 - {{ interface_name }}
                 require_interfaces:
                 - {{ interface_name }}
-{%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}

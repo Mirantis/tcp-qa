@@ -1,5 +1,9 @@
 {# 'infra_config_classes' list object is dynamically generated from 'roles' to add on the cfg node #}
 {%- set infra_config_classes = [] %}
+{# 'global_metadata' is a global collection of shared objects between nodes #}
+{%- set global_metadata = {} %}
+{%- set common_roles = ['_linux_network_interface', '_stateful_metadata', '_overrides'] %}
+
 parameters:
   _param:
     _esc: $
@@ -9,12 +13,14 @@ parameters:
       {%- for inventory_node_name, node in nodes.items()|sort %}
         {%- set node_name = inventory_node_name.split('.')[0] %}
         {{ node['reclass_storage_name'] }}:
+        {# 'local_metadata' is to collect the data from different roles in a single place inside the node #}
+        {%- set local_metadata = {} %}
         {# 'params' dict object is dynamically generated from 'roles' to add on the node #}
         {%- set params = {} %}
           classes:
           {#- Default roles are added to each node #}
           {#- 'overrides' must be the very last role for each node #}
-          {%- for role in node.get('roles', []) + ['linux_network_interface', 'overrides'] %}
+          {%- for role in node.get('roles', []) + common_roles %}
             {%- include ("{# roles #}/" + role) %}
           {%- endfor %}
 
