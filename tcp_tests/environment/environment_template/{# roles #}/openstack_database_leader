@@ -6,5 +6,5 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.openstack.database
+          {%- include ("{# roles #}/" + 'openstack_database') %}
           - cluster.${_param:cluster_name}.openstack.database_init

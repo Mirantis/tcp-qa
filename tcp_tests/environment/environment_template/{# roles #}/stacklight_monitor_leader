@@ -6,6 +6,6 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.stacklight.monitor
+          {%- include ("{# roles #}/" + 'stacklight_monitor') %}
           - system.grafana.client.single
           - system.kibana.client.single

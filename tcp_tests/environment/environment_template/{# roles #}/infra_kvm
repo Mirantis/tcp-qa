@@ -7,3 +7,5 @@ parameters:
           classes:
 #}
           - cluster.${_param:cluster_name}.infra.kvm
+{{- set_param('keepalived_vip_interface', 'br_ctl') }}
+{{- register_metaparam('keepalived_vip_priority', 'infra_kvm') }}

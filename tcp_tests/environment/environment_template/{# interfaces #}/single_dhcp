@@ -1,12 +1,6 @@
-{#- Management (admin) network. For nodes where deploy address must be configured as static (at least cfg*) #}
+{#- Management (admin) network with DHCP #}
 {#- Provides:                         #}
-{#-   br_mgm (linux bridge) + address #}
-{#- Requires:                         #}
-{#-   _param:deploy_address         #}
-{#-   _param:deploy_network_netmask         #}
-{#-   _param:deploy_network_gateway         #}
-{#-   _param:dns_server01         #}
-{#-   _param:dns_server02         #}
+{#-   <interface_name> + DHCP address #}
 
               # {{ interfaces_role }}
               {%- set interface_name = interfaces.keys()[0] %}

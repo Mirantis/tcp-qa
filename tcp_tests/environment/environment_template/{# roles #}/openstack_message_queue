@@ -7,3 +7,6 @@ parameters:
           classes:
 #}
           - cluster.${_param:cluster_name}.openstack.message_queue
+{{- set_param('keepalived_vip_interface', 'br_ctl') }}
+{{- register_metaparam('rabbitmq_cluster_role', 'openstack_message_queue') }}
+{{- register_metaparam('keepalived_vip_priority', 'openstack_message_queue') }}

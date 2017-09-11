@@ -1,0 +1,11 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+          - cluster.${_param:cluster_name}.kubernetes.control
+{{- set_param('keepalived_vip_interface', 'ens3') }}
+{{- register_metaparam('keepalived_vip_priority', 'kubernetes_control') }}

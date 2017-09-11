@@ -6,5 +6,5 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.openstack.control
+          {%- include ("{# roles #}/" + 'openstack_control') %}
           - cluster.${_param:cluster_name}.openstack.control_init
