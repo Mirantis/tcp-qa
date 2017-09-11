@@ -1,11 +1,16 @@
 {#- Provides:     #}
-{#-   br_mesh (linux bridge) + tenant address #}
-{#-   vhost0 , as a keepalived vip interface #}
+{#-   br_ctl (linux bridge) + control address #}
+{#-   vhost0  #}
 {#- Requirements:                     #}
+{#-   _param:single_address         #}
+{#-   _param:control_vlan           #}
+{#-   _param:control_network_netmask         #}
 {#-   _param:tenant_vlan           #}
 {#-   _param:tenant_address         #}
 {#-   _param:tenant_netmask         #}
 {#-   _param:tenant_network_gateway         #}
+{#-   _param:_param:dns_server01         #}
+{#-   _param:_param:dns_server02         #}
 
               # {{ interfaces_role }}
               {%- for interface_name, interface in interfaces.items() %}
@@ -33,7 +38,27 @@
                 - {{ interface_name }}
                 {%- endfor %}
 
-              {{- set_param('keepalived_vip_interface', 'vhost0') }}
+              br_ctl:
+                address: ${_param:_esc}{_param:single_address}
+                enabled: true
+                netmask: ${_param:_esc}{_param:control_network_netmask}
+                proto: static
+                type: bridge
+                use_interfaces:
+                - bond0.${_param:_esc}{_param:control_vlan}
+                require_interfaces:
+                - bond0.${_param:_esc}{_param:control_vlan}
+              bond0.control_vlan:
+                mtu: 9000
+                name: bond0.${_param:_esc}{_param:control_vlan}
+                enabled: true
+                proto: manual
+                type: vlan
+                use_interfaces:
+                - bond0
+                require_interfaces:
+                - bond0
+
               vhost0:
                 mtu: 9000
                 address: ${_param:_esc}{_param:tenant_address}

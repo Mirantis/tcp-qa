@@ -80,8 +80,8 @@ nodes:
       reclass_storage_name: openstack_control_node01
       roles:
       - openstack_control_leader
-      - openstack_designate
-      - openstack_designate_keystone
+      - features_designate
+      - features_designate_keystone
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -93,7 +93,7 @@ nodes:
       reclass_storage_name: openstack_control_node02
       roles:
       - openstack_control
-      - openstack_designate
+      - features_designate
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -105,7 +105,7 @@ nodes:
       reclass_storage_name: openstack_control_node03
       roles:
       - openstack_control
-      - openstack_designate
+      - features_designate
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -117,7 +117,7 @@ nodes:
       reclass_storage_name: openstack_database_node01
       roles:
       - openstack_database_leader
-      - openstack_designate_database
+      - features_designate_database
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -129,7 +129,7 @@ nodes:
       reclass_storage_name: openstack_database_node02
       roles:
       - openstack_database
-      - openstack_designate_database
+      - features_designate_database
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -141,7 +141,7 @@ nodes:
       reclass_storage_name: openstack_database_node03
       roles:
       - openstack_database
-      - openstack_designate_database
+      - features_designate_database
       - linux_system_codename_xenial
       interfaces:
         ens3:

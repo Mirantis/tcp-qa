@@ -7,3 +7,6 @@ parameters:
           classes:
 #}
           - cluster.${_param:cluster_name}.stacklight.monitor
+{{- set_param('keepalived_vip_interface', 'br_ctl') }}
+{{- register_metaparam('redis_cluster_role', 'stacklight_monitor') }}
+{{- register_metaparam('keepalived_vip_priority', 'stacklight_monitor') }}

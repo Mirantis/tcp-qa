@@ -1,0 +1,12 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+          - cluster.${_param:cluster_name}.opencontrail.control
+{{- set_param('keepalived_vip_interface', 'br_ctl') }}
+{{- register_metaparam('opencontrail_database_id', 'opencontrail_control') }}
+{{- register_metaparam('keepalived_vip_priority', 'opencontrail_control') }}

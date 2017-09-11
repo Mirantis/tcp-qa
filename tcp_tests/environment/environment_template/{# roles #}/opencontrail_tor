@@ -6,6 +6,6 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.openstack.proxy
+          - cluster.${_param:cluster_name}.opencontrail.tor
 {{- set_param('keepalived_vip_interface', 'br_ctl') }}
-{{- register_metaparam('keepalived_vip_priority', 'openstack_proxy') }}
+{{- register_metaparam('keepalived_vip_priority', 'opencontrail_tor') }}
