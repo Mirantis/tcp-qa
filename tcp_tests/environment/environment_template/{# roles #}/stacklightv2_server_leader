@@ -1,0 +1,10 @@
+{#-
+parameters:
+  reclass:
+    storage:
+      node:
+        <reclass_storage_node_name>:
+          classes:
+#}
+          {%- include ("{# roles #}/" + 'stacklightv2_server') %}
+          - cluster.${_param:cluster_name}.stacklight.client

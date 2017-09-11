@@ -6,8 +6,8 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          - cluster.${_param:cluster_name}.openstack.control
+          - system.docker.swarm.manager
+          - cluster.${_param:cluster_name}.stacklight.server
 {%- set _ = params.update({'keepalived_vip_interface': 'br_ctl'}) %}
 {%- set _ = local_metadata.update({'keepalived_vip_priority': True}) %}
-{{- set_param('keepalived_vip_interface', 'br_ctl') }}
-{{- register_metaparam('keepalived_vip_priority', 'openstack_control') }}
+{%- set _ = local_metadata.update({'redis_cluster_role': True}) %}

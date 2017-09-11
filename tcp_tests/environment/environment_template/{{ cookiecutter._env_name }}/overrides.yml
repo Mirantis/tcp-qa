@@ -1,6 +1,9 @@
 # Do not delete! This file is for global parameters overrides over all the nodes in the environment.
-# Example: salt-call reclass.cluster_meta_set foo bar
+classes:
+# Enable root and *ALL* users access
+- system.openssh.server.team.all
+
+# Example: salt-call reclass.cluster_meta_set foo bar /path/to/overrides.yml
 #parameters:
 #  _param:
-#    cluster_public_protocol: http
-#    neutron_public_protocol: http
+#    foo: bar

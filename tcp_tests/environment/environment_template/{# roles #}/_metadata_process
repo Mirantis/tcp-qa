@@ -1,0 +1,67 @@
+{#- Collect interface roles and params into the following dict:
+ # interface_role:             # filename that will be included
+ #  interface_name:            # interface (eth0)
+ #    interface_param1: value  # optional parameters or empty dict
+ #    interface_param2: value
+ #    ...
+ #}
+
+{#-
+1. Check if 'local_metadata' matches to something in 'global_metadata'.
+   If yes, fetch and process the data.
+   If no, initialize necessary data.
+   If partially intersects (keepalived roles for different clusters): add a fail-state warning to the YAML to avoid using the wrong config
+2. Set necessary 'params' using the 'local_metadata'
+3. Store the 'local_metadata' to the 'global_metadata' if required.
+4. Increment/decrement the 'global_metadata' objects if necessary (next IP address, next vrouter ID, master->slave, etc)
+
+global_metadata keep states across the nodes
+local_metadata keep states for the current node only
+#}
+
+{%- macro stateful_counter(counter_name, counter_start, counter_end, counter_step) %}
+{#- ############################################################################# -#}
+{%- if counter_name in local_metadata %}
+  {%- if counter_name not in global_metadata %}
+    {#- Set default value for <counter_name> = <counter_start> #}
+    {%- set _ = global_metadata.update({counter_name: counter_start}) %}
+  {%- else %}
+    {#- Increment or decrement value <counter_name> #}
+    {%- set _ = global_metadata.update({counter_name: global_metadata[counter_name] + counter_step}) %}
+    {%- if global_metadata[counter_name] == counter_end %}
+      {# Cause a jinja render exception and make visible the message with correct counter_name #}
+      {%- if counter_name == 'cicd_database_id' %}
+        {{ "======> VALUE_ERROR: 'cicd_database_id' is too high!"/0 }}
+      {%- elif counter_name == 'opencontrail_database_id' %}
+        {{ "======> VALUE_ERROR: 'opencontrail_database_id' is too high!"/0 }}
+      {%- elif counter_name == 'keepalived_vip_priority' %}
+        {{ "======> VALUE_ERROR: 'keepalived_vip_priority' is too low!"/0 }}
+      {%- else %}
+        {{ "======> VALUE_ERROR: <counter_name> is too high!"/0 }}
+      {%- endif %}
+    {%- endif %}
+  {%- endif %}
+  {%- set _ = params.update({counter_name: global_metadata[counter_name]}) %}
+{%- endif %}
+{%- endmacro %}
+
+{%- macro stateful_masterslave(masterslave_name, master_name='master', slave_name='slave') %}
+{#- ##################################################################################### -#}
+{%- if masterslave_name in local_metadata %}
+  {%- if masterslave_name not in global_metadata %}
+    {#- Set first value <masterslave_name> = <master_name> #}
+    {%- set _ = global_metadata.update({masterslave_name: master_name}) %}
+  {%- else %}
+    {#- Set value <masterslave_name> = <slave_name> #}
+    {%- set _ = global_metadata.update({masterslave_name: slave_name}) %}
+  {%- endif %}
+  {%- set _ = params.update({masterslave_name: global_metadata[masterslave_name]}) %}
+{%- endif %}
+{%- endmacro %}
+
+{{- stateful_counter('cicd_database_id', counter_start=1, counter_end=255, counter_step=1) }}
+{{- stateful_counter('opencontrail_database_id', counter_start=1, counter_end=255, counter_step=1) }}
+{{- stateful_counter('keepalived_vip_priority', counter_start=254, counter_end=1, counter_step=-1) }}
+{{- stateful_masterslave('rabbitmq_cluster_role') }}
+{{- stateful_masterslave('mysql_cluster_role') }}
+{{- stateful_masterslave('redis_cluster_role') }}
