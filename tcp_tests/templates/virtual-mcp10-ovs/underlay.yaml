@@ -41,7 +41,7 @@ template:
           ip_reserved:
             gateway: +1
             l2_network_device: +1
-            default_{{ HOSTNAME_CFG01 }}: +100
+            default_{{ HOSTNAME_CFG01 }}: +90
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
