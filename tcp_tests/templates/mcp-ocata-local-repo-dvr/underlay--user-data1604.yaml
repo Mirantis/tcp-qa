@@ -1,0 +1,79 @@
+| # All the data below will be stored as a string object
+  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
+
+  disable_root: false
+  chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+  bootcmd:
+   # Block access to SSH while node is preparing
+   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+  output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+  runcmd:
+   - rm /etc/resolv.conf
+   - touch /etc/resolv.conf
+   - LOCAL_IP=$(ifconfig ens3 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1 | cut -d"." -f1-3)
+   - export DNS_IP=$LOCAL_IP".122"
+   - echo "nameserver $DNS_IP" >> /etc/resolv.conf;
+   - echo supersede domain-name-servers $DNS_IP >> /etc/dhcp/dhclient.conf
+   # Prepare network connection
+   - sudo ifup ens3
+   #- sudo route add default gw {gateway} {interface_name}
+   - sudo ifup ens4
+
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
+   ############## TCP Cloud cfg01 node ##################
+   - echo "Preparing base OS"
+   - find /etc/apt/ -type f -exec sed -i "s/ubuntu.com/ubuntu.local.test/g" {} +;
+   - apt-key adv --fetch-keys http://archive.ubuntu.local.test/ubuntu/dists/xenial/Release.gpg;
+   - echo "deb [arch=amd64] http://apt.mirantis.local.test/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+   - apt-key adv --fetch-keys http://apt.mirantis.local.test/public.gpg;
+   - echo "deb http://repo.saltstack.local.test/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+   - apt-key adv --fetch-keys http://repo.saltstack.local.test/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub;
+   - eatmydata apt-get clean && apt-get update;
+   ########################################################
+   # Node is ready, allow SSH access
+   - echo "Allow SSH access ..."
+   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ########################################################
+
+  write_files:
+   - path: /etc/network/interfaces
+     content: |
+          auto ens3
+          iface ens3 inet dhcp
+          auto ens4
+          iface ens4 inet dhcp
+
+   - path: /root/.ssh/config
+     owner: root:root
+     permissions: '0600'
+     content: |
+          Host *
+            ServerAliveInterval 300
+            ServerAliveCountMax 10
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
