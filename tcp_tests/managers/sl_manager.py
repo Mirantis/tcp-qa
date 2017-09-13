@@ -14,6 +14,8 @@
 
 import os
 
+from devops.helpers import decorators
+
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 from tcp_tests.managers.clients.prometheus import prometheus_client
 from tcp_tests import logger
@@ -97,3 +99,48 @@ class SLManager(ExecuteCommandsMixin):
             r.download(
                 destination=file_path,
                 target=os.getcwd())
+
+    def check_docker_services(self, nodes, expected_services):
+        """Check presense of the specified docker services on all the nodes
+        :param nodes: list of strings, names of nodes to check
+        :param expected_services: list of strings, names of services to find
+        """
+        for node in nodes:
+            services_status = self.get_service_info_from_node(node)
+            assert len(services_status) == len(expected_services), \
+                'Some services are missed on node {0}. ' \
+                'Current service list: {1}\nExpected service list: {2}' \
+                .format(node, services_status, expected_services)
+            for service in expected_services:
+                assert service in services_status,\
+                    'Missing service {0} in {1}'.format(service, services_status)
+                assert '0' not in services_status.get(service),\
+                    'Service {0} failed to start'.format(service)
+
+    @decorators.retry(AssertionError, count=10, delay=5)
+    def check_prometheus_targets(self, nodes):
+        """Check the status for Prometheus targets
+        :param nodes: list of strings, names of nodes with keepalived VIP
+        """
+        prometheus_client = self.api
+        try:
+            current_targets = prometheus_client.get_targets()
+        except:
+            LOG.info('Restarting keepalived service on mon nodes...')
+            for node in nodes:
+                self._salt.local(tgt=node, fun='cmd.run',
+                                       args='systemctl restart keepalived')
+            LOG.warning(
+                'Ip states after force restart {0}'.format(
+                    self._salt.local(tgt='mon*',
+                                           fun='cmd.run', args='ip a')))
+            current_targets = prometheus_client.get_targets()
+
+        LOG.debug('Current targets after install {0}'
+                  .format(current_targets))
+        # Assert that targets are up
+        for entry in current_targets:
+            assert 'up' in entry['health'], \
+                'Next target is down {}'.format(entry)
+
+

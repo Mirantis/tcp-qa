@@ -117,21 +117,22 @@
     # 192.168.10 -> 10.16.0 (generated network for admin)
     # 10.16.0 -> <external network>
     # So let's replace constant networks to the keywords, and then keywords to the desired networks.
-    find /srv/salt/reclass/ -type f -exec sed -i 's/192\.168\.10\./==IPV4_NET_ADMIN_PREFIX==/g' {} +
-    find /srv/salt/reclass/ -type f -exec sed -i 's/172\.16\.10\./==IPV4_NET_CONTROL_PREFIX==/g' {} +
-    find /srv/salt/reclass/ -type f -exec sed -i 's/10\.1\.0\./==IPV4_NET_TENANT_PREFIX==/g' {} +
-    find /srv/salt/reclass/ -type f -exec sed -i 's/10\.16\.0\./==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
+    export REPLACE_DIRS="/srv/salt/reclass/classes/ /srv/salt/reclass/nodes/"
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/192\.168\.10\./==IPV4_NET_ADMIN_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/172\.16\.10\./==IPV4_NET_CONTROL_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.1\.0\./==IPV4_NET_TENANT_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.16\.0\./==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
 
-    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}./g' {} +
-    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
-    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}./g' {} +
-    find /srv/salt/reclass/ -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}./g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}./g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {} +
 
-    find /srv/salt/reclass/ -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
     {%- if IS_CONTRAIL_LAB %}
     # vSRX IPs for tcp-qa images have 172.16.10.90 hardcoded
-    find /srv/salt/reclass/ -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: 172.16.10.90/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: 172.16.10.90/g' {} +
     {%- endif %}
 
     # Disable checkouting the model from remote repository
