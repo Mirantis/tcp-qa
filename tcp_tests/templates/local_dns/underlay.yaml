@@ -10,12 +10,11 @@ aliases:
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
 
-{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'local_dns') + '.local' %}
-{% set HOSTNAME_REPO01 = os_env('HOSTNAME_REPO01', 'repo01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_REPO01 = os_env('HOSTNAME_REPO01', 'repo01') %}
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'local_dns_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ os_env('LOCAL_DNS_ENV_NAME') }}
 
     address_pools:
       private-pool01:
