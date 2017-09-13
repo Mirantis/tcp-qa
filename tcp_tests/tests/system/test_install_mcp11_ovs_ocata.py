@@ -28,7 +28,7 @@ class Test_Mcp11_install(object):
     @pytest.mark.cz8119
     def test_mcp11_ocata_ovs_install(self, underlay,
                                      openstack_deployed,
-                                     sl_deployed, openstack_actions):
+                                     openstack_actions):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
