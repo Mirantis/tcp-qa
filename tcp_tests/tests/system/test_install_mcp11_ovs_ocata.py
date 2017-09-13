@@ -54,9 +54,9 @@ class Test_Mcp11_install(object):
         3. Setup compute nodes
         4. Get monitoring nodes
         5. Check that docker services are running
-        6. Check current targets are UP
-        7. Check grafana dashboards
-
+        6. Check current prometheus targets are UP
+        7. Run SL component tests
+        8. Download SL component tests report
         """
         expected_service_list = ['monitoring_remote_storage_adapter',
                                  'monitoring_server',
@@ -65,41 +65,23 @@ class Test_Mcp11_install(object):
                                  'monitoring_alertmanager',
                                  'monitoring_remote_collector',
                                  'monitoring_pushgateway']
-        # STEP #4
+        show_step(4)
         mon_nodes = sl_actions.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
-        for node in mon_nodes:
-            services_status = sl_actions.get_service_info_from_node(node)
-            assert len(services_status) == len(expected_service_list), \
-                'Some services are missed on node {0}. ' \
-                'Current service list {1}'.format(node, services_status)
-            for service in expected_service_list:
-                assert service in services_status, \
-                    'Missing service {0} in {1}'.format(service, services_status)
-                assert '0' not in services_status.get(service), \
-                    'Service {0} failed to start'.format(service)
-        prometheus_client = sl_deployed.api
-        try:
-            current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'.format(current_targets))
-        except:
-            LOG.info('Restarting keepalived service on mon nodes...')
-            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                                   args='systemctl restart keepalived')
-            LOG.warning(
-                'Ip states after force restart {0}'.format(
-                    sl_actions._salt.local(tgt='mon*',
-                                           fun='cmd.run', args='ip a')))
-            current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'.format(current_targets))
-        # Assert that targets are up
-        for entry in current_targets:
-            assert 'up' in entry['health'], \
-                'Next target is down {}'.format(entry)
+
+        show_step(5)
+        sl_deployed.check_docker_services(mon_nodes, expected_service_list)
+
+        show_step(6)
+        sl_deployed.check_prometheus_targets(mon_nodes)
+
+        show_step(7)
         # Run SL component tetsts
         sl_actions.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+
+        show_step(8)
         # Download report
         sl_actions.download_sl_test_report(
             'cfg01',
@@ -128,7 +110,7 @@ class Test_Mcp11_install(object):
     @pytest.mark.cz8120
     def test_mcp11_ocata_dvr_sl_install(self, underlay, config,
                                         openstack_deployed,
-                                        sl_deployed, sl_actions, show_step):
+                                        sl_deployed, show_step):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -136,9 +118,9 @@ class Test_Mcp11_install(object):
         3. Setup compute nodes
         4. Get monitoring nodes
         5. Check that docker services are running
-        6. Check current targets are UP
-        7. Check grafana dashboards
-
+        6. Check current prometheus targets are UP
+        7. Run SL component tests
+        8. Download SL component tests report
         """
         expected_service_list = ['monitoring_remote_storage_adapter',
                                  'monitoring_server',
@@ -147,46 +129,23 @@ class Test_Mcp11_install(object):
                                  'monitoring_alertmanager',
                                  'monitoring_remote_collector',
                                  'monitoring_pushgateway']
-        # STEP #4
+        show_step(4)
         mon_nodes = sl_actions.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
-        for node in mon_nodes:
-            services_status = sl_actions.get_service_info_from_node(node)
-            assert len(services_status) == len(expected_service_list), \
-                'Some services are missed on node {0}. ' \
-                'Current service list {1}'.format(node, services_status)
-            for service in expected_service_list:
-                assert service in services_status,\
-                    'Missing service {0} in {1}'.format(service, services_status)
-                assert '0' not in services_status.get(service),\
-                    'Service {0} failed to start'.format(service)
-        prometheus_client = sl_deployed.api
-        try:
-            current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'.format(current_targets))
-        except:
-            LOG.info('Restarting keepalived service on mon nodes...')
-            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                                   args='systemctl restart keepalived')
-            LOG.warning(
-                'Ip states after force restart {0}'.format(
-                    sl_actions._salt.local(tgt='mon*',
-                                           fun='cmd.run', args='ip a')))
-            current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'.format(current_targets))
-        # Assert that targets are up
-        for entry in current_targets:
-            assert 'up' in entry['health'], \
-                'Next target is down {}'.format(entry)
 
-            # Assert that targets are up
-            for entry in current_targets:
-                assert 'up' in entry['health'], \
-                    'Next target is down {}'.format(entry)
-        # Run SL component tetsts
+        show_step(5)
+        sl_deployed.check_docker_services(mon_nodes, expected_service_list)
+
+        show_step(6)
+        sl_deployed.check_prometheus_targets(mon_nodes)
+
+        show_step(7)
+        # Run SL component tests
         sl_actions.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+
+        show_step(8)
         # Download report
         sl_actions.download_sl_test_report(
             'cfg01',
