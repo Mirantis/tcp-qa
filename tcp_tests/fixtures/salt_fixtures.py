@@ -65,7 +65,8 @@ def salt_deployed(revert_snapshot, request, config,
         # Temporary workaround. Underlay should be extended with roles
         salt_nodes = underlay.node_names()
         config.salt.salt_master_host = \
-            underlay.host_by_node_name(salt_nodes[0])
+            underlay.host_by_node_role(
+                node_role=ext.UNDERLAY_NODE_ROLES.salt_master)
 
         commands = underlay.read_template(config.salt_deploy.salt_steps_path)
         LOG.info("############ Executing command ####### {0}".format(commands))
