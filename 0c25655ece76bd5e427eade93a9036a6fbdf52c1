@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c7fb1864_b7859cc5",
+        "filename": "tcp_tests/managers/openstack_manager.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-09-13T09:04:23Z",
+      "side": 1,
+      "message": "Please add:\n-v /etc/ssl/certs/:/etc/ssl/certs/",
+      "revId": "0c25655ece76bd5e427eade93a9036a6fbdf52c1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c1fe7ef4_b53f7dcf",
+        "filename": "tcp_tests/managers/openstack_manager.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-09-13T09:04:23Z",
+      "side": 1,
+      "message": "Please add:\n-v /etc/ssl/certs/:/etc/ssl/certs/",
+      "revId": "0c25655ece76bd5e427eade93a9036a6fbdf52c1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
