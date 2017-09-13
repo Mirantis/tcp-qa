@@ -145,7 +145,8 @@ class UnderlaySSHManager(object):
                 keys.append(rsakey.RSAKey.from_private_key(f))
         return keys
 
-    def __ssh_data(self, node_name=None, host=None, address_pool=None):
+    def __ssh_data(self, node_name=None, host=None, address_pool=None,
+                   node_role=None):
 
         ssh_data = None
 
@@ -158,6 +159,15 @@ class UnderlaySSHManager(object):
         elif node_name is not None:
             for ssh in self.config_ssh:
                 if node_name == ssh['node_name']:
+                    if address_pool is not None:
+                        if address_pool == ssh['address_pool']:
+                            ssh_data = ssh
+                            break
+                    else:
+                        ssh_data = ssh
+        elif node_role is not None:
+            for ssh in self.config_ssh:
+                if node_role in ssh['roles']:
                     if address_pool is not None:
                         if address_pool == ssh['address_pool']:
                             ssh_data = ssh
@@ -219,6 +229,11 @@ class UnderlaySSHManager(object):
         ssh_data = self.__ssh_data(node_name=node_name,
                                    address_pool=address_pool)
         return ssh_data['host']
+
+    def host_by_node_role(self, node_role, address_pool=None):
+        ssh_data = self.__ssh_data(node_role=node_role,
+                                   address_pool=address_pool)
+        return [data['host'] for data in ssh_data]
 
     def remote(self, node_name=None, host=None, address_pool=None):
         """Get SSHClient by a node name or hostname.
