@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45d35644_6d210460",
+        "filename": "tcp_tests/templates/mcp-ocata-local-repo-dvr/underlay--user-data-repo01.yaml",
+        "patchSetId": 10
+      },
+      "lineNbr": 76,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-09-14T09:53:42Z",
+      "side": 1,
+      "message": "Please move it upper, to L66, so the \u0027cp /tmp/underpillar\u0027 work",
+      "revId": "084d8661989972f363b5d3535f55daa897474f28",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
