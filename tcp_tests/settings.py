@@ -30,6 +30,8 @@ TIMESTAT_PATH_YAML = os.environ.get(
 
 VIRTUAL_ENV = os.environ.get("VIRTUAL_ENV", None)
 ENV_NAME = os.environ.get("ENV_NAME", None)
+MAKE_SNAPSHOT_STAGES = get_var_as_bool("MAKE_SNAPSHOT_STAGES", True)
+SHUTDOWN_ENV_ON_TEARDOWN = get_var_as_bool('SHUTDOWN_ENV_ON_TEARDOWN', True)
 
 LAB_CONFIG_NAME = os.environ.get('LAB_CONFIG_NAME', 'mk22-lab-basic')
 #LAB_CONFIGS_NAME = os.environ.get('LAB_NAME', 'mk22-lab-advanced')
@@ -38,8 +40,6 @@ SSH_LOGIN = os.environ.get('SSH_LOGIN', 'root')
 SSH_PASSWORD = os.environ.get('SSH_PASSWORD', 'r00tme')
 SSH_NODE_CREDENTIALS = {"login": SSH_LOGIN,
                         "password": SSH_PASSWORD}
-
-SHUTDOWN_ENV_ON_TEARDOWN = get_var_as_bool('SHUTDOWN_ENV_ON_TEARDOWN', True)
 
 # public_iface = IFACES[0]
 # private_iface = IFACES[1]
