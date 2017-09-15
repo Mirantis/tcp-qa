@@ -1,0 +1,152 @@
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','virtual-mcp-ocata-dop-sl2') %}
+
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+
+{#{ SHARED.MACRO_CLONE_RECLASS_MODELS() }#}
+- description: Create cluster model from cookiecutter templates
+  cmd: |
+    set -e;
+    pip install cookiecutter
+    export GIT_SSL_NO_VERIFY=true; git clone  https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates /tmp/cookiecutter-templates
+    mkdir -p /srv/salt/reclass/classes/cluster/
+    mkdir -p /srv/salt/reclass/classes/system/
+    mkdir -p /srv/salt/reclass/classes/service/
+    mkdir -p /srv/salt/reclass/nodes/_generated
+
+    {%- set CONTEXT_PATH = '/tmp/cookiecutter-templates/contexts/openstack_ovs_dvr_vxlan.yml' %}
+
+    # Override some context parameters
+    sed -i 's/cluster_name:.*/cluster_name: {{ LAB_CONFIG_NAME }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/cluster_domain:.*/cluster_domain: {{ DOMAIN_NAME }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/control_vlan:.*/control_vlan: \"2416\"/g' {{ CONTEXT_PATH }}
+    sed -i 's/tenant_vlan:.*/tenant_vlan: \"2417\"/g' {{ CONTEXT_PATH }}
+
+    # Temporary workaround (with hardcoded address .90 -> .15) of bug https://mirantis.jira.com/browse/PROD-14377
+    sed -i 's/salt_master_address:.*/salt_master_address: {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CONTEXT_PATH }}
+    sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ SHARED.IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CONTEXT_PATH }}
+
+    # Replace firstly to an intermediate value to avoid intersection between
+    # already replaced and replacing networks.
+    # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
+    # 192.168.10 -> 10.16.0 (generated network for admin)
+    # 10.16.0 -> <external network>
+    # So let's replace constant networks to the keywords, and then keywords to the desired networks.
+    sed -i 's/10\.167\.5/==IPV4_NET_ADMIN_PREFIX==/g' {{ CONTEXT_PATH }}
+    sed -i 's/10\.167\.4/==IPV4_NET_CONTROL_PREFIX==/g' {{ CONTEXT_PATH }}
+    sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' {{ CONTEXT_PATH }}
+    sed -i 's/172\.17\.16\./==IPV4_NET_EXTERNAL_PREFIX==/g' {{ CONTEXT_PATH }}
+
+    sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ SHARED.IPV4_NET_ADMIN_PREFIX }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ SHARED.IPV4_NET_CONTROL_PREFIX }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ SHARED.IPV4_NET_TENANT_PREFIX }}/g' {{ CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ SHARED.IPV4_NET_EXTERNAL_PREFIX }}./g' {{ CONTEXT_PATH }}
+
+    for i in $(ls /tmp/cookiecutter-templates/cluster_product/); do
+      cookiecutter /tmp/cookiecutter-templates/cluster_product/$i \
+        --config-file {{ CONTEXT_PATH }} \
+        --output-dir /srv/salt/reclass/classes/cluster/ \
+        --no-input -f;
+    done
+
+    export GIT_SSL_NO_VERIFY=true; git clone https://gerrit.mcp.mirantis.net/salt-models/reclass-system /srv/salt/reclass/classes/system/
+
+    # Create the cfg01 node and disable checkouting the model from remote repository
+    cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
+    classes:
+    - cluster.{{ LAB_CONFIG_NAME }}.infra.config
+    - environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local
+    - environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Modify cluster model for testing purposes
+  cmd: |
+    set -e;
+    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    pip install git+https://github.com/dis-xcom/reclass-tools;
+
+    # Enable 'root' user
+    reclass-tools add-key classes system.openssh.server.team.all /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: "[EXPERIMENTAL] Upload 'environment' to {{ HOSTNAME_CFG01 }}"
+  upload:
+    local_path: {{ config.salt_deploy.environment_template_dir }}
+    remote_path: /tmp/environment/
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: false
+
+- description: "[EXPERIMENTAL] Remove linux.network.interface object from the cluster/system models and use fixed 'environment' model instead"
+  cmd: |
+    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    pip install git+https://github.com/dis-xcom/reclass-tools;
+    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/cluster/;
+    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
+    reclass-tools del-key parameters.linux.network.interface /usr/share/salt-formulas/reclass/;
+
+    #if ! reclass-tools get-key 'classes' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
+    #  reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml --merge ;
+    #fi;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "[EXPERIMENTAL] Create environment model for virtual environment"
+  cmd: |
+    set -e;
+    ln -s '/tmp/environment/environment_template/{{ '{# interfaces #}' }}' '/tmp/environment/environment_template/{{ '{{ cookiecutter._env_name }}' }}/';
+    ln -s '/tmp/environment/environment_template/{{ '{# roles #}' }}' '/tmp/environment/environment_template/{{ '{{ cookiecutter._env_name }}' }}/';
+    reclass-tools render --template-dir /tmp/environment/environment_template/ \
+                         --output-dir /srv/salt/reclass/classes/environment/ \
+                         --context /tmp/environment/environment_inventory/{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.yaml \
+                         --env-name {{ ENVIRONMENT_MODEL_INVENTORY_NAME }}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup"') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+#- description: Hack gtw node
+#  cmd: salt 'gtw*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+
+#- description: Hack cmp01 node
+#  cmd: salt 'cmp01*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+
+#- description: Hack cmp02 node
+#  cmd: salt 'cmp02*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
