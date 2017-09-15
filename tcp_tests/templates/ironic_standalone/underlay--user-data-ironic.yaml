@@ -87,6 +87,7 @@
 
    - echo "Download ubuntu cloudinit image"
    - wget https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img -O /httpboot/xenial-server-cloudimg-amd64.qcow2
+   - wget https://cloud-images.ubuntu.com/trusty/20170920/trusty-server-cloudimg-amd64-disk1.img -O /httpboot/trusty-server-cloudimg-amd64.qcow2
 
    ########################################################
    # Node is ready, allow SSH access
