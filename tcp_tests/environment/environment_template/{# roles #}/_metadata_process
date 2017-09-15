@@ -1,11 +1,3 @@
-{#- Collect interface roles and params into the following dict:
- # interface_role:             # filename that will be included
- #  interface_name:            # interface (eth0)
- #    interface_param1: value  # optional parameters or empty dict
- #    interface_param2: value
- #    ...
- #}
-
 {#-
 1. Check if 'local_metadata' matches to something in 'global_metadata'.
    If yes, fetch and process the data.
@@ -17,51 +9,116 @@
 
 global_metadata keep states across the nodes
 local_metadata keep states for the current node only
+
+Example of local_metadata and global_metadata runtime content:
+
+    local_metadata:
+      keepalived_vip_priority:
+       - openstack_control
+       - openstack_database
+       - openstack_message_queue
+      rabbitmq_cluster_role:
+       - openstack_message_queue
+
+    global_metadata:
+      keepalived_vip_priority:  # Separate counters
+        openstack_control|openstack_database|openstack_message_queue: 254
+        cicd_control|infra_kvm: 254
+      keepalived_vip_virtual_router_id: # Common counter
+        __latest: 11
+        openstack_control|openstack_database|openstack_message_queue: 10
+        cicd_control|infra_kvm: 11
+      mysql_cluster_role:
+        openstack_database: master
 #}
 
-{%- macro stateful_counter(counter_name, counter_start, counter_end, counter_step) %}
+{%- macro stateful_roles_check(counter_name) %}
+{#- ####################################### -#}
+
+  {#- 1. Check that there is no intersections between different groups of roles for the <counter_name> #}
+  {%- for names, counter in global_metadata.get(counter_name, {}).items() %}
+    {%- set global_roles = names.split('|') %}
+    {%- for local_counter_role_name in local_metadata.get(counter_name, []) %}
+      {%- if local_counter_role_name in global_roles %}
+        {%- set adding_names = local_metadata.get(counter_name, [])|sort|join('|') %}
+        {%- if names != adding_names %}
+          {#- Found unexpected combination of roles, cause the template rendering exception #}
+          {%- include("======> NODE ROLES MAPPING ERROR! Please check the roles for the node '" + inventory_node_name + "' , metaparam '" + counter_name + "':\n======> Existing roles: " + names + "\n======> Adding roles: " + adding_names) %}
+        {%- endif %}
+      {%- endif %}
+    {%- endfor %}
+  {%- endfor %}
+{%- endmacro %}
+
+{%- macro stateful_counter(counter_name, counter_start, counter_end, counter_step, uniq_per_node=True) %}
 {#- ############################################################################# -#}
 {%- if counter_name in local_metadata %}
+  {{- stateful_roles_check(counter_name) }}
+
   {%- if counter_name not in global_metadata %}
-    {#- Set default value for <counter_name> = <counter_start> #}
-    {%- set _ = global_metadata.update({counter_name: counter_start}) %}
-  {%- else %}
-    {#- Increment or decrement value <counter_name> #}
-    {%- set _ = global_metadata.update({counter_name: global_metadata[counter_name] + counter_step}) %}
-    {%- if global_metadata[counter_name] == counter_end %}
-      {# Cause a jinja render exception and make visible the message with correct counter_name #}
-      {%- if counter_name == 'cicd_database_id' %}
-        {{ "======> VALUE_ERROR: 'cicd_database_id' is too high!"/0 }}
-      {%- elif counter_name == 'opencontrail_database_id' %}
-        {{ "======> VALUE_ERROR: 'opencontrail_database_id' is too high!"/0 }}
-      {%- elif counter_name == 'keepalived_vip_priority' %}
-        {{ "======> VALUE_ERROR: 'keepalived_vip_priority' is too low!"/0 }}
-      {%- else %}
-        {{ "======> VALUE_ERROR: <counter_name> is too high!"/0 }}
+    {%- set _ = global_metadata.update({counter_name: {}}) %}
+  {%- endif %}
+  {%- set counter_roles_name = local_metadata[counter_name]|sort|join('|') %}
+
+  {%- if uniq_per_node == True %}
+
+    {%- if counter_roles_name not in global_metadata[counter_name] %}
+      {#- Set default value for <counter_roles_name> = <counter_start> #}
+      {%- set _ = global_metadata[counter_name].update({counter_roles_name: counter_start}) %}
+    {%- else %}
+      {#- Increment or decrement value <counter_roles_name> #}
+      {%- set _ = global_metadata[counter_name].update({counter_roles_name: global_metadata[counter_name][counter_roles_name] + counter_step}) %}
+      {%- if global_metadata[counter_name][counter_roles_name] == counter_end %}
+        {# Cause a jinja render exception and make visible the message with correct counter_name #}
+        {%- include("======> VALUE_ERROR: " + counter_name + "=" + counter_end + " is out of bounds!" ) %}
       {%- endif %}
     {%- endif %}
+
+  {%- else %}
+
+    {%- if '__latest' not in global_metadata[counter_name] %}
+      {#- Set the value for __latest = <counter_start> #}
+      {%- set _ = global_metadata[counter_name].update({'__latest': counter_start}) %}
+    {%- endif %}
+    {%- if counter_roles_name not in global_metadata[counter_name] %}
+      {%- set _ = global_metadata[counter_name].update({'__latest': global_metadata[counter_name]['__latest'] + counter_step}) %}
+      {%- if global_metadata[counter_name]['__latest'] == counter_end %}
+        {# Cause a jinja render exception and make visible the message with correct counter_name #}
+        {%- include("======> VALUE_ERROR: " + counter_name + "=" + counter_end + " is out of bounds!" ) %}
+      {%- endif %}
+      {%- set _ = global_metadata[counter_name].update({counter_roles_name: global_metadata[counter_name]['__latest']}) %}
+    {%- endif %}
+
   {%- endif %}
-  {%- set _ = params.update({counter_name: global_metadata[counter_name]}) %}
+  {%- set _ = params.update({counter_name: global_metadata[counter_name][counter_roles_name]}) %}
 {%- endif %}
 {%- endmacro %}
 
 {%- macro stateful_masterslave(masterslave_name, master_name='master', slave_name='slave') %}
 {#- ##################################################################################### -#}
 {%- if masterslave_name in local_metadata %}
+  {{- stateful_roles_check(masterslave_name) }}
+
   {%- if masterslave_name not in global_metadata %}
-    {#- Set first value <masterslave_name> = <master_name> #}
-    {%- set _ = global_metadata.update({masterslave_name: master_name}) %}
-  {%- else %}
-    {#- Set value <masterslave_name> = <slave_name> #}
-    {%- set _ = global_metadata.update({masterslave_name: slave_name}) %}
+    {%- set _ = global_metadata.update({masterslave_name: {}}) %}
   {%- endif %}
-  {%- set _ = params.update({masterslave_name: global_metadata[masterslave_name]}) %}
+  {%- set masterslave_roles_name = local_metadata[masterslave_name]|sort|join('|') %}
+
+  {%- if masterslave_roles_name not in global_metadata[masterslave_name] %}
+    {#- Set first value <masterslave_roles_name> = <master_name> #}
+    {%- set _ = global_metadata[masterslave_name].update({masterslave_roles_name: master_name}) %}
+  {%- else %}
+    {#- Set value <masterslave_roles_name> = <slave_name> #}
+    {%- set _ = global_metadata[masterslave_name].update({masterslave_roles_name: slave_name}) %}
+  {%- endif %}
+  {%- set _ = params.update({masterslave_name: global_metadata[masterslave_name][masterslave_roles_name]}) %}
 {%- endif %}
 {%- endmacro %}
 
 {{- stateful_counter('cicd_database_id', counter_start=1, counter_end=255, counter_step=1) }}
 {{- stateful_counter('opencontrail_database_id', counter_start=1, counter_end=255, counter_step=1) }}
 {{- stateful_counter('keepalived_vip_priority', counter_start=254, counter_end=1, counter_step=-1) }}
+{{- stateful_counter('keepalived_vip_virtual_router_id', counter_start=159, counter_end=250, counter_step=1, uniq_per_node=False) }}
 {{- stateful_masterslave('rabbitmq_cluster_role') }}
 {{- stateful_masterslave('mysql_cluster_role') }}
 {{- stateful_masterslave('redis_cluster_role') }}
