@@ -188,6 +188,8 @@ class EnvironmentManager(object):
             self.__env.snapshot(name, description=description, force=True)
             LOG.info('trying to resume ....')
             self.__env.resume()
+            LOG.info('trying to time-sync ....')
+            self.__env.time_sync()
         else:
             raise exceptions.EnvironmentIsNotSet()
         settings_oslo.save_config(self.__config, name, self.__env.name)
@@ -202,7 +204,7 @@ class EnvironmentManager(object):
                  "{venv_msg}"
                  "dos.py revert {env_name} {snapshot_name};\n"
                  "dos.py resume {env_name};\n"
-                 "# dos.py time-sync {env_name};  # Optional\n"
+                 "dos.py time-sync {env_name};\n"
                  "ssh -i {key_file} {login}@{salt_master_host} "
                  "# Optional password: {password}\n"
                  "************************************\n"
@@ -319,6 +321,12 @@ class EnvironmentManager(object):
         if self.__env is None:
             raise exceptions.EnvironmentIsNotSet()
         self.__env.destroy()
+
+    def time_sync(self):
+        "Sync time in nodes"
+        if self.__env is None:
+            raise exceptions.EnvironmentIsNotSet()
+        self.__env.time_sync()
 
     def has_snapshot(self, name):
         return self.__env.has_snapshot(name)
