@@ -167,7 +167,7 @@ class EnvironmentManager(object):
             config_ssh.append(ssh_data)
         return config_ssh
 
-    def create_snapshot(self, name, description=None):
+    def create_snapshot(self, name, description=None, force=False):
         """Create named snapshot of current env.
 
         - Create a libvirt snapshots for all nodes in the environment
@@ -175,6 +175,11 @@ class EnvironmentManager(object):
 
         :name: string
         """
+        if not settings.MAKE_SNAPSHOT_STAGES and not force:
+            msg = ("[ SKIP snapshot '{0}' because MAKE_SNAPSHOT_STAGES=false ]"
+                   " {1}".format(name, description or ''))
+            LOG.info("\n\n{0}\n{1}".format(msg, '*' * len(msg)))
+            return
         msg = "[ Create snapshot '{0}' ] {1}".format(name, description or '')
         LOG.info("\n\n{0}\n{1}".format(msg, '*' * len(msg)))
 
@@ -233,6 +238,11 @@ class EnvironmentManager(object):
 
         :param name: string
         """
+        if not settings.MAKE_SNAPSHOT_STAGES:
+            LOG.info("SKIP reverting from snapshot '{0}' "
+                     "because MAKE_SNAPSHOT_STAGES=false".format(name))
+            return
+
         LOG.info("Reverting from snapshot named '{0}'".format(name))
         if self.__env is not None:
             self.__env.revert(name=name)
