@@ -8,7 +8,7 @@ parameters:
           classes:
 #}
           - cluster.${_param:cluster_name}.stacklight.telemetry
-          - service.galera.slave.cluster
+          - service.galera.master.cluster
 {{- set_param('keepalived_vip_interface', 'br_ctl') }}
 {{- register_metaparam('keepalived_vip_priority', 'stacklight_telemetry') }}
 {{- register_metaparam('mysql_cluster_role', 'stacklight_telemetry') }}

@@ -1,4 +1,4 @@
-{#- For StackLight v1 only #}
+{#- For StackLight v2 only #}
 {#-
 parameters:
   reclass:
@@ -7,6 +7,6 @@ parameters:
         <reclass_storage_node_name>:
           classes:
 #}
-          {%- include ("{# roles #}/" + 'stacklight_monitor') %}
-          - system.grafana.client.single
+          {%- include ("{# roles #}/" + 'stacklight_log') %}
+          - system.elasticsearch.client.single
           - system.kibana.client.single

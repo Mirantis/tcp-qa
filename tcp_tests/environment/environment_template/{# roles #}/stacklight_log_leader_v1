@@ -1,3 +1,4 @@
+{#- For StackLight v1 only #}
 {#-
 parameters:
   reclass:
@@ -7,5 +8,4 @@ parameters:
           classes:
 #}
           {%- include ("{# roles #}/" + 'stacklight_log') %}
-          - cluster.${_param:cluster_name}.stacklight.log_curator
           - system.elasticsearch.client.single
