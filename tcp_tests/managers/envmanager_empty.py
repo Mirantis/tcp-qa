@@ -54,7 +54,7 @@ class EnvironmentManagerEmpty(object):
         raise Exception("EnvironmentManagerEmpty doesn't have SSH details. "
                         "Please provide SSH details in config.underlay.ssh")
 
-    def create_snapshot(self, name, description=None):
+    def create_snapshot(self, name, **kwargs):
         """Store environmetn state into the config object
 
         - Store the state of the environment <name> to the 'config' object
