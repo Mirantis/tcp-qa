@@ -1,0 +1,15 @@
+# Do not delete! This file is for global parameters overrides over all the nodes in the environment.
+
+# Example: salt-call reclass.cluster_meta_set foo bar /path/to/overrides.yml
+#parameters:
+#  _param:
+#    foo: bar
+parameters:
+  docker:
+    client:
+      stack:
+        jenkins:
+          service:
+            master:
+              environment:
+                JENKINS_OPTS: " --handlerCountMax=100"
