@@ -35,6 +35,11 @@ class TestOpenContrail(object):
             4. Prepare contrail-tests on ctl01 node
             5. Run contrail-tests
         """
+        show_step(1)
+        show_step(2)
+        show_step(3)
+        show_step(4)
+        show_step(5)
         opencontrail.prepare_tests(
             config.opencontrail.opencontrail_prepare_tests_steps_path)
 
