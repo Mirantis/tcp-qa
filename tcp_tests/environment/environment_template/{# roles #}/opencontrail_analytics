@@ -10,3 +10,4 @@ parameters:
 {{- set_param('keepalived_vip_interface', 'br_ctl') }}
 {{- register_metaparam('opencontrail_database_id', 'opencontrail_analytics') }}
 {{- register_metaparam('keepalived_vip_priority', 'opencontrail_analytics') }}
+{{- register_metaparam('keepalived_vip_virtual_router_id', 'opencontrail_analytics') }}

@@ -9,3 +9,4 @@ parameters:
           - cluster.${_param:cluster_name}.openstack.control
 {{- set_param('keepalived_vip_interface', 'br_ctl') }}
 {{- register_metaparam('keepalived_vip_priority', 'openstack_control') }}
+{{- register_metaparam('keepalived_vip_virtual_router_id', 'openstack_control') }}

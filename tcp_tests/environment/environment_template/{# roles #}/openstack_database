@@ -10,3 +10,4 @@ parameters:
 {{- set_param('keepalived_vip_interface', 'br_ctl') }}
 {{- register_metaparam('mysql_cluster_role', 'openstack_database') }}
 {{- register_metaparam('keepalived_vip_priority', 'openstack_database') }}
+{{- register_metaparam('keepalived_vip_virtual_router_id', 'openstack_database') }}
