@@ -11,3 +11,4 @@ parameters:
 {{- set_param('keepalived_vip_interface', 'br_ctl') }}
 {{- register_metaparam('redis_cluster_role', 'stacklightv2_server') }}
 {{- register_metaparam('keepalived_vip_priority', 'stacklightv2_server') }}
+{{- register_metaparam('keepalived_vip_virtual_router_id', 'stacklightv2_server') }}

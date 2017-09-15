@@ -9,3 +9,4 @@ parameters:
           - cluster.${_param:cluster_name}.kubernetes.control
 {{- set_param('keepalived_vip_interface', 'ens3') }}
 {{- register_metaparam('keepalived_vip_priority', 'kubernetes_control') }}
+{{- register_metaparam('keepalived_vip_virtual_router_id', 'kubernetes_control') }}
