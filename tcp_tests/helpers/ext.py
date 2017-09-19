@@ -14,8 +14,6 @@
 
 import collections
 
-from enum import IntEnum
-
 
 def enum(*values, **kwargs):
     names = kwargs.get('names')
