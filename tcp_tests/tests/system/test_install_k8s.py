@@ -104,7 +104,7 @@ class Testk8sInstall(object):
             LOG.debug('Metric {} exists'.format(res))
             # todo (tleontovich) add asserts here and extend the tests
             # with acceptance criteria
-        
+
         if config.k8s.k8s_conformance_run:
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
