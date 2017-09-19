@@ -19,7 +19,6 @@ import copy
 import os
 import re
 
-#from devops.helpers import templates
 from devops import error
 import json
 import yaml
@@ -316,7 +315,7 @@ class EnvironmentConfig(object):
                 )
             )
 
-            #self.config = templates.yaml_template_load(filename)
+            # self.config = templates.yaml_template_load(filename)
             self.config = yaml_template_load(filename, options)
         else:
             LOG.error("Template filename is not set, loading config " +

@@ -49,18 +49,20 @@ _default_decapod_steps = pkg_resources.resource_filename(
 _default_openstack_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/openstack.yaml'.format(
         settings.LAB_CONFIG_NAME))
-_default_opencontrail_prepare_tests_steps_path = pkg_resources.resource_filename(
-    __name__, 'templates/{0}/opencontrail.yaml'.format(
-        settings.LAB_CONFIG_NAME))
+_default_opencontrail_prepare_tests_steps_path = \
+    pkg_resources.resource_filename(
+        __name__, 'templates/{0}/opencontrail.yaml'.format(
+            settings.LAB_CONFIG_NAME))
 _default_sl_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/sl.yaml'.format(
         settings.LAB_CONFIG_NAME))
 _default_virtlet_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/virtlet.yaml'.format(
         settings.LAB_CONFIG_NAME))
-_default_virtlet_ceph_prepare_tests_steps_path = pkg_resources.resource_filename(
-    __name__, 'templates/{0}/virtlet_ceph.yaml'.format(
-        settings.LAB_CONFIG_NAME))
+_default_virtlet_ceph_prepare_tests_steps_path = \
+    pkg_resources.resource_filename(
+        __name__, 'templates/{0}/virtlet_ceph.yaml'.format(
+            settings.LAB_CONFIG_NAME))
 _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))

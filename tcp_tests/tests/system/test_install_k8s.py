@@ -59,10 +59,12 @@ class Testk8sInstall(object):
         netchecker.wait_check_network(k8sclient, namespace='netchecker',
                                       netchecker_pod_port=netchecker_port)
         show_step(9)
-        res = netchecker.get_metric(k8sclient, netchecker_pod_port=netchecker_port,
+        res = netchecker.get_metric(k8sclient,
+                                    netchecker_pod_port=netchecker_port,
                                     namespace='netchecker')
 
-        assert res.status_code == 200, 'Unexpected response code {}'.format(res)
+        assert res.status_code == 200, 'Unexpected response code {}'\
+            .format(res)
         metrics = ['ncagent_error_count_total', 'ncagent_http_probe_code',
                    'ncagent_http_probe_connect_time_ms',
                    'ncagent_http_probe_connection_result',
@@ -80,7 +82,8 @@ class Testk8sInstall(object):
         prometheus_client = sl_deployed.api
         try:
             current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'.format(current_targets))
+            LOG.debug('Current targets after install {0}'
+                      .format(current_targets))
         except:
             LOG.warning('Restarting keepalived service on mon nodes...')
             sl_actions._salt.local(tgt='mon*', fun='cmd.run',
@@ -90,15 +93,17 @@ class Testk8sInstall(object):
                     sl_actions._salt.local(tgt='mon*',
                                            fun='cmd.run', args='ip a')))
             current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'.format(current_targets))
+            LOG.debug('Current targets after install {0}'
+                      .format(current_targets))
 
-        #todo (tleontovich) add assertion that k8s targets here
+        # todo (tleontovich) add assertion that k8s targets here
         for metric in metrics:
             res = prometheus_client.get_query(metric)
             for entry in res:
                 assert entry["metric"]["job"] == 'kubernetes-service-endpoints'
             LOG.debug('Metric {} exists'.format(res))
-            # todo (tleontovich) add asserts here and extend the tests with acceptance criteria
+            # todo (tleontovich) add asserts here and extend the tests
+            # with acceptance criteria
         
         if config.k8s.k8s_conformance_run:
             k8s_actions.run_conformance()

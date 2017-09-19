@@ -32,7 +32,7 @@ VIRTUAL_ENV = os.environ.get("VIRTUAL_ENV", None)
 ENV_NAME = os.environ.get("ENV_NAME", None)
 
 LAB_CONFIG_NAME = os.environ.get('LAB_CONFIG_NAME', 'mk22-lab-basic')
-#LAB_CONFIGS_NAME = os.environ.get('LAB_NAME', 'mk22-lab-advanced')
+# LAB_CONFIGS_NAME = os.environ.get('LAB_NAME', 'mk22-lab-advanced')
 
 SSH_LOGIN = os.environ.get('SSH_LOGIN', 'root')
 SSH_PASSWORD = os.environ.get('SSH_PASSWORD', 'r00tme')

@@ -48,8 +48,8 @@ class SLManager(ExecuteCommandsMixin):
             tgt='I@keepalived:cluster:enabled:true and not ctl*',
             pillar='keepalived:cluster:instance:prometheus_server_vip:address')
         sl_vip_ip = set([ip
-                            for item in sl_vip_address_pillars
-                            for node,ip in item.items() if ip])
+                         for item in sl_vip_address_pillars
+                         for node, ip in item.items() if ip])
         assert len(sl_vip_ip) == 1, (
             "Found more than one SL VIP in pillars:{0}, "
             "expected one!").format(sl_vip_ip)
@@ -85,7 +85,8 @@ class SLManager(ExecuteCommandsMixin):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
-        with self.__underlay.remote(node_name=target_node_name[0]) as node_remote:
+        with self.__underlay.remote(node_name=target_node_name[0]) \
+                as node_remote:
             cmd = "pytest -k {}".format(path_tests_to_run)
             result = node_remote.execute(cmd)
             LOG.debug("Test execution result is {}".format(result))
@@ -113,7 +114,8 @@ class SLManager(ExecuteCommandsMixin):
                 .format(node, services_status, expected_services)
             for service in expected_services:
                 assert service in services_status,\
-                    'Missing service {0} in {1}'.format(service, services_status)
+                    'Missing service {0} in {1}'.format(service,
+                                                        services_status)
                 assert '0' not in services_status.get(service),\
                     'Service {0} failed to start'.format(service)
 
@@ -129,11 +131,11 @@ class SLManager(ExecuteCommandsMixin):
             LOG.info('Restarting keepalived service on mon nodes...')
             for node in nodes:
                 self._salt.local(tgt=node, fun='cmd.run',
-                                       args='systemctl restart keepalived')
+                                 args='systemctl restart keepalived')
             LOG.warning(
                 'Ip states after force restart {0}'.format(
                     self._salt.local(tgt='mon*',
-                                           fun='cmd.run', args='ip a')))
+                                     fun='cmd.run', args='ip a')))
             current_targets = prometheus_client.get_targets()
 
         LOG.debug('Current targets after install {0}'
