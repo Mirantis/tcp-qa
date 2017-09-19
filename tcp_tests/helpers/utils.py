@@ -16,7 +16,6 @@ import copy
 import os
 import shutil
 import StringIO
-import tempfile
 import time
 import traceback
 

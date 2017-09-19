@@ -13,7 +13,6 @@
 #    under the License.
 
 import pytest
-from datetime import datetime
 
 from tcp_tests.helpers import ext
 from tcp_tests.helpers import utils

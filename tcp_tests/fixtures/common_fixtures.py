@@ -19,7 +19,6 @@ import pytest
 
 from tcp_tests import logger
 from tcp_tests.helpers import log_step
-from tcp_tests.helpers import utils
 
 
 LOG = logger.logger
