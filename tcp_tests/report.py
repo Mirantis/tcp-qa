@@ -367,5 +367,6 @@ def main():
     args = run_cli()
     COMMAND_MAP[args.command](**vars(args))
 
+
 if __name__ == '__main__':
     main()

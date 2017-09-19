@@ -64,6 +64,7 @@ def show_step(request):
         return log_step.log_step(request.function, step_number)
     return _show_step
 
+
 @pytest.fixture(scope='function')
 def steps(request):
     steps_mark = request.keywords.get('steps', None)

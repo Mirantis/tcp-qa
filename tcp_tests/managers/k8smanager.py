@@ -55,10 +55,10 @@ class K8SManager(ExecuteCommandsMixin):
             pillar='kubernetes:pool:apiserver:host')
         k8s_proxy_ip = set([ip
                             for item in k8s_proxy_ip_pillars
-                            for node,ip in item.items() if ip])
+                            for node, ip in item.items() if ip])
         k8s_hosts = set([ip
-                            for item in k8s_hosts
-                            for node,ip in item.items() if ip])
+                         for item in k8s_hosts
+                         for node, ip in item.items() if ip])
         assert len(k8s_hosts) == 1, (
             "Found more than one Kubernetes API hosts in pillars:{0}, "
             "expected one!").format(k8s_hosts)
@@ -253,10 +253,12 @@ class K8SManager(ExecuteCommandsMixin):
         :param deploy_name: str, deploy name
         :return: bool
         """
-        deploy = self.api.deployments.get(name=deploy_name, namespace=namespace)
+        deploy = self.api.deployments.get(name=deploy_name,
+                                          namespace=namespace)
         return deploy.status.available_replicas == deploy.status.replicas
 
-    def wait_deploy_ready(self, deploy_name, namespace=None, timeout=60, interval=5):
+    def wait_deploy_ready(self, deploy_name, namespace=None, timeout=60,
+                          interval=5):
         """Wait until all pods are scheduled on nodes
 
         :param deploy_name: str, deploy name

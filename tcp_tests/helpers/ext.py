@@ -23,6 +23,7 @@ def enum(*values, **kwargs):
         return collections.namedtuple('Enum', names)(*values)
     return collections.namedtuple('Enum', values)(*values)
 
+
 UNDERLAY_NODE_ROLES = enum(
     'salt_master',
     'salt_minion',
@@ -32,10 +33,12 @@ UNDERLAY_NODE_ROLES = enum(
     'decapod_all',
 )
 
+
 NETWORK_TYPE = enum(
     'private',
     'admin'
 )
+
 
 SNAPSHOT = enum(
     'hardware',
@@ -50,6 +53,7 @@ SNAPSHOT = enum(
     'k8s_deployed',
     'decapod_deployed',
 )
+
 
 LOG_LEVELS = enum(
     'INFO',

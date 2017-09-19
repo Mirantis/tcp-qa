@@ -331,8 +331,9 @@ def start_agent(k8s, config, namespace=None, ds_spec=NETCHECKER_DS_CFG,
 
 
 @utils.retry(3, requests.exceptions.RequestException)
-def get_connectivity_status(k8sclient, netchecker_pod_port=NETCHECKER_NODE_PORT,
-               pod_name='netchecker-server', namespace='default'):
+def get_connectivity_status(k8sclient,
+                            netchecker_pod_port=NETCHECKER_NODE_PORT,
+                            pod_name='netchecker-server', namespace='default'):
 
     netchecker_srv_pod_names = [pod.name for pod in
                                 k8sclient.pods.list(namespace=namespace)
@@ -362,7 +363,7 @@ def get_netchecker_pod_status(k8s,
               if pod_name in pod.name], phase='Running', timeout=600)
 
 
-def check_network(k8sclient,  netchecker_pod_port,
+def check_network(k8sclient, netchecker_pod_port,
                   namespace='default', works=True):
     if works:
         assert get_connectivity_status(
@@ -376,11 +377,13 @@ def check_network(k8sclient,  netchecker_pod_port,
 
 def wait_check_network(k8sclient, namespace='default', works=True, timeout=120,
                        interval=5, netchecker_pod_port=NETCHECKER_NODE_PORT):
-    helpers.wait_pass(lambda: check_network(k8sclient,
-                                            netchecker_pod_port=netchecker_pod_port,
-                                            namespace=namespace,
-                                            works=works),
-                      timeout=timeout, interval=interval)
+    helpers.wait_pass(
+        lambda: check_network(
+            k8sclient, netchecker_pod_port=netchecker_pod_port,
+            namespace=namespace,
+            works=works),
+        timeout=timeout,
+        interval=interval)
 
 
 def calico_block_traffic_on_node(underlay, target_node):
@@ -559,7 +562,7 @@ def get_metric(k8sclient, netchecker_pod_port,
 
 
 def get_service_port(k8sclient, service_name='netchecker',
-                        namespace='netchecker'):
+                     namespace='netchecker'):
     full_service_name = [service.name for service
                          in k8sclient.services.list(namespace=namespace)
                          if service_name in service.name]

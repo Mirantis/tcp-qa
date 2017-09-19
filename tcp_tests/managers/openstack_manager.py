@@ -53,16 +53,16 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-e SOURCE_FILE=keystonercv3  "
                    "-e CUSTOM='--pattern {1}' "
                    "-v /root/:/home/rally {2}{3} "
-                   "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output".format(
-                conf_name, pattern, registry, image_name))
+                   "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
+                   .format(conf_name, pattern, registry, image_name))
         else:
             cmd = ("docker run --rm --net=host  "
                    "-e TEMPEST_CONF={0} "
                    "-e SKIP_LIST=mcp_skip.list "
                    "-e SOURCE_FILE=keystonercv3  "
                    "-v /root/:/home/rally {2}{3} "
-                   "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output".format(
-                conf_name, pattern, registry, image_name))
+                   "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
+                   .format(conf_name, pattern, registry, image_name))
         with self.__underlay.remote(node_name=target_name[0]) as node_remote:
             result = node_remote.execute(cmd)
             LOG.debug("Test execution result is {}".format(result))

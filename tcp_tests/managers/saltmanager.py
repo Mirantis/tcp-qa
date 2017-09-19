@@ -48,7 +48,7 @@ class SaltManager(ExecuteCommandsMixin):
         super(SaltManager, self).__init__(config=config, underlay=underlay)
 
     def install(self, commands):
-        #if self.__config.salt.salt_master_host == '0.0.0.0':
+        # if self.__config.salt.salt_master_host == '0.0.0.0':
         #    # Temporary workaround. Underlay should be extended with roles
         #    salt_nodes = self.__underlay.node_names()
         #    self.__config.salt.salt_master_host = \
@@ -66,7 +66,7 @@ class SaltManager(ExecuteCommandsMixin):
         if self.__host:
             return self.__host
         else:
-            #TODO(ddmitriev): consider to add a check and raise
+            # TODO(ddmitriev): consider to add a check and raise
             # exception if 'salt_master_host' is not initialized.
             return self.__config.salt.salt_master_host
 

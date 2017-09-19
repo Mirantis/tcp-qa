@@ -41,7 +41,7 @@ class TestTCPInstaller(object):
         LOG.info("*************** DONE **************")
 
     def test_tcp_install_run_rally(self, underlay, openstack_deployed,
-                                 show_step, rally):
+                                   show_step, rally):
         """Test for deploying an tcp environment and check it
 
         Scenario:
@@ -75,7 +75,8 @@ class TestTCPInstaller(object):
         """
 
         cmd = 'cd /srv/salt/reclass/scripts/; ./bootstrap_all.sh'
-        underlay.check_call(cmd, host=config.salt.salt_master_host, verbose=True)
+        underlay.check_call(cmd, host=config.salt.salt_master_host,
+                            verbose=True)
 
         # prepare rally
         rally.prepare()

@@ -141,7 +141,7 @@ class TestMCPCalico(object):
         pod_ping_cmd = 'sleep 3 && ping -q -c 1 -w 3 {0}'.format(target_pod_ip)
         underlay.sudo_check_call(cmd=pod_ping_cmd, node_name=first_node_name)
         LOG.debug('Local route to pod IP {0} on node {1} is '
-                     'recovered'.format(target_pod_ip, first_node.name))
+                  'recovered'.format(target_pod_ip, first_node.name))
 
         # STEP #7
         show_step(7)
@@ -150,7 +150,7 @@ class TestMCPCalico(object):
     @pytest.mark.fail_snapshot
     # FIXME(apanchenko): uncomment as soon as the following bug is fixed
     # FIXME(apanchenko): https://mirantis.jira.com/browse/PROD-12532
-    #@pytest.mark.calico_ci
+    # @pytest.mark.calico_ci
     def test_calico_network_policies(self, show_step, config, underlay,
                                      k8s_deployed):
         """Test for deploying k8s environment with Calico and check
