@@ -27,7 +27,7 @@ class TestVirtletActions(object):
     """Test class for testing Virtlet actions"""
 
     def test_virtlet_create_delete_vm(self, underlay, virtlet_deployed,
-                                     show_step, virtlet_actions):
+                                      show_step, virtlet_actions):
         """Test for deploying an mcp environment with virtlet
 
         Scenario:
@@ -54,7 +54,7 @@ class TestVirtletActions(object):
 
         target_cpu = 2  # Cores
         target_memory = 256  # Size in MB
-        target_memory_kb = target_memory*1024
+        target_memory_kb = target_memory * 1024
         target_yaml = 'virtlet/examples/cirros-vm-exp.yaml'
         virtlet_actions.adjust_cirros_resources(cpu=target_cpu,
                                                 memory=target_memory,

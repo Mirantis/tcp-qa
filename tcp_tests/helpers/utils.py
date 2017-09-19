@@ -336,11 +336,13 @@ class YamlEditor(object):
 def render_template(file_path, options=None):
     required_env_vars = set()
     optional_env_vars = dict()
+
     def os_env(var_name, default=None):
         var = os.environ.get(var_name, default)
 
         if var is None:
-            raise Exception("Environment variable '{0}' is undefined!".format(var_name))
+            raise Exception("Environment variable '{0}' is undefined!"
+                            .format(var_name))
 
         if default is None:
             required_env_vars.add(var_name)
@@ -351,13 +353,14 @@ def render_template(file_path, options=None):
 
     if options is None:
         options = {}
-    options.update({'os_env': os_env,})
+    options.update({'os_env': os_env, })
 
     LOG.info("Reading template {0}".format(file_path))
 
     path, filename = os.path.split(file_path)
     environment = jinja2.Environment(
-        loader=jinja2.FileSystemLoader([path, os.path.dirname(path)], followlinks=True))
+        loader=jinja2.FileSystemLoader([path, os.path.dirname(path)],
+                                       followlinks=True))
     template = environment.get_template(filename).render(options)
 
     if required_env_vars:

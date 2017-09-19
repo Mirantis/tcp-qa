@@ -12,7 +12,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-#from tcp_tests.fixtures import *
 from tcp_tests.fixtures.common_fixtures import *
 from tcp_tests.fixtures.config_fixtures import *
 from tcp_tests.fixtures.underlay_fixtures import *
@@ -29,7 +28,7 @@ __all__ = sorted([  # sort for documentation
     'snapshot',
     # config_fixtures
     'config',
-    #underlay_fixtures
+    # underlay_fixtures
     'hardware',
     'underlay',
     # rally_fixtures

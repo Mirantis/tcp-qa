@@ -39,8 +39,8 @@ def sl_actions(config, underlay, salt_deployed):
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
 @pytest.fixture(scope='function')
 def sl_deployed(revert_snapshot, request, config,
-                       hardware, underlay, common_services_deployed,
-                       sl_actions):
+                hardware, underlay, common_services_deployed,
+                sl_actions):
     """Fixture to get or install SL services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -74,7 +74,7 @@ def sl_deployed(revert_snapshot, request, config,
                            args='systemctl restart keepalived.service')
     LOG.warning('Restarting keepalived service on mon nodes...')
     sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                       args='systemctl restart keepalived.service')
+                           args='systemctl restart keepalived.service')
     return sl_actions
 
 
@@ -115,7 +115,7 @@ def deploy_sl(revert_snapshot, request, config,
     # see https://mirantis.jira.com/browse/PROD-12038
     LOG.warning('Restarting keepalived service on controllers...')
     sl_actions._salt.local(tgt='ctl*', fun='cmd.run',
-                args='systemctl restart keepalived.service')
+                           args='systemctl restart keepalived.service')
     sl_actions._salt.local(tgt='mon*', fun='cmd.run',
                            args='systemctl restart keepalived.service')
     return sl_actions

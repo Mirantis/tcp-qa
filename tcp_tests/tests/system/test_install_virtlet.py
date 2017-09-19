@@ -29,7 +29,7 @@ class TestVirtletInstall(object):
 
     # @pytest.mark.fail_snapshot
     def test_virtlet_install(self, underlay, virtlet_deployed,
-                                     show_step):
+                             show_step):
         """Test for deploying an mcp environment with virtlet
 
         Scenario:

@@ -24,7 +24,8 @@ class TestOSSInstaller(object):
 
     @pytest.mark.fail_snapshot
     def test_oss_install_default(self, underlay, show_step,
-                                 oss_deployed, openstack_deployed, sl_deployed):
+                                 oss_deployed, openstack_deployed,
+                                 sl_deployed):
         """Test for deploying an OSS environment and check it
 
         Scenario:
