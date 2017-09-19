@@ -29,4 +29,3 @@ def opencontrail(config, underlay, openstack_deployed):
     """
     return opencontrail_manager.OpenContrailManager(config, underlay,
                                                     openstack_deployed)
-

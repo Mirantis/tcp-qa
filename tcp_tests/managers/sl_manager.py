@@ -144,5 +144,3 @@ class SLManager(ExecuteCommandsMixin):
         for entry in current_targets:
             assert 'up' in entry['health'], \
                 'Next target is down {}'.format(entry)
-
-
