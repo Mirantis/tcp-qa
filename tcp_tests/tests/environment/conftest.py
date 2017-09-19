@@ -12,14 +12,14 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-from tcp_tests.fixtures.common_fixtures import *
-from tcp_tests.fixtures.config_fixtures import *
-from tcp_tests.fixtures.underlay_fixtures import *
-from tcp_tests.fixtures.rally_fixtures import *
-from tcp_tests.fixtures.salt_fixtures import *
-from tcp_tests.fixtures.common_services_fixtures import *
-from tcp_tests.fixtures.openstack_fixtures import *
-from tcp_tests.fixtures.opencontrail_fixtures import *
+from tcp_tests.fixtures.common_fixtures import *  # noqa
+from tcp_tests.fixtures.config_fixtures import *  # noqa
+from tcp_tests.fixtures.underlay_fixtures import *  # noqa
+from tcp_tests.fixtures.rally_fixtures import *  # noqa
+from tcp_tests.fixtures.salt_fixtures import *  # noqa
+from tcp_tests.fixtures.common_services_fixtures import *  # noqa
+from tcp_tests.fixtures.openstack_fixtures import *  # noqa
+from tcp_tests.fixtures.opencontrail_fixtures import *  # noqa
 
 __all__ = sorted([  # sort for documentation
     # common_fixtures

@@ -11,13 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-import copy
-import time
 
-import pytest
-
-from tcp_tests import settings
-from tcp_tests.helpers import ext
 from tcp_tests import logger
 
 LOG = logger.logger
