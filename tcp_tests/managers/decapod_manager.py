@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from tcp_tests.helpers import ext
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 
 
