@@ -21,7 +21,7 @@ from devops.helpers import helpers
 from tcp_tests import logger
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 from tcp_tests.managers.k8s import cluster
-
+from k8sclient.client.rest import ApiException
 
 LOG = logger.logger
 
@@ -273,12 +273,20 @@ class K8SManager(ExecuteCommandsMixin):
         :param name: str
         :rtype: K8sNamespace object
         """
-        LOG.info("Creating Namespace in k8s cluster")
-        ns = self.api.namespaces.create(body={'metadata': {'name': name}})
-        LOG.info("Namespace '{0}' is created".format(ns.name))
-        # wait 10 seconds until a token for new service account is created
-        time.sleep(10)
-        return self.api.namespaces.get(name=ns.name)
+        try:
+            ns = self.api.namespaces.get(name=name)
+            LOG.info("Namespace '{0}' is already exists".format(ns.name))
+        except ApiException as e:
+          if hasattr(e,"status") and 404 == e.status:
+            LOG.info("Creating Namespace in k8s cluster")
+            ns = self.api.namespaces.create(body={'metadata': {'name': name}})
+            LOG.info("Namespace '{0}' is created".format(ns.name))
+            # wait 10 seconds until a token for new service account is created
+            time.sleep(10)
+            ns = self.api.namespaces.get(name=ns.name)
+          else:
+            raise
+        return ns
 
     def create_objects(self, path):
         if isinstance(path, str):
