@@ -240,7 +240,7 @@ nodes:
     mtr01.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_telemetry_node01
       roles:
-      - stacklight_telemetry
+      - stacklight_telemetry_leader
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -273,7 +273,7 @@ nodes:
     log01.mcp11-ovs-dpdk.local:
       reclass_storage_name: stacklight_log_node01
       roles:
-      - stacklight_log_leader
+      - stacklight_log_leader_v2
       - linux_system_codename_xenial
       interfaces:
         ens3:
