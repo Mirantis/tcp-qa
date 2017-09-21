@@ -195,8 +195,8 @@
     sed -i 's/tenant_vlan:.*/tenant_vlan: \"2417\"/g' {{ CLUSTER_CONTEXT_PATH }}
 
     # Temporary workaround (with hardcoded address .90 -> .15) of bug https://mirantis.jira.com/browse/PROD-14377
-    sed -i 's/salt_master_address:.*/salt_master_address: {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ SHARED.IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/salt_master_address:.*/salt_master_address: {{ IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
 
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
@@ -209,10 +209,10 @@
     sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/172\.17\.16\./==IPV4_NET_EXTERNAL_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
 
-    sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ SHARED.IPV4_NET_ADMIN_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ SHARED.IPV4_NET_CONTROL_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ SHARED.IPV4_NET_TENANT_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ SHARED.IPV4_NET_EXTERNAL_PREFIX }}./g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {{ CLUSTER_CONTEXT_PATH }}
 
     for i in $(ls /tmp/cookiecutter-templates/cluster_product/); do
       python /tmp/cookiecutter-templates/generate.py \
