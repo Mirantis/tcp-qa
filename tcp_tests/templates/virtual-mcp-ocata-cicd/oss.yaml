@@ -222,8 +222,10 @@
 #--------------------
 
 - description: "Waiting for postgresql database to come up in container..."
+#  cmd: timeout 300 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' cmd.run
+#      'while true; do if docker service logs postgresql_db | grep -q "ready to accept"; then break; else sleep 5; fi; done'
   cmd: timeout 300 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@postgresql:client' cmd.run
-      'while true; do if docker service logs postgresql_db | grep -q "ready to accept"; then break; else sleep 5; fi; done'
+      'while true; do if docker service logs postgresql_postgresql-db | grep -q "ready to accept"; then break; else sleep 5; fi; done'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
