@@ -128,7 +128,7 @@
 - description: "Workaround from the pipeline: We need /etc/aptly-publisher.yaml to be present before services are deployed. [dd: there were issues when /etc/aptly-publisher.yaml becomes a directory, so this step should be considered]"
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:publisher' state.sls aptly.publisher
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Install Docker client
