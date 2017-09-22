@@ -46,7 +46,7 @@ class Test_Mcp11_install(object):
     @pytest.mark.cz8119
     def test_mcp11_ocata_ovs_sl_install(self, underlay, config,
                                         openstack_deployed,
-                                        sl_deployed, show_step):
+                                        sl_deployed):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -60,32 +60,31 @@ class Test_Mcp11_install(object):
         """
         expected_service_list = ['monitoring_remote_storage_adapter',
                                  'monitoring_server',
+                                 'monitoring_relay',
                                  'monitoring_remote_agent',
                                  'dashboard_grafana',
                                  'monitoring_alertmanager',
                                  'monitoring_remote_collector',
                                  'monitoring_pushgateway']
-        show_step(4)
+
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
-        show_step(5)
         sl_deployed.check_docker_services(mon_nodes, expected_service_list)
 
-        show_step(6)
         sl_deployed.check_prometheus_targets(mon_nodes)
 
-        show_step(7)
         # Run SL component tetsts
         sl_deployed.run_sl_functional_tests(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus',
+            'test_alerts.py')
 
-        show_step(8)
         # Download report
         sl_deployed.download_sl_test_report(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests')
+            '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
@@ -110,7 +109,7 @@ class Test_Mcp11_install(object):
     @pytest.mark.cz8120
     def test_mcp11_ocata_dvr_sl_install(self, underlay, config,
                                         openstack_deployed,
-                                        sl_deployed, show_step):
+                                        sl_deployed):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -124,32 +123,31 @@ class Test_Mcp11_install(object):
         """
         expected_service_list = ['monitoring_remote_storage_adapter',
                                  'monitoring_server',
+                                 'monitoring_relay',
                                  'monitoring_remote_agent',
                                  'dashboard_grafana',
                                  'monitoring_alertmanager',
                                  'monitoring_remote_collector',
                                  'monitoring_pushgateway']
-        show_step(4)
+
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
-        show_step(5)
         sl_deployed.check_docker_services(mon_nodes, expected_service_list)
 
-        show_step(6)
         sl_deployed.check_prometheus_targets(mon_nodes)
 
-        show_step(7)
         # Run SL component tests
         sl_deployed.run_sl_functional_tests(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus',
+            'test_alerts.py')
 
-        show_step(8)
         # Download report
         sl_deployed.download_sl_test_report(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests')
+            '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
