@@ -274,9 +274,9 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_calico_policy_image', ct.String(),
            default='calico/kube-policy-controller:v0.5.4'),
     ct.Cfg('kubernetes_helm_enabled', ct.Boolean(),
-           help="", default=True),
+           help="", default=False),
     ct.Cfg('kubernetes_virtlet_enabled', ct.Boolean(),
-           help="", default=True),
+           help="", default=False),
     ct.Cfg('kubernetes_virtlet_image', ct.String(),
            help="", default='mirantis/virtlet:v0.7.0')
 ]
