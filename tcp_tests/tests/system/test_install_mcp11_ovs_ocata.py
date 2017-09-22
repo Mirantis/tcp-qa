@@ -79,13 +79,15 @@ class Test_Mcp11_install(object):
         # Run SL component tetsts
         sl_deployed.run_sl_functional_tests(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus',
+            'test_alerts.py')
 
         show_step(8)
         # Download report
         sl_deployed.download_sl_test_report(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests')
+            '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
@@ -143,13 +145,15 @@ class Test_Mcp11_install(object):
         # Run SL component tests
         sl_deployed.run_sl_functional_tests(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus',
+            'test_alerts.py')
 
         show_step(8)
         # Download report
         sl_deployed.download_sl_test_report(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests')
+            '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot

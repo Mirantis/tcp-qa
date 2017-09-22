@@ -81,13 +81,18 @@ class SLManager(ExecuteCommandsMixin):
                 service_stat_dict.update({tmp[0]: tmp[1]})
         return service_stat_dict
 
-    def run_sl_functional_tests(self, node_to_run, path_tests_to_run):
+    def run_sl_functional_tests(self, node_to_run, tests_path,
+                                test_to_run, skip_tests):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
+        if skip_tests:
+            cmd = "cd {0}; pytest -k 'not {1}' {2}".format(
+                tests_path, skip_tests, test_to_run)
+        else:
+            cmd = "cd {0}; pytest -k {1}".format(tests_path, test_to_run)
         with self.__underlay.remote(node_name=target_node_name[0]) \
                 as node_remote:
-            cmd = "pytest -k {}".format(path_tests_to_run)
             result = node_remote.execute(cmd)
             LOG.debug("Test execution result is {}".format(result))
         return result
