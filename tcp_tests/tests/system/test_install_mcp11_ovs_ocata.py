@@ -37,6 +37,10 @@ class Test_Mcp11_install(object):
         4. Run tempest
 
         """
+        openstack_actions._salt.local(
+                tgt='*', fun='cmd.run',
+                args='service ntp stop; ntpd -gq; service ntp start')
+
         if settings.RUN_TEMPEST:
             openstack_actions.run_tempest(pattern=settings.PATTERN)
             openstack_actions.download_tempest_report()
@@ -101,6 +105,10 @@ class Test_Mcp11_install(object):
         3. Setup compute nodes
 
         """
+        openstack_actions._salt.local(
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
+
         if settings.RUN_TEMPEST:
             openstack_actions.run_tempest(pattern=settings.PATTERN)
             openstack_actions.download_tempest_report()
