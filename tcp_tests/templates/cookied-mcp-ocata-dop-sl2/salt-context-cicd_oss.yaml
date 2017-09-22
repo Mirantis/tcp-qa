@@ -205,7 +205,7 @@ default_context:
 
   # Experimental notification parameters
   oss_notification_email_recipients: 'ddmitriev@mirantis.com'
-  oss_notification_salesforce_username: 'kadamovich+mmo+user@mirantis.com'
+  oss_notification_saleforce_username: 'sfdc-devops-portal-test-customer-user@mirantis.com'
   oss_notification_smtp_host: '127.0.0.1'
   oss_notification_smtp_port: '25'
   oss_notification_email_from: 'integration-ci@mirantis.com'
