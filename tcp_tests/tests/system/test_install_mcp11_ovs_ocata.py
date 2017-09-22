@@ -79,7 +79,8 @@ class Test_Mcp11_install(object):
         # Run SL component tetsts
         sl_deployed.run_sl_functional_tests(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus')
 
         show_step(8)
         # Download report
@@ -147,9 +148,10 @@ class Test_Mcp11_install(object):
 
         show_step(8)
         # Download report
-        sl_deployed.download_sl_test_report(
+        sl_deployed.run_sl_functional_tests(
             'cfg01',
-            '/root/stacklight-pytest/stacklight_tests')
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
