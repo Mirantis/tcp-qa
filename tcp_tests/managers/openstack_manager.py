@@ -63,6 +63,15 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-v /root/:/home/rally {2}{3} "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
                    .format(conf_name, pattern, registry, image_name))
+
+        restart_keepalived_cmd = ("salt --hard-crash "
+                                  "--state-output=mixed "
+                                  "--state-verbose=True "
+                                  "-C 'I@keepalived:cluster:enabled:True' "
+                                  "service.restart keepalived")
+        self.__underlay.check_call(cmd=restart_keepalived_cmd,
+                                   host=self.__config.salt.salt_master_host)
+
         with self.__underlay.remote(node_name=target_name[0]) as node_remote:
             result = node_remote.execute(cmd)
             LOG.debug("Test execution result is {}".format(result))
