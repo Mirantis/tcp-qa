@@ -22,11 +22,9 @@ LOG = logger.logger
 
 def parse_test_doc(docstring):
     test_case = {}
-    parse_regex = re.compile(r'(?P<title>^(.*\S.*\n)+)+'
-                             r'(?P<empty_line1>\s*\n)'
+    parse_regex = re.compile(r'^(?P<title>(.+\n)+)'
                              r'\s*Scenario:\s*\n(?P<scenario>(.+\n)+)'
-                             r'(?P<empty_line2>\s*(\n|$))?'
-                             r'(\s*Duration:\s+(?P<duration>\d+).*\n)?')
+                             r'(\s*Duration:\s*(?P<duration>\d+).*\n)?')
     doc_match = re.match(parse_regex, docstring)
 
     if not doc_match:
