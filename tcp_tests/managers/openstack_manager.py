@@ -63,8 +63,17 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-v /root/:/home/rally {2}{3} "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
                    .format(conf_name, pattern, registry, image_name))
+        logger.info("Restart keepalived service before running tempest tests")
+        restart_keepalived_cmd = ("salt --hard-crash "
+                                  "--state-output=mixed "
+                                  "--state-verbose=True "
+                                  "-C 'I@keepalived:cluster:enabled:True' "
+                                  "service.restart keepalived")
+        self.__underlay.check_call(cmd=restart_keepalived_cmd,
+                                   host=self.__config.salt.salt_master_host)
+
         with self.__underlay.remote(node_name=target_name[0]) as node_remote:
-            result = node_remote.execute(cmd)
+            result = node_remote.execute(cmd, verbose=True)
             LOG.debug("Test execution result is {}".format(result))
         return result
 
@@ -77,5 +86,5 @@ class OpenstackManager(ExecuteCommandsMixin):
                 file_fromat))
             LOG.debug("Find result {0}".format(result))
             file_name = result['stdout'][0].rstrip()
-            LOG.debug("Founded files {0}".format(file_name))
+            LOG.debug("Found files {0}".format(file_name))
             r.download(destination=file_name, target=os.getcwd())
