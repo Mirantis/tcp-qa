@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8dc33e0a_1e41f698",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-09-25T17:03:23Z",
+      "side": 1,
+      "message": "Please put the bug here",
+      "revId": "abc07be0625d6a5cbb6885a31486aff2e23980a4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0d73c2b2_3adcb403",
+        "filename": "tcp_tests/managers/openstack_manager.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-09-25T17:03:23Z",
+      "side": 1,
+      "message": "Please split arguments into two lines to fit 80-characters line length",
+      "range": {
+        "startLine": 72,
+        "startChar": 62,
+        "endLine": 72,
+        "endChar": 63
+      },
+      "revId": "abc07be0625d6a5cbb6885a31486aff2e23980a4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
