@@ -3,7 +3,8 @@ aliases:
   default_interface_model:
     - &interface_model !os_env INTERFACE_MODEL, virtio
 
-{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'virtual-mcp10-dvr') + '.local' %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'virtual-mcp10-dvr') %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
