@@ -12,7 +12,8 @@ aliases:
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data {{ CLOUDINIT_USER_DATA_1604 }}
 
-{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'mk24_lab_ovs_dvr_vlan_bm') + '.local' %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'mk24_lab_ovs_dvr_vlan_bm') %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
 {% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_KVM02 = os_env('HOSTNAME_KVM02', 'kvm02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM03', 'kvm03.' + DOMAIN_NAME) %}
