@@ -112,6 +112,7 @@
     {%- endif %}
     popd;
     mkdir -p /srv/salt/reclass/classes/service;
+    mkdir -p /srv/salt/reclass/nodes;
 
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
