@@ -12,7 +12,8 @@ aliases:
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
 
-{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'virtual-mcp11-k8s-calico-minimal.local') + '.local' %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'virtual-mcp11-k8s-calico-minimal.local') %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
