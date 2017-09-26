@@ -112,7 +112,7 @@
     {%- endif %}
     popd;
     mkdir -p /srv/salt/reclass/classes/service;
-    mkdir -p /srv/salt/reclass/nodes;
+    mkdir -p /srv/salt/reclass/nodes/_generated/;
 
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
@@ -140,8 +140,17 @@
     {%- endif %}
 
     # Disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml
-    # local storage
+    cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
+    classes:
+    - cluster.{{ LAB_CONFIG_NAME }}.infra.config
+    parameters:
+      _param:
+        linux_system_codename: xenial
+        reclass_data_revision: master
+      linux:
+        system:
+          name: cfg01
+          domain: {{ DOMAIN_NAME }}
       reclass:
         storage:
           data_source:
