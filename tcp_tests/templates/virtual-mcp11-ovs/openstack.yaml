@@ -259,7 +259,7 @@
     'service ntp stop; ntpd -gq;  service ntp start'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
+  skip_fail: true
 
 # Configure cinder-volume salt-call PROD-13167
 - description: Set disks 01

@@ -36,7 +36,7 @@ class TestMcp11Install(object):
 
         """
         openstack_actions._salt.local(
-            tgt='*', fun='cmd.run',
+            tgt='* and not prx*', fun='cmd.run',
             args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
@@ -57,7 +57,7 @@ class TestMcp11Install(object):
 
         """
         openstack_actions._salt.local(
-            tgt='*', fun='cmd.run',
+            tgt='* and not prx*', fun='cmd.run',
             args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
