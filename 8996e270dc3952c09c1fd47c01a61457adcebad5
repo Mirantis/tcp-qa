@@ -22,6 +22,30 @@
       "revId": "8996e270dc3952c09c1fd47c01a61457adcebad5",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1e574eba_9d407c18",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 344,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2017-09-27T14:12:47Z",
+      "side": 1,
+      "message": "Yesterday I tried to find any analog of \u0027run\u0027 subcommand but there is no such subcommand.. I tried also to find it in python-kubernetes-client which used in tcp-qa, but also unsuccessful. I hope that I will find time to create it, but not now and this way is much easier for now.",
+      "parentUuid": "18557349_4432ac06",
+      "range": {
+        "startLine": 344,
+        "startChar": 16,
+        "endLine": 344,
+        "endChar": 64
+      },
+      "revId": "8996e270dc3952c09c1fd47c01a61457adcebad5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
