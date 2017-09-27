@@ -336,3 +336,48 @@ class K8SManager(ExecuteCommandsMixin):
                                                  pillar='linux:network:fqdn')
         return [self._K8SManager__underlay.host_by_node_name(node_name=v)
                 for pillar in k8s_masters_fqdn for k, v in pillar.items()]
+
+    def kubectl_run(self, name, image, port):
+        with self.__underlay.remote(
+                host=self.__config.k8s.kube_host) as remote:
+            result = remote.check_call(
+                "kubectl run {0} --image={1} --port={2}".format(
+                    name, image, port
+                )
+            )
+            return result
+
+    def kubectl_expose(self, resource, name, port, type):
+        with self.__underlay.remote(
+                host=self.__config.k8s.kube_host) as remote:
+            result = remote.check_call(
+                "kubectl expose {0} {1} --port={2} --type={3}".format(
+                    resource, name, port, type
+                )
+            )
+            return result
+
+    def kubectl_annotate(self, resource, name, annotaion):
+        with self.__underlay.remote(
+                host=self.__config.k8s.kube_host) as remote:
+            result = remote.check_call(
+                "kubectl annotate {0} {1} {3}".format(
+                    resource, name, annotaion
+                )
+            )
+            return result
+
+    def get_svc_ip(self, name):
+        with self.__underlay.remote(
+                host=self.__config.k8s.kube_host) as remote:
+            result = remote.check_call(
+                "kubectl get svc --all-namespaces | grep {0} | "
+                "awk '{{print $2}}'".format(name)
+            )
+            return result['stdout'][0].strip()
+
+    def nslookup(self, host, src):
+        with self.__underlay.remote(
+                host=self.__config.k8s.kube_host) as remote:
+            remote.check_call("nslookup {0} {1}".format(host, src))
+
