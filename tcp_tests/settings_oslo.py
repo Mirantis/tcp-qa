@@ -278,7 +278,15 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_virtlet_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_virtlet_image', ct.String(),
-           help="", default='mirantis/virtlet:v0.7.0')
+           help="", default='mirantis/virtlet:v0.7.0'),
+    ct.Cfg('kubernetes_externaldns_enabled', ct.Boolean(),
+           help="", default=False),
+    ct.Cfg('kubernetes_externaldns_image', ct.String(),
+           help="", default='mirantis/external-dns:latest'),
+    ct.Cfg('kubernetes_externaldns_provider', ct.String(),
+           help="", default='coredns'),
+    ct.Cfg('kubernetes_coredns_enabled', ct.Boolean(),
+           help="", default=False)
 ]
 
 k8s_opts = [
