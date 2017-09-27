@@ -1,6 +1,28 @@
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install docker swarm
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Restart keepalived service
+  cmd: salt -C 'mon*' cmd.run "systemctl restart keepalived"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Check the VIP
+  cmd: |
+    SL_MONITOR_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:stacklight_monitor_address`;
+    echo "_param:stacklight_monitor_address (vip): ${SL_MONITOR_ADDRESS}";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'mon*' cmd.run "ip a | grep ${SL_MONITOR_ADDRESS}" | grep -B1 ${SL_MONITOR_ADDRESS}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Configure docker service
   cmd: salt -C 'I@docker:swarm' state.sls docker.host
   node_name: {{ HOSTNAME_CFG01 }}
@@ -145,23 +167,8 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Restart keepalived service
-  cmd: salt -C 'mon*' cmd.run "systemctl restart keepalived"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Check the VIP
-  cmd: |
-    SL_MONITOR_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:stacklight_monitor_address`;
-    echo "_param:stacklight_monitor_address (vip): ${SL_MONITOR_ADDRESS}";
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'mon*' cmd.run "ip a | grep ${SL_MONITOR_ADDRESS}" | grep -B1 ${SL_MONITOR_ADDRESS}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Configure Grafana dashboards and datasources
-  cmd: sleep 30;  salt -C 'I@grafana:client' state.sls grafana.client
+  cmd: sleep 60;  salt -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 10}
   skip_fail: false
