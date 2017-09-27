@@ -62,19 +62,8 @@ class Test_Mcp11_install(object):
         7. Run SL component tests
         8. Download SL component tests report
         """
-        expected_service_list = ['monitoring_remote_storage_adapter',
-                                 'monitoring_server',
-                                 'monitoring_relay',
-                                 'monitoring_remote_agent',
-                                 'dashboard_grafana',
-                                 'monitoring_alertmanager',
-                                 'monitoring_remote_collector',
-                                 'monitoring_pushgateway']
-
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
-
-        sl_deployed.check_docker_services(mon_nodes, expected_service_list)
 
         sl_deployed.check_prometheus_targets(mon_nodes)
 
@@ -129,19 +118,9 @@ class Test_Mcp11_install(object):
         7. Run SL component tests
         8. Download SL component tests report
         """
-        expected_service_list = ['monitoring_remote_storage_adapter',
-                                 'monitoring_server',
-                                 'monitoring_relay',
-                                 'monitoring_remote_agent',
-                                 'dashboard_grafana',
-                                 'monitoring_alertmanager',
-                                 'monitoring_remote_collector',
-                                 'monitoring_pushgateway']
 
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
-
-        sl_deployed.check_docker_services(mon_nodes, expected_service_list)
 
         sl_deployed.check_prometheus_targets(mon_nodes)
 
