@@ -1,6 +1,13 @@
 {% from 'virtual-mcp11-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install support services
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
 - description: Install keepalived on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keepalived:cluster and *01*' state.sls keepalived
@@ -36,7 +43,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server' state.sls glusterfs.server.setup -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 20}
   skip_fail: false
 
 - description: Check the gluster status
