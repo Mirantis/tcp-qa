@@ -26,6 +26,7 @@ UNDERLAY_NODE_ROLES = enum(
     'salt_master',
     'salt_minion',
     'k8s_virtlet',
+    'k8s_controller',
     'decapod_mon',
     'decapod_osd',
     'decapod_all',
