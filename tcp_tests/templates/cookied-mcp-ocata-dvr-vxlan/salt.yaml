@@ -9,9 +9,7 @@
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','virtual-devops-mcp-ocata-sl2') %}
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs_dvr_vxlan.yaml' %}
-{%- set ENVIRONMENT_CONTEXT_NAME = 'salt-context-environment.yaml' %}
-{%- set CLUSTER_CONTEXT_PATH = '/tmp/environment/' + CLUSTER_CONTEXT_NAME %}
-{%- set ENVIRONMENT_CONTEXT_PATH = '/tmp/environment/' + ENVIRONMENT_CONTEXT_NAME %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml'] %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
