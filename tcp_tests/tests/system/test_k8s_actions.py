@@ -50,7 +50,7 @@ class TestMCPK8sActions(object):
         show_step(3)
         k8s_deployed.kubectl_expose('deployment', name, '80', 'ClusterIP')
 
-        hostname = "test.{0}.local".format(settings.LAB_CONFIG_NAME)
+        hostname = "test.{0}.local.".format(settings.LAB_CONFIG_NAME)
         annotation = "\"external-dns.alpha.kubernetes.io/" \
                      "hostname={0}\"".format(hostname)
         show_step(4)
