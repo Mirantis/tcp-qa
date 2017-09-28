@@ -63,7 +63,7 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-v /root/:/home/rally {2}{3} "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
                    .format(conf_name, pattern, registry, image_name))
-        logger.info("Restart keepalived service before running tempest tests")
+        LOG.info("Restart keepalived service before running tempest tests")
         restart_keepalived_cmd = ("salt --hard-crash "
                                   "--state-output=mixed "
                                   "--state-verbose=True "
