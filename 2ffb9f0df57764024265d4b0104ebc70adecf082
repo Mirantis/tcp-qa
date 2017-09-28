@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df0d31f4_911360f8",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-09-28T16:48:23Z",
+      "side": 1,
+      "message": "What if one of nodes will have the name ctl011 ?",
+      "revId": "2ffb9f0df57764024265d4b0104ebc70adecf082",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
