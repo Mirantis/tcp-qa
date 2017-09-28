@@ -80,6 +80,12 @@ class K8SManager(ExecuteCommandsMixin):
                 default_namespace='default')
         return self._api_client
 
+    @property
+    def ctl_host(self, name='ctl01'):
+        hostname = [node_name for node_name
+                    in self.__underlay.node_names() if name in node_name]
+        return hostname[0]
+
     def get_pod_phase(self, pod_name, namespace=None):
         return self.api.pods.get(
             name=pod_name, namespace=namespace).phase
@@ -288,7 +294,7 @@ class K8SManager(ExecuteCommandsMixin):
         params = ' '.join(["-f {}".format(p) for p in path])
         cmd = 'kubectl create {params}'.format(params=params)
         with self.__underlay.remote(
-                host=self.__config.k8s.kube_host) as remote:
+                host=self.ctl_host) as remote:
             LOG.info("Running command '{cmd}' on node {node}".format(
                 cmd=cmd,
                 node=remote.hostname)
@@ -307,7 +313,7 @@ class K8SManager(ExecuteCommandsMixin):
 
     def get_running_pods_by_ssh(self, pod_name, namespace=None):
         with self.__underlay.remote(
-                host=self.__config.k8s.kube_host) as remote:
+                node_name=self.ctl_host) as remote:
             result = remote.check_call("kubectl get pods --namespace {} |"
                                        " grep {} | awk '{{print $1 \" \""
                                        " $3}}'".format(namespace,
@@ -323,7 +329,7 @@ class K8SManager(ExecuteCommandsMixin):
 
     def run_conformance(self, timeout=60 * 60):
         with self.__underlay.remote(
-                host=self.__config.k8s.kube_host) as remote:
+                node_name=self.ctl_host) as remote:
             result = remote.check_call(
                 "docker run --rm --net=host -e API_SERVER="
                 "'http://127.0.0.1:8080' {}".format(
@@ -339,7 +345,7 @@ class K8SManager(ExecuteCommandsMixin):
 
     def kubectl_run(self, name, image, port):
         with self.__underlay.remote(
-                host=self.__config.k8s.kube_host) as remote:
+                node_name=self.ctl_host) as remote:
             result = remote.check_call(
                 "kubectl run {0} --image={1} --port={2}".format(
                     name, image, port
@@ -349,7 +355,7 @@ class K8SManager(ExecuteCommandsMixin):
 
     def kubectl_expose(self, resource, name, port, type):
         with self.__underlay.remote(
-                host=self.__config.k8s.kube_host) as remote:
+                node_name=self.ctl_host) as remote:
             result = remote.check_call(
                 "kubectl expose {0} {1} --port={2} --type={3}".format(
                     resource, name, port, type
@@ -359,9 +365,9 @@ class K8SManager(ExecuteCommandsMixin):
 
     def kubectl_annotate(self, resource, name, annotaion):
         with self.__underlay.remote(
-                host=self.__config.k8s.kube_host) as remote:
+                node_name=self.ctl_host) as remote:
             result = remote.check_call(
-                "kubectl annotate {0} {1} {3}".format(
+                "kubectl annotate {0} {1} {2}".format(
                     resource, name, annotaion
                 )
             )
@@ -369,15 +375,15 @@ class K8SManager(ExecuteCommandsMixin):
 
     def get_svc_ip(self, name):
         with self.__underlay.remote(
-                host=self.__config.k8s.kube_host) as remote:
+                node_name=self.ctl_host) as remote:
             result = remote.check_call(
                 "kubectl get svc --all-namespaces | grep {0} | "
-                "awk '{{print $2}}'".format(name)
+                "awk '{{print $3}}'".format(name)
             )
             return result['stdout'][0].strip()
 
     def nslookup(self, host, src):
         with self.__underlay.remote(
-                host=self.__config.k8s.kube_host) as remote:
+                node_name=self.ctl_host) as remote:
             remote.check_call("nslookup {0} {1}".format(host, src))
 
