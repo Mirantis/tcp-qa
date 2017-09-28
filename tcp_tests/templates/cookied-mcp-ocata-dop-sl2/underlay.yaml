@@ -259,7 +259,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 6144
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -297,7 +297,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 6144
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -465,7 +465,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              memory: !os_env SLAVE_NODE_MEMORY, 6144
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -599,28 +599,28 @@ template:
                   networks:
                     - external
 
-          - name: {{ HOSTNAME_CMP02 }}
-            role: salt_minion
-            params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 3072
-              boot:
-                - hd
-              cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
-              volumes:
-                - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
-                  format: qcow2
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-                  capacity: 1
-                  format: raw
-                  device: cdrom
-                  bus: ide
-                  cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_1604
+#          - name: {{ HOSTNAME_CMP02 }}
+#            role: salt_minion
+#            params:
+#              vcpu: !os_env SLAVE_NODE_CPU, 2
+#              memory: !os_env SLAVE_NODE_MEMORY, 3072
+#              boot:
+#                - hd
+#              cloud_init_volume_name: iso
+#              cloud_init_iface_up: ens3
+#              volumes:
+#                - name: system
+#                  capacity: !os_env NODE_VOLUME_SIZE, 150
+#                  backing_store: cloudimage1604
+#                  format: qcow2
+#                - name: iso  # Volume with name 'iso' will be used
+#                             # for store image with cloud-init metadata.
+#                  capacity: 1
+#                  format: raw
+#                  device: cdrom
+#                  bus: ide
+#                  cloudinit_meta_data: *cloudinit_meta_data
+#                  cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: *all_interfaces
               network_config: *all_network_config
