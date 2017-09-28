@@ -375,8 +375,8 @@ def check_network(k8sclient, netchecker_pod_port,
             netchecker_pod_port=netchecker_pod_port).status_code == 400
 
 
-def wait_check_network(k8sclient, namespace='default', works=True, timeout=120,
-                       interval=5, netchecker_pod_port=NETCHECKER_NODE_PORT):
+def wait_check_network(k8sclient, namespace='default', works=True, timeout=300,
+                       interval=10, netchecker_pod_port=NETCHECKER_NODE_PORT):
     helpers.wait_pass(
         lambda: check_network(
             k8sclient, netchecker_pod_port=netchecker_pod_port,
