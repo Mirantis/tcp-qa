@@ -16,6 +16,24 @@
       "revId": "2ffb9f0df57764024265d4b0104ebc70adecf082",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a617318a_ec21ef84",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 86,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-09-28T16:58:27Z",
+      "side": 1,
+      "message": "or what if will have not ctl names at all? Now we have possibility to setup it in config and run part of tests on any env, with your changes we should always assume that ctl *  names are in cluster, at the same time we may have test01 test02 and test03 ) depends on model ;)",
+      "parentUuid": "df0d31f4_911360f8",
+      "revId": "2ffb9f0df57764024265d4b0104ebc70adecf082",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
