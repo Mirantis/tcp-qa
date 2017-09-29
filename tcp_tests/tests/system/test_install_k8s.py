@@ -25,9 +25,11 @@ class Testk8sInstall(object):
     """Test class for testing Kubernetes deploy"""
 
     @pytest.mark.fail_snapshot
-    def test_k8s_install(self, config, show_step,
-                         k8s_deployed, k8s_actions, sl_deployed, sl_actions):
-        """Test for deploying MCP environment with k8s+stacklight and check it
+    @pytest.mark.cz8116
+    def test_k8s_install_calico(self, config, show_step,
+                                k8s_deployed, k8s_actions,
+                                sl_deployed, sl_actions):
+        """Test for deploying MCP with k8s+stacklight_calico and check it
 
         Scenario:
             1. Prepare salt on hosts
@@ -39,6 +41,8 @@ class Testk8sInstall(object):
             7. Check netchecker agent is running
             8. Check connectivity
             9. Get metrics from netchecker
+            10. Run LMA component tests
+            11. Optionally run k8s e2e tests
 
         """
         # STEP #5
@@ -104,8 +108,81 @@ class Testk8sInstall(object):
             LOG.debug('Metric {} exists'.format(res))
             # todo (tleontovich) add asserts here and extend the tests
             # with acceptance criteria
+        show_step(10)
+        # Run SL component tests
+        sl_deployed.run_sl_functional_tests(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus',
+            'test_alerts.py')
+
+        # Download report
+        sl_deployed.download_sl_test_report(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests/report.xml')
 
         if config.k8s.k8s_conformance_run:
+            show_step(11)
+            k8s_actions.run_conformance()
+        LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
+    @pytest.mark.cz8115
+    def test_k8s_install_contrail(self, config, show_step,
+                                  k8s_deployed, k8s_actions,
+                                  sl_deployed, sl_actions):
+        """Test for deploying MCP with k8s+stacklight+contrail and check it
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Setup stack light nodes
+            5. Setup Kubernetes cluster and check it nodes
+            6. Run LMA2.0 component tests
+            7. Optionally run k8s e2e conformance
+
+        """
+        # STEP #5
+        show_step(5)
+        k8sclient = k8s_deployed.api
+        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
+
+        prometheus_client = sl_deployed.api
+        try:
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'
+                      .format(current_targets))
+        except:
+            LOG.warning('Restarting keepalived service on mon nodes...')
+            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
+                                   args='systemctl restart keepalived')
+            LOG.warning(
+                'Ip states after forset restart {0}'.format(
+                    sl_actions._salt.local(tgt='mon*',
+                                           fun='cmd.run', args='ip a')))
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'
+                      .format(current_targets))
+        mon_nodes = sl_deployed.get_monitoring_nodes()
+        LOG.debug('Mon nodes list {0}'.format(mon_nodes))
+
+        sl_deployed.check_prometheus_targets(mon_nodes)
+        show_step(6)
+        # Run SL component tests
+        sl_deployed.run_sl_functional_tests(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus',
+            'test_alerts.py')
+
+        # Download report
+        sl_deployed.download_sl_test_report(
+            'cfg01',
+            '/root/stacklight-pytest/stacklight_tests/report.xml')
+
+        if config.k8s.k8s_conformance_run:
+            show_step(7)
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
 
