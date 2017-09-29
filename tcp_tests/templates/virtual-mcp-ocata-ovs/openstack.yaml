@@ -5,7 +5,6 @@
 {% from 'virtual-mcp-ocata-ovs/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
-{% set PATTERN = os_env('PATTERN', 'smoke') %}
 
 # Install OpenStack control services
 
