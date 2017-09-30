@@ -289,6 +289,13 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
+- description: Run salt minion to create cert files for nginx
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Install nginx
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@nginx:server' state.sls nginx
   node_name: {{ HOSTNAME_CFG01 }}
