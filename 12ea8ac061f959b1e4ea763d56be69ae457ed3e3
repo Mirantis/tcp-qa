@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "56bb5eca_adbf56c7",
+        "filename": "tcp_tests/templates/virtual-mcp-ocata-ovs/underlay--user-data1604.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2017-10-02T10:00:55Z",
+      "side": 1,
+      "message": "Fogot to remove \u0027http://\u0027 - you\u0027ll have http://http://apt.mirantis.com",
+      "range": {
+        "startLine": 55,
+        "startChar": 14,
+        "endLine": 55,
+        "endChar": 43
+      },
+      "revId": "12ea8ac061f959b1e4ea763d56be69ae457ed3e3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
