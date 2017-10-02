@@ -190,12 +190,12 @@
     # Override some context parameters
     sed -i 's/cluster_name:.*/cluster_name: {{ LAB_CONFIG_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/cluster_domain:.*/cluster_domain: {{ DOMAIN_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/control_vlan:.*/control_vlan: \"2416\"/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/tenant_vlan:.*/tenant_vlan: \"2417\"/g' {{ CLUSTER_CONTEXT_PATH }}
+#    sed -i 's/control_vlan:.*/control_vlan: \"2416\"/g' {{ CLUSTER_CONTEXT_PATH }}
+#    sed -i 's/tenant_vlan:.*/tenant_vlan: \"2417\"/g' {{ CLUSTER_CONTEXT_PATH }}
 
     # Temporary workaround (with hardcoded address .90 -> .15) of bug https://mirantis.jira.com/browse/PROD-14377
-    sed -i 's/salt_master_address:.*/salt_master_address: {{ IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
+#    sed -i 's/salt_master_address:.*/salt_master_address: {{ IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
+#    sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
 
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
