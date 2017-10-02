@@ -10,6 +10,7 @@
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set REPOSITORY_NAME = os_env('REPOSITORY_NAME', 'http://apt.mirantis.com') %}
 
 {# Address pools for reclass cluster model are taken in the following order:
  # 1. environment variables,
