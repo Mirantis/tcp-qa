@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "67353d00_3412a695",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 306,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-10-02T11:26:52Z",
+      "side": 1,
+      "message": "node_name",
+      "range": {
+        "startLine": 306,
+        "startChar": 16,
+        "endLine": 306,
+        "endChar": 20
+      },
+      "revId": "ed8aecb0997c48f96799a9760e508d6d47122750",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
