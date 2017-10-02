@@ -187,7 +187,9 @@ class ExecuteCommandsMixin(object):
           skip_fail: False
         """
         node_name = step.get('node_name')
-        local_path = step.get('upload', {}).get('local_path', None)
+#        local_path = step.get('upload', {}).get('local_path', None)
+        local_path = '/home/jenkins/workspace/workspace/physical_cookied_mcp11_contrail/tcp_tests/templates/cookied-bm-mcp-ocata-contrail/'
+        LOG.info("LOCAL PATH IS {}".format(local_path))
         local_filename = step.get('upload', {}).get('local_filename', None)
         remote_path = step.get('upload', {}).get('remote_path', None)
         description = step.get('description', local_path)
