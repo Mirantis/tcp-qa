@@ -6,6 +6,13 @@
  #    ...
  #}
 {%- set interface_roles = {} %}
+
+{%- for interface_name, interface in interfaces.items() %}
+{%- for param_name, param_value in interface.items() %}
+{{- set_param(param_name, param_value) }}
+{%- endfor %}
+{%- endfor %}
+
 {%- for interface_name, interface in node['interfaces'].items() %}
   {%- if interface['role'] not in interface_roles %}
     {%- set _ = interface_roles.update({interface['role']: {}}) %}
