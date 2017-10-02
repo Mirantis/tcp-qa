@@ -6,6 +6,7 @@
  #    ...
  #}
 {%- set interface_roles = {} %}
+
 {%- for interface_name, interface in node['interfaces'].items() %}
   {%- if interface['role'] not in interface_roles %}
     {%- set _ = interface_roles.update({interface['role']: {}}) %}

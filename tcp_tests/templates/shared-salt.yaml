@@ -166,7 +166,7 @@
 {%- endmacro %}
 
 
-{%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false) %}
+{%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None) %}
 {###################################################################}
 {%- set CLUSTER_CONTEXT_PATH = '/tmp/' + CLUSTER_CONTEXT_NAME %}
 - description: "[EXPERIMENTAL] Upload cookiecutter-templates context to {{ HOSTNAME_CFG01 }}"
@@ -190,12 +190,16 @@
     # Override some context parameters
     sed -i 's/cluster_name:.*/cluster_name: {{ LAB_CONFIG_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/cluster_domain:.*/cluster_domain: {{ DOMAIN_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/control_vlan:.*/control_vlan: \"2416\"/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/tenant_vlan:.*/tenant_vlan: \"2417\"/g' {{ CLUSTER_CONTEXT_PATH }}
+    {%- if CONTROL_VLAN  %}
+    sed -i 's/control_vlan:.*/control_vlan: {{ CONTROL_VLAN }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    {%- endif %}
+    {%- if TENANT_VLAN  %}
+    sed -i 's/tenant_vlan:.*/tenant_vlan: {{ TENANT_VLAN }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    {%- endif %}
 
     # Temporary workaround (with hardcoded address .90 -> .15) of bug https://mirantis.jira.com/browse/PROD-14377
-    sed -i 's/salt_master_address:.*/salt_master_address: {{ IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
+    # sed -i 's/salt_master_address:.*/salt_master_address: {{ IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
+    # sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
 
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
@@ -251,7 +255,7 @@
     export REPLACE_DIRS="/srv/salt/reclass/classes/ /srv/salt/reclass/nodes/"
     find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
-    {%- if IS_CONTRAIL_LAB %}
+    {%- if IS_CONTRAIL_LAB == 'True' %}
     # vSRX IPs for tcp-qa images have 172.16.10.90 hardcoded
     find ${REPLACE_DIRS} -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: 172.16.10.90/g' {} +
     find ${REPLACE_DIRS} -type f -exec sed -i 's/infra_config_deploy_address: 1.*/infra_config_deploy_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {} +
@@ -322,6 +326,15 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+- description: Modify generated model and reclass-system
+  cmd: |
+    export REPLACE_DIRS="/srv/salt/reclass/classes/ /srv/salt/reclass/nodes/"
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 {%- endmacro %}
 
 
