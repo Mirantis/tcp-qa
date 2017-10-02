@@ -112,6 +112,7 @@
     {%- endif %}
     popd;
     mkdir -p /srv/salt/reclass/classes/service;
+    rm -rf /srv/salt/reclass/nodes/  # For backward compatibility. New cfg node will be regenerated here
     mkdir -p /srv/salt/reclass/nodes/_generated/;
 
     # Replace firstly to an intermediate value to avoid intersection between
@@ -183,6 +184,7 @@
     mkdir -p /srv/salt/reclass/classes/cluster/
     mkdir -p /srv/salt/reclass/classes/system/
     mkdir -p /srv/salt/reclass/classes/service/
+    rm -rf /srv/salt/reclass/nodes/  # For backward compatibility. New cfg node will be regenerated here
     mkdir -p /srv/salt/reclass/nodes/_generated
 
     # Override some context parameters
