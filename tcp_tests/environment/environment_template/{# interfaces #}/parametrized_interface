@@ -1,0 +1,25 @@
+              # {{ interfaces_role }}
+              {%- set interface_name = interfaces.keys()[0] %}
+              {{ interface_name }}:
+                enabled: true
+                name: {{ interface_name }}
+                proto: manual
+                type: eth
+                ipflush_onchange: true
+              br_ctl:
+                {%- for interface_name, interface in interfaces.items() %}
+                {%- for param_name, param_value in interface.items() %}
+                {{- set_param(param_name, param_value) }}
+                {%- endfor %}
+                {%- endfor %}
+                enabled: true
+                netmask: '255.255.255.0'
+                proto: static
+                type: bridge
+                name_servers:
+                - ${_param:_esc}{_param:dns_server01}
+                - ${_param:_esc}{_param:dns_server02}
+                use_interfaces:
+                - {{ interface_name }}
+                require_interfaces:
+                - {{ interface_name }}
