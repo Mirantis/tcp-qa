@@ -1,5 +1,6 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set REPOSITORY_NAME = os_env('REPOSITORY_NAME', 'http://apt.mirantis.com') %}
 
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-mcp-ocata-dvr-vxlan') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
