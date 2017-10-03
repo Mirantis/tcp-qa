@@ -45,7 +45,7 @@ template:
             default_{{ HOSTNAME_MON01 }}: +107
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
-            default_{{ HOSTNAME_PRX01 }}: +110
+            default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -64,7 +64,7 @@ template:
             default_{{ HOSTNAME_MON01 }}: +107
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
-            default_{{ HOSTNAME_PRX01 }}: +110
+            default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
 
