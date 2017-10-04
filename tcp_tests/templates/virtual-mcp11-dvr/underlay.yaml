@@ -34,13 +34,13 @@ template:
           ip_reserved:
             gateway: +1
             l2_network_device: +1
-            default_{{ HOSTNAME_CFG01 }}: +100
-            default_{{ HOSTNAME_CTL01 }}: +101
-            default_{{ HOSTNAME_CTL02 }}: +102
-            default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_GTW01 }}: +110
+            default_{{ HOSTNAME_CFG01 }}: +90
+            default_{{ HOSTNAME_CTL01 }}: +91
+            default_{{ HOSTNAME_CTL02 }}: +92
+            default_{{ HOSTNAME_CTL03 }}: +93
+            default_{{ HOSTNAME_CMP01 }}: +95
+            default_{{ HOSTNAME_CMP02 }}: +96
+            default_{{ HOSTNAME_GTW01 }}: +94
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
@@ -52,12 +52,12 @@ template:
             gateway: +1
             l2_network_device: +1
             default_{{ HOSTNAME_CFG01 }}: +90
-            default_{{ HOSTNAME_CTL01 }}: +101
-            default_{{ HOSTNAME_CTL02 }}: +102
-            default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_GTW01 }}: +110
+            default_{{ HOSTNAME_CTL01 }}: +91
+            default_{{ HOSTNAME_CTL02 }}: +92
+            default_{{ HOSTNAME_CTL03 }}: +93
+            default_{{ HOSTNAME_CMP01 }}: +95
+            default_{{ HOSTNAME_CMP02 }}: +96
+            default_{{ HOSTNAME_GTW01 }}: +94
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
