@@ -23,8 +23,6 @@ from tcp_tests.fixtures.opencontrail_fixtures import *  # noqa
 from tcp_tests.fixtures.oss_fixtures import *  # noqa
 from tcp_tests.fixtures.decapod_fixtures import *  # noqa
 from tcp_tests.fixtures.stacklight_fixtures import *  # noqa
-from tcp_tests.fixtures.virtlet_fixtures import *  # noqa
-from tcp_tests.fixtures.virtlet_ceph_fixtures import *  # noqa
 from tcp_tests.fixtures.k8s_fixtures import *  # noqa
 
 
@@ -62,9 +60,5 @@ __all__ = sorted([  # sort for documentation
     'sl_deployed',
     # k8s fixtures
     'k8s_actions',
-    'k8s_deployed',
-    'virtlet_actions',
-    'virtlet_deployed',
-    'virtlet_ceph_actions',
-    'virtlet_ceph_deployed'
+    'k8s_deployed'
 ])
