@@ -11,6 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+import pytest
 
 from tcp_tests import logger
 
@@ -20,8 +21,7 @@ LOG = logger.logger
 class TestVirtletActions(object):
     """Test class for testing Virtlet actions"""
 
-    def test_virtlet_create_delete_vm(self, underlay, virtlet_deployed,
-                                      show_step, virtlet_actions):
+    def test_virtlet_create_delete_vm(self, show_step, config, k8s_deployed):
         """Test for deploying an mcp environment with virtlet
 
         Scenario:
@@ -30,12 +30,19 @@ class TestVirtletActions(object):
             3. Delete VM and wait to delete pod
 
         """
-        vm_name = virtlet_actions.run_vm()
-        virtlet_actions.wait_active_state(vm_name)
-        virtlet_actions.delete_vm(vm_name)
 
-    def test_vm_resource_quotas(self, underlay, virtlet_deployed, show_step,
-                                virtlet_actions):
+        if not config.k8s_deploy.kubernetes_virtlet_enabled:
+            pytest.skip("Test requires Virtlet addon enabled")
+
+        k8s_deployed.git_clone('https://github.com/Mirantis/virtlet', '~/')
+        show_step(1)
+        vm_name = k8s_deployed.run_vm()
+        show_step(2)
+        k8s_deployed.wait_active_state(vm_name)
+        show_step(3)
+        k8s_deployed.delete_vm(vm_name)
+
+    def test_vm_resource_quotas(self, show_step, config, k8s_deployed):
         """Test for deploying a VM with specific quotas
 
         Scenario:
@@ -46,28 +53,36 @@ class TestVirtletActions(object):
 
         """
 
+        if not config.k8s_deploy.kubernetes_virtlet_enabled:
+            pytest.skip("Test requires Virtlet addon enabled")
+
+        k8s_deployed.git_clone('https://github.com/Mirantis/virtlet', '~/')
+        show_step(1)
         target_cpu = 2  # Cores
         target_memory = 256  # Size in MB
         target_memory_kb = target_memory * 1024
         target_yaml = 'virtlet/examples/cirros-vm-exp.yaml'
-        virtlet_actions.adjust_cirros_resources(cpu=target_cpu,
+        k8s_deployed.adjust_cirros_resources(cpu=target_cpu,
                                                 memory=target_memory,
                                                 target_yaml=target_yaml)
-        vm_name = virtlet_actions.run_vm(target_yaml)
-        virtlet_actions.wait_active_state(vm_name)
-        domain_name = virtlet_actions.get_domain_name(vm_name)
-        cpu = virtlet_actions.get_vm_cpu_count(domain_name)
-        mem = virtlet_actions.get_vm_memory_count(domain_name)
+        show_step(2)
+        vm_name = k8s_deployed.run_vm(target_yaml)
+        k8s_deployed.wait_active_state(vm_name)
+        show_step(3)
+        domain_name = k8s_deployed.get_domain_name(vm_name)
+        cpu = k8s_deployed.get_vm_cpu_count(domain_name)
+        mem = k8s_deployed.get_vm_memory_count(domain_name)
         fail_msg = '{0} is not correct memory unit for VM. Correct is {1}'.\
             format(mem, target_memory_kb)
         assert target_memory_kb == mem, fail_msg
         fail_msg = '{0} is not correct cpu cores count for VM. ' \
                    'Correct is {1}'.format(cpu, target_cpu)
         assert target_cpu == cpu, fail_msg
-        virtlet_actions.delete_vm(target_yaml)
+        show_step(4)
+        k8s_deployed.delete_vm(target_yaml)
 
-    def test_rbd_flexvolume_driver(self, underlay, virtlet_ceph_deployed,
-                                   show_step, virtlet_actions):
+    @pytest.mark.skip(reason="No configuration with ceph and k8s")
+    def test_rbd_flexvolume_driver(self, show_step, config, k8s_deployed):
         """Test for deploying a VM with Ceph RBD volume using flexvolumeDriver
 
         Scenario:
@@ -79,9 +94,9 @@ class TestVirtletActions(object):
         # From:
         # https://github.com/Mirantis/virtlet/blob/master/tests/e2e/run_ceph.sh
         target_yaml = "virtlet/tests/e2e/cirros-vm-rbd-volume.yaml"
-        vm_name = virtlet_actions.run_vm(target_yaml)
-        virtlet_actions.wait_active_state(vm_name)
-        domain_name = virtlet_actions.get_domain_name(vm_name)
-        vm_volumes_list = virtlet_actions.list_vm_volumes(domain_name)
+        vm_name = k8s_deployed.run_vm(target_yaml)
+        k8s_deployed.wait_active_state(vm_name)
+        domain_name = k8s_deployed.get_domain_name(vm_name)
+        vm_volumes_list = k8s_deployed.list_vm_volumes(domain_name)
         assert 'rbd' in vm_volumes_list
-        virtlet_actions.delete_vm(target_yaml)
+        k8s_deployed.delete_vm(target_yaml)

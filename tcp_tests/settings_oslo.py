@@ -56,13 +56,6 @@ _default_opencontrail_prepare_tests_steps_path = \
 _default_sl_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/sl.yaml'.format(
         settings.LAB_CONFIG_NAME))
-_default_virtlet_prepare_tests_steps_path = pkg_resources.resource_filename(
-    __name__, 'templates/{0}/virtlet.yaml'.format(
-        settings.LAB_CONFIG_NAME))
-_default_virtlet_ceph_prepare_tests_steps_path = \
-    pkg_resources.resource_filename(
-        __name__, 'templates/{0}/virtlet_ceph.yaml'.format(
-            settings.LAB_CONFIG_NAME))
 _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))
@@ -94,7 +87,6 @@ underlay_opts = [
            help="Node roles managed by underlay in the environment",
            default=[ext.UNDERLAY_NODE_ROLES.salt_master,
                     ext.UNDERLAY_NODE_ROLES.salt_minion,
-                    ext.UNDERLAY_NODE_ROLES.k8s_virtlet,
                     ext.UNDERLAY_NODE_ROLES.k8s_controller]),
     ct.Cfg('bootstrap_timeout', ct.Integer(),
            help="Timeout of waiting SSH for nodes with specified roles",
