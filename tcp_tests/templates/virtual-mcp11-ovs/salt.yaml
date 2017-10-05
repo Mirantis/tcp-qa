@@ -22,10 +22,10 @@
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 - description: WR run linux state to fix hosts
-  cmd: salt "*" state.sls linux
+  cmd: salt "cfg*" state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
-  skip_fail: false
+  skip_fail: true
 
 - description: Hack gtw node
   cmd: salt 'gtw*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.94/24 dev ens4; ip addr flush dev ens4";
