@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e0d8e433_05ef6a65",
+        "filename": "tcp_tests/helpers/ext.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-10-05T06:55:10Z",
+      "side": 1,
+      "message": "missing comma at the end of the string, cause:\n\nConftestImportFailure: AttributeError(\"\u0027Enum\u0027 object has no attribute \u0027k8s_controller\u0027\",)",
+      "revId": "4b8c6f3f1d33499bbc4bcbc7391ded405abde6a2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
