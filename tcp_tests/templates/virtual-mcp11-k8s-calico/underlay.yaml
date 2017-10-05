@@ -183,7 +183,7 @@ template:
                     - private
 
           - name: {{ HOSTNAME_CTL02 }}
-            role: k8s_virtlet
+            role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 2048

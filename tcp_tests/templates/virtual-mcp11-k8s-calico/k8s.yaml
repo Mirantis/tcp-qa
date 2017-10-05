@@ -21,7 +21,7 @@
      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' state.sls kubernetes.pool;
      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' cmd.run 'calicoctl node status';
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Setup NAT for Calico
