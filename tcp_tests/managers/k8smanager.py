@@ -13,6 +13,7 @@
 #    under the License.
 
 import time
+from uuid import uuid4
 
 import yaml
 
@@ -399,3 +400,90 @@ class K8SManager(ExecuteCommandsMixin):
                 node_name=self.ctl_host) as remote:
             remote.check_call("nslookup {0} {1}".format(host, src))
 
+# ---------------------------- Virtlet methods -------------------------------
+
+    def git_clone(self, project, target):
+        cmd = "git clone {0} {1}".format(project, target)
+        return self.__underlay.check_call(cmd, node_name=self.ctl_host)
+
+    def run_vm(self, name=None, yaml_path='~/virtlet/examples/cirros-vm.yaml'):
+        if not name:
+            name = 'virtlet-vm-{}'.format(uuid4())
+        cmd = (
+            "kubectl convert -f {0} --local "
+            "-o json | jq '.metadata.name|=\"{1}\"' | kubectl create -f -")
+        self.__underlay.check_call(cmd.format(name, yaml_path),
+                                   node_name=self.ctl_host)
+        return name
+
+    def get_vm_info(self, name, jsonpath="{.status.phase}", expected=None):
+        cmd = "kubectl get po {} -n default".format(name)
+        if jsonpath:
+            cmd += " -o jsonpath={}".format(jsonpath)
+        return self.__underlay.check_call(
+            cmd, node_name=self.ctl_host, expected=expected)
+
+    def wait_active_state(self, name, timeout=180):
+        helpers.wait(
+            lambda: self.get_vm_info(name)['stdout'][0] == 'Running',
+            timeout=timeout,
+            timeout_msg="VM {} didn't Running state in {} sec. "
+                        "Current state: ".format(
+                name, timeout, self.get_vm_info(name)['stdout'][0]))
+
+    def delete_vm(self, name, timeout=180):
+        cmd = "kubectl delete po -n default {}".format(name)
+        self.__underlay.check_call(cmd, node_name=self.ctl_host)
+
+        helpers.wait(
+            lambda:
+            "Error from server (NotFound):" in
+            " ".join(self.get_vm_info(name, expected=[0, 1])['stderr']),
+            timeout=timeout,
+            timeout_msg="VM {} didn't Running state in {} sec. "
+                        "Current state: ".format(
+                name, timeout, self.get_vm_info(name)['stdout'][0]))
+
+    def adjust_cirros_resources(
+            self, cpu=2, memory='256',
+            target_yaml='virtlet/examples/cirros-vm-exp.yaml'):
+        # We will need to change params in case of example change
+        cmd = ("cd ~/virtlet/examples && "
+               "cp cirros-vm.yaml {2} && "
+               "sed -r 's/^(\s*)(VirtletVCPUCount\s*:\s*\"1\"\s*$)/ "
+               "\1VirtletVCPUCount: \"{0}\"/' {2} && "
+               "sed -r 's/^(\s*)(memory\s*:\s*128Mi\s*$)/\1memory: "
+               "{1}Mi/' {2}".format(cpu, memory, target_yaml))
+        self.__underlay.check_call(cmd, node_name=self.ctl_host)
+
+    def get_domain_name(self, vm_name):
+        cmd = ("~/virtlet/examples/virsh.sh list --name | "
+               "grep -i {0} ".format(vm_name))
+        result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
+        return result['stdout'].strip()
+
+    def get_vm_cpu_count(self, domain_name):
+        cmd = ("~/virtlet/examples/virsh.sh dumpxml {0} | "
+               "grep 'cpu' | grep -o '[[:digit:]]*'".format(domain_name))
+        result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
+        return int(result['stdout'].strip())
+
+    def get_vm_memory_count(self, domain_name):
+        cmd = ("~/virtlet/examples/virsh.sh dumpxml {0} | "
+               "grep 'memory unit' | "
+               "grep -o '[[:digit:]]*'".format(domain_name))
+        result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
+        return int(result['stdout'].strip())
+
+    def get_domain_id(self, domain_name):
+        cmd = ("virsh dumpxml {} | grep id=\' | "
+               "grep -o [[:digit:]]*".format(domain_name))
+        result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
+        return int(result['stdout'].strip())
+
+    def list_vm_volumes(self, domain_name):
+        domain_id = self.get_domain_id(domain_name)
+        cmd = ("~/virtlet/examples/virsh.sh domblklist {} | "
+               "tail -n +3 | awk {{'print $2'}}".format(domain_id))
+        result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
+        return result['stdout'].strip()

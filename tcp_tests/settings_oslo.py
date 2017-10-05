@@ -56,13 +56,6 @@ _default_opencontrail_prepare_tests_steps_path = \
 _default_sl_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/sl.yaml'.format(
         settings.LAB_CONFIG_NAME))
-_default_virtlet_prepare_tests_steps_path = pkg_resources.resource_filename(
-    __name__, 'templates/{0}/virtlet.yaml'.format(
-        settings.LAB_CONFIG_NAME))
-_default_virtlet_ceph_prepare_tests_steps_path = \
-    pkg_resources.resource_filename(
-        __name__, 'templates/{0}/virtlet_ceph.yaml'.format(
-            settings.LAB_CONFIG_NAME))
 _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))
@@ -94,7 +87,6 @@ underlay_opts = [
            help="Node roles managed by underlay in the environment",
            default=[ext.UNDERLAY_NODE_ROLES.salt_master,
                     ext.UNDERLAY_NODE_ROLES.salt_minion,
-                    ext.UNDERLAY_NODE_ROLES.k8s_virtlet,
                     ext.UNDERLAY_NODE_ROLES.k8s_controller]),
     ct.Cfg('bootstrap_timeout', ct.Integer(),
            help="Timeout of waiting SSH for nodes with specified roles",
@@ -226,24 +218,6 @@ sl_opts = [
            help="Proemtheus protocol", default='http'),
 ]
 
-virtlet_deploy_opts = [
-    ct.Cfg('virtlet_steps_path', ct.String(),
-           help="Path to YAML with steps to deploy virtlet",
-           default=_default_virtlet_prepare_tests_steps_path),
-    ct.Cfg('virtlet_ceph_steps_path', ct.String(),
-           help="Path to YAML with steps to deploy one-node ceph cluster for "
-                "Virtlet Flexvolumes testing",
-           default=_default_virtlet_ceph_prepare_tests_steps_path)
-]
-
-virtlet_opts = [
-    ct.Cfg('virtlet_installed', ct.Boolean(),
-           help="", default=False),
-    ct.Cfg('ceph_installed', ct.Boolean(),
-           help="Determine, installed one-node ceph cluster or not",
-           default=False)
-]
-
 k8s_deploy_opts = [
     ct.Cfg('k8s_steps_path', ct.String(),
            help="Path to YAML with steps to deploy Kubernetes",
@@ -320,8 +294,6 @@ _group_opts = [
     ('opencontrail', opencontrail_opts),
     ('stack_light', sl_opts),
     ('sl_deploy', sl_deploy_opts),
-    ('virtlet_deploy', virtlet_deploy_opts),
-    ('virtlet', virtlet_opts),
     ('k8s_deploy', k8s_deploy_opts),
     ('k8s', k8s_opts),
 ]
@@ -395,12 +367,6 @@ def register_opts(config):
                      title="SL deploy config and credentials",
                      help=""))
     config.register_opts(group='sl_deploy', opts=sl_deploy_opts)
-    config.register_group(cfg.OptGroup(name='virtlet_deploy',
-                                       title='Virtlet deploy config', help=""))
-    config.register_opts(group='virtlet_deploy', opts=virtlet_deploy_opts)
-    config.register_group(cfg.OptGroup(name='virtlet',
-                                       title='Virtlet config', help=""))
-    config.register_opts(group='virtlet', opts=virtlet_opts)
 
     config.register_group(cfg.OptGroup(name='k8s_deploy',
                                        title="K8s deploy configuration"))
