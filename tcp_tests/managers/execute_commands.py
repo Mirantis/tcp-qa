@@ -267,3 +267,42 @@ class ExecuteCommandsMixin(object):
                          .format(node_name, file_name, local_path))
                 remote.download(destination=file_name.rstrip(),
                                 target=local_path)
+
+    def action_store_logs(self, step):
+        """Download from environment node to local host
+
+        Example:
+
+        - description: Download a file
+          download:
+            remote_path: /var/log
+            local_path: /tmp/
+          node_name: ctl01
+          skip_fail: False
+        """
+        node_name = step.get('node_name')
+        remote_path = step.get('download', {}).get('remote_path', None)
+        local_path = step.get('download', {}).get('local_path', None)
+        description = step.get('description', remote_path)
+        skip_fail = step.get('skip_fail', False)
+
+        if not remote_path or not local_path:
+            raise Exception("Step '{0}' failed: please specify 'remote_path', "
+                            "and 'local_path' correctly"
+                            .format(description))
+
+        with self.__underlay.remote(node_name=node_name) as remote:
+            cmd = ('tar --absolute-names'
+                   ' --warning=no-file-changed '
+                   '-czf {t} {d}'.format(t='{0}_log.tar.gz'.format(node_name),
+                                         d=remote_path))
+            result = remote.execute(cmd)
+            LOG.info("Tar files to download:\n{0}".format(result))
+
+            if not result['stdout'] and not skip_fail:
+                raise Exception("Nothing to download on step {0}"
+                                .format(description))
+            LOG.info("Downloading {0}:{1} to {2}".format(
+                node_name, '{0}_log.tar.gz'.format(node_name), local_path))
+            remote.download(destination='{0}_log.tar.gz'.format(node_name),
+                            target=local_path)
