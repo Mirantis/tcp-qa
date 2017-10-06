@@ -196,3 +196,26 @@ def underlay(revert_snapshot, config, hardware):
         underlay = underlay_ssh_manager.UnderlaySSHManager(config)
 
     return underlay
+
+
+@pytest.fixture(scope='function', autouse=True)
+def grab_versions(request, underlay):
+    """Fixture for grab package versions at the end of test
+
+    Marks:
+        grab_versions(name=None) - make snapshot if test is passed. If
+        name argument provided, it will be used for creating data,
+        otherwise, test function name will be used
+
+    """
+    grab_version = request.keywords.get('grab_versions', None)
+
+    def test_fin():
+        default_name = getattr(request.node.function, '_name',
+                               request.node.function.__name__)
+        if hasattr(request.node, 'rep_call') and request.node.rep_call.passed \
+                and grab_version:
+            artifact_name = utils.extract_name_from_mark(grab_version) or \
+                "{}".format(default_name)
+            underlay.get_logs(artifact_name)
+    request.addfinalizer(test_fin)

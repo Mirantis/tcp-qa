@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import os
 import random
 import StringIO
 
@@ -22,6 +23,7 @@ from paramiko import rsakey
 import yaml
 
 from tcp_tests import logger
+from tcp_tests.helpers import ext
 from tcp_tests.helpers import utils
 
 LOG = logger.logger
@@ -390,3 +392,38 @@ class UnderlaySSHManager(object):
         }
         template = utils.render_template(file_path, options=options)
         return yaml.load(template)
+
+    def get_logs(self, artifact_name,
+                 node_role=ext.UNDERLAY_NODE_ROLES.salt_master):
+        master_node = [ssh for ssh in self.config_ssh
+                       if node_role in ssh['roles']][0]
+        cmd = ("dpkg -l | grep formula > "
+               "/var/log/{0}_packages.output".format(master_node['node_name']))
+
+        tar_cmd = ('tar --absolute-names'
+                   ' --warning=no-file-changed '
+                   '-czf {t} {d}'.format(
+            t='{0}_log.tar.gz'.format(artifact_name), d='/var/log'))
+        minion_nodes = [ssh for ssh in self.config_ssh
+                        if node_role not in ssh['roles']]
+        for node in minion_nodes:
+            with self.remote(host=node['host']) as r_node:
+                r_node.check_call(('tar '
+                                   '--absolute-names '
+                                   '--warning=no-file-changed '
+                                   '-czf {t} {d}'.format(
+                    t='{0}.tar.gz'.format(node['node_name']), d='/var/log')))
+        with self.remote(master_node['node_name']) as r:
+            for node in minion_nodes:
+                packages_minion_cmd = ("salt '{0}*' "
+                                       "dpkg -l > /var/log/"
+                                       "{0}_packages.output".format(
+                    node['node_name']))
+                r.check_call(packages_minion_cmd)
+                r.check_call("rsync {0}:/var/log/*.tar.gz "
+                             "/var/log/".format(node['node_name']))
+            r.check_call(cmd)
+
+            r.check_call(tar_cmd)
+            r.download(destination='{0}_log.tar.gz'.format(artifact_name),
+                       target=os.getcwd())
