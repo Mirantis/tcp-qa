@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import os
 import random
 import StringIO
 
@@ -22,6 +23,7 @@ from paramiko import rsakey
 import yaml
 
 from tcp_tests import logger
+from tcp_tests.helpers import ext
 from tcp_tests.helpers import utils
 
 LOG = logger.logger
@@ -390,3 +392,24 @@ class UnderlaySSHManager(object):
         }
         template = utils.render_template(file_path, options=options)
         return yaml.load(template)
+
+    def get_logs_from_master(self, artifact_name,
+                             node_role=ext.UNDERLAY_NODE_ROLES.salt_master,
+                             packages=None):
+        master_node = [ssh for ssh in self.config_ssh
+                       if node_role in ssh['roles']][0]
+        if packages:
+            cmd = "dpkg -l | grep {0} > /var/log/{1}_packages.output ".format(
+                packages, master_node['node_name'])
+        else:
+            cmd = ("dpkg -l | grep formula > "
+                   "/var/log/{0}_packages.output".format(master_node['node_name']))
+        tar_cmd = ('tar --absolute-names'
+                   ' --warning=no-file-changed '
+                   '-czf {t} {d}'.format(
+            t='{0}_log.tar.gz'.format(artifact_name), d='/var/log'))
+        with self.remote(master_node['node_name']) as r:
+            r.check_call(cmd)
+            r.check_call(tar_cmd)
+            r.download( destination='{0}_log.tar.gz'.format(artifact_name),
+                        target=os.getcwd())
