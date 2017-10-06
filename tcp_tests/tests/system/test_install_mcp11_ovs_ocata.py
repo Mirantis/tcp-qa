@@ -24,6 +24,7 @@ LOG = logger.logger
 class Test_Mcp11_install(object):
     """Test class for testing mcp11 vxlan deploy"""
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8119
     def test_mcp11_ocata_ovs_install(self, underlay,
