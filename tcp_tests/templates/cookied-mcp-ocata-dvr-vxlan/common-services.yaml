@@ -1,5 +1,11 @@
 {% from 'cookied-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
+- description: Refresh grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt.minion.grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
 # Install support services
 - description: Install keepalived on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
