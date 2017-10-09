@@ -407,13 +407,17 @@ class UnderlaySSHManager(object):
         minion_nodes = [ssh for ssh in self.config_ssh
                         if node_role not in ssh['roles']]
         for node in minion_nodes:
-            with self.remote(host=node['host']) as r_node:
-                r_node.check_call(('tar '
-                                   '--absolute-names '
-                                   '--warning=no-file-changed '
-                                   '-czf {t} {d}'.format(
-                    t='{0}.tar.gz'.format(node['node_name']), d='/var/log')),
-                    verbose=True, raise_on_err=False)
+            try:
+                with self.remote(host=node['host']) as r_node:
+                    r_node.check_call(('tar '
+                                       '--absolute-names '
+                                       '--warning=no-file-changed '
+                                       '-czf {t} {d}'.format(
+                        t='{0}.tar.gz'.format(node['node_name']),
+                        d='/var/log')),
+                        verbose=True, raise_on_err=False)
+            except:
+                LOG.info("Can not ssh for node {}".format(node))
         with self.remote(master_node['node_name']) as r:
             for node in minion_nodes:
                 packages_minion_cmd = ("salt '{0}*' cmd.run "
