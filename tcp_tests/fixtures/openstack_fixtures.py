@@ -22,9 +22,10 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def openstack_actions(config, underlay, salt_deployed):
+def openstack_actions(config, hardware, underlay, salt_deployed):
     """Fixture that provides various actions for OpenStack
 
+    :param config: fixture provides oslo.config
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :param salt_deployed: fixture provides salt manager
@@ -32,7 +33,8 @@ def openstack_actions(config, underlay, salt_deployed):
 
     For use in tests or fixtures to deploy a custom OpenStack
     """
-    return openstack_manager.OpenstackManager(config, underlay, salt_deployed)
+    return openstack_manager.OpenstackManager(config, underlay,
+                                              hardware, salt_deployed)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
