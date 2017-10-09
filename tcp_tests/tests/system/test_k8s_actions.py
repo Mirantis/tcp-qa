@@ -23,6 +23,7 @@ LOG = logger.logger
 class TestMCPK8sActions(object):
     """Test class for different k8s actions"""
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_k8s_externaldns_coredns(self, show_step, config, k8s_deployed):
         """Test externaldns integration with coredns

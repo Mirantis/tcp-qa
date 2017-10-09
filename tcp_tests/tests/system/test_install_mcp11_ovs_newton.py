@@ -24,6 +24,7 @@ LOG = logger.logger
 class TestMcp11Install(object):
     """Test class for testing mcp11 vxlan deploy"""
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_mcp11_newton_ovs_install(self, underlay, openstack_deployed,
                                       openstack_actions, show_step):
@@ -45,6 +46,7 @@ class TestMcp11Install(object):
 
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_mcp11_newton_dvr_install(self, underlay, openstack_deployed,
                                       openstack_actions, show_step):

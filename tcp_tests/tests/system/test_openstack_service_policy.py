@@ -243,6 +243,7 @@ class TestOSServicesPolicy(OSServiceCheckers):
     """Test class for testing OpenStack services policy"""
 
     # https://github.com/salt-formulas/salt-formula-nova/pull/17 - Merged
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_policy_for_nova(self, underlay, openstack_deployed, salt_actions,
                              show_step):
@@ -264,6 +265,7 @@ class TestOSServicesPolicy(OSServiceCheckers):
         LOG.info("*************** DONE **************")
 
     # https://github.com/salt-formulas/salt-formula-cinder/pull/13 - Merged
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_policy_for_cinder(self, underlay, openstack_deployed,
                                salt_actions, show_step):
@@ -289,6 +291,7 @@ class TestOSServicesPolicy(OSServiceCheckers):
         LOG.info("*************** DONE **************")
 
     # https://github.com/salt-formulas/salt-formula-heat/pull/5 - Merged
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_policy_for_heat(self, underlay, openstack_deployed, salt_actions,
                              show_step):
@@ -314,6 +317,7 @@ class TestOSServicesPolicy(OSServiceCheckers):
         LOG.info("*************** DONE **************")
 
     # https://github.com/salt-formulas/salt-formula-glance/pull/9 - Merged
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_policy_for_glance(self, underlay, openstack_deployed,
                                salt_actions, show_step):
@@ -339,6 +343,7 @@ class TestOSServicesPolicy(OSServiceCheckers):
         LOG.info("*************** DONE **************")
 
     # https://github.com/salt-formulas/salt-formula-ceilometer/pull/2 - Merged
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.skip(reason="Skipped due no have ceilometer in environment")
     def test_policy_for_ceilometer(self, underlay, openstack_deployed,
@@ -365,6 +370,7 @@ class TestOSServicesPolicy(OSServiceCheckers):
         LOG.info("*************** DONE **************")
 
     # https://github.com/salt-formulas/salt-formula-neutron/pull/8 - Merged
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_policy_for_neutron(self, underlay, openstack_deployed,
                                 salt_actions, show_step):
@@ -390,6 +396,7 @@ class TestOSServicesPolicy(OSServiceCheckers):
         LOG.info("*************** DONE **************")
 
     # https://github.com/salt-formulas/salt-formula-keystone/pull/11 - Merged
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_policy_for_keystone(self, underlay, openstack_deployed,
                                  salt_actions, show_step):

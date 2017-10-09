@@ -24,6 +24,7 @@ LOG = logger.logger
 class Testk8sInstall(object):
     """Test class for testing Kubernetes deploy"""
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8116
     def test_k8s_install_calico(self, config, show_step,
@@ -126,6 +127,7 @@ class Testk8sInstall(object):
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8115
     def test_k8s_install_contrail(self, config, show_step,
@@ -186,6 +188,7 @@ class Testk8sInstall(object):
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_only_k8s_install(self, config, k8s_deployed, k8s_actions):
         """Test for deploying MCP environment with k8s and check it

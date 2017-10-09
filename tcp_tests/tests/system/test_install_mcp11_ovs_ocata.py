@@ -47,6 +47,7 @@ class Test_Mcp11_install(object):
             openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8119
     def test_mcp11_ocata_ovs_sl_install(self, underlay, config,
@@ -81,6 +82,7 @@ class Test_Mcp11_install(object):
             '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8120
     def test_mcp11_ocata_dvr_install(self,
@@ -103,6 +105,7 @@ class Test_Mcp11_install(object):
             openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8120
     def test_mcp11_ocata_dvr_sl_install(self, underlay, config,

@@ -22,6 +22,7 @@ LOG = logger.logger
 class TestOSSInstaller(object):
     """Test class for testing Operational Support System Tools deployment"""
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_oss_install_default(self, underlay, show_step,
                                  oss_deployed, openstack_deployed,

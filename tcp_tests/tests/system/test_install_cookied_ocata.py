@@ -23,6 +23,7 @@ LOG = logger.logger
 class Test_Mcp11_install(object):
     """Test class for testing mcp11 vxlan deploy"""
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_cookied_ocata_ovs_install(self, underlay, openstack_deployed,
                                        show_step):
@@ -35,6 +36,7 @@ class Test_Mcp11_install(object):
         """
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_cookied_ocata_dvr_install(self, underlay, openstack_deployed,
                                        show_step):
@@ -47,6 +49,7 @@ class Test_Mcp11_install(object):
         """
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_cookied_ocata_cicd_oss_install(self, underlay, oss_deployed,
                                             openstack_deployed, sl_deployed,
