@@ -24,10 +24,12 @@ class OpenstackManager(ExecuteCommandsMixin):
 
     __config = None
     __underlay = None
+    __hardware = None
 
-    def __init__(self, config, underlay, salt):
+    def __init__(self, config, underlay,  hardware, salt):
         self.__config = config
         self.__underlay = underlay
+        self.__hardware = hardware
         self._salt = salt
         super(OpenstackManager, self).__init__(
             config=config, underlay=underlay)
@@ -88,3 +90,32 @@ class OpenstackManager(ExecuteCommandsMixin):
             file_name = result['stdout'][0].rstrip()
             LOG.debug("Found files {0}".format(file_name))
             r.download(destination=file_name, target=os.getcwd())
+
+    def warm_shutdown_openstack_nodes(self, node_sub_name, timeout=10 * 60):
+        """Gracefully shutting down the node  """
+        node_names = [node_name for node_name
+                      in self.__underlay.node_names()
+                      if node_sub_name in node_name]
+        LOG.info('Shutting down nodes {}', node_names)
+        for node in node_names:
+            LOG.debug('Shutdown node %s', node)
+            with self.__underlay.remote(node) as r_by_name:
+                r_by_name.check_call(cmd='shutdown +1', timeout=timeout)
+
+        for node in node_names:
+            self.__hardware.destroy_node(node)
+
+    def warm_start_nodes(self, node_sub_name):
+        node_names = [node_name for node_name
+                      in self.__underlay.node_names()
+                      if node_sub_name in node_name]
+        LOG.info('Starting nodes %s', node_names)
+        for node in node_names:
+            self.__hardware.start_node(node)
+
+    # TODO (tleontovich) Add waiters for check if node.is_active() True/False
+
+    def warm_restart_nodes(self, node_names, timeout=10 * 60):
+        LOG.info('Reboot (warm restart) nodes %s', node_names)
+        self.warm_shutdown_openstack_nodes(node_names, timeout=timeout)
+        self.warm_start_nodes(node_names)
