@@ -330,6 +330,29 @@ class EnvironmentManager(object):
             raise exceptions.EnvironmentIsNotSet()
         self.__env.destroy()
 
+    def destroy_node(self, node_name):
+        """Destroy node"""
+        node = self.__env.get_node(name=node_name)
+        node.destroy()
+
+    def start_node(self, node_name):
+        """Destroy node"""
+        node = self.__env.get_node(name=node_name)
+        node.start()
+
+    def wait_for_node_state(self, node_name, state, timeout):
+        node = self.__env.get_nodes(name=node_name)
+        if 'active' in state:
+            helpers.wait(lambda: node.is_active(),
+                         timeout=timeout,
+                         timeout_msg=('Node {0} failed '
+                                      'to become active'.format(node)))
+        else:
+            helpers.wait(lambda: not node.is_active(),
+                         timeout=timeout,
+                         timeout_msg=('Node {0} failed '
+                                      'to become active'.format(node)))
+
     def has_snapshot(self, name):
         return self.__env.has_snapshot(name)
 
@@ -352,6 +375,15 @@ class EnvironmentManager(object):
         """
         LOG.debug('Trying to get nodes by role {0}'.format(node_role))
         return self.__env.get_nodes(role=node_role)
+
+    def __get_nodes_by_name(self, node_name):
+        """Get node by given role name
+
+        :param node_name: string
+        :rtype: devops.models.Node
+        """
+        LOG.debug('Trying to get nodes by role {0}'.format(node_name))
+        return self.__env.get_nodes(name=node_name)
 
     @property
     def master_nodes(self):
