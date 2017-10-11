@@ -15,6 +15,7 @@
 import pytest
 
 from tcp_tests import logger
+from tcp_tests import settings
 
 LOG = logger.logger
 
@@ -25,7 +26,7 @@ class TestOpenContrail(object):
 
     @pytest.mark.fail_snapshot
     def test_opencontrail(self, config, openstack_deployed,
-                          show_step, opencontrail):
+                          show_step, sl_deployed):
         """Runner for Juniper contrail-tests
 
         Scenario:
@@ -35,9 +36,19 @@ class TestOpenContrail(object):
             4. Prepare contrail-tests on ctl01 node
             5. Run contrail-tests
         """
-        opencontrail.prepare_tests(
-            config.opencontrail.opencontrail_prepare_tests_steps_path)
+        openstack_deployed._salt.local(
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
 
-        opencontrail.run_tests(
-            tags=config.opencontrail.opencontrail_tags,
-            features=config.opencontrail.opencontrail_features)
+        if settings.RUN_TEMPEST:
+            # openstack_deployed.run_tempest(target='ctl01',
+            #                               pattern=settings.PATTERN)
+            openstack_deployed.download_tempest_report(stored_node='cfg01')
+        LOG.info("*************** DONE **************")
+
+        # opencontrail.prepare_tests(
+        #     config.opencontrail.opencontrail_prepare_tests_steps_path)
+
+        # opencontrail.run_tests(
+        #     tags=config.opencontrail.opencontrail_tags,
+        #     features=config.opencontrail.opencontrail_features)
