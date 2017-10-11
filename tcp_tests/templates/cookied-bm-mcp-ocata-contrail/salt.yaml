@@ -1,6 +1,9 @@
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_KVM01 with context %}
+{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_KVM02 with context %}
+{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
@@ -16,6 +19,35 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+
+- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_KVM01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_KVM02 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_KVM03 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
@@ -24,7 +56,30 @@
 
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas"') }}
 
+<<<<<<< HEAD
+=======
+- description: "Workaround for haproxy without listen"
+  cmd: |
+    set -e;
+    git clone https://gerrit.mcp.mirantis.net/salt-formulas/haproxy;
+    cd haproxy/;
+    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/haproxy refs/changes/39/11339/1 && git checkout FETCH_HEAD;
+    cp haproxy/files/haproxy.cfg /srv/salt/env/prd/haproxy/files/;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+>>>>>>> 8533367... Modifying new cookied model for baremetal.
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+- description: (REMOVE asap) Hack CFG of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
@@ -36,8 +91,8 @@
     # Add openstack_compute_node definition from system
     reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge;
     # Set ipaddresses
-#    salt-call reclass.cluster_meta_set openstack_compute_node01_single_address 10.167.4.72 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
-#    salt-call reclass.cluster_meta_set openstack_compute_node02_single_address 10.167.4.74 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
+#    salt-call reclass.cluster_meta_set openstack_compute_node01_single_address 10.167.8.72 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
+#    salt-call reclass.cluster_meta_set openstack_compute_node02_single_address 10.167.8.74 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
 #    salt-call reclass.cluster_meta_set openstack_compute_node01_deploy_address 172.16.49.72 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
 #    salt-call reclass.cluster_meta_set openstack_compute_node02_deploy_address 172.16.49.74 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
 
@@ -56,24 +111,15 @@
     # Add tenant and single addresses for computes
     salt-call reclass.cluster_meta_set deploy_address 172.16.49.72 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
     salt-call reclass.cluster_meta_set tenant_address 192.168.0.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
-    salt-call reclass.cluster_meta_set single_address 10.167.4.72 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
+    salt-call reclass.cluster_meta_set single_address 10.167.8.72 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
 
     salt-call reclass.cluster_meta_set deploy_address 172.16.49.74 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
     salt-call reclass.cluster_meta_set tenant_address 192.168.0.102 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
-    salt-call reclass.cluster_meta_set single_address 10.167.4.74 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
+    salt-call reclass.cluster_meta_set single_address 10.167.8.74 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
-- description: "Workaround for PROD-15087"
-  cmd: |
-    set -e;
-    reclass-tools add-key 'classes' 'system.linux.system.repo.mcp.openstack' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/stacklight/telemetry.yml --merge;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
