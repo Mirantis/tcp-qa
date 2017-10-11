@@ -134,6 +134,10 @@
 
     find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
+    # Workaround for PROD-14756: all roles must use service.keepalived.cluster.single with the default 'VIP' instance"
+    find /srv/salt/reclass/classes/cluster/ -type f -exec sed -i 's/system.keepalived.*/service.keepalived.cluster.single/g' {} +
+    find /srv/salt/reclass/classes/system/ -type f -exec sed -i 's/system.keepalived.*/service.keepalived.cluster.single/g' {} +
+
     {%- if IS_CONTRAIL_LAB %}
     # vSRX IPs for tcp-qa images have 172.16.10.90 hardcoded
     find ${REPLACE_DIRS} -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: 172.16.10.90/g' {} +
