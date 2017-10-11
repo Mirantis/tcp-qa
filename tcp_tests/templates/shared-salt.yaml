@@ -169,7 +169,7 @@
 {%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None) %}
 {###################################################################}
 {%- set CLUSTER_CONTEXT_PATH = '/tmp/' + CLUSTER_CONTEXT_NAME %}
-- description: "[EXPERIMENTAL] Upload cookiecutter-templates context to {{ HOSTNAME_CFG01 }}"
+- description: "[EXPERIMENTAL] Upload cookiecutter-templates context to {{ HOSTNAME_CFG01 }}."
   upload:
     local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
     local_filename: {{ CLUSTER_CONTEXT_NAME }}
