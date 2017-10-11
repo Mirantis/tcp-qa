@@ -1,6 +1,6 @@
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
-# Install docker swarm
+# Install docker swarm.
 - description: Install keepalived on mon nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'mon*' state.sls keepalived
@@ -142,39 +142,27 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-# Change environment configuration before deploy
-- description: Set SL docker images deploy parameters
-  cmd: |
-  {% for sl_opt, value in config.sl_deploy.items() %}
-    {% if value|string() %}
-    salt-call reclass.cluster_meta_set {{ sl_opt }} {{ value }};
-    {% endif %}
-  {% endfor %}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 # Configure the services running in Docker Swarm
 - description: Install prometheus alertmanager
   cmd: salt -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 - description: run docker state
   cmd: salt -C 'I@docker:swarm:role:master' state.sls docker
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 120}
   skip_fail: false
 
 - description: docker ps
-  cmd: salt -C 'I@docker:swarm' dockerng.ps
+  cmd: sleep 120; salt -C 'I@docker:swarm' dockerng.ps
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Configure Grafana dashboards and datasources
-  cmd: sleep 30;  salt -C 'I@grafana:client' state.sls grafana.client
+  cmd: sleep 60;  salt -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 10}
   skip_fail: false
