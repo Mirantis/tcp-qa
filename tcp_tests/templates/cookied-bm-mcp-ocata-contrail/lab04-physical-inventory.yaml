@@ -41,13 +41,13 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp2s0f1:
-          role: parametrized_interface
+          role: single_mgm
           deploy_address: 172.16.49.72
         enp2s0f0:
-          role: parametrized_interface
+          role: single_ctl
           single_address: 10.167.4.72
         enp5s0f0:
-          role: parametrized_interface
+          role: single_ctl
           tenant_address: 192.168.0.101
 
     cmp002.cookied-bm-mcp-ocata-contrail.local:
@@ -57,13 +57,13 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp2s0f1:
-          role: parametrized_interface
+          role: single_mgm
           deploy_address: 172.16.49.74
         enp2s0f0:
-          role: parametrized_interface
+          role: single_ctl
           single_address: 10.167.4.74
         enp5s0f0:
-          role: parametrized_interface
+          role: single_ctl
           tenant_address: 192.168.0.102
 
 #    gtw01.cookied-bm-mcp-ocata-contrail.local:
