@@ -52,7 +52,7 @@
    - apt-get update
    - which wget >/dev/null || (apt-get update; apt-get install -y wget);
    - apt-get install -y ntp
-
+   
    - export IRONIC_PXE_MANAGER=dnsmasq
    - export IRONIC_PXE_INTERFACE_NAME=ens4
    - export IRONIC_PXE_INTERFACE_ADDRESS={{ os_env('IRONIC_PXE_INTERFACE_ADDRESS', '10.0.175.2') }}
