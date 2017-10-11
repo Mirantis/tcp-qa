@@ -169,7 +169,7 @@
 {%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None) %}
 {###################################################################}
 {%- set CLUSTER_CONTEXT_PATH = '/tmp/' + CLUSTER_CONTEXT_NAME %}
-- description: "[EXPERIMENTAL] Upload cookiecutter-templates context to {{ HOSTNAME_CFG01 }}"
+- description: "[EXPERIMENTAL] Upload cookiecutter-templates context to {{ HOSTNAME_CFG01 }}."
   upload:
     local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
     local_filename: {{ CLUSTER_CONTEXT_NAME }}
@@ -196,10 +196,6 @@
     {%- if TENANT_VLAN  %}
     sed -i 's/tenant_vlan:.*/tenant_vlan: {{ TENANT_VLAN }}/g' {{ CLUSTER_CONTEXT_PATH }}
     {%- endif %}
-
-    # Temporary workaround (with hardcoded address .90 -> .15) of bug https://mirantis.jira.com/browse/PROD-14377
-    # sed -i 's/salt_master_address:.*/salt_master_address: {{ IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
-    # sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
 
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
