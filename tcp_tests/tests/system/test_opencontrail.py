@@ -25,7 +25,7 @@ class TestOpenContrail(object):
 
     @pytest.mark.fail_snapshot
     def test_opencontrail(self, config, openstack_deployed,
-                          show_step, opencontrail):
+                          show_step, sl_deployed):
         """Runner for Juniper contrail-tests
 
         Scenario:
