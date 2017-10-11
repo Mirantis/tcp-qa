@@ -24,18 +24,16 @@
 
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas"') }}
 
-- description: "Fix salt-formula/salt VCP creation. Delete as fast as possible"
+- description: "Workaround for haproxy without listen"
   cmd: |
     set -e;
-    mkdir -p /tmp/fix_vcp;
-    cd /tmp/fix_vcp;
-    git clone https://gerrit.mcp.mirantis.net/salt-formulas/salt;
-    cd salt;
-    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/salt refs/changes/10/11210/1 && git checkout FETCH_HEAD;
-    cp  _modules/virtng.py /usr/share/salt-formulas/env/_modules/;
+    git clone https://gerrit.mcp.mirantis.net/salt-formulas/haproxy;
+    cd haproxy/;
+    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/haproxy refs/changes/39/11339/1 && git checkout FETCH_HEAD;
+    cp haproxy/files/haproxy.cfg /srv/salt/env/prd/haproxy/files/;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
+  retry: {count: 1, delay: 10}
+  skip_fail: true
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
@@ -78,15 +76,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
-- description: "Workaround for PROD-15087"
-  cmd: |
-    set -e;
-    reclass-tools add-key 'classes' 'system.linux.system.repo.mcp.openstack' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/stacklight/telemetry.yml --merge;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
