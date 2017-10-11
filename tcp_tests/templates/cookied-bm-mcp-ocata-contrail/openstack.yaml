@@ -1,12 +1,9 @@
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CTL01 with context %}
-{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CTL02 with context %}
-{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
-{% set PATTERN = os_env('PATTERN', 'smoke') %}
-
+{% set PATTERN = os_env('PATTERN', 'false') %}
+{% set RUN_TEMPEST = os_env('RUN_TEMPEST', 'false') %}
 # Install OpenStack control services
 
 - description: Install glance on all controllers
@@ -93,6 +90,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Install cinder volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:volume' state.sls cinder
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Check cinder list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; cinder list'
@@ -123,6 +127,13 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
+- description: Configure contrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:collector' state.sls opencontrail.collector
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Install contrail on all nodes still skipping client
   cmd: salt --hard-crash --state-output=mixed --state-verbose=Falsa
     -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
@@ -130,55 +141,33 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-- description: Install contrail and do client part as well
+- description: Check contrail status
+  cmd: sleep 30; salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' cmd.run contrail-status
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install contrail and do client part as well (count and delay for waiting for collector connection)
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:control' state.sls opencontrail
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 5, delay: 60}
   skip_fail: false
 
 - description: Configure contrail
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:database:id:1' state.sls opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Check contrail status
-  cmd: sleep 15; salt --hard-crash --state-output=mixed --state-verbose=False
+  cmd: sleep 30; salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:control' cmd.run contrail-status
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
-
-#- description: Install neutron on gtw node
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@neutron:gateway' state.sls neutron
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
-# isntall designate
-- description: Install powerdns
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'ctl*' state.sls powerdns
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Install designate
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@designate:server' state.sls designate -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 10}
-  skip_fail: false
-
-#- description: Check neutron agent-list
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@keystone:server' cmd.run '. /root/keystonerc; neutron agent-list'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
 
 - description: Install heat service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -248,19 +237,19 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Create net04_external
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description: Create net04_external
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+#    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
 
-- description: Create subnet_external
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description: Create subnet_external
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+#    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
 
 - description: Create net04
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
@@ -283,12 +272,12 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Set geteway
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description: Set geteway
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+#    '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
 
 - description:  Add interface
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
@@ -318,97 +307,42 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Temp workaround of  PROD-13167
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
-    'apt-get install python-pymysql -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-# Configure cinder-volume salt-call PROD-13167
-- description: Set disks 01
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 03
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 01
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create volume_group
-  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install cinder-volume
-  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install crudini
-  cmd: salt "ctl*" cmd.run 'apt-get install crudini -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 01
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 02
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 03
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description: Install docker.io on gtw
-#  cmd: salt-call cmd.run 'apt-get install docker.io -y'
-#  node_name: {{ HOSTNAME_GTW01 }}
+#- description: Install lvm2 packages
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
+#    'apt-get install python-pymysql lvm2 -y'
+#  node_name: {{ HOSTNAME_CFG01 }}
 #  retry: {count: 1, delay: 30}
 #  skip_fail: false
 
-- description: create rc file on cfg
-  cmd: scp ctl01:/root/keystonercv3 /root
+#- description: Install crudini
+#  cmd: salt -C "cmp*" cmd.run 'apt-get install crudini -y'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: true
+
+#- description: Temporary WR set enabled backends value
+#  cmd: salt "cmp*" cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+
+#- description: Start cinder-volume service
+#  cmd: salt "cmp*" cmd.run '/etc/init.d/cinder-volume stop; /etc/init.d/cinder-volume start;'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: true
+
+- description: Install docker.io on ctl
+  cmd: salt "ctl01*" cmd.run 'apt-get install docker.io -y'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+#- description: create rc file on cfg
+#  cmd: scp ctl01:/root/keystonercv3 /root
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
 
 #- description: Copy rc file
 #  cmd: scp /root/keystonercv3 gtw01:/root
@@ -416,29 +350,65 @@
 #  retry: {count: 1, delay: 30}
 #  skip_fail: false
 
-#- description: Run tests
-#  cmd: |
-#    if [[ {{ PATTERN }} == "false" ]]; then
-#        docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /etc/ssl/certs/:/etc/ssl/certs/ -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output
-#    else
-#        docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /etc/ssl/certs/:/etc/ssl/certs/ -e CUSTOM='--pattern {{ PATTERN }}' -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output
-#    fi
-#  node_name: {{ HOSTNAME_GTW01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
+- description: Hack resolv.conf on VCP nodes for internal services access
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf;"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
-#- description: Download xml results
-#  download:
-#    remote_path: /root
-#    remote_filename: "report_*.xml"
-#    local_path: {{ os_env('PWD') }}
-#  node_name: {{ HOSTNAME_GTW01 }}
-#  skip_fail: true
+
+- description: Hack vrouter (Delete default moun point)
+  cmd: salt "cmp*" cmd.run "sed -i 's/exit 0//g' /etc/rc.local; echo 'umount /dev/hugepages; service supervisor-vrouter restart' >> /etc/rc.local; echo 'exit 0' >> /etc/rc.local"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Temporary WR for correct pci in vrouter.conf
+  cmd: salt  "cmp*" cmd.run "sed -i 's/physical\_interface\_address\=.*/physical\_interface\_address=0000\:05\:00\.0/g' /etc/contrail/contrail-vrouter-agent.conf"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Remove crashes files from /var/crashes/ while vrouter was crashed
+  cmd: salt  "cmp*" cmd.run "rm -rf /var/crashes/*"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Reboot computes
+  cmd: salt --timeout=600  "cmp*" system.reboot
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+{%- if RUN_TEMPEST %}
+- description: Run tests
+  cmd: |
+    if [[ {{ PATTERN }} == "false" ]]; then
+        salt "ctl01*" cmd.run "docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /etc/ssl/certs/:/etc/ssl/certs/ -v /root/:/home/rally sandriichenko/rally_tempest_docker:mcp1.1_ocata  >> image.output"
+    else
+        salt "ctl01*" cmd.run "docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /etc/ssl/certs/:/etc/ssl/certs/ -e CUSTOM='--pattern {{ PATTERN }}' -v /root/:/home/rally sandriichenko/rally_tempest_docker:mcp1.1_ocata  >> image.output"
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Download xml and html results
+  cmd: |
+    d=$(date +%Y-%m-%d)
+    ctl01_ip=`salt --out=newline_values_only 'ctl01*' grains.get ip4_interfaces:ens2`;
+    scp root@$ctl01_ip:/root/report*.xml /root/report_$d.xml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+{%- endif %}
 
 #- description: Download html results
 #  download:
 #    remote_path: /root
 #    remote_filename: "report_*.html"
 #    local_path: {{ os_env('PWD') }}
-#  node_name: {{ HOSTNAME_GTW01 }}
+#  node_name: {{ HOSTNAME_CFG01 }}
 #  skip_fail: true
