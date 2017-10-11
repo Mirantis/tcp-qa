@@ -9,6 +9,7 @@
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
+{% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
@@ -79,7 +80,6 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 {%- endmacro %}
-
 
 {%- macro MACRO_CLONE_RECLASS_MODELS(IS_CONTRAIL_LAB=false) %}
 {############################################################}
@@ -205,10 +205,6 @@
     sed -i 's/tenant_vlan:.*/tenant_vlan: {{ TENANT_VLAN }}/g' {{ CLUSTER_CONTEXT_PATH }}
     {%- endif %}
 
-    # Temporary workaround (with hardcoded address .90 -> .15) of bug https://mirantis.jira.com/browse/PROD-14377
-    # sed -i 's/salt_master_address:.*/salt_master_address: {{ IPV4_NET_CONTROL_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
-    # sed -i 's/salt_master_management_address:.*/salt_master_management_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {{ CLUSTER_CONTEXT_PATH }}
-
     # Replace firstly to an intermediate value to avoid intersection between
     # already replaced and replacing networks.
     # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
@@ -278,13 +274,25 @@
 {%- macro MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() %}
 {########################################################}
 
-- description: "[EXPERIMENTAL] Clone 'environment-template' repository to {{ HOSTNAME_CFG01 }}"
+- description: "[EXPERIMENTAL] Clone 'environment-template' repository to {{ HOSTNAME_CFG01 }}."
   cmd: |
     set -e;
     mkdir -p /tmp/environment/;
     export GIT_SSL_NO_VERIFY=true; git clone https://github.com/Mirantis/environment-template /tmp/environment/environment_template
   node_name: {{ HOSTNAME_CFG01 }}
   skip_fail: false
+
+{%- if ENVIRONMENT_TEMPLATE_REF_CHANGE != '' %}
+- description: Fetch changes for environment templates
+  cmd: |
+    set -e;
+    pushd /tmp/environment/environment_template &&
+    git fetch https://github.com/Mirantis/environment-template {{ ENVIRONMENT_TEMPLATE_REF_CHANGE }} &&
+    git checkout FETCH_HEAD &&
+    popd
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: false
+{%- endif %}
 
 {%- for ENVIRONMENT_CONTEXT_NAME in ENVIRONMENT_CONTEXT_NAMES %}
 - description: "[EXPERIMENTAL] Upload environment inventory to {{ HOSTNAME_CFG01 }}"
