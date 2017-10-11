@@ -4,6 +4,7 @@
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
 {# Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12 #}
 {% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
+{% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE', '') %}
 {# Pin to a specified commit in salt-models/reclass-system #}
 {% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/reclass-system') %}
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
@@ -226,6 +227,11 @@
 
     export GIT_SSL_NO_VERIFY=true; git clone https://gerrit.mcp.mirantis.net/salt-models/reclass-system /srv/salt/reclass/classes/system/
 
+    {%- if SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
+    {%- for item in SALT_MODELS_SYSTEM_REF_CHANGE.split(" ") %}
+    git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD && \
+    {%- endfor %}
+    {%- endif %}
     # Create the cfg01 node and disable checkouting the model from remote repository
     cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
     classes:
