@@ -1,7 +1,0 @@
-# Switch to the local metadata storage instead of git
-parameters:
-# local storage
-  reclass:
-    storage:
-      data_source:
-        engine: local

@@ -1,0 +1,4 @@
+This 'environment' folder should be removed after
+refactoring the template physical_mcp11_ovs_dpdk to
+generate the 'environment' model instead of use
+pre-defined 'lab03_ovs_dpdk'.
