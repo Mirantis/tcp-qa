@@ -27,5 +27,8 @@ def opencontrail(config, underlay, openstack_deployed):
     :rtype: OpenContrailManager
 
     """
+#    if not config.opencontrail.opencontrail_prepare_tests_steps_path:
+        
+
     return opencontrail_manager.OpenContrailManager(config, underlay,
                                                     openstack_deployed)
