@@ -635,3 +635,19 @@
   skip_fail: false
 
 {%- endmacro %}
+
+{%- macro ADJUST_K8S_OPTS() %}
+{#########################################}
+
+- description: Set k8s deploy parameters
+  cmd: |
+  {% for k8s_opt, value in config.k8s_deploy.items() %}
+    {% if value|string() %}
+    salt-call reclass.cluster_meta_set name={{ k8s_opt }} value={{ value }};
+    {% endif %}
+  {% endfor %}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{%- endmacro %}
