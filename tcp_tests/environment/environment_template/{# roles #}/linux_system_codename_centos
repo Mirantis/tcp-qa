@@ -1,1 +1,0 @@
-{{- set_param('linux_system_codename', 'centos') }}

@@ -1,6 +1,0 @@
-parameters:
-  # _param:
-  # Put overrides for any environment-specific variables here
-  linux:
-    network:
-      interface: ${_param:linux_network_interfaces}
