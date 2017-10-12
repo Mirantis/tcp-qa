@@ -1,16 +1,5 @@
 {% from 'virtual-mcp11-k8s-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
-- description: Set k8s deploy parameters
-  cmd: |
-  {% for k8s_opt, value in config.k8s_deploy.items() %}
-    {% if value|string() %}
-    salt-call reclass.cluster_meta_set {{ k8s_opt }} {{ value }};
-    {% endif %}
-  {% endfor %}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 - description: Install etcd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@etcd:server' state.sls etcd.server.service
