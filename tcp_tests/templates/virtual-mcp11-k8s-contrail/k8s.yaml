@@ -7,17 +7,6 @@
   retry: {count: 2, delay: 1}
   skip_fail: true
 
-- description: Set k8s deploy parameters
-  cmd: |
-  {% for k8s_opt, value in config.k8s_deploy.items() %}
-    {% if value|string() %}
-    salt-call reclass.cluster_meta_set {{ k8s_opt }} {{ value }};
-    {% endif %}
-  {% endfor %}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 # TODO Remove workaround when linklocal on kube-api VIP on ens3 works fine
 - description: Replace kube-api VIP with IP of one controller
   cmd: |
