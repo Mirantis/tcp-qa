@@ -302,13 +302,13 @@
 
 - description: Create partitions 02
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
+  node_name: {{ HOSTNAME_CTL02 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
 - description: Create partitions 03
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
+  node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
