@@ -338,11 +338,11 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-#- description: Set disks 03
-#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
+- description: Set disks 03
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL03 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 
 - description: Create partitions 01
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
@@ -352,13 +352,13 @@
 
 - description: Create partitions 02
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
+  node_name: {{ HOSTNAME_CTL02 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
 - description: Create partitions 03
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
+  node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
@@ -392,11 +392,11 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-#- description: Temporary WR set enabled backends value 03
-#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
+- description: Temporary WR set enabled backends value 03
+  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+  node_name: {{ HOSTNAME_CTL03 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 
 #- description: Install docker.io on gtw
 #  cmd: salt-call cmd.run 'apt-get install docker.io -y'
