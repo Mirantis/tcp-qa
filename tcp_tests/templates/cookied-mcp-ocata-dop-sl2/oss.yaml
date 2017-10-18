@@ -53,6 +53,20 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+# Elasticsearch (system service)
+#-------------------------------
+- description: Setup Elasticsearch
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:server' state.sls elasticsearch.server -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: Setup Elasticsearch
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
 # Setup Docker Swarm
 #-------------------
 
@@ -255,23 +269,21 @@
   retry: {count: 3, delay: 10}
   skip_fail: false
 
-# Elasticsearch
+# Elasticsearch (in container, disabled until https://mirantis.jira.com/browse/PROD-15297 is not fixed)
 #--------------
-
-- description: 'Waiting for Elasticsearch to come up in container...'
-  cmd: timeout 30 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' cmd.run
-      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
-       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:9200/?pretty && break; sleep 2; done'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 10}
-  skip_fail: false
-
-- description: Setup Elasticsearch
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 10}
-  skip_fail: false
-
+#- description: 'Waiting for Elasticsearch to come up in container...'
+#  cmd: timeout 30 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' cmd.run
+#      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
+#       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:9200/?pretty && break; sleep 2; done'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 3, delay: 10}
+#  skip_fail: false
+#
+#- description: Setup Elasticsearch
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 3, delay: 10}
+#  skip_fail: false
 
 
 # Generate docs

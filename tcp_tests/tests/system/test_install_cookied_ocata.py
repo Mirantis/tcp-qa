@@ -51,8 +51,8 @@ class Test_Mcp11_install(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_cookied_ocata_cicd_oss_install(self, underlay, oss_deployed,
-                                            openstack_deployed, sl_deployed,
+    def test_cookied_ocata_cicd_oss_install(self, underlay, openstack_deployed,
+                                            oss_deployed, sl_deployed,
                                             show_step):
         """Test for deploying an mcp environment and check it
         Scenario:
