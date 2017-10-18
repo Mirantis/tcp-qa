@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2eeb6d4a_c7f6eda2",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 638,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-10-18T17:07:17Z",
+      "side": 1,
+      "message": "forgot about \u0027()\u0027 after macro name",
+      "revId": "18ccfdae8f011aadbe7718d47250ac2c0dbc575f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
