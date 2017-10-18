@@ -53,16 +53,16 @@ default_context:
   infra_deploy_nic: eth0
   maas_deploy_address: 10.167.4.91
   maas_hostname: mas01
-  infra_kvm01_control_address: 10.167.4.91
+  infra_kvm01_control_address: ${_param:cicd_control_node01_address}
   infra_kvm01_deploy_address: 10.167.5.91
-  infra_kvm01_hostname: kvm01
-  infra_kvm02_control_address: 10.167.4.92
+  infra_kvm01_hostname: ${_param:cicd_control_node01_hostname}
+  infra_kvm02_control_address: ${_param:cicd_control_node02_address}
   infra_kvm02_deploy_address: 10.167.5.92
-  infra_kvm02_hostname: kvm02
-  infra_kvm03_control_address: 10.167.4.93
+  infra_kvm02_hostname: ${_param:cicd_control_node02_hostname}
+  infra_kvm03_control_address: ${_param:cicd_control_node03_address}
   infra_kvm03_deploy_address: 10.167.5.93
-  infra_kvm03_hostname: kvm03
-  infra_kvm_vip_address: 10.167.4.90
+  infra_kvm03_hostname: ${_param:cicd_control_node03_hostname}
+  infra_kvm_vip_address: ${_param:cicd_control_vip_address}
   infra_primary_first_nic: eth1
   infra_primary_second_nic: eth2
   kubernetes_enabled: 'False'
@@ -82,14 +82,14 @@ default_context:
   openstack_control_node02_hostname: ctl02
   openstack_control_node03_address: 10.167.4.13
   openstack_control_node03_hostname: ctl03
-  openstack_database_address: 10.167.4.10
-  openstack_database_hostname: dbs
-  openstack_database_node01_address: 10.167.4.11
-  openstack_database_node01_hostname: dbs01
-  openstack_database_node02_address: 10.167.4.12
-  openstack_database_node02_hostname: dbs02
-  openstack_database_node03_address: 10.167.4.13
-  openstack_database_node03_hostname: dbs03
+  openstack_database_address: ${_param:openstack_control_address}
+  openstack_database_hostname: ${_param:openstack_control_hostname}
+  openstack_database_node01_address: ${_param:openstack_control_node01_address}
+  openstack_database_node01_hostname: ${_param:openstack_control_node01_hostname}
+  openstack_database_node02_address: ${_param:openstack_control_node02_address}
+  openstack_database_node02_hostname: ${_param:openstack_control_node02_hostname}
+  openstack_database_node03_address: ${_param:openstack_control_node03_address}
+  openstack_database_node03_hostname: ${_param:openstack_control_node03_hostname}
   openstack_enabled: 'True'
   openstack_gateway_node01_address: 10.167.4.224
   openstack_gateway_node01_hostname: gtw01
@@ -100,35 +100,35 @@ default_context:
   openstack_gateway_node03_address: 10.167.4.226
   openstack_gateway_node03_hostname: gtw03
   openstack_gateway_node03_tenant_address: 10.167.6.8
-  openstack_message_queue_address: 10.167.4.10
-  openstack_message_queue_hostname: msg
-  openstack_message_queue_node01_address: 10.167.4.11
-  openstack_message_queue_node01_hostname: msg01
-  openstack_message_queue_node02_address: 10.167.4.12
-  openstack_message_queue_node02_hostname: msg02
-  openstack_message_queue_node03_address: 10.167.4.13
-  openstack_message_queue_node03_hostname: msg03
+  openstack_message_queue_address: ${_param:openstack_control_address}
+  openstack_message_queue_hostname: ${_param:openstack_control_hostname}
+  openstack_message_queue_node01_address: ${_param:openstack_control_node01_address}
+  openstack_message_queue_node01_hostname: ${_param:openstack_control_node01_hostname}
+  openstack_message_queue_node02_address: ${_param:openstack_control_node02_address}
+  openstack_message_queue_node02_hostname: ${_param:openstack_control_node02_hostname}
+  openstack_message_queue_node03_address: ${_param:openstack_control_node03_address}
+  openstack_message_queue_node03_hostname: ${_param:openstack_control_node03_hostname}
   openstack_network_engine: ovs
   openstack_nfv_dpdk_enabled: 'False'
   openstack_nfv_sriov_enabled: 'False'
   openstack_ovs_dvr_enabled: 'True'
   openstack_neutron_qos: 'False'
   openstack_ovs_encapsulation_type: vlan
-  openstack_ovs_encapsulation_vlan_range: 2416:2420
+  openstack_ovs_encapsulation_vlan_range: 2418:2420
   openstack_proxy_address: 10.167.4.80
   openstack_proxy_hostname: prx
   openstack_proxy_node01_address: 10.167.4.81
   openstack_proxy_node01_hostname: prx01
   openstack_proxy_node02_address: 10.167.4.82
   openstack_proxy_node02_hostname: prx02
-  openstack_telemetry_address: 10.167.4.10
-  openstack_telemetry_hostname: mdb
-  openstack_telemetry_node01_address: 10.167.4.11
-  openstack_telemetry_node01_hostname: mdb01
-  openstack_telemetry_node02_address: 10.167.4.12
-  openstack_telemetry_node02_hostname: mdb02
-  openstack_telemetry_node03_address: 10.167.4.13
-  openstack_telemetry_node03_hostname: mdb03
+  openstack_telemetry_address: ${_param:openstack_control_address}
+  openstack_telemetry_hostname: ${_param:openstack_control_hostname}
+  openstack_telemetry_node01_address: ${_param:openstack_control_node01_address}
+  openstack_telemetry_node01_hostname: ${_param:openstack_control_node01_hostname}
+  openstack_telemetry_node02_address: ${_param:openstack_control_node02_address}
+  openstack_telemetry_node02_hostname: ${_param:openstack_control_node02_hostname}
+  openstack_telemetry_node03_address: ${_param:openstack_control_node03_address}
+  openstack_telemetry_node03_hostname: ${_param:openstack_control_node03_hostname}
   openstack_benchmark_node01_hostname: bmk01
   openstack_benchmark_node01_address: 10.167.4.85
   openstack_version: ocata
@@ -139,14 +139,6 @@ default_context:
   salt_master_management_address: 10.167.5.15
   stacklight_enabled: 'True'
   stacklight_version: '2'
-  stacklight_log_address: 10.167.4.70
-  stacklight_log_hostname: log
-  stacklight_log_node01_address: 10.167.4.71
-  stacklight_log_node01_hostname: log01
-  stacklight_log_node02_address: 10.167.4.72
-  stacklight_log_node02_hostname: log02
-  stacklight_log_node03_address: 10.167.4.73
-  stacklight_log_node03_hostname: log03
   stacklight_monitor_address: 10.167.4.70
   stacklight_monitor_hostname: mon
   stacklight_monitor_node01_address: 10.167.4.71
@@ -155,14 +147,22 @@ default_context:
   stacklight_monitor_node02_hostname: mon02
   stacklight_monitor_node03_address: 10.167.4.73
   stacklight_monitor_node03_hostname: mon03
-  stacklight_telemetry_address: 10.167.4.70
-  stacklight_telemetry_hostname: mtr
-  stacklight_telemetry_node01_address: 10.167.4.71
-  stacklight_telemetry_node01_hostname: mtr01
-  stacklight_telemetry_node02_address: 10.167.4.72
-  stacklight_telemetry_node02_hostname: mtr02
-  stacklight_telemetry_node03_address: 10.167.4.73
-  stacklight_telemetry_node03_hostname: mtr03
+  stacklight_log_address: ${_param:stacklight_monitor_address}
+  stacklight_log_hostname: ${_param:stacklight_monitor_hostname}
+  stacklight_log_node01_address: ${_param:stacklight_monitor_node01_address}
+  stacklight_log_node01_hostname: ${_param:stacklight_monitor_node01_hostname}
+  stacklight_log_node02_address: ${_param:stacklight_monitor_node02_address}
+  stacklight_log_node02_hostname: ${_param:stacklight_monitor_node02_hostname}
+  stacklight_log_node03_address: ${_param:stacklight_monitor_node03_address}
+  stacklight_log_node03_hostname: ${_param:stacklight_monitor_node03_hostname}
+  stacklight_telemetry_address: ${_param:stacklight_monitor_address}
+  stacklight_telemetry_hostname: ${_param:stacklight_monitor_hostname}
+  stacklight_telemetry_node01_address: ${_param:stacklight_monitor_node01_address}
+  stacklight_telemetry_node01_hostname: ${_param:stacklight_monitor_node01_hostname}
+  stacklight_telemetry_node02_address: ${_param:stacklight_monitor_node02_address}
+  stacklight_telemetry_node02_hostname: ${_param:stacklight_monitor_node02_hostname}
+  stacklight_telemetry_node03_address: ${_param:stacklight_monitor_node03_address}
+  stacklight_telemetry_node03_hostname: ${_param:stacklight_monitor_node03_hostname}
   tenant_network_gateway: ''
   tenant_network_netmask: 255.255.255.0
   tenant_vlan: '20'
