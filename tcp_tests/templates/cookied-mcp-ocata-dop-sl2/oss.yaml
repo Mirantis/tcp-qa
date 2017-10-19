@@ -48,7 +48,7 @@
 
 - description: Check the gluster status
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:client:enabled:True' cmd.run 'gluster peer status; gluster volume status' -b 1
+    -C 'I@glusterfs:server:enabled:True' cmd.run 'gluster peer status; gluster volume status' -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
