@@ -62,7 +62,7 @@ default_context:
   infra_kvm03_control_address: ${_param:cicd_control_node03_address}
   infra_kvm03_deploy_address: 10.167.5.93
   infra_kvm03_hostname: ${_param:cicd_control_node03_hostname}
-  infra_kvm_vip_address: ${_param:cicd_control_vip_address}
+  infra_kvm_vip_address: ${_param:cicd_control_address}
   infra_primary_first_nic: eth1
   infra_primary_second_nic: eth2
   kubernetes_enabled: 'False'
