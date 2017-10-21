@@ -63,6 +63,12 @@
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
 - description: "Lab03 workaround: Control network access from cfg01 node using sshuttle via kvm01"
   cmd: |
     set -e;
@@ -72,12 +78,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
-
-{{ SHARED.MACRO_GENERATE_INVENTORY() }}
-
-{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
-
-{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 ########################################
 # Spin up Control Plane VMs on KVM nodes
