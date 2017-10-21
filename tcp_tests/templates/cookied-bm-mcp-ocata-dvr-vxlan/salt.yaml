@@ -73,7 +73,7 @@
   cmd: |
     set -e;
     KVM01_DEPLOY_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address`;
-    apt-get install sshuttle -y;
+    salt-call pkg.install sshuttle;
     sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
