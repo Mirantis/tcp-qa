@@ -22,15 +22,6 @@
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
-- description: "Lab03 workaround: Control network access from cfg01 node using sshuttle via kvm01"
-  cmd: |
-    set -e;
-    KVM01_DEPLOY_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address`;
-    apt-get install sshuttle -y;
-    sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
 
 - description: "Workaround for PROD-15405: remove OpenStack telemetry nodes from the cluster"
   cmd: |
@@ -72,6 +63,15 @@
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
+- description: "Lab03 workaround: Control network access from cfg01 node using sshuttle via kvm01"
+  cmd: |
+    set -e;
+    KVM01_DEPLOY_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address`;
+    apt-get install sshuttle -y;
+    sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
