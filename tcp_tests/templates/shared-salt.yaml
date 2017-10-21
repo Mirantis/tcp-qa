@@ -456,9 +456,9 @@
   skip_fail: false
 
 - description: Run 'salt.master' formula on cfg01
-  cmd: timeout 120 salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' state.sls salt.master;
+  cmd: timeout 600 salt-call -l info --hard-crash --state-output=mixed --state-verbose=False state.sls salt.master;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
+  retry: {count: 2, delay: 30}
   skip_fail: false
 
 {%- if SALT_FORMULAS_REFS != '' %}
