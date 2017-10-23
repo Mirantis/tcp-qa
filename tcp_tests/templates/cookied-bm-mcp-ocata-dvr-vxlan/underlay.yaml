@@ -506,49 +506,49 @@ template:
                   parents:
                    - enp3s0f1
 
-          - name: {{ HOSTNAME_GTW02 }}
-            role: salt_minion
-            params:
-              ipmi_user: !os_env IPMI_USER
-              ipmi_password: !os_env IPMI_PASSWORD
-              ipmi_previlegies: OPERATOR
-              ipmi_host: !os_env IPMI_HOST_GTW02  # hostname or IP address
-              ipmi_lan_interface: lanplus
-              ipmi_port: 623
-
-              root_volume_name: system     # see 'volumes' below
-              cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: eno1  # see 'interfaces' below.
-              volumes:
-                - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 200
-
-                  # The same as for agent URL, here is an URL to the image that should be
-                  # used for deploy the node. It should also be accessible from deploying
-                  # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
-                  source_image: !os_env IRONIC_SOURCE_IMAGE_URL
-                  source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
-
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-
-                  cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_1604
-
-              interfaces:
-                - label: eno1
-                  l2_network_device: admin
-                  mac_address: !os_env ETH0_MAC_ADDRESS_GTW02
-                - label: eno2
-                  mac_address: !os_env ETH1_MAC_ADDRESS_GTW02
-
-              network_config:
-                eno1:
-                  networks:
-                   - admin
-                bond0:
-                  networks:
-                   - control
-                  aggregation: active-backup
-                  parents:
-                   - eno2
+#          - name: {{ HOSTNAME_GTW02 }}
+#            role: salt_minion
+#            params:
+#              ipmi_user: !os_env IPMI_USER
+#              ipmi_password: !os_env IPMI_PASSWORD
+#              ipmi_previlegies: OPERATOR
+#              ipmi_host: !os_env IPMI_HOST_GTW02  # hostname or IP address
+#              ipmi_lan_interface: lanplus
+#              ipmi_port: 623
+#
+#              root_volume_name: system     # see 'volumes' below
+#              cloud_init_volume_name: iso  # see 'volumes' below
+#              cloud_init_iface_up: eno1  # see 'interfaces' below.
+#              volumes:
+#                - name: system
+#                  capacity: !os_env NODE_VOLUME_SIZE, 200
+#
+#                  # The same as for agent URL, here is an URL to the image that should be
+#                  # used for deploy the node. It should also be accessible from deploying
+#                  # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
+#                  source_image: !os_env IRONIC_SOURCE_IMAGE_URL
+#                  source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
+#
+#                - name: iso  # Volume with name 'iso' will be used
+#                             # for store image with cloud-init metadata.
+#
+#                  cloudinit_meta_data: *cloudinit_meta_data
+#                  cloudinit_user_data: *cloudinit_user_data_1604
+#
+#              interfaces:
+#                - label: eno1
+#                  l2_network_device: admin
+#                  mac_address: !os_env ETH0_MAC_ADDRESS_GTW02
+#                - label: eno2
+#                  mac_address: !os_env ETH1_MAC_ADDRESS_GTW02
+#
+#              network_config:
+#                eno1:
+#                  networks:
+#                   - admin
+#                bond0:
+#                  networks:
+#                   - control
+#                  aggregation: active-backup
+#                  parents:
+#                   - eno2
