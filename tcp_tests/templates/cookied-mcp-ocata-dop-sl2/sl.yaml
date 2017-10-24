@@ -145,11 +145,14 @@
 # Change environment configuration before deploy
 - description: Set SL docker images deploy parameters
   cmd: |
+    touch /srv/salt/reclass/classes/cluster/overrides.yml;
   {% for sl_opt, value in config.sl_deploy.items() %}
     {% if value|string() %}
     salt-call reclass.cluster_meta_set {{ sl_opt }} {{ value }};
     {% endif %}
   {% endfor %}
+    salt '*' saltutil.refresh_pillar;
+    sleep 10
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false

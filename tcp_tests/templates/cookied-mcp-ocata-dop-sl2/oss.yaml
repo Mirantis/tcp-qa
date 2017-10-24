@@ -226,7 +226,7 @@
 - description: "Setup Jenkins"
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' state.sls jenkins
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 10}
+  retry: {count: 10, delay: 30}
   skip_fail: false
 
 # Postgres && Pushkin
