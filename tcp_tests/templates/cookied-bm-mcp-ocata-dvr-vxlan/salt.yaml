@@ -1,6 +1,9 @@
 {% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM01 with context %}
+{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM02 with context %}
+{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
@@ -15,6 +18,34 @@
 {%- set TENANT_VLAN = os_env('TENANT_VLAN', '2417') %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
+
+- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_KVM01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_KVM02 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_KVM03 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
@@ -34,10 +65,10 @@
     reclass-tools del-key parameters.salt.control.cluster.internal.node.mdb01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
     reclass-tools del-key parameters.salt.control.cluster.internal.node.mdb02 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
     reclass-tools del-key parameters.salt.control.cluster.internal.node.mdb03 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
+#
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
 
 - description: "Workaround for rack01 compute generator"
   cmd: |
