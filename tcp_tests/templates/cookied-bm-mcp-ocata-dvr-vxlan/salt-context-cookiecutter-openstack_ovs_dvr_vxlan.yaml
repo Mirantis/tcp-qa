@@ -45,9 +45,9 @@ default_context:
   openstack_benchmark_node01_address: 10.167.4.95
   openstack_benchmark_node01_hostname: bmk01
   openstack_compute_count: '2'
-  #openstack_compute_rack01_hostname: cmp
-  #openstack_compute_rack01_single_subnet: 10.167.4
-  #openstack_compute_rack01_tenant_subnet: 10.167.6
+  openstack_compute_rack01_hostname: cmp
+  openstack_compute_rack01_single_subnet: 10.167.4
+  openstack_compute_rack01_tenant_subnet: 10.167.6
   openstack_compute_node01_hostname: cmp001
   openstack_compute_node02_hostname: cmp002
   openstack_compute_node01_address: 10.167.4.3
@@ -110,13 +110,38 @@ default_context:
   public_host: ${_param:openstack_proxy_address}
   publication_method: email
   reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
-  salt_api_password: 1wbJyl5SJy5bBVWmDLj2CG6eyViS4rWk
-  salt_api_password_hash: $6$cMaGBrCN$/VUXboazA1RPyFONqmZwFHyK8nDsZpGVt6m8Hs9ifz51vf/gmFimmLwnIWtbIDMSJdz9aQrDTh6swmoCTfdlT.
   salt_master_address: 10.167.4.2
   salt_master_hostname: cfg01
   salt_master_management_address: 172.16.49.2
   shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
-  stacklight_enabled: 'False'
+  stacklight_enabled: 'True'
+  stacklight_log_address: 10.167.8.60
+  stacklight_log_hostname: log
+  stacklight_log_node01_address: 10.167.8.61
+  stacklight_log_node01_hostname: log01
+  stacklight_log_node02_address: 10.167.8.62
+  stacklight_log_node02_hostname: log02
+  stacklight_log_node03_address: 10.167.8.63
+  stacklight_log_node03_hostname: log03
+  stacklight_monitor_address: 10.167.8.70
+  stacklight_monitor_hostname: mon
+  stacklight_monitor_node01_address: 10.167.8.71
+  stacklight_monitor_node01_hostname: mon01
+  stacklight_monitor_node02_address: 10.167.8.72
+  stacklight_monitor_node02_hostname: mon02
+  stacklight_monitor_node03_address: 10.167.8.73
+  stacklight_monitor_node03_hostname: mon03
+  stacklight_notification_address: alerts@localhost
+  stacklight_notification_smtp_host: 127.0.0.1
+  stacklight_telemetry_address: 10.167.8.85
+  stacklight_telemetry_hostname: mtr
+  stacklight_telemetry_node01_address: 10.167.8.86
+  stacklight_telemetry_node01_hostname: mtr01
+  stacklight_telemetry_node02_address: 10.167.8.87
+  stacklight_telemetry_node02_hostname: mtr02
+  stacklight_telemetry_node03_address: 10.167.8.88
+  stacklight_telemetry_node03_hostname: mtr03
+  stacklight_version: '2'
   tenant_network_gateway: 10.167.6.1
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: 10.167.6.0/24
