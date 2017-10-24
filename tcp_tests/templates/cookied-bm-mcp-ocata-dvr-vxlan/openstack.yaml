@@ -1,8 +1,8 @@
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CTL01 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CTL02 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CTL03 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import HOSTNAME_CTL03 with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set PATTERN = os_env('PATTERN', 'smoke') %}
@@ -115,7 +115,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# install designate
+# isntall designate
 - description: Install powerdns
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'ctl*' state.sls powerdns
@@ -283,44 +283,14 @@
   skip_fail: false
 
 # Configure cinder-volume salt-call PROD-13167
-- description: Set disks 01
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description: Set disks 03
-#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-- description: Create partitions 01
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
+- description: Create physical volumes on a second disk
+  cmd: salt 'ctl*' cmd.run 'pvcreate -y /dev/vdb'
+  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
 - description: create volume_group
-  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
+  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -337,27 +307,15 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Temporary WR set enabled backends value 01
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL01 }}
+- description: "Temporary WR set enabled_backends = lvm for cinder"
+  cmd: salt 'ctl*' cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
-
-- description: Temporary WR set enabled backends value 02
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description: Temporary WR set enabled backends value 03
-#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
 
 - description: Install docker.io on gtw
-  cmd: salt-call cmd.run 'apt-get install docker.io -y'
-  node_name: {{ HOSTNAME_GTW01 }}
+  cmd: salt 'gtw01*' cmd.run 'apt-get install docker.io -y'
+  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
