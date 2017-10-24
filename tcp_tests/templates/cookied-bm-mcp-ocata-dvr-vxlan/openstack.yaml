@@ -3,6 +3,7 @@
 {% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CTL02 with context %}
 {% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW02 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set PATTERN = os_env('PATTERN', 'smoke') %}
@@ -20,7 +21,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' state.sls keystone.server -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 15}
+  retry: {count: 3, delay: 15}
   skip_fail: false
 
 - description: Restart apache due to PROD-10477
@@ -60,7 +61,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack service list'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Check glance image-list
@@ -115,7 +116,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# install designate
+ isntall designate
 - description: Install powerdns
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'ctl*' state.sls powerdns
@@ -282,6 +283,29 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
+# Add volume to ctl01 for Cinder-volume
+
+- description: Create dir for image
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm01*' cmd.run
+    'mkdir /var/lib/libvirt/images/ctl01.cookied-bm-mcp-ocata-dvr-vxlan'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
+
+- description: Create image
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm01*' cmd.run
+    'qemu-img create -f raw /var/lib/libvirt/images/ctl01.cookied-bm-mcp-ocata-dvr-vxlan/extend.img 60G'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
+
+- description: Attach image
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm01*' cmd.run
+    'virsh attach-disk ctl01.cookied-bm-mcp-ocata-dvr-vxlan --source /var/lib/libvirt/images/ctl01.cookied-bm-mcp-ocata-dvr-vxlan/extend.img --target vdb --persistent'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
+
 # Configure cinder-volume salt-call PROD-13167
 - description: Set disks 01
   cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
@@ -289,50 +313,26 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description: Set disks 03
-#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
 - description: Create partitions 01
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
   node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: create volume_group
-  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
+  cmd: salt "ctl01*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
 - description: Install cinder-volume
-  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
+  cmd: salt 'ctl01*' cmd.run 'apt-get install cinder-volume -y'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
 - description: Install crudini
-  cmd: salt "ctl*" cmd.run 'apt-get install crudini -y'
+  cmd: salt "ctl01*" cmd.run 'apt-get install crudini -y'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -343,21 +343,9 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Temporary WR set enabled backends value 02
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description: Temporary WR set enabled backends value 03
-#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
 - description: Install docker.io on gtw
-  cmd: salt-call cmd.run 'apt-get install docker.io -y'
-  node_name: {{ HOSTNAME_GTW01 }}
+  cmd: salt 'gtw01*' cmd.run 'apt-get install docker.io -y'
+  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
