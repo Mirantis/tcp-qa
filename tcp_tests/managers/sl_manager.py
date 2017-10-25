@@ -11,7 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-
+import json
 import os
 
 from devops.helpers import decorators
@@ -87,10 +87,14 @@ class SLManager(ExecuteCommandsMixin):
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
         if skip_tests:
-            cmd = "cd {0}; pytest -k 'not {1}' {2}".format(
-                tests_path, skip_tests, test_to_run)
+            cmd = ("cd {0}; "
+                   "export VOLUME_STATUS='available'; "
+                   "pytest -k 'not {1}' {2}".format(
+                tests_path, skip_tests, test_to_run))
         else:
-            cmd = "cd {0}; pytest -k {1}".format(tests_path, test_to_run)
+            cmd = ("cd {0}; "
+                   "export VOLUME_STATUS='available'; "
+                   "pytest -k {1}".format(tests_path, test_to_run))
         with self.__underlay.remote(node_name=target_node_name[0]) \
                 as node_remote:
             LOG.debug("Run {0} on the node {1}".format(
@@ -98,6 +102,33 @@ class SLManager(ExecuteCommandsMixin):
             result = node_remote.execute(cmd)
             LOG.debug("Test execution result is {}".format(result))
         return result
+
+    def run_sl_tests_json(self, node_to_run, tests_path,
+                          test_to_run, skip_tests):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if node_to_run in node_name]
+        if skip_tests:
+            cmd = ("cd {0}; "
+                   "export VOLUME_STATUS='available'; "
+                   "pytest  --json=report.json -k 'not {1}' {2}".format(
+                tests_path, skip_tests, test_to_run))
+        else:
+            cmd = ("cd {0}; "
+                   "export VOLUME_STATUS='available'; "
+                   "pytest --json=report.json -k {1}".format(
+                tests_path, test_to_run))
+        with self.__underlay.remote(node_name=target_node_name[0]) \
+                as node_remote:
+            LOG.debug("Run {0} on the node {1}".format(
+                cmd, target_node_name[0]))
+            node_remote.execute('pip install pytest-json')
+            node_remote.execute(cmd)
+            res = node_remote.execute('cd {0}; cat report.json'.format(
+                tests_path))
+            LOG.debug("Test execution result is {}".format(res))
+            result = json.loads(res['stdout'])
+        return result['report']['tests']
 
     def download_sl_test_report(self, stored_node, file_path):
         target_node_name = [node_name for node_name
@@ -143,6 +174,8 @@ class SLManager(ExecuteCommandsMixin):
                 'Ip states after force restart {0}'.format(
                     self._salt.local(tgt='mon*',
                                      fun='cmd.run', args='ip a')))
+            self._salt.local(tgt="mon*", fun='cmd.run',
+                             args='systemctl restart keepalived')
             current_targets = prometheus_client.get_targets()
 
         LOG.debug('Current targets after install {0}'
@@ -151,3 +184,81 @@ class SLManager(ExecuteCommandsMixin):
         for entry in current_targets:
             assert 'up' in entry['health'], \
                 'Next target is down {}'.format(entry)
+
+    def kill_sl_service_on_node(self, node_sub_name, service_name):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if node_sub_name in node_name]
+        cmd = 'kill -9 $(pidof {0})'.format(service_name)
+        with self.__underlay.remote(node_name=target_node_name[0]) \
+                as node_remote:
+            LOG.debug("Run {0} on the node {1}".format(
+                cmd, target_node_name[0]))
+            res = node_remote.execute(cmd)
+            LOG.debug("Test execution result is {}".format(res))
+            assert res['exit_code'] == 0, (
+                'Unexpected exit code for command {0}, '
+                'current result {1}'.format(cmd, res))
+
+    def stop_sl_service_on_node(self, node_sub_name, service_name):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if node_sub_name in node_name]
+        cmd = 'systemctl stop {}'.format(service_name)
+        with self.__underlay.remote(node_name=target_node_name[0]) \
+                as node_remote:
+            LOG.debug("Run {0} on the node {1}".format(
+                cmd, target_node_name[0]))
+            res = node_remote.execute(cmd)
+            LOG.debug("Test execution result is {}".format(res))
+            assert res['exit_code'] == 0, (
+                'Unexpected exit code for command {0}, '
+                'current result {1}'.format(cmd, res))
+
+    def post_data_into_influx(self, node_sub_name):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if node_sub_name in node_name]
+        vip = self.get_sl_vip()
+        cmd = ("curl -POST 'http://{0}:8086/write?db=lma' -u "
+               "lma:lmapass --data-binary 'mymeas value=777'".format(vip))
+        with self.__underlay.remote(node_name=target_node_name[0]) \
+                as node_remote:
+            LOG.debug("Run {0} on the node {1}".format(
+                cmd, target_node_name[0]))
+            res = node_remote.execute(cmd)
+            assert res['exit_code'] == 0, (
+                'Unexpected exit code for command {0}, '
+                'current result {1}'.format(cmd, res))
+
+    def check_data_in_influxdb(self, node_sub_name):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if node_sub_name in node_name]
+        vip = self.get_sl_vip()
+        cmd = ("influx -host {0} -port 8086 -database lma  "
+               "-username lma -password lmapass -execute "
+               "'select * from mymeas' -precision rfc3339;".format(vip))
+        with self.__underlay.remote(node_name=target_node_name[0]) \
+                as node_remote:
+            LOG.debug("Run {0} on the node {1}".format(
+                cmd, target_node_name[0]))
+            res = node_remote.execute(cmd)
+            assert res['exit_code'] == 0, (
+                'Unexpected exit code for command {0}, '
+                'current result {1}'.format(cmd, res))
+            return res['stdout']
+
+    def start_service(self, node_sub_name, service_name):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if node_sub_name in node_name]
+        cmd = 'systemctl start {0}'.format(service_name)
+        with self.__underlay.remote(node_name=target_node_name[0]) \
+                as node_remote:
+            LOG.debug("Run {0} on the node {1}".format(
+                cmd, target_node_name[0]))
+            res = node_remote.execute(cmd)
+            assert res['exit_code'] == 0, (
+                'Unexpected exit code for command {0}, '
+                'current result {1}'.format(cmd, res))
