@@ -45,13 +45,13 @@ class SLManager(ExecuteCommandsMixin):
 
     def get_sl_vip(self):
         sl_vip_address_pillars = self._salt.get_pillar(
-            tgt='I@keepalived:cluster:enabled:true and not ctl*',
-            pillar='keepalived:cluster:instance:prometheus_server_vip:address')
+            tgt='I@prometheus:server:enabled:True',
+            pillar='keepalived:cluster:instance:VIP:address')
         sl_vip_ip = set([ip
                          for item in sl_vip_address_pillars
                          for node, ip in item.items() if ip])
         assert len(sl_vip_ip) == 1, (
-            "Found more than one SL VIP in pillars:{0}, "
+            "SL VIP not found or found more than one SL VIP in pillars:{0}, "
             "expected one!").format(sl_vip_ip)
         sl_vip_ip_host = sl_vip_ip.pop()
         return sl_vip_ip_host
