@@ -6,9 +6,11 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
+{% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', 'false') %}
 
 # Install OpenStack control services
 
+{%- if OVERRIDE_POLICY == 'true' %}
 - description: Upload policy override
   upload:
     local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
@@ -26,6 +28,7 @@
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
+{%- endif -%}
 
 - description: Install glance on all controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
