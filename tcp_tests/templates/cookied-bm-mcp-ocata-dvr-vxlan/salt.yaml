@@ -9,7 +9,7 @@
 # Other salt model repository parameters see in shared-salt.yaml
 
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
-{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-bm-mcp-ocata-dvr-vxlan') %}
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-cookied-bm-mcp-ocata-dvr-vxlan') %}
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs_dvr_vxlan.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-lab03-environment.yaml'] %}

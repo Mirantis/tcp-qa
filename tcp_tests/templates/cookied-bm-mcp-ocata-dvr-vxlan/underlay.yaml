@@ -9,7 +9,7 @@
 {% set HOSTNAME_CMP001 = os_env('HOSTNAME_CMP001', 'cmp001.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP002', 'cmp002.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
+#{% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
 
 {% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.49.2') %}
 {% set ETH0_IP_ADDRESS_KVM01 = os_env('ETH0_IP_ADDRESS_KVM01', '172.16.49.11') %}
@@ -18,7 +18,7 @@
 {% set ETH0_IP_ADDRESS_CMP001 = os_env('ETH0_IP_ADDRESS_CMP001', '172.16.49.3') %}
 {% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '172.16.49.31') %}
 {% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '172.16.49.5') %}
-{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
+#{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
 
 {% import 'cookied-bm-mcp-ocata-dvr-vxlan/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-bm-mcp-ocata-dvr-vxlan/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
@@ -49,7 +49,7 @@ template:
             default_{{ HOSTNAME_CMP001 }}: {{ ETH0_IP_ADDRESS_CMP001 }}
             default_{{ HOSTNAME_CMP002 }}: {{ ETH0_IP_ADDRESS_CMP002 }}
             default_{{ HOSTNAME_GTW01 }}: {{ ETH0_IP_ADDRESS_GTW01 }}
-            default_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
+            #default_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
           ip_ranges:
               dhcp: [+2, -4]
       private-pool01:
