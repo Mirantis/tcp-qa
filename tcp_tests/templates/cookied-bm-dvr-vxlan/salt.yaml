@@ -1,15 +1,15 @@
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import DOMAIN_NAME with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM01 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM02 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM03 with context %}
+{% from 'cookied-bm-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-dvr-vxlan/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-bm-dvr-vxlan/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-bm-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM01 with context %}
+{% from 'cookied-bm-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM02 with context %}
+{% from 'cookied-bm-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
-{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-bm-mcp-ocata-dvr-vxlan') %}
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-cookied-bm-dvr-vxlan') %}
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs_dvr_vxlan.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-lab03-environment.yaml'] %}
