@@ -1,6 +1,6 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
-{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-bm-mcp-ocata-dvr-vxlan') %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-bm-mcp-dvr-vxlan') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME + '.local') %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01.' + DOMAIN_NAME) %}
@@ -9,8 +9,8 @@
 {% set HOSTNAME_CMP001 = os_env('HOSTNAME_CMP001', 'cmp001.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP002', 'cmp002.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
-
+{% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
+#{% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
 {% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.49.2') %}
 {% set ETH0_IP_ADDRESS_KVM01 = os_env('ETH0_IP_ADDRESS_KVM01', '172.16.49.11') %}
 {% set ETH0_IP_ADDRESS_KVM02 = os_env('ETH0_IP_ADDRESS_KVM02', '172.16.49.12') %}
@@ -18,11 +18,11 @@
 {% set ETH0_IP_ADDRESS_CMP001 = os_env('ETH0_IP_ADDRESS_CMP001', '172.16.49.3') %}
 {% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '172.16.49.31') %}
 {% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '172.16.49.5') %}
-{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
+#{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
 
-{% import 'cookied-bm-mcp-ocata-dvr-vxlan/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
-{% import 'cookied-bm-mcp-ocata-dvr-vxlan/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
-{% import 'cookied-bm-mcp-ocata-dvr-vxlan/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+{% import 'cookied-bm-mcp-dvr-vxlan/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'cookied-bm-mcp-dvr-vxlan/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'cookied-bm-mcp-dvr-vxlan/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
 
 ---
 aliases:
@@ -49,7 +49,7 @@ template:
             default_{{ HOSTNAME_CMP001 }}: {{ ETH0_IP_ADDRESS_CMP001 }}
             default_{{ HOSTNAME_CMP002 }}: {{ ETH0_IP_ADDRESS_CMP002 }}
             default_{{ HOSTNAME_GTW01 }}: {{ ETH0_IP_ADDRESS_GTW01 }}
-            default_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
+            #default_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
           ip_ranges:
               dhcp: [+2, -4]
       private-pool01:
@@ -161,51 +161,6 @@ template:
           admin: admin-pool01
 
         nodes:
-
-        #  - name: {{ HOSTNAME_CFG01 }}
-        #    role: salt_master
-        #    params:
-        #      ipmi_user: !os_env IPMI_USER
-        #      ipmi_password: !os_env IPMI_PASSWORD
-        #      ipmi_previlegies: OPERATOR
-        #      ipmi_host: !os_env IPMI_HOST_CFG01  # hostname or IP address
-        #      ipmi_lan_interface: lanplus
-        #      ipmi_port: 623
-
-        #      root_volume_name: system     # see 'volumes' below
-        #      cloud_init_volume_name: iso  # see 'volumes' below
-        #      cloud_init_iface_up: enp3s0f1  # see 'interfaces' below.
-        #      volumes:
-        #        - name: system
-        #          capacity: !os_env NODE_VOLUME_SIZE, 200
-
-        #          # The same as for agent URL, here is an URL to the image that should be
-        #          # used for deploy the node. It should also be accessible from deploying
-        #          # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
-        #          source_image: !os_env IRONIC_SOURCE_IMAGE_URL
-        #          source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
-
-        #        - name: iso  # Volume with name 'iso' will be used
-        #                     # for store image with cloud-init metadata.
-
-        #          cloudinit_meta_data: *cloudinit_meta_data
-        #          cloudinit_user_data: *cloudinit_user_data_cfg01
-
-        #      interfaces:
-        #        - label: enp3s0f0  # Infra interface
-        #          mac_address: !os_env ETH0_MAC_ADDRESS_CFG01
-        #        - label: enp3s0f1
-        #          l2_network_device: admin
-        #          mac_address: !os_env ETH1_MAC_ADDRESS_CFG01
-
-        #      network_config:
-        #        enp3s0f0:
-        #          networks:
-        #           - infra
-        #        enp3s0f1:
-        #          networks:
-        #           - admin
-
           - name: {{ HOSTNAME_KVM01 }}
             role: salt_minion
             params:
