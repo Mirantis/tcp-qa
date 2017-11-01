@@ -1,15 +1,15 @@
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import DOMAIN_NAME with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM01 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM02 with context %}
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM03 with context %}
+{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM01 with context %}
+{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM02 with context %}
+{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
-{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-bm-mcp-ocata-dvr-vxlan') %}
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-bm-mcp-dvr-vxlan') %}
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs_dvr_vxlan.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-lab03-environment.yaml'] %}
@@ -24,23 +24,6 @@
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
-
-
-#- description: "Workaround for PROD-15405: remove OpenStack telemetry nodes from the cluster"
-#  cmd: |
-#    set -e;
-#    sed -i '/system.salt.control.cluster.openstack_telemetry_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-#    sed -i '/system.reclass.storage.system.openstack_telemetry_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-#    reclass-tools del-key parameters.reclass.storage.node.openstack_telemetry_node01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-#    reclass-tools del-key parameters.reclass.storage.node.openstack_telemetry_node02 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-#    reclass-tools del-key parameters.reclass.storage.node.openstack_telemetry_node03 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-#    reclass-tools del-key parameters.salt.control.cluster.internal.node.mdb01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-#    reclass-tools del-key parameters.salt.control.cluster.internal.node.mdb02 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-#    reclass-tools del-key parameters.salt.control.cluster.internal.node.mdb03 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-#
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
 
 - description: "Workaround for rack01 compute generator"
   cmd: |
