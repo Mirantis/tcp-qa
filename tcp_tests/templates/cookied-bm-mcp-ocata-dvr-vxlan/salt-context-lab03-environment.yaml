@@ -91,13 +91,13 @@ nodes:
         enp3s0f1:
           role: bond0_ab_dvr_vxlan_ctl_mesh_floating
 
-    gtw02.cookied-bm-mcp-ocata-dvr-vxlan.local:
-      reclass_storage_name: openstack_gateway_node02
-      roles:
-      - openstack_gateway
-      - linux_system_codename_xenial
-      interfaces:
-        eno1:
-          role: single_dhcp
-        eno2:
-          role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+    #gtw02.cookied-bm-mcp-ocata-dvr-vxlan.local:
+    #  reclass_storage_name: openstack_gateway_node02
+    #  roles:
+    #  - openstack_gateway
+    #  - linux_system_codename_xenial
+    #  interfaces:
+    #    eno1:
+    #      role: single_dhcp
+    #    eno2:
+    #      role: bond0_ab_dvr_vxlan_ctl_mesh_floating
