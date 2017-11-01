@@ -1,6 +1,4 @@
-{% from 'cookied-bm-mcp-ocata-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
-
-# Install support services
+{% from 'cookied-bm-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 - description: Install glusterfs
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -10,10 +8,10 @@
   skip_fail: false
 
 - description: Setup glusterfs on primary controller
-  cmd: sleep 30; salt --hard-crash --state-output=mixed --state-verbose=False
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server' state.sls glusterfs.server.setup -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Check the gluster status
@@ -23,6 +21,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+# Install support services
 - description: Install keepalived on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keepalived:cluster and *01*' state.sls keepalived
