@@ -130,5 +130,5 @@ nodes:
       - openstack_benchmark
       - linux_system_codename_trusty
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
