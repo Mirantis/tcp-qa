@@ -139,44 +139,30 @@ class TestFailover(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_restart_mon01_node(self, underlay, openstack_deployed,
-                                openstack_actions, sl_deployed,
-                                show_step):
+                                openstack_actions, sl_deployed):
         """Test restart mon01
 
         Scenario:
             1. Prepare salt on hosts
             2. Setup controller nodes
             3. Setup compute, monitoring nodes
-            4. Check targets before restart
+            4. Check LMA before restart
             5. Restart mon01
-            6. Check targets after restart
-            6. Run LMA smoke after failover
-
+            6. Check LMA after restart
 
         """
         # STEP #1,2,3
-        show_step(1)
-        show_step(2)
-        show_step(3)
-
         # STEP #4
-        show_step(4)
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
-        sl_deployed.check_prometheus_targets(mon_nodes)
         before_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus/', 'test_alerts.py')
         failed_tests = [test['name'] for test in
                         before_result if 'passed' not in test['outcome']]
         # STEP #5
-        show_step(5)
         openstack_actions.warm_restart_nodes('mon01')
-        # STEP #6
-        show_step(6)
-        sl_deployed.check_prometheus_targets(mon_nodes)
         # STEP #7
-        show_step(7)
         # Run SL component tetsts
         after_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
@@ -190,8 +176,7 @@ class TestFailover(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_warm_shutdown_mon01_node(self, underlay, openstack_deployed,
-                                      openstack_actions, sl_deployed,
-                                      show_step):
+                                      openstack_actions, sl_deployed):
         """Test warm shutdown mon01
 
         Scenario:
@@ -204,26 +189,16 @@ class TestFailover(object):
 
 
         """
-        # STEP #1,2,3
-        show_step(1)
-        show_step(2)
-        show_step(3)
-
-        # STEP #4
-        show_step(4)
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
-        sl_deployed.check_prometheus_targets(mon_nodes)
         before_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus/', 'test_alerts.py')
         failed_tests = [test['name'] for test in
                         before_result if 'passed' not in test['outcome']]
         # STEP #5
-        show_step(5)
         openstack_actions.warm_shutdown_openstack_nodes('mon01')
         # STEP #6
-        show_step(6)
         # Run SL component tetsts
         after_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
