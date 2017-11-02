@@ -28,7 +28,7 @@
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
-{%- endif -%}
+{%- endif %}
 
 - description: Install glance on all controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
