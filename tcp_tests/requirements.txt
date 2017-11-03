@@ -23,3 +23,7 @@ mock>=1.2
 python-jenkins
 cmd2<0.9
 PyYAML!=5.1
+
+# For Queens: https://github.com/openstack/requirements/blob/stable/queens/global-requirements.txt
+python-heatclient>=1.10.0
+keystoneauth1>=3.3.0
