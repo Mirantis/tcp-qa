@@ -56,3 +56,8 @@ DOCKER_REGISTRY = os.environ.get('DOCKER_REGISTRY',
 
 PATTERN = os.environ.get('PATTERN', None)
 RUN_TEMPEST = get_var_as_bool('RUN_TEMPEST', False)
+
+OS_PASSWORD = os.environ.get('OS_PASSWORD', None)
+OS_AUTH_URL = os.environ.get('OS_AUTH_URL', None)
+OS_USERNAME = os.environ.get('OS_USERNAME', None)
+OS_TENANT_NAME = os.environ.get('OS_TENANT_NAME', None)
