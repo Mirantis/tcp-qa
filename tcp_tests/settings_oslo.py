@@ -27,6 +27,10 @@ print("\n" + "-" * 10 + " Initialize oslo.config variables with defaults"
 
 _default_conf = pkg_resources.resource_filename(
     __name__, 'templates/{0}/underlay.yaml'.format(settings.LAB_CONFIG_NAME))
+_default_heat_conf = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/underlay.hot'.format(settings.LAB_CONFIG_NAME))
+_default_heat_env = pkg_resources.resource_filename(
+    __name__, 'templates/_heat_environments/microcloud-8116.env')
 
 _default_salt_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/salt.yaml'.format(settings.LAB_CONFIG_NAME))
@@ -89,6 +93,13 @@ hardware_opts = [
     ct.Cfg('current_snapshot', ct.String(),
            help="Latest environment status name",
            default=ext.SNAPSHOT.hardware),
+
+    ct.Cfg('heat_stack_name', ct.String(),
+           help="Heat stack name", default=''),
+    ct.Cfg('heat_conf_path', ct.String(),
+           help="Heat template file", default=_default_heat_conf),
+    ct.Cfg('heat_env_path', ct.String(),
+           help="Heat environment parameters file", default=_default_heat_env),
 ]
 
 
