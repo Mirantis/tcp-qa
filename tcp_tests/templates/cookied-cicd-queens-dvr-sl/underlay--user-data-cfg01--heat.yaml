@@ -1,0 +1,31 @@
+#cloud-config
+
+packages:
+- apt-transport-https
+- ca-certificates
+- git
+
+ssh_pwauth: True
+  users:
+  - name: root
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+
+disable_root: false
+chpasswd:
+  list: |
+    root:r00tme
+  expire: False
+
+bootcmd:
+# Enable root access
+- sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+- service sshd restart
+
+output:
+  all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+
+runcmd:
+- sudo echo "nameserver 8.8.8.8" >> /etc/resolvconf/resolv.conf.d/base
+- sudo resolvconf -u

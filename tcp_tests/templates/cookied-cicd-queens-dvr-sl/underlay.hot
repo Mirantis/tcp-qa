@@ -1,0 +1,148 @@
+---
+
+heat_template_version: queens
+
+description: MCP environment for cookied-cicd-queens-dvr-sl
+
+parameter_groups:
+- label: Instance parameters
+  parameters:
+  - hostname
+  - dns_domain
+  - keypair
+#- label: Salt & ReClass parameters
+#  parameters:
+#  - salt_stack_version
+#  - salt_formulas_version
+
+parameters:
+  hostname:
+    type: string
+    label: Hostname
+    default: cfg01
+    constraints:
+    - allowed_pattern: "[-_a-zA-Z0-9]{3,}"
+  dns_domain:
+    type: string
+    label: DNS domain name
+    default: cookied-cicd-queens-dvr-sl.local
+    constraints:
+    - allowed_pattern: "[-_a-zA-Z0-9.]{3,250}"
+  keypair:
+    type: string
+    label: SSH keypair
+    constraints:
+    - custom_constraint: nova.keypair
+
+  # Params to be overriden by environment
+  flavor_medium:
+    type: string
+    hidden: true
+    constraints:
+    - custom_constraint: nova.flavor
+  image_ubuntu_cloud_xenial:
+    type: string
+    hidden: true
+    constraints:
+    - custom_constraint: glance.image
+  net_private:
+    type: string
+    hidden: true
+    constraints:
+    - custom_constraint: neutron.network
+  net_public:
+    type: string
+    hidden: true
+    constraints:
+    - custom_constraint: neutron.network
+
+resources:
+
+  cfg01:
+    type: OS::Nova::Server
+    properties:
+      name: { get_param: hostname }
+      flavor: { get_param: flavor_medium }
+      image: { get_param: image_ubuntu_cloud_xenial }
+      key_name: { get_param: keypair }
+      networks:
+      - port: { get_resource: cfg01_port }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: { get_file: underlay--user-data-cfg01--heat.yaml }
+          params:
+            hostname: { list_join: ['.', [ { get_param: hostname }, { get_param: dns_domain } ]] }
+      user_data_update_policy: IGNORE
+
+  cfg01_port:
+    type: OS::Neutron::Port
+    properties:
+      network: { get_param: net_private }
+      security_groups: [{ get_resource: cfg01_secgroup }]
+
+
+#  private_net:
+#    type: OS::Neutron::Net
+#    properties:
+#      name: baremetal_net
+#  private_subnet:
+#    type: OS::Neutron::Subnet
+#    properties:
+#      name: baremetal_subnet
+#      network: { get_resource: private_net }
+#      cidr: { get_param: private_net_cidr }
+#      dns_nameservers:
+#      - 172.18.208.44
+#      allocation_pools:
+#        - start: { get_param: private_net_pool_start }
+#          end: { get_param: private_net_pool_end }
+
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      name: publicbarerouter
+      external_gateway_info:
+        network: { get_param: net_public }
+        enable_snat: True
+
+  router_subnet:
+    type: OS::Neutron::RouterInterface
+    properties:
+      router: { get_resource: router }
+      subnet: baremetalsubnet
+
+  cfg01_secgroup:
+    type: OS::Neutron::SecurityGroup
+    properties:
+      name: salt-master
+      rules:
+        - ethertype: IPv4
+          direction: ingress
+          remote_ip_prefix: 0.0.0.0/0
+        - ethertype: IPv4
+          direction: egress
+          remote_ip_prefix: 0.0.0.0/0
+
+  cfg01_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: public
+
+  association:
+    depends_on: router_subnet
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: cfg01_floating_ip }
+      port_id: { get_resource: cfg01_port }
+
+outputs:
+  cfg01_private_ip:
+    description: cfg01 IP address from control network
+    value: { get_attr: [ cfg01, first_address ] }
+  cfg01_public_ip:
+    description: cfg01 IP address (floating) from external network
+    value: { get_attr: [ cfg01_floating_ip, floating_ip_address] }
+
+...
