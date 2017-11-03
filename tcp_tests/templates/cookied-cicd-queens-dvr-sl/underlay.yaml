@@ -3,12 +3,14 @@
 
 {% import 'cookied-cicd-queens-dvr-sl/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-cicd-queens-dvr-sl/underlay--user-data1604-swp.yaml' as CLOUDINIT_USER_DATA_1604_SWP with context %}
+{%- macro user_data() %}{{ CLOUDINIT_USER_DATA_1604_SWP }}{% endmacro %}
 
 ---
 aliases:
  - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
- - &cloudinit_user_data_1604_swp {{ CLOUDINIT_USER_DATA_1604_SWP }}
+ - &cloudinit_user_data_1604_swp |
+{{ user_data()|indent(4, first=True) }}
 
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-cicd-queens-dvr-sl') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
