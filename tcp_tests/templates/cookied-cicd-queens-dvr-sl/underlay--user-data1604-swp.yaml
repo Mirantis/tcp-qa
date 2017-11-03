@@ -1,30 +1,25 @@
-| # All the data below will be stored as a string object
-  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+#cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
 
-  ssh_pwauth: True
-  users:
+ssh_pwauth: True
+users:
    - name: root
      sudo: ALL=(ALL) NOPASSWD:ALL
      shell: /bin/bash
-     ssh_authorized_keys:
-     {% for key in config.underlay.ssh_keys %}
-      - ssh-rsa {{ key['public'] }}
-     {% endfor %}
 
-  disable_root: false
-  chpasswd:
+disable_root: false
+chpasswd:
    list: |
     root:r00tme
    expire: False
 
-  bootcmd:
+bootcmd:
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
    - service sshd restart
-  output:
+output:
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
-  runcmd:
+runcmd:
    - if lvs vg0; then pvresize /dev/vda3; fi
    - if lvs vg0; then /usr/bin/growlvm.py --image-layout-file /usr/share/growlvm/image-layout.yml; fi
 
@@ -48,7 +43,7 @@
    - swapon /swapfile
    - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
 
-  write_files:
+write_files:
    - path: /etc/default/grub.d/97-enable-grub-menu.cfg
      content: |
          GRUB_RECORDFAIL_TIMEOUT=30
@@ -76,7 +71,7 @@
          size: '5G'
      owner: root:root
 
-  growpart:
+growpart:
     mode: auto
     devices:
       - '/'
