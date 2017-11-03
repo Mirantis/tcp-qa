@@ -101,6 +101,39 @@ class EnvironmentAlreadyExists(BaseException):
         )
 
 
+class EnvironmentWrongStatus(BaseException):
+    def __init__(self, env_name, env_expected_status, env_actual_status):
+        super(EnvironmentWrongStatus, self).__init__()
+        self.env_name = env_name
+        self.env_expected_status = env_expected_status
+        self.env_actual_status = env_actual_status
+
+    def __str__(self):
+        return ("Environment '{0}' has wrong status: "
+                "expected '{1}', got: '{2}'"
+                .format(self.env_name,
+                        self.env_expected_status,
+                        self.env_actual_status))
+
+
+class EnvironmentBadStatus(BaseException):
+    def __init__(self, env_name, env_expected_status,
+                 env_actual_status, wrong_resources):
+        super(EnvironmentBadStatus, self).__init__()
+        self.env_name = env_name
+        self.env_expected_status = env_expected_status
+        self.env_actual_status = env_actual_status
+        self.wrong_resources = wrong_resources
+
+    def __str__(self):
+        return ("Environment '{0}' has bad status: "
+                "expected '{1}', got: '{2}'\n{3}"
+                .format(self.env_name,
+                        self.env_expected_status,
+                        self.env_actual_status,
+                        self.wrong_resources))
+
+
 class EnvironmentSnapshotMissing(BaseException):
     def __init__(self, env_name, snapshot_name):
         super(EnvironmentSnapshotMissing, self).__init__()
@@ -143,4 +176,15 @@ class EnvironmentNodeIsNotStarted(BaseException):
 
     def __str__(self):
         return ("Cloud-init failed on node {0} with error: \n{1}"
+                .format(self.node_name, self.message))
+
+
+class EnvironmentNodeAccessError(BaseException):
+    def __init__(self, node_name, message=''):
+        super(EnvironmentNodeAccessError, self).__init__()
+        self.node_name = node_name
+        self.message = message
+
+    def __str__(self):
+        return ("Unable to reach the node {0}: \n{1}"
                 .format(self.node_name, self.message))
