@@ -68,6 +68,20 @@ hardware_opts = [
     ct.Cfg('current_snapshot', ct.String(),
            help="Latest environment status name",
            default=ext.SNAPSHOT.hardware),
+
+    # For 'manager'=='heat' envmanager_heat options
+    ct.Cfg('heat_version', ct.String(),
+           help="Heat version", default=1),
+    ct.Cfg('heat_auth_url', ct.String(),
+           help="Heat auth URL", default=''),
+    ct.Cfg('heat_username', ct.String(),
+           help="Heat username", default=''),
+    ct.Cfg('heat_password', ct.String(),
+           help="Heat password", default=''),
+    ct.Cfg('heat_project_name', ct.String(),
+           help="Heat project name", default=''),
+    ct.Cfg('heat_stack_name', ct.String(),
+           help="Heat stack name", default=''),
 ]
 
 
