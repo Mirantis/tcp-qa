@@ -99,3 +99,11 @@ EXTERNAL_ADDRESS_POOL_NAME = os.environ.get('EXTERNAL_ADDRESS_POOL_NAME',
 
 STACK_INSTALL = os.environ.get('STACK_INSTALL', None)
 SKIP_SYNC_TIME = get_var_as_bool("SKIP_SYNC_TIME", False)
+
+# OpenStack parameters to work with Heat stacks
+OS_STACK_NAME = os.environ.get("OS_STACK_NAME", ENV_NAME)
+OS_HEAT_VERSION = os.environ.get('OS_HEAT_VERSION', 1)
+OS_AUTH_URL = os.environ.get('OS_AUTH_URL', None)
+OS_USERNAME = os.environ.get('OS_USERNAME', None)
+OS_PASSWORD = os.environ.get('OS_PASSWORD', None)
+OS_PROJECT_NAME = os.environ.get('OS_PROJECT_NAME', None)
