@@ -12,6 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import netaddr
+
 from collections import defaultdict
 
 from datetime import datetime
@@ -19,6 +21,7 @@ from pepper.libpepper import Pepper
 from tcp_tests import settings
 from tcp_tests import logger
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
+from tcp_tests.helpers import ext
 
 LOG = logger.logger
 
@@ -155,3 +158,33 @@ class SaltManager(ExecuteCommandsMixin):
     def get_pillar(self, tgt, pillar):
         result = self.local(tgt=tgt, fun='pillar.get', args=pillar)
         return result['return']
+
+    def get_ssh_data(self, network=ext.NETWORK_TYPE.admin):
+        """Generate ssh config for Underlay
+
+        :param roles: list of strings
+        """
+
+        pool = self._get_network_pool(network)
+        pool_name = pool.address_pool.name
+        # pool_net = netaddr.IPNetwork('172.16.49.64/26')
+        pool_net = netaddr.IPNetwork(pool.address_pool.net)
+        hosts = self.run_state('*', 'grains.item', ['host', 'ipv4'])
+
+        def host(node_name, ip):
+            return {
+                'roles': ['salt_minion'],
+                'keys': [
+                    k['private'] for k in self.__config.underlay.ssh_keys
+                ],
+                'node_name': node_name,
+                'host': ip,
+                'address_pool': pool_name,
+                'login': settings.SSH_NODE_CREDENTIALS['login'],
+                'password': settings.SSH_NODE_CREDENTIALS['password']
+            }
+
+        return [
+            host(k, next(i for i in v['ipv4'] if i in pool_net))
+            for k, v in hosts.items()
+            if next(i for i in v['ipv4'] if i in pool_net)]
