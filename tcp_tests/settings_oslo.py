@@ -59,6 +59,8 @@ _default_sl_prepare_tests_steps_path = pkg_resources.resource_filename(
 _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_net_mgm = os.environ.get("NET_MGMT", "admin-pool01")
+
 
 hardware_opts = [
     ct.Cfg('manager', ct.String(),
@@ -110,6 +112,7 @@ underlay_opts = [
                 "then a key pair will be generated automatically"),
     ct.Cfg('ssh_key_file', ct.String(), default=os.path.abspath('./id_rsa'),
            help='Path (local) to file with private key authorized on nodes'),
+    ct.Cfg('net_mgmt', ct.String(), default=_default_net_mgm)
 ]
 
 
