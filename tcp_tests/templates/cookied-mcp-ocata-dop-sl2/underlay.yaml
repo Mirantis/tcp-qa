@@ -520,8 +520,8 @@ template:
           - name: {{ HOSTNAME_PRX01 }}
             role: salt_minion
             params:
-              vcpu: {{ os_env('MON_NODE_CPU', 1) }}
-              memory: {{ os_env('MON_NODE_MEMORY', 2048) }}
+              vcpu: {{ os_env('PRX_NODE_CPU', 1) }}
+              memory: {{ os_env('PRX_NODE_MEMORY', 2048) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
