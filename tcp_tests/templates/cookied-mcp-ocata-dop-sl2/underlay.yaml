@@ -434,7 +434,7 @@ template:
             role: salt_minion
             params:
               vcpu: {{ os_env('MON_NODE_CPU', 2) }}
-              memory: {{ os_env('MON_NODE_MEMORY', 16384) }}
+              memory: {{ os_env('MON_NODE_MEMORY', 14000) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -463,7 +463,7 @@ template:
             role: salt_minion
             params:
               vcpu: {{ os_env('MON_NODE_CPU', 2) }}
-              memory: {{ os_env('MON_NODE_MEMORY', 16384) }}
+              memory: {{ os_env('MON_NODE_MEMORY', 14000) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -492,7 +492,7 @@ template:
             role: salt_minion
             params:
               vcpu: {{ os_env('MON_NODE_CPU', 2) }}
-              memory: {{ os_env('MON_NODE_MEMORY', 16384) }}
+              memory: {{ os_env('MON_NODE_MEMORY', 14000) }}
               boot:
                 - hd
               cloud_init_volume_name: iso

@@ -167,12 +167,46 @@ default_context:
   tenant_network_netmask: 255.255.255.0
   tenant_vlan: '20'
   oss_enabled: 'True'
-  oss_openstack_auth_url: http://10.100.0.10:5000/v3
+  oss_openstack_auth_url: http://${_param:openstack_control_address}:5000/v3
   oss_openstack_username: admin
   oss_openstack_password: password
   oss_openstack_project: admin
   oss_openstack_domain_id: default
-  oss_openstack_cert: ''
+  oss_openstack_cert: |-
+    -----BEGIN CERTIFICATE-----
+    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
+    ptYlHCU=
+    -----END CERTIFICATE-----
   oss_runbook_private_key: |-
     -----BEGIN RSA PRIVATE KEY-----
     MIIEowIBAAKCAQEAxgROyM+RnJiDhS/qfXayxDbGmMqIGWsWPnc1RdMcJ9xlBM4a
@@ -220,3 +254,12 @@ default_context:
   oss_security_audit_os_ssl_verify: 'True'
   oss_security_audit_os_cacert_path: '/srv/volumes/rundeck/storage/content/keys/cis/openstack/cert.pem'
   oss_cleanup_service_enabled: 'True'
+
+  # SFDC configuration, to be overriden from test with actual values
+  sfdc_sandbox_enabled: True
+  sfdc_auth_url: ''
+  sfdc_username: ''
+  sfdc_password: ''
+  sfdc_consumer_key: ''
+  sfdc_consumer_secret: ''
+  sfdc_organization_id: ''
