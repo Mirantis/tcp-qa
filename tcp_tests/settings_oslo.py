@@ -206,7 +206,7 @@ sl_deploy_opts = [
            default='{}/openstack-docker/remote_storage_adapter:latest'.format(
                settings.DOCKER_REGISTRY)),
     # SalesForce connection options for pushkin
-    ct.Cfg('sfdc_sandbox_enabled', ct.String(), default=False),
+    ct.Cfg('sfdc_sandbox_enabled', ct.String(), default='False'),
     ct.Cfg('sfdc_auth_url', ct.String(), default=''),
     ct.Cfg('sfdc_username', ct.String(), default=''),
     ct.Cfg('sfdc_password', ct.String(), default=''),
