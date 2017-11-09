@@ -87,6 +87,8 @@ class OpenstackManager(ExecuteCommandsMixin):
             result = r.execute('find /root -name "report_*.{}"'.format(
                 file_fromat))
             LOG.debug("Find result {0}".format(result))
+            assert len(result['stdout']) > 0, ('No report find, please check'
+                                               ' if test run was successful.')
             file_name = result['stdout'][0].rstrip()
             LOG.debug("Found files {0}".format(file_name))
             r.download(destination=file_name, target=os.getcwd())
