@@ -6,11 +6,11 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
-{% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', 'false') %}
+{% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', '') %}
 
 # Install OpenStack control services
 
-{%- if OVERRIDE_POLICY == 'true' %}
+{%- if OVERRIDE_POLICY != '' %}
 - description: Upload policy override
   upload:
     local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
