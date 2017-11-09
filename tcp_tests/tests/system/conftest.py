@@ -59,8 +59,15 @@ __all__ = sorted([  # sort for documentation
     # stacklight_fixtures
     'sl_actions',
     'sl_deployed',
+<<<<<<< HEAD
     'ceph_deployed',
     'ceph_action',
+=======
+    'sl_v1_actions',
+    'sl_v1_deployed',
+    'sl_v1_upgrade_actions'
+    'sl_v1_upgraded',
+>>>>>>> f309bd0... Add test model with SLv1 for SLv2 upgrade
     # k8s fixtures
     'k8s_actions',
     'k8s_deployed'
