@@ -54,7 +54,6 @@ class TestUpgradeStacklight(object):
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
-
 # Run SL component tetsts
         sl_deployed.run_sl_functional_tests(
             'cfg01',
