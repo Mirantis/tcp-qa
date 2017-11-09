@@ -1,0 +1,96 @@
+{% from 'virtual-cookied-mcp11-sl-upgrade/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-cookied-mcp11-sl-upgrade/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'virtual-cookied-mcp11-sl-upgrade/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','virtual-cookied-mcp11-sl-upgrade') %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_sl_upgrade.yaml' %}
+
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml'] %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CLUSTER_PRODUCT_MODELS="infra openstack stacklight1") }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins"') }}
+
+
+- description: "Temporary workaround for maas patch verify https://gerrit.mcp.mirantis.net/#/c/12112/"
+  cmd: |
+    set -e;
+    git clone https://gerrit.mcp.mirantis.net/salt-formulas/maas;
+    cd maas;
+    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/maas refs/changes/12/12112/10 && git checkout FETCH_HEAD;
+    cp _modules/maas.py /usr/share/salt-formulas/env/_modules/;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+- description: "Workaround for combined roles: remove unnecessary classes"
+  cmd: |
+    set -e;
+    sed -i '/system.reclass.storage.system.physical_control_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node02 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node03 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Workaround for PROD-15965"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key 'classes' 'system.linux.system.repo.sensu' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/stacklight/telemetry.yml --merge;
+    reclass-tools add-key 'classes' 'system.linux.system.repo.sensu' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute/init.yml --merge;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Workaround for PROD-15966"
+  cmd: |
+    set -e;
+    sed -i 's/stacklight_telemetry_address/openstack_database_address/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/stacklight/monitor.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+#- description: Hack gtw node
+#  cmd: salt 'gtw*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+
+#- description: Hack cmp01 node
+#  cmd: salt 'cmp01*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+
+#- description: Hack cmp02 node
+#  cmd: salt 'cmp02*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
