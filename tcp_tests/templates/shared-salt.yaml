@@ -167,7 +167,7 @@
 {%- endmacro %}
 
 
-{%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None) %}
+{%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None, STACKLIGHT_MODEL_VERSION="") %}
 {###################################################################}
 {%- set CLUSTER_CONTEXT_PATH = '/tmp/' + CLUSTER_CONTEXT_NAME %}
 - description: "[EXPERIMENTAL] Upload cookiecutter-templates context to {{ HOSTNAME_CFG01 }}"
@@ -220,6 +220,13 @@
     sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {{ CLUSTER_CONTEXT_PATH }}
+
+    rm -rf /tmp/cookiecutter-templates/cluster_product/stacklight2;
+    rm -rf /tmp/cookiecutter-templates/cluster_product/kubernetes;
+    rm -rf /tmp/cookiecutter-templates/cluster_product/oss;
+    rm -rf /tmp/cookiecutter-templates/cluster_product/opencontrail;
+    rm -rf /tmp/cookiecutter-templates/cluster_product/cicd;
+    rm -rf /tmp/cookiecutter-templates/cluster_product/ceph;
 
     for i in $(ls /tmp/cookiecutter-templates/cluster_product/); do
       python /tmp/cookiecutter-templates/generate.py \
@@ -329,6 +336,16 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+#- description: "Workaround for PROD-14756: all roles must use service.keepalived.cluster.single with the default 'VIP' instance"
+#  cmd: |
+#    set -e;
+#    find /srv/salt/reclass/classes/cluster/ -type f -exec sed -i 's/system.keepalived.*/service.keepalived.cluster.single/g' {} +
+#    find /srv/salt/reclass/classes/system/ -type f -exec sed -i 's/system.keepalived.*/service.keepalived.cluster.single/g' {} +
+#
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
 - description: "[EXPERIMENTAL] Create environment model for virtual environment"
   cmd: |
@@ -579,6 +596,14 @@
 {%- macro MACRO_BOOTSTRAP_ALL_MINIONS() %}
 {########################################}
 # Bootstrap all nodes
+
+- description: Temporary WR (Remove ASAP) for downgrade packages
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get purge -y vlan";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
 - description: Configure linux on other nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
