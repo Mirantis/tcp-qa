@@ -64,6 +64,31 @@ class SLManager(ExecuteCommandsMixin):
         sl_vip_ip_host = sl_vip_ip.pop()
         return sl_vip_ip_host
 
+    def install_sl_v1(self, commands):
+        self.execute_commands(commands,
+                              label='Install SL_v1 services')
+        self.__config.sl_v1.sl_v1_installed = True
+        self.__config.sl_v1.sl_v1_vip_host = self.get_sl_v1_vip()
+
+    def upgrade_sl_v1(self, commands):
+        self.execute_commands(commands,
+                              label='Upgrade SL_v1 services')
+        self.__config.sl_v1_upgrade.sl_v1_upgraded = True
+
+    def get_sl_v1_vip(self):
+        sl_vip_address_pillars = self._salt.get_pillar(
+            tgt='mon*',
+            pillar='keepalived:cluster:instance:VIP:address')
+        sl_vip_ip = set([ip
+                         for item in sl_vip_address_pillars
+                         for node, ip in item.items() if ip])
+        assert len(sl_vip_ip) == 1, (
+            "SL VIP not found or found more than one SL VIP in pillars:{0}, "
+            "expected one!").format(sl_vip_ip)
+        sl_vip_ip_host = sl_vip_ip.pop()
+        return sl_vip_ip_host
+
+
     @property
     def api(self):
         if self._p_client is None:
