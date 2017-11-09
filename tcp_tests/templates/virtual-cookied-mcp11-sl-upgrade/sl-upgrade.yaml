@@ -1,0 +1,397 @@
+{% from 'virtual-cookied-mcp11-sl-upgrade/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-cookied-mcp11-sl-upgrade/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'virtual-cookied-mcp11-sl-upgrade/underlay.yaml' import DOMAIN_NAME with context %}
+
+### Upgrading StackLight form 1 to 2
+
+- description: Adding required classes to model
+  cmd: |
+    reclass-tools add-key 'classes' 'system.docker.client' /srv/salt/reclass/nodes/_generated/mon01.{{ DOMAIN_NAME }}.yml --merge;
+    reclass-tools add-key 'classes' 'system.docker.host' /srv/salt/reclass/nodes/_generated/mon01.{{ DOMAIN_NAME }}.yml --merge;
+    reclass-tools add-key 'classes' 'system.docker.swarm.master' /srv/salt/reclass/nodes/_generated/mon01.{{ DOMAIN_NAME }}.yml --merge;
+    reclass-tools add-key 'classes' 'system.docker.host' /srv/salt/reclass/nodes/_generated/mon02.{{ DOMAIN_NAME }}.yml --merge;
+    reclass-tools add-key 'classes' 'system.docker.swarm.manager' /srv/salt/reclass/nodes/_generated/mon02.{{ DOMAIN_NAME }}.yml --merge;
+    reclass-tools add-key 'classes' 'system.docker.host' /srv/salt/reclass/nodes/_generated/mon03.{{ DOMAIN_NAME }}.yml --merge;
+    reclass-tools add-key 'classes' 'system.docker.swarm.manager' /srv/salt/reclass/nodes/_generated/mon03.{{ DOMAIN_NAME }}.yml --merge;
+    reclass-tools add-key 'classes' 'system.linux.system.repo.docker' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/stacklight/monitor.yml --merge;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Installing grains
+  cmd: salt 'mon*' state.sls salt.minion.grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+- description: Syncing
+  cmd: |
+    salt 'mon*' saltutil.refresh_pillar;
+    salt 'mon*' saltutil.sync_all;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+
+- description: Adding repos
+  cmd: salt -C 'I@docker:swarm' state.sls linux.system.repo
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install docker
+  cmd: salt -C 'I@docker:swarm' state.sls docker.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure docker swarm
+  cmd: salt -C 'I@docker:swarm:role:master' state.sls docker.swarm
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Updating grains
+  cmd: |
+    salt -C 'I@docker:swarm' state.sls salt.minion.grains;
+    salt -C 'I@docker:swarm' mine.update;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description:  Refresh modules
+  cmd: salt -C 'I@docker:swarm' saltutil.refresh_modules; sleep 5;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description:  Rerun swarm on slaves to proper token population
+  cmd: salt -C 'I@docker:swarm:role:master' state.sls docker.swarm
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Adding swarm managers
+  cmd: salt -C 'I@docker:swarm:role:manager' state.sls docker.swarm -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description:  List registered Docker swarm nodes
+  cmd: salt -C 'I@docker:swarm:role:master' cmd.run 'docker node ls'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Adding new classes for influxDb
+  cmd: |
+    sed -i 's/system.haproxy.proxy.listen.stacklight.influxdb/system.haproxy.proxy.listen.stacklight.influxdb_relay/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/stacklight/telemetry.yml;
+    reclass-tools add-key 'classes' 'system.influxdb.relay.cluster' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/stacklight/telemetry.yml --merge;
+    reclass-tools add-key 'classes' 'system.influxdb.database.prometheus' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/stacklight/telemetry.yml --merge;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configuring influxDb
+  cmd: |
+    salt -C 'I@influxdb:server' saltutil.refresh_pillar;
+    salt -C 'I@influxdb:server' state.sls salt.minion.grains;
+    salt -C 'I@influxdb:server' state.sls influxdb;
+    salt -C 'I@influxdb:server' state.sls haproxy;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Hack template without classes to be able to add class with reclass-tools
+  cmd: |
+    echo "classes:" >> /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml;
+    echo "- system.linux.system.repo.mcp.extra" >> /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Adding new required classes and parameters to model
+  cmd: |
+    reclass-tools add-key 'classes' 'system.linux.system.repo.mcp.extra' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml --merge;
+    reclass-tools add-key 'classes' 'system.prometheus.collector' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml --merge;
+    reclass-tools add-key 'classes' 'system.telegraf.agent' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml --merge;
+    reclass-tools add-key parameters._param.grafana_prometheus_address '${_param:prometheus_control_address}' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml;
+    reclass-tools add-key parameters._param.grafana_address '${_param:prometheus_control_address}' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml;
+    reclass-tools add-key parameters._param.grafana_prometheus_port '15016' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml;
+    reclass-tools add-key parameters._param.prometheus_control_address '${_param:stacklight_monitor_address}' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml;
+    reclass-tools add-key 'classes' 'system.prometheus.exporters.libvirt' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/openstack/compute/init.yml --merge;
+    reclass-tools add-key 'classes' 'system.nginx.server.proxy.monitoring.prometheus_server' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/proxy.yml --merge;
+    reclass-tools add-key 'classes' 'system.nginx.server.proxy.monitoring.prometheus_alertmanager' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/proxy.yml --merge;
+    reclass-tools add-key 'classes' 'system.telegraf.agent.remote' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml --merge;
+    reclass-tools add-key 'classes' 'system.prometheus.server.remote_write.docker' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml --merge;
+    reclass-tools add-key 'classes' 'system.prometheus.server.alertmanager.dns' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml --merge;
+    reclass-tools add-key 'classes' 'system.prometheus.server.target.dns' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml --merge;
+    reclass-tools add-key 'classes' 'system.docker.swarm.stack.monitoring' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml --merge;
+    reclass-tools add-key parameters._param.docker_image_alertmanager 'docker-prod-virtual.docker.mirantis.net/openstack-docker/alertmanager:latest'  /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.docker_image_pushgateway 'docker-prod-virtual.docker.mirantis.net/openstack-docker/pushgateway:latest' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.docker_image_prometheus 'docker-prod-virtual.docker.mirantis.net/openstack-docker/prometheus:latest' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.docker_image_prometheus_relay 'docker-prod-virtual.docker.mirantis.net/openstack-docker/prometheus_relay:latest' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.docker_image_remote_agent 'docker-prod-virtual.docker.mirantis.net/openstack-docker/telegraf:latest' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.docker_image_remote_storage_adapter 'docker-prod-virtual.docker.mirantis.net/openstack-docker/remote_storage_adapter:latest'  /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.prometheus_influxdb_url 'http://${_param:stacklight_monitor_address}:${_param:influxdb_port}/' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.prometheus_influxdb_db 'prometheus' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.prometheus_influxdb_username 'lma' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.prometheus_influxdb_password '${_param:influxdb_prometheus_password}' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.influxdb_prometheus_password 'admin' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/init.yml;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Hack resolv.conf for internal services access
+  cmd: |
+    salt '*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf";
+    salt '*' cmd.run "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update linux repo and sudo users
+  cmd: |
+    salt '*' saltutil.refresh_pillar;
+    salt '*' state.sls linux.system.repo,linux.system.sudo;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install telegraf agent
+  cmd: |
+    salt '*' state.sls telegraf.agent;
+    salt '*' state.sls salt.minion.grains;
+    salt '*' mine.update;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install prometheus exporters
+  cmd: salt -C 'I@prometheus:exporters' state.sls prometheus
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install prometheus and telegraf remote agent
+  cmd: salt -C 'I@docker:swarm' state.sls prometheus,telegraf.remote_agent -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update docker master services
+  cmd: salt -C 'I@docker:swarm:role:master' state.sls docker
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install nginx
+  cmd: salt -C 'I@nginx:server' state.sls nginx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check telegraf status
+  cmd: salt -C '* and not cfg*' service.status telegraf
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check docker services
+  cmd: sleep 60; salt -C 'I@docker:swarm:role:master' cmd.run "docker service ls"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Remove old Grafana classes
+  cmd: |
+    sed -i 's/\-\ system\.grafana\.server\.single//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml
+    sed -i 's/\-\ system\.haproxy\.proxy\.listen\.stacklight\.grafana//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Add dashboards class and parameters
+  cmd: |
+    reclass-tools add-key 'classes' 'system.docker.swarm.stack.dashboard' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml --merge;
+    reclass-tools add-key parameters._param.docker_image_grafana 'grafana/grafana:4.5.2' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml
+    reclass-tools add-key parameters._param.grafana_database_type 'mysql' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml
+    reclass-tools add-key parameters._param.grafana_database_host '${_param:openstack_database_address}' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml
+    reclass-tools add-key parameters._param.grafana_port '15013' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml
+    reclass-tools add-key parameters._param.grafana_database_password '${_param:mysql_grafana_password}' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml
+    reclass-tools add-key parameters._param.grafana_admin_password '${_param:grafana_password}' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml
+    reclass-tools add-key parameters._param.nginx_proxy_grafana_port '15013' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/proxy.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure haproxy and nginx on mon* nodes
+  cmd: |
+    salt -C 'I@nginx:server or mon*' saltutil.refresh_pillar;
+    salt 'mon*' state.sls haproxy;
+    salt -C 'I@nginx:server' state.sls nginx;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Disable and remove old Grafana
+  cmd: |
+    salt 'mon*' service.stop grafana-server;
+    salt 'mon*' service.disable grafana-server;
+    salt 'mon*' pkg.remove grafana;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Remove stacklight.client including from infra/init.yml
+  cmd: |
+    sed -i 's/\-\ cluster\.virtual\-cookied\-mcp11\-sl\-upgrade\.stacklight\.client//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/infra/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure docker client
+  cmd: salt 'mon01*' state.sls docker.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Remove grafana.client.single from whole cluster
+  cmd: |
+    find /srv/salt/reclass/classes/{cluster,environment}/ -name '*.yml' -type f -exec sed -ri 's/\-\ system\.grafana\.client\.single//g' {} +
+    find /srv/salt/reclass/nodes/_generated/ -name '*.yml' -type f -exec sed -ri 's/\-\ system\.grafana\.client\.single//g' {} +
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Add new classes for Grafana
+  cmd: |
+    reclass-tools add-key 'classes' 'system.grafana.client' /srv/salt/reclass/nodes/_generated/mon01.sl-upgrade.local.yml --merge;
+    reclass-tools add-key 'classes' 'system.grafana.client.datasource.prometheus' /srv/salt/reclass/nodes/_generated/mon01.sl-upgrade.local.yml --merge;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Grafana client
+  cmd: |
+    salt -C 'I@grafana:client' saltutil.refresh_pillar;
+    salt -C 'I@grafana:client' state.sls salt.minion.grains;
+    salt -C 'I@grafana:client' mine.update;
+    sleep 60;
+    salt -C 'I@grafana:client' state.sls grafana.client;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+###
+### In that step we need to check Grafana dashboards. Need to figure it out ###
+###
+
+### Switch remote_collector to Prometheus.
+
+- description: Configure heka log collector
+  cmd: |
+    sed -i 's/\-\ system\.heka\.log\_collector\.single//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml;
+    reclass-tools add-key 'classes' 'system.heka.log_collector.output.telegraf' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml --merge;
+    salt '*' saltutil.refresh_pillar;
+    salt '*' state.sls heka.log_collector;
+    salt -C 'I@heka:remote_collector' service.stop remote_collector;
+    sed -i 's/\-\ system\.heka\.remote\_collector\.cluster//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.heka\.remote\_collector\.input\.amqp//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key 'classes' 'system.docker.swarm.stack.monitoring.remote_collector' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml --merge;
+    reclass-tools add-key parameters._param.docker_image_remote_collector 'docker-prod-virtual.docker.mirantis.net/openstack-docker/heka:latest' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.remote_collector_telegraf_host 'monitoring_remote_agent' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    reclass-tools add-key parameters._param.heka_amqp_host '${_param:openstack_message_queue_address}' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    salt -C 'I@docker:swarm' saltutil.refresh_pillar;
+    salt -C 'I@docker:swarm' state.sls heka.remote_collector
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure docker swarm master
+  cmd: salt -C 'I@docker:swarm:role:master' state.sls docker
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check monitoring remote collector
+  cmd: |
+    salt 'mon01*' cmd.run "docker service ps monitoring_remote_collector";
+    sleep 60;
+    salt 'mon01*' cmd.run "docker service logs --tail 50 monitoring_remote_collector";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+##### Stop and disable the legacy StackLight services
+
+- description: Stop old services
+  cmd: |
+    sed -i 's/\-\ system\.heka\.aggregator\.cluster//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    salt '*' state.sls salt.minion.grains;
+    salt '*' mine.update;
+    salt -C 'I@heka:aggregator:enabled' service.stop aggregator;
+    salt -C 'I@collectd:client' service.stop collectd;
+    salt -C 'I@heka:metric_collector' service.stop metric_collector;
+    salt -C 'I@heka:aggregator' service.disable aggregator;
+    salt -C 'I@collectd:remote_client' service.stop remote_collectd;
+    salt -C 'I@heka:metric_collector' service.disable metric_collector;
+    salt -C 'I@collectd:client' service.disable collectd;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+#### Disable and remove sensu
+
+- description: Stop services and remove classes
+  cmd: |
+    salt -C 'I@sensu:server' service.stop sensu-api;
+    salt -C 'I@sensu:server' service.stop sensu-server;
+    salt -C 'I@sensu:client' service.stop sensu-client;
+    salt -C 'I@sensu:server' service.stop rabbitmq-server;
+    salt -C 'I@sensu:server' service.stop redis-server;
+    sed -i 's/\-\ system\.heka\.log\_collector\.output\.sensu//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml;
+    sed -i 's/\-\ system\.heka\.metric\_collector\.output\.sensu//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml;
+    sed -i 's/\-\ system\.sensu\.client\.stacklight//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml;
+    sed -i 's/\-\ system\.heka\.remote\_collector\.output\.sensu//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.heka\.aggregator\.output\.sensu//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.sensu\.client\.unsubscribe\.collectd//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.sensu\.server\.cluster//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.haproxy\.proxy\.listen\.stacklight\.redis//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.haproxy\.proxy\.listen\.stacklight\.sensu//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.haproxy\.proxy\.listen\.stacklight\.uchiwa//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.nginx\.server\.proxy\.stacklight\.uchiwa//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/proxy.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Remove old packges
+  cmd: salt 'mon*' pkg.remove rabbitmq-server,redis-server,sensu,uchiwa
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Remove heka and collectd
+  cmd: |
+    sed -i 's/\-\ system\.collectd\.client\.output\.heka//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml;
+    sed -i 's/\-\ system\.heka\.metric\_collector\.single//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/client.yml;
+    sed -i 's/\-\ system\.collectd\.remote\_client\.cluster//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.heka\.aggregator\.cluster//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    sed -i 's/\-\ system\.heka\.remote\_collector\.cluster//g' /srv/salt/reclass/classes/cluster/virtual-cookied-mcp11-sl-upgrade/stacklight/monitor.yml;
+    salt '*' pkg.remove collectd;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update haproxy and keepalived
+  cmd: |
+    salt '*' saltutil.refresh_pillar;
+    salt 'mon*' state.sls haproxy -b 1;
+    salt 'mon*' state.sls keepalived -b 1;
+    salt -C 'log* or mon* or mtr*' cmd.run "sed -i 's/interface .*/interface br_ctl/g' /etc/keepalived/keepalived.conf";
+    salt -C 'log* or mon* or mtr*' cmd.run "/etc/init.d/keepalived restart";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
