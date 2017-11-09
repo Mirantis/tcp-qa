@@ -58,6 +58,9 @@ __all__ = sorted([  # sort for documentation
     # stacklight_fixtures
     'sl_actions',
     'sl_deployed',
+    'sl_v1_actions',
+    'sl_v1_deployed',
+    'sl_v1_upgraded',
     # k8s fixtures
     'k8s_actions',
     'k8s_deployed'
