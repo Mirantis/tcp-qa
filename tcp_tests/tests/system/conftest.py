@@ -61,6 +61,10 @@ __all__ = sorted([  # sort for documentation
     'sl_deployed',
     'ceph_deployed',
     'ceph_action',
+    'sl_v1_actions',
+    'sl_v1_deployed',
+    'sl_v1_upgrade_actions'
+    'sl_v1_upgraded',
     # k8s fixtures
     'k8s_actions',
     'k8s_deployed'
