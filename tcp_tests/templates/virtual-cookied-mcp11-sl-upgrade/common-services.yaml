@@ -1,28 +1,12 @@
-{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-cookied-mcp11-sl-upgrade/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+- description: Refresh grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt.minion.grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
 
 # Install support services
-
-- description: Install glusterfs
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:server' state.sls glusterfs.server.service
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Setup glusterfs on primary controller
-  cmd: sleep 30; salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:server' state.sls glusterfs.server.setup -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
-  skip_fail: false
-
-- description: Check the gluster status
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:server' cmd.run 'gluster peer status; gluster volume status' -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Install keepalived on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keepalived:cluster and *01*' state.sls keepalived
@@ -37,11 +21,33 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
-- description: Check the OpenStack control VIP
+- description: Check the VIP
   cmd: |
-    OPENSTACK_CONTROL_ADDRESS=$(salt --out=newline_values_only "ctl01*" pillar.get _param:cluster_vip_address);
-    echo "_param:cluster_vip_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
+    OPENSTACK_CONTROL_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:openstack_control_address`;
+    echo "_param:openstack_control_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster' cmd.run "ip a | grep ${OPENSTACK_CONTROL_ADDRESS}" | grep -B1 ${OPENSTACK_CONTROL_ADDRESS}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+- description: Install glusterfs
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' state.sls glusterfs.server.service
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup glusterfs on primary controller
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' state.sls glusterfs.server.setup -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Check the gluster status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' cmd.run 'gluster peer status; gluster volume status' -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -101,6 +107,13 @@
     -C 'I@haproxy:proxy' service.status haproxy
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Run salt minion to create cert files for nginx
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Install nginx on prx nodes
