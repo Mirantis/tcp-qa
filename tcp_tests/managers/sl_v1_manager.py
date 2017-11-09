@@ -17,13 +17,12 @@ import os
 from devops.helpers import decorators
 
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
-from tcp_tests.managers.clients.prometheus import prometheus_client
 from tcp_tests import logger
 
 LOG = logger.logger
 
 
-class SLManager(ExecuteCommandsMixin):
+class SLV1Manager(ExecuteCommandsMixin):
     """docstring for OpenstackManager"""
 
     __config = None
@@ -34,35 +33,16 @@ class SLManager(ExecuteCommandsMixin):
         self.__underlay = underlay
         self._salt = salt
         self._p_client = None
-        super(SLManager, self).__init__(
+        super(SLV1Manager, self).__init__(
             config=config, underlay=underlay)
 
     def install(self, commands):
-        self.execute_commands(commands,
-                              label='Install SL services')
-        self.__config.stack_light.sl_installed = True
-        self.__config.stack_light.sl_vip_host = self.get_sl_vip()
-
-    def get_sl_vip(self):
-        sl_vip_address_pillars = self._salt.get_pillar(
-            tgt='I@prometheus:server:enabled:True',
-            pillar='keepalived:cluster:instance:prometheus_server_vip:address')
-        sl_vip_ip = set([ip
-                         for item in sl_vip_address_pillars
-                         for node, ip in item.items() if ip])
-        assert len(sl_vip_ip) == 1, (
-            "SL VIP not found or found more than one SL VIP in pillars:{0}, "
-            "expected one!").format(sl_vip_ip)
-        sl_vip_ip_host = sl_vip_ip.pop()
-        return sl_vip_ip_host
-
-    def install_sl_v1(self, commands):
         self.execute_commands(commands,
                               label='Install SL_v1 services')
         self.__config.sl_v1.sl_v1_installed = True
         self.__config.sl_v1.sl_v1_vip_host = self.get_sl_v1_vip()
 
-    def upgrade_sl_v1(self, commands):
+    def upgrade(self, commands):
         self.execute_commands(commands,
                               label='Upgrade SL_v1 services')
         self.__config.sl_v1_upgrade.sl_v1_upgraded = True
@@ -80,31 +60,9 @@ class SLManager(ExecuteCommandsMixin):
         sl_vip_ip_host = sl_vip_ip.pop()
         return sl_vip_ip_host
 
-
-    @property
-    def api(self):
-        if self._p_client is None:
-            self._p_client = prometheus_client.PrometheusClient(
-                host=self.__config.stack_light.sl_vip_host,
-                port=self.__config.stack_light.sl_prometheus_port,
-                proto=self.__config.stack_light.sl_prometheus_proto)
-        return self._p_client
-
     def get_monitoring_nodes(self):
         return [node_name for node_name
                 in self.__underlay.node_names() if 'mon' in node_name]
-
-    def get_service_info_from_node(self, node_name):
-        service_stat_dict = {}
-        with self.__underlay.remote(node_name=node_name) as node_remote:
-            result = node_remote.execute(
-                "docker service ls --format '{{.Name}}:{{.Replicas}}'")
-            LOG.debug("Service ls result {0} from node {1}".format(
-                result['stdout'], node_name))
-            for line in result['stdout']:
-                tmp = line.split(':')
-                service_stat_dict.update({tmp[0]: tmp[1]})
-        return service_stat_dict
 
     def run_sl_functional_tests(self, node_to_run, tests_path,
                                 test_to_run, skip_tests):
@@ -164,51 +122,6 @@ class SLManager(ExecuteCommandsMixin):
                 destination=file_path,
                 target=os.getcwd())
 
-    def check_docker_services(self, nodes, expected_services):
-        """Check presense of the specified docker services on all the nodes
-        :param nodes: list of strings, names of nodes to check
-        :param expected_services: list of strings, names of services to find
-        """
-        for node in nodes:
-            services_status = self.get_service_info_from_node(node)
-            assert len(services_status) == len(expected_services), \
-                'Some services are missed on node {0}. ' \
-                'Current service list: {1}\nExpected service list: {2}' \
-                .format(node, services_status, expected_services)
-            for service in expected_services:
-                assert service in services_status,\
-                    'Missing service {0} in {1}'.format(service,
-                                                        services_status)
-                assert '0' not in services_status.get(service),\
-                    'Service {0} failed to start'.format(service)
-
-    @decorators.retry(AssertionError, count=10, delay=5)
-    def check_prometheus_targets(self, nodes):
-        """Check the status for Prometheus targets
-        :param nodes: list of strings, names of nodes with keepalived VIP
-        """
-        prometheus_client = self.api
-        try:
-            current_targets = prometheus_client.get_targets()
-        except Exception:
-            LOG.info('Restarting keepalived service on mon nodes...')
-            for node in nodes:
-                self._salt.local(tgt=node, fun='cmd.run',
-                                 args='systemctl restart keepalived')
-            LOG.warning(
-                'Ip states after force restart {0}'.format(
-                    self._salt.local(tgt='mon*',
-                                     fun='cmd.run', args='ip a')))
-            self._salt.local(tgt="mon*", fun='cmd.run',
-                             args='systemctl restart keepalived')
-            current_targets = prometheus_client.get_targets()
-
-        LOG.debug('Current targets after install {0}'
-                  .format(current_targets))
-        # Assert that targets are up
-        for entry in current_targets:
-            assert 'up' in entry['health'], \
-                'Next target is down {}'.format(entry)
 
     def kill_sl_service_on_node(self, node_sub_name, service_name):
         target_node_name = [node_name for node_name
@@ -239,40 +152,6 @@ class SLManager(ExecuteCommandsMixin):
             assert res['exit_code'] == 0, (
                 'Unexpected exit code for command {0}, '
                 'current result {1}'.format(cmd, res))
-
-    def post_data_into_influx(self, node_sub_name):
-        target_node_name = [node_name for node_name
-                            in self.__underlay.node_names()
-                            if node_sub_name in node_name]
-        vip = self.get_sl_vip()
-        cmd = ("curl -POST 'http://{0}:8086/write?db=lma' -u "
-               "lma:lmapass --data-binary 'mymeas value=777'".format(vip))
-        with self.__underlay.remote(node_name=target_node_name[0]) \
-                as node_remote:
-            LOG.debug("Run {0} on the node {1}".format(
-                cmd, target_node_name[0]))
-            res = node_remote.execute(cmd)
-            assert res['exit_code'] == 0, (
-                'Unexpected exit code for command {0}, '
-                'current result {1}'.format(cmd, res))
-
-    def check_data_in_influxdb(self, node_sub_name):
-        target_node_name = [node_name for node_name
-                            in self.__underlay.node_names()
-                            if node_sub_name in node_name]
-        vip = self.get_sl_vip()
-        cmd = ("influx -host {0} -port 8086 -database lma  "
-               "-username lma -password lmapass -execute "
-               "'select * from mymeas' -precision rfc3339;".format(vip))
-        with self.__underlay.remote(node_name=target_node_name[0]) \
-                as node_remote:
-            LOG.debug("Run {0} on the node {1}".format(
-                cmd, target_node_name[0]))
-            res = node_remote.execute(cmd)
-            assert res['exit_code'] == 0, (
-                'Unexpected exit code for command {0}, '
-                'current result {1}'.format(cmd, res))
-            return res['stdout'][0].rstrip()
 
     def start_service(self, node_sub_name, service_name):
         target_node_name = [node_name for node_name
