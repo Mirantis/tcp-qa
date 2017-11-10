@@ -93,10 +93,6 @@ template:
             default_{{ HOSTNAME_PRX }}: +80
             default_{{ HOSTNAME_PRX01 }}: +81
             default_{{ HOSTNAME_PRX02 }}: +82
-            default_{{ HOSTNAME_MDB }}: +75
-            default_{{ HOSTNAME_MDB01 }}: +76
-            default_{{ HOSTNAME_MDB02 }}: +77
-            default_{{ HOSTNAME_MDB03 }}: +78
             default_{{ HOSTNAME_BMK01 }}: +85
 
             default_{{ HOSTNAME_MON }}: +70
@@ -153,10 +149,6 @@ template:
             default_{{ HOSTNAME_PRX }}: +80
             default_{{ HOSTNAME_PRX01 }}: +81
             default_{{ HOSTNAME_PRX02 }}: +82
-            default_{{ HOSTNAME_MDB }}: +75
-            default_{{ HOSTNAME_MDB01 }}: +76
-            default_{{ HOSTNAME_MDB02 }}: +77
-            default_{{ HOSTNAME_MDB03 }}: +78
             default_{{ HOSTNAME_BMK01 }}: +85
 
             default_{{ HOSTNAME_MON }}: +70
@@ -214,10 +206,6 @@ template:
             default_{{ HOSTNAME_PRX }}: +80
             default_{{ HOSTNAME_PRX01 }}: +81
             default_{{ HOSTNAME_PRX02 }}: +82
-            default_{{ HOSTNAME_MDB }}: +75
-            default_{{ HOSTNAME_MDB01 }}: +76
-            default_{{ HOSTNAME_MDB02 }}: +77
-            default_{{ HOSTNAME_MDB03 }}: +78
             default_{{ HOSTNAME_BMK01 }}: +85
 
             default_{{ HOSTNAME_MON }}: +70
@@ -274,10 +262,6 @@ template:
             default_{{ HOSTNAME_PRX }}: +80
             default_{{ HOSTNAME_PRX01 }}: +81
             default_{{ HOSTNAME_PRX02 }}: +82
-            default_{{ HOSTNAME_MDB }}: +75
-            default_{{ HOSTNAME_MDB01 }}: +76
-            default_{{ HOSTNAME_MDB02 }}: +77
-            default_{{ HOSTNAME_MDB03 }}: +78
             default_{{ HOSTNAME_BMK01 }}: +85
 
             default_{{ HOSTNAME_MON }}: +70
