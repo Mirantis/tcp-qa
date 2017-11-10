@@ -121,14 +121,6 @@ default_context:
   openstack_proxy_node01_hostname: prx01
   openstack_proxy_node02_address: 10.167.4.82
   openstack_proxy_node02_hostname: prx02
-  openstack_telemetry_address: ${_param:openstack_control_address}
-  openstack_telemetry_hostname: ${_param:openstack_control_hostname}
-  openstack_telemetry_node01_address: ${_param:openstack_control_node01_address}
-  openstack_telemetry_node01_hostname: ${_param:openstack_control_node01_hostname}
-  openstack_telemetry_node02_address: ${_param:openstack_control_node02_address}
-  openstack_telemetry_node02_hostname: ${_param:openstack_control_node02_hostname}
-  openstack_telemetry_node03_address: ${_param:openstack_control_node03_address}
-  openstack_telemetry_node03_hostname: ${_param:openstack_control_node03_hostname}
   openstack_benchmark_node01_hostname: bmk01
   openstack_benchmark_node01_address: 10.167.4.85
   openstack_version: ocata

@@ -52,7 +52,6 @@ nodes:
       - openstack_control_leader
       - openstack_database_leader
       - openstack_message_queue
-      - openstack_telemetry
       - features_designate_database
       - features_designate
       - features_designate_keystone
@@ -69,7 +68,6 @@ nodes:
       - openstack_control
       - openstack_database
       - openstack_message_queue
-      - openstack_telemetry
       - features_designate_database
       - features_designate
       - linux_system_codename_xenial
@@ -85,7 +83,6 @@ nodes:
       - openstack_control
       - openstack_database
       - openstack_message_queue
-      - openstack_telemetry
       - features_designate_database
       - features_designate
       - linux_system_codename_xenial
