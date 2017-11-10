@@ -15,6 +15,7 @@ import os
 
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 from tcp_tests import logger
+from tcp_tests import settings
 
 LOG = logger.logger
 
@@ -41,10 +42,13 @@ class OpenstackManager(ExecuteCommandsMixin):
 
     def run_tempest(
             self,
-            image_name='rally-tempest:with_designate',
             target='gtw01', pattern=None,
             conf_name='lvm_mcp.conf',
-            registry='docker-sandbox.sandbox.mirantis.net/rally-tempest/'):
+            registry=None):
+        if not registry:
+            registry = ('{}/mirantis'
+                        '/oscore/rally-tempest'
+                        ':latest'.format(settings.DOCKER_REGISTRY))
         target_name = [node_name for node_name
                        in self.__underlay.node_names() if target in node_name]
 
@@ -54,17 +58,17 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-e SKIP_LIST=mcp_skip.list "
                    "-e SOURCE_FILE=keystonercv3  "
                    "-e CUSTOM='--pattern {1}' "
-                   "-v /root/:/home/rally {2}{3} "
+                   "-v /root/:/home/rally {2} "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
-                   .format(conf_name, pattern, registry, image_name))
+                   .format(conf_name, pattern, registry))
         else:
             cmd = ("docker run --rm --net=host  "
                    "-e TEMPEST_CONF={0} "
                    "-e SKIP_LIST=mcp_skip.list "
                    "-e SOURCE_FILE=keystonercv3  "
-                   "-v /root/:/home/rally {2}{3} "
+                   "-v /root/:/home/rally {2}"
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
-                   .format(conf_name, pattern, registry, image_name))
+                   .format(conf_name, pattern, registry))
         LOG.info("Restart keepalived service before running tempest tests")
         restart_keepalived_cmd = ("salt --hard-crash "
                                   "--state-output=mixed "
