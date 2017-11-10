@@ -305,11 +305,10 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: "Workaround for PROD-14756: all roles must use service.keepalived.cluster.single with the default 'VIP' instance"
+- description: "Workaround for PROD-15923: all keepalive instances must be named 'VIP'"
   cmd: |
     set -e;
-    find /srv/salt/reclass/classes/cluster/ -type f -exec sed -i 's/system.keepalived.*/service.keepalived.cluster.single/g' {} +
-    find /srv/salt/reclass/classes/system/ -type f -exec sed -i 's/system.keepalived.*/service.keepalived.cluster.single/g' {} +
+    find /srv/salt/reclass/classes/{system,cluster}/ -type f -exec sed -ri '/^  keepalived:/{:1;N;/\n      instance:/!b1 {N; /\n        [[:graph:]]+:/ { s/\n      instance:\n        [[:graph:]]+:/\n      instance:\n        VIP:/ } } }' {} +
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
