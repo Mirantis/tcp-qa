@@ -15,6 +15,7 @@ import os
 
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 from tcp_tests import logger
+from tcp_tests import settings
 
 LOG = logger.logger
 
@@ -41,10 +42,14 @@ class OpenstackManager(ExecuteCommandsMixin):
 
     def run_tempest(
             self,
-            image_name='rally-tempest:with_designate',
+            image_name='rally-tempest',
             target='gtw01', pattern=None,
             conf_name='lvm_mcp.conf',
-            registry='docker-sandbox.sandbox.mirantis.net/rally-tempest/'):
+            registry=None):
+        if not registry:
+            registry = ('{}/docker-prod-virtual/mirantis'
+                        '/oscore/rally-tempest'
+                        ':latest'.format(settings.DOCKER_REGISTRY))
         target_name = [node_name for node_name
                        in self.__underlay.node_names() if target in node_name]
 
