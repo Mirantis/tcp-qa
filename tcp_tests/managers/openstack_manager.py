@@ -73,6 +73,8 @@ class OpenstackManager(ExecuteCommandsMixin):
                                   "service.restart keepalived")
         self.__underlay.check_call(cmd=restart_keepalived_cmd,
                                    host=self.__config.salt.salt_master_host)
+        LOG.info("Running temtest testing on node {0} using the following "
+                 "command:\n{1}".format(target_name[0], cmd))
 
         with self.__underlay.remote(node_name=target_name[0]) as node_remote:
             result = node_remote.execute(cmd, verbose=True)
