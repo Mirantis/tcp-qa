@@ -41,10 +41,10 @@ class OpenstackManager(ExecuteCommandsMixin):
 
     def run_tempest(
             self,
-            image_name='rally-tempest:with_designate',
+            image_name='rally-tempest',
             target='gtw01', pattern=None,
             conf_name='lvm_mcp.conf',
-            registry='docker-sandbox.sandbox.mirantis.net/rally-tempest/'):
+            registry='docker-prod-virtual/mirantis/oscore/rally-tempest/'):
         target_name = [node_name for node_name
                        in self.__underlay.node_names() if target in node_name]
 
