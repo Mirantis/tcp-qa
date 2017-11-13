@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6a3a77cb_5f805e06",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-ocata-contrail/lab04-physical-inventory.yaml",
+        "patchSetId": 96
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-13T15:12:04Z",
+      "side": 1,
+      "message": "Please add an additional interface (enp*...) with an additional dpdk role and these parameters.  enp5s0f0 is not used for dpdk, it\u0027s used for bond0",
+      "range": {
+        "startLine": 58,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 39
+      },
+      "revId": "af5eaf34d201361de351031a4cc4f4f286afdd10",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bdc2d3fa_30b53057",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-ocata-contrail/lab04-physical-inventory.yaml",
+        "patchSetId": 96
+      },
+      "lineNbr": 78,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-13T15:12:04Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 77,
+        "startChar": 0,
+        "endLine": 78,
+        "endChar": 39
+      },
+      "revId": "af5eaf34d201361de351031a4cc4f4f286afdd10",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
