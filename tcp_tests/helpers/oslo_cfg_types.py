@@ -111,6 +111,6 @@ class Cfg(cfg.Opt):
         super(Cfg, self).__init__(*args, **kwargs)
 
         # Print info about default environment variables to console
-        print ('{}={}  # {}'.format(env_var_name,
-                                    kwargs.get('default', ''),
-                                    kwargs.get('help', '')))
+        print('{}={}  # {}'.format(env_var_name,
+                                   kwargs.get('default', ''),
+                                   kwargs.get('help', '')))
