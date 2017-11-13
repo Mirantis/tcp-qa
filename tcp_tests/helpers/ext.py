@@ -51,6 +51,7 @@ SNAPSHOT = enum(
     'virtlet_ceph_deployed',
     'k8s_deployed',
     'decapod_deployed',
+    'ceph_deployed',
 )
 
 

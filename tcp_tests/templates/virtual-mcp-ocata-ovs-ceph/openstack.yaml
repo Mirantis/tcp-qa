@@ -57,14 +57,14 @@
 
 - description: Check keystone service-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; openstack service list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack service list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check glance image-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; glance image-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; glance image-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -79,7 +79,7 @@
 
 - description: Check nova service-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; nova --debug service-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; nova --debug service-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
@@ -89,12 +89,12 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@cinder:controller' state.sls cinder -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Check cinder list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; cinder list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; cinder list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -116,7 +116,7 @@
 
 - description: Check neutron agent-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; neutron agent-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; neutron agent-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -131,7 +131,7 @@
 
 - description: Check heat service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; openstack orchestration resource type list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack orchestration resource type list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 5, delay: 10}
   skip_fail: false
@@ -257,79 +257,6 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
     'service ntp stop; ntpd -gq;  service ntp start'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-# Configure cinder-volume salt-call
-- description: Set disks 01
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 03
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 01
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create volume_group
-  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install cinder-volume
-  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install crudini
-  cmd: salt "ctl*" cmd.run 'apt-get install crudini -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 01
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 02
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 03
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
