@@ -13,6 +13,7 @@
 #    under the License.
 
 from tcp_tests.fixtures.common_fixtures import *  # noqa
+from tcp_tests.fixtures.ceph_fixtures import *  # noqa
 from tcp_tests.fixtures.config_fixtures import *  # noqa
 from tcp_tests.fixtures.underlay_fixtures import *  # noqa
 from tcp_tests.fixtures.rally_fixtures import *  # noqa
@@ -58,6 +59,8 @@ __all__ = sorted([  # sort for documentation
     # stacklight_fixtures
     'sl_actions',
     'sl_deployed',
+    'ceph_deployed',
+    'ceph_action',
     # k8s fixtures
     'k8s_actions',
     'k8s_deployed'
