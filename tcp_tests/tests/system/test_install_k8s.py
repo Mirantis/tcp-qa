@@ -89,7 +89,7 @@ class Testk8sInstall(object):
             current_targets = prometheus_client.get_targets()
             LOG.debug('Current targets after install {0}'
                       .format(current_targets))
-        except:
+        except Exception:
             LOG.warning('Restarting keepalived service on mon nodes...')
             sl_actions._salt.local(tgt='mon*', fun='cmd.run',
                                    args='systemctl restart keepalived')
@@ -151,7 +151,7 @@ class Testk8sInstall(object):
             current_targets = prometheus_client.get_targets()
             LOG.debug('Current targets after install {0}'
                       .format(current_targets))
-        except:
+        except Exception:
             LOG.warning('Restarting keepalived service on mon nodes...')
             sl_actions._salt.local(tgt='mon*', fun='cmd.run',
                                    args='systemctl restart keepalived')
