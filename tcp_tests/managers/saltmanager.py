@@ -192,3 +192,11 @@ class SaltManager(ExecuteCommandsMixin):
             host(k, next(i for i in v['ipv4'] if i in pool_net))
             for k, v in hosts.items()
             if next(i for i in v['ipv4'] if i in pool_net)]
+
+        def sevice_status(self, tgt, service):
+            result = self.local(tgt=tgt, fun='service.status', args=service)
+            return result['return']
+
+        def sevice_restart(self, tgt, service):
+            result = self.local(tgt=tgt, fun='service.restart', args=service)
+            return result['return']

@@ -14,7 +14,6 @@
 import pytest
 
 from tcp_tests import logger
-
 LOG = logger.logger
 
 
@@ -466,4 +465,39 @@ class TestFailover(object):
             if test['name'] not in failed_tests:
                 assert 'passed' in test['outcome'], \
                     'Failed test {}'.format(test)
+        LOG.info("*************** DONE **************")
+
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    def test_restart_keepalived(self, underlay, openstack_deployed,
+                                salt_actions, openstack_actions, show_step):
+        """Test restart ctl01
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Restart keepalived on ctl* nodes
+            5. Run tempest smoke after failover
+
+
+        """
+        salt = salt_actions
+        # STEP #1,2,3
+        show_step(1)
+        show_step(2)
+        show_step(3)
+
+        # STEP #4
+        show_step(4)
+        ret = salt.service_restart("ctl*", "keepalived")
+        LOG.info(ret)
+        self.assert_res(ret)
+        show_step(4)
+        ret = salt.service_status("ctl*", "keepalived")
+        LOG.info(ret)
+        self.assert_res(ret)
+        # STEP #5
+        show_step(5)
+        openstack_actions.run_tempest(pattern='smoke')
         LOG.info("*************** DONE **************")
