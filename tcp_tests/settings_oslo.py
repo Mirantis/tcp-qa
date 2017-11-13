@@ -235,41 +235,12 @@ sl_opts = [
 ceph_deploy_opts = [
     ct.Cfg('ceph_steps_path', ct.String(),
            help="Path to YAML with steps to deploy sl",
-           default=_default_sl_prepare_tests_steps_path),
-    ct.Cfg('docker_image_alertmanager', ct.String(),
-           default='{}/openstack-docker/alertmanager:latest'.format(
-               settings.DOCKER_REGISTRY)),
-    ct.Cfg('docker_image_pushgateway', ct.String(),
-           default='{}/openstack-docker/pushgateway:latest'.format(
-               settings.DOCKER_REGISTRY)),
-    ct.Cfg('docker_image_prometheus', ct.String(),
-           default='{}/openstack-docker/prometheus:latest'.format(
-               settings.DOCKER_REGISTRY)),
-    ct.Cfg('docker_image_remote_agent', ct.String(),
-           default='{}/openstack-docker/telegraf:latest'.format(
-               settings.DOCKER_REGISTRY)),
-    ct.Cfg('docker_image_remote_storage_adapter', ct.String(),
-           default='{}/openstack-docker/remote_storage_adapter:latest'.format(
-               settings.DOCKER_REGISTRY)),
-    # SalesForce connection options for pushkin
-    ct.Cfg('sfdc_sandbox_enabled', ct.String(), default='False'),
-    ct.Cfg('sfdc_auth_url', ct.String(), default=''),
-    ct.Cfg('sfdc_username', ct.String(), default=''),
-    ct.Cfg('sfdc_password', ct.String(), default=''),
-    ct.Cfg('sfdc_consumer_key', ct.String(), default=''),
-    ct.Cfg('sfdc_consumer_secret', ct.String(), default=''),
-    ct.Cfg('sfdc_organization_id', ct.String(), default=''),
+           default=_default_ceph_prepare_tests_steps_path),
 ]
 
 ceph_opts = [
-    ct.Cfg('sl_installed', ct.Boolean(),
+    ct.Cfg('ceph_installed', ct.Boolean(),
            help="", default=False),
-    ct.Cfg('sl_vip_host', ct.IPAddress(),
-           help="Vip address for SL services", default='0.0.0.0'),
-    ct.Cfg('sl_prometheus_port', ct.String(),
-           help="Prometheus port", default='15010'),
-    ct.Cfg('sl_prometheus_proto', ct.String(),
-           help="Proemtheus protocol", default='http'),
 ]
 
 k8s_deploy_opts = [
@@ -348,6 +319,8 @@ _group_opts = [
     ('opencontrail', opencontrail_opts),
     ('stack_light', sl_opts),
     ('sl_deploy', sl_deploy_opts),
+    ('ceph', ceph_opts),
+    ('ceph_deploy', ceph_deploy_opts),
     ('k8s_deploy', k8s_deploy_opts),
     ('k8s', k8s_opts),
 ]
@@ -429,6 +402,16 @@ def register_opts(config):
     config.register_group(cfg.OptGroup(name='k8s',
                                        title="K8s config and credentials"))
     config.register_opts(group='k8s', opts=k8s_opts)
+    config.register_group(cfg.OptGroup(name='ceph',
+                                       title="ceph config", help=""))
+    config.register_opts(group='ceph', opts=ceph_opts)
+
+    config.register_group(
+        cfg.OptGroup(name='ceph_deploy',
+                     title="Ceph deploy config ",
+                     help=""))
+    config.register_opts(group='ceph_deploy', opts=ceph_deploy_opts)
+
     return config
 
 
