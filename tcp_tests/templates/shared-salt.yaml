@@ -8,6 +8,7 @@
 {% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/reclass-system') %}
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
+{% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
@@ -101,7 +102,7 @@
     pushd classes/system/ && \
     git checkout {{ SALT_MODELS_SYSTEM_COMMIT }} && \
     popd && \
-    {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' -%}
+    {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
     pushd classes/system/ && \
     {%- for item in SALT_MODELS_SYSTEM_REF_CHANGE.split(" ") %}
     git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD && \
@@ -181,6 +182,13 @@
     set -e;
     pip install cookiecutter
     export GIT_SSL_NO_VERIFY=true; git clone  https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates /tmp/cookiecutter-templates
+
+    {%- if COOKIECUTTER_REF_CHANGE != '' %}
+    pushd /tmp/cookiecutter-templates
+    git fetch https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates {{ COOKIECUTTER_REF_CHANGE }} && git checkout FETCH_HEAD
+    popd
+    {%- endif %}
+
     mkdir -p /srv/salt/reclass/classes/cluster/
     mkdir -p /srv/salt/reclass/classes/system/
     mkdir -p /srv/salt/reclass/classes/service/
@@ -244,7 +252,7 @@
     pushd /srv/salt/reclass/classes/system/
     git checkout {{ SALT_MODELS_SYSTEM_COMMIT }} && \
     popd
-    {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' -%}
+    {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
     pushd /srv/salt/reclass/classes/system/
     {%- for item in SALT_MODELS_SYSTEM_REF_CHANGE.split(" ") %}
     git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD
