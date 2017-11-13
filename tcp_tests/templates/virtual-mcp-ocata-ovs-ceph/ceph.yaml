@@ -17,14 +17,14 @@
 
 - description: Sync grains on ceph mon nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@ceph:mon' state.sls saltutil.sync_grains
+    -C 'I@ceph:mon' saltutil.sync_grains
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Update mine on ceph mons
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@ceph:mon:keyring:mon or I@ceph:common:keyring:admin' state.sls mine.update
+    -C 'I@ceph:mon:keyring:mon or I@ceph:common:keyring:admin' mine.update
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -36,9 +36,9 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install ceph mgr if defined
+- description: Install ceph mgr if defined(needed only for Luminious)
   cmd: |
-    if salt -C 'I@ceph:mgr' match.pillar 'ceph:mgt' ; then
+    if salt -C 'I@ceph:mgr' match.pillar 'ceph:mgr' ; then
       salt -C 'I@ceph:mgr' state.sls ceph.mgr
     fi
   node_name: {{ HOSTNAME_CFG01 }}
@@ -54,7 +54,7 @@
 
 - description: Sync grains
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@ceph:osd' state.sls saltutil.sync_grains
+    -C 'I@ceph:osd' saltutil.sync_grains
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -64,18 +64,18 @@
     -C 'I@ceph:osd' state.sls ceph.osd.custom
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: true
 
 - description: Sync grains
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@ceph:osd' state.sls saltutil.sync_grains
+    -C 'I@ceph:osd' saltutil.sync_grains
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Update mine on ceph osd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@ceph:osd' state.sls mine.update
+    -C 'I@ceph:osd' mine.update
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -97,7 +97,7 @@
 - description: Install radosgw if exists
   cmd: |
     if salt -C 'I@ceph:radosgw' match.pillar 'ceph:radosgw' ; then
-      salt -C 'I@ceph:radosgw' state.sls saltutil.sync_grains;
+      salt -C 'I@ceph:radosgw' saltutil.sync_grains;
       salt -C 'I@ceph:radosgw' state.sls ceph.radosgw;
       salt -C 'I@keystone:client' state.sls keystone.client;
     fi
@@ -112,32 +112,22 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Connect ceph to glance if glance is using it
+- description: Connect ceph to glance
   cmd: |
-    if salt -C 'I@ceph:common and I@glance:server' match.pillar 'ceph:common and glance:server' ; then
-      salt -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring,glance;
-      salt -C 'I@ceph:common and I@glance:server' service.restart glance-api,glance-glare,glance-registry
-    fi
+    salt -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring,glance;
+    salt -C 'I@ceph:common and I@glance:server' service.restart glance-api;
+    salt -C 'I@ceph:common and I@glance:server' service.restart glance-glare;
+    salt -C 'I@ceph:common and I@glance:server' service.restart glance-registry;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-- description: Connect ceph to cinder if cinder is using it
+- description: Connect ceph to cinder and nova
   cmd: |
-    if salt -C 'I@ceph:common and I@cinder:controller' match.pillar 'ceph:common and cinder:controller' ; then
-      salt -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring,cinder
-    fi
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
-  skip_fail: false
-
-- description: Connect ceph to nova
-  cmd: |
-    if salt -C 'I@ceph:common and I@nova:compute' match.pillar 'ceph:common and nova:compute' ; then
-      salt -C 'I@ceph:common and I@nova:compute' state.sls ceph.common,ceph.setup.keyring;
-      salt -C 'I@ceph:common and I@nova:compute' state.sls saltutil.sync_grains;
-      salt -C 'I@ceph:common and I@nova:compute' state.sls nova
-    fi
+    salt -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring,cinder;
+    salt -C 'I@ceph:common and I@nova:compute' state.sls ceph.common,ceph.setup.keyring;
+    salt -C 'I@ceph:common and I@nova:compute' saltutil.sync_grains;
+    salt -C 'I@ceph:common and I@nova:compute' state.sls nova;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
