@@ -56,6 +56,9 @@ _default_opencontrail_prepare_tests_steps_path = \
 _default_sl_prepare_tests_steps_path = pkg_resources.resource_filename(
     __name__, 'templates/{0}/sl.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_ceph_prepare_tests_steps_path = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/ceph.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))
@@ -219,6 +222,46 @@ sl_deploy_opts = [
 ]
 
 sl_opts = [
+    ct.Cfg('sl_installed', ct.Boolean(),
+           help="", default=False),
+    ct.Cfg('sl_vip_host', ct.IPAddress(),
+           help="Vip address for SL services", default='0.0.0.0'),
+    ct.Cfg('sl_prometheus_port', ct.String(),
+           help="Prometheus port", default='15010'),
+    ct.Cfg('sl_prometheus_proto', ct.String(),
+           help="Proemtheus protocol", default='http'),
+]
+
+ceph_deploy_opts = [
+    ct.Cfg('ceph_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy sl",
+           default=_default_sl_prepare_tests_steps_path),
+    ct.Cfg('docker_image_alertmanager', ct.String(),
+           default='{}/openstack-docker/alertmanager:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('docker_image_pushgateway', ct.String(),
+           default='{}/openstack-docker/pushgateway:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('docker_image_prometheus', ct.String(),
+           default='{}/openstack-docker/prometheus:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('docker_image_remote_agent', ct.String(),
+           default='{}/openstack-docker/telegraf:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('docker_image_remote_storage_adapter', ct.String(),
+           default='{}/openstack-docker/remote_storage_adapter:latest'.format(
+               settings.DOCKER_REGISTRY)),
+    # SalesForce connection options for pushkin
+    ct.Cfg('sfdc_sandbox_enabled', ct.String(), default='False'),
+    ct.Cfg('sfdc_auth_url', ct.String(), default=''),
+    ct.Cfg('sfdc_username', ct.String(), default=''),
+    ct.Cfg('sfdc_password', ct.String(), default=''),
+    ct.Cfg('sfdc_consumer_key', ct.String(), default=''),
+    ct.Cfg('sfdc_consumer_secret', ct.String(), default=''),
+    ct.Cfg('sfdc_organization_id', ct.String(), default=''),
+]
+
+ceph_opts = [
     ct.Cfg('sl_installed', ct.Boolean(),
            help="", default=False),
     ct.Cfg('sl_vip_host', ct.IPAddress(),

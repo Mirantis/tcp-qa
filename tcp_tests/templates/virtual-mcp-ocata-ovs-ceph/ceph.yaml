@@ -1,0 +1,143 @@
+{% from 'virtual-mcp-ocata-ovs-ceph/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+# Install ceph mons
+- description: Update grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:common' state.sls salt.minion.grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Generate keyrings
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:mon:keyring:mon or I@ceph:common:keyring:admin' state.sls ceph.mon
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Sync grains on ceph mon nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:mon' state.sls saltutil.sync_grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Update mine on ceph mons
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:mon:keyring:mon or I@ceph:common:keyring:admin' state.sls mine.update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install ceph mon
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:mon' state.sls ceph.mon
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install ceph mgr if defined
+  cmd: |
+    if salt -C 'I@ceph:mgr' match.pillar 'ceph:mgt' ; then
+      salt -C 'I@ceph:mgr' state.sls ceph.mgr
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install ceph osd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' state.sls ceph.osd
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' state.sls saltutil.sync_grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install ceph osd nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' state.sls ceph.osd.custom
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' state.sls saltutil.sync_grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update mine on ceph osd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' state.sls mine.update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Setup pools, keyrings and maybe crush
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:setup' state.sls ceph.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install ceph clinet
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:setup' state.sls ceph.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install radosgw if exists
+  cmd: |
+    if salt -C 'I@ceph:radosgw' match.pillar 'ceph:radosgw' ; then
+      salt -C 'I@ceph:radosgw' state.sls saltutil.sync_grains;
+      salt -C 'I@ceph:radosgw' state.sls ceph.radosgw;
+      salt -C 'I@keystone:client' state.sls keystone.client;
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install ceph clinet
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:setup' state.sls ceph.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Connect ceph to glance if glance is using it
+  cmd: |
+    if salt -C 'I@ceph:common and I@glance:server' match.pillar 'ceph:common and glance:server' ; then
+      salt -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring,glance;
+      salt -C 'I@ceph:common and I@glance:server' service.restart glance-api,glance-glare,glance-registry
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Connect ceph to cinder if cinder is using it
+  cmd: |
+    if salt -C 'I@ceph:common and I@cinder:controller' match.pillar 'ceph:common and cinder:controller' ; then
+      salt -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring,cinder
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Connect ceph to nova
+  cmd: |
+    if salt -C 'I@ceph:common and I@nova:compute' match.pillar 'ceph:common and nova:compute' ; then
+      salt -C 'I@ceph:common and I@nova:compute' state.sls ceph.common,ceph.setup.keyring;
+      salt -C 'I@ceph:common and I@nova:compute' state.sls saltutil.sync_grains;
+      salt -C 'I@ceph:common and I@nova:compute' state.sls nova
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
