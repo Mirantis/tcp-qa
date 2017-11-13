@@ -67,8 +67,8 @@ class TestVirtletActions(object):
         target_memory_kb = target_memory * 1024
         target_yaml = 'virtlet/examples/cirros-vm-exp.yaml'
         k8s_deployed.adjust_cirros_resources(cpu=target_cpu,
-                                                memory=target_memory,
-                                                target_yaml=target_yaml)
+                                             memory=target_memory,
+                                             target_yaml=target_yaml)
         show_step(2)
         vm_name = k8s_deployed.run_vm(target_yaml)
         k8s_deployed.wait_active_state(vm_name)

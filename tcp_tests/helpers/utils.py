@@ -168,7 +168,7 @@ def load_keyfile(file_path):
 def dump_keyfile(file_path, key):
     key = paramiko.RSAKey(file_obj=StringIO.StringIO(key['private']))
     key.write_private_key_file(file_path)
-    os.chmod(file_path, 0644)
+    os.chmod(file_path, 0o644)
 
 
 def clean_dir(dirpath):

@@ -418,27 +418,28 @@ class UnderlaySSHManager(object):
         tar_cmd = ('tar --absolute-names'
                    ' --warning=no-file-changed '
                    '-czf {t} {d}'.format(
-            t='{0}_log.tar.gz'.format(artifact_name), d='/var/log'))
+                       t='{0}_log.tar.gz'.format(artifact_name), d='/var/log'))
         minion_nodes = [ssh for ssh in self.config_ssh
                         if node_role not in ssh['roles']]
         for node in minion_nodes:
             try:
                 with self.remote(host=node['host']) as r_node:
-                    r_node.check_call(('tar '
-                                       '--absolute-names '
-                                       '--warning=no-file-changed '
-                                       '-czf {t} {d}'.format(
-                        t='{0}.tar.gz'.format(node['node_name']),
-                        d='/var/log')),
-                        verbose=True, raise_on_err=False)
-            except:
+                    r_node.check_call((
+                        'tar '
+                        '--absolute-names '
+                        '--warning=no-file-changed '
+                        '-czf {t} {d}'.format(
+                            t='{0}.tar.gz'.format(node['node_name']),
+                            d='/var/log')),
+                            verbose=True, raise_on_err=False)
+            except Exception:
                 LOG.info("Can not ssh for node {}".format(node))
         with self.remote(master_node['node_name']) as r:
             for node in minion_nodes:
                 packages_minion_cmd = ("salt '{0}*' cmd.run "
                                        "'dpkg -l' > /var/log/"
                                        "{0}_packages.output".format(
-                    node['node_name']))
+                                           node['node_name']))
                 r.check_call(packages_minion_cmd)
                 r.check_call("rsync {0}:/root/*.tar.gz "
                              "/var/log/".format(node['node_name']),

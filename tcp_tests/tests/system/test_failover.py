@@ -52,7 +52,7 @@ class TestFailover(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_restart_ctl01_node(self, underlay, openstack_deployed,
-                                      openstack_actions, show_step):
+                                openstack_actions, show_step):
         """Test restart ctl01
 
         Scenario:
@@ -353,9 +353,9 @@ class TestFailover(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_stop_influxdb_relay_mon_nodes(self, underlay,
-                                            openstack_deployed,
-                                            openstack_actions,
-                                            sl_deployed):
+                                           openstack_deployed,
+                                           openstack_actions,
+                                           sl_deployed):
         """Test stop influxdb relay on mon01 node
 
         Scenario:
@@ -412,9 +412,9 @@ class TestFailover(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_stop_influxdb_mon_nodes(self, underlay,
-                                      openstack_deployed,
-                                      openstack_actions,
-                                      sl_deployed):
+                                     openstack_deployed,
+                                     openstack_actions,
+                                     sl_deployed):
         """Test stop influxdb on mon01 node
 
         Scenario:
@@ -458,7 +458,7 @@ class TestFailover(object):
         assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
         assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
         # STEP #10
-      
+
         after_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus/', 'test_alerts.py')
