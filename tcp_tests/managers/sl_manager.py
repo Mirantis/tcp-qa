@@ -90,7 +90,7 @@ class SLManager(ExecuteCommandsMixin):
             cmd = ("cd {0}; "
                    "export VOLUME_STATUS='available'; "
                    "pytest -k 'not {1}' {2}".format(
-                tests_path, skip_tests, test_to_run))
+                       tests_path, skip_tests, test_to_run))
         else:
             cmd = ("cd {0}; "
                    "export VOLUME_STATUS='available'; "
@@ -112,12 +112,12 @@ class SLManager(ExecuteCommandsMixin):
             cmd = ("cd {0}; "
                    "export VOLUME_STATUS='available'; "
                    "pytest  --json=report.json -k 'not {1}' {2}".format(
-                tests_path, skip_tests, test_to_run))
+                       tests_path, skip_tests, test_to_run))
         else:
             cmd = ("cd {0}; "
                    "export VOLUME_STATUS='available'; "
                    "pytest --json=report.json -k {1}".format(
-                tests_path, test_to_run))
+                       tests_path, test_to_run))
         with self.__underlay.remote(node_name=target_node_name[0]) \
                 as node_remote:
             LOG.debug("Run {0} on the node {1}".format(
@@ -165,7 +165,7 @@ class SLManager(ExecuteCommandsMixin):
         prometheus_client = self.api
         try:
             current_targets = prometheus_client.get_targets()
-        except:
+        except Exception:
             LOG.info('Restarting keepalived service on mon nodes...')
             for node in nodes:
                 self._salt.local(tgt=node, fun='cmd.run',

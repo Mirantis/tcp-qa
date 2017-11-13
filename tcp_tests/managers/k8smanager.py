@@ -289,15 +289,17 @@ class K8SManager(ExecuteCommandsMixin):
             ns = self.api.namespaces.get(name=name)
             LOG.info("Namespace '{0}' is already exists".format(ns.name))
         except ApiException as e:
-          if hasattr(e,"status") and 404 == e.status:
-            LOG.info("Creating Namespace in k8s cluster")
-            ns = self.api.namespaces.create(body={'metadata': {'name': name}})
-            LOG.info("Namespace '{0}' is created".format(ns.name))
-            # wait 10 seconds until a token for new service account is created
-            time.sleep(10)
-            ns = self.api.namespaces.get(name=ns.name)
-          else:
-            raise
+            if hasattr(e, "status") and 404 == e.status:
+                LOG.info("Creating Namespace in k8s cluster")
+                ns = self.api.namespaces.create(
+                    body={'metadata': {'name': name}})
+                LOG.info("Namespace '{0}' is created".format(ns.name))
+                # wait 10 seconds until a token for new service account
+                # is created
+                time.sleep(10)
+                ns = self.api.namespaces.get(name=ns.name)
+            else:
+                raise
         return ns
 
     def create_objects(self, path):
@@ -408,7 +410,6 @@ class K8SManager(ExecuteCommandsMixin):
         """
         cmd = "apt install jq -y"
         return self.__underlay.check_call(cmd, node_name=self.ctl_host)
-
 
     def git_clone(self, project, target):
         cmd = "git clone {0} {1}".format(project, target)
