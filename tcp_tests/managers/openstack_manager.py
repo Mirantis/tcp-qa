@@ -66,7 +66,7 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-e TEMPEST_CONF={0} "
                    "-e SKIP_LIST=mcp_skip.list "
                    "-e SOURCE_FILE=keystonercv3  "
-                   "-v /root/:/home/rally {2}"
+                   "-v /root/:/home/rally {2} "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
                    .format(conf_name, pattern, registry))
         LOG.info("Restart keepalived service before running tempest tests")
