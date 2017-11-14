@@ -65,6 +65,7 @@ class OpenstackManager(ExecuteCommandsMixin):
             cmd = ("docker run --rm --net=host  "
                    "-e TEMPEST_CONF={0} "
                    "-e SKIP_LIST=mcp_skip.list "
+                   "-e SET=full "
                    "-e SOURCE_FILE=keystonercv3  "
                    "-v /root/:/home/rally {2} "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
