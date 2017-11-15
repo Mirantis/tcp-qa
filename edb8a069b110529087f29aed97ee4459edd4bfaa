@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8744e3e_6b301276",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-ocata-contrail/lab04-physical-inventory.yaml",
+        "patchSetId": 101
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-15T08:56:42Z",
+      "side": 1,
+      "message": "tenant_address is a property for tenant network that is used for enp5s0f1. no need for dpdk interface.",
+      "range": {
+        "startLine": 57,
+        "startChar": 10,
+        "endLine": 57,
+        "endChar": 39
+      },
+      "revId": "edb8a069b110529087f29aed97ee4459edd4bfaa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0d297de2_09e92c7b",
+        "filename": "tcp_tests/tests/system/test_opencontrail.py",
+        "patchSetId": 101
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-15T08:56:42Z",
+      "side": 1,
+      "message": "openstack_deployed provides the same class as openstack_actions",
+      "range": {
+        "startLine": 39,
+        "startChar": 8,
+        "endLine": 39,
+        "endChar": 25
+      },
+      "revId": "edb8a069b110529087f29aed97ee4459edd4bfaa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
