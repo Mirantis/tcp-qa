@@ -1,0 +1,37 @@
+{% from 'k8s-ha-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+# Install support services
+- description: Create and distribute SSL certificates for services using salt state
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' state.sls salt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description:  Install keepalived
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster' state.sls keepalived -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Install haproxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' state.sls haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check haproxy service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.status haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Restart rsyslog
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.restart rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
