@@ -332,7 +332,7 @@ class YamlEditor(object):
         self.write_content()
 
 
-def render_template(file_path, options=None):
+def render_template(file_path, options=None, log_env_vars=True):
     required_env_vars = set()
     optional_env_vars = dict()
 
@@ -362,11 +362,11 @@ def render_template(file_path, options=None):
                                        followlinks=True))
     template = environment.get_template(filename).render(options)
 
-    if required_env_vars:
+    if required_env_vars and log_env_vars:
         LOG.info("Required environment variables:")
         for var in required_env_vars:
             LOG.info("    {0}".format(var))
-    if optional_env_vars:
+    if optional_env_vars and log_env_vars:
         LOG.info("Optional environment variables:")
         for var, default in sorted(optional_env_vars.iteritems()):
             LOG.info("    {0} , value = {1}".format(var, default))
