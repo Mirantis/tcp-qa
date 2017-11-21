@@ -46,9 +46,8 @@ class OpenstackManager(ExecuteCommandsMixin):
             conf_name='lvm_mcp.conf',
             registry=None):
         if not registry:
-            registry = ('{}/mirantis'
-                        '/oscore/rally-tempest'
-                        ':latest'.format(settings.DOCKER_REGISTRY))
+            registry = ('{0}/{1}'.format(settings.DOCKER_REGISTRY,
+                                         settings.DOCKER_NAME))
         target_name = [node_name for node_name
                        in self.__underlay.node_names() if target in node_name]
 
