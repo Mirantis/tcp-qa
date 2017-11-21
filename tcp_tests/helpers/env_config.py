@@ -322,7 +322,7 @@ class EnvironmentConfig(object):
                       "from template aborted.")
 
 
-def yaml_template_load(config_file, options=None):
+def yaml_template_load(config_file, options=None, log_env_vars=True):
     """Temporary moved from fuel_devops to use jinja2"""
     dirname = os.path.dirname(config_file)
 
@@ -376,5 +376,5 @@ def yaml_template_load(config_file, options=None):
     TemplateLoader.add_constructor(
         yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, construct_mapping)
 
-    f = utils.render_template(config_file, options)
+    f = utils.render_template(config_file, options, log_env_vars=log_env_vars)
     return yaml.load(f, TemplateLoader)
