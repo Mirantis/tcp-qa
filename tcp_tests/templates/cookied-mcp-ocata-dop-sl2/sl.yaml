@@ -1,4 +1,5 @@
 {% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/salt.yaml' import ENVIRONMENT_MODEL_INVENTORY_NAME with context %}
 
 # Install docker swarm
 - description: Install keepalived on mon nodes
@@ -145,12 +146,13 @@
 # Change environment configuration before deploy
 - description: Set SL docker images deploy parameters
   cmd: |
-    touch /srv/salt/reclass/classes/cluster/overrides.yml;
-  {% for sl_opt, value in config.sl_deploy.items() %}
-    {% if value|string() %}
-    salt-call reclass.cluster_meta_set {{ sl_opt }} {{ value }};
-    {% endif %}
-  {% endfor %}
+  {#- For cookiecutter-generated model, use overrides.yml from environment model instead of cluster model #}
+  {%- set OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml' %}
+  {%- for sl_opt, value in config.sl_deploy.items() %}
+    {%- if value|string() %}
+    salt-call reclass.cluster_meta_set name={{ sl_opt }} value={{ value }} file_name={{ OVERRIDES_FILENAME }};
+    {%- endif %}
+  {%- endfor %}
     salt '*' saltutil.refresh_pillar;
     sleep 10
   node_name: {{ HOSTNAME_CFG01 }}
