@@ -35,7 +35,6 @@ def sl_actions(config, underlay, salt_deployed):
     """
     return sl_manager.SLManager(config, underlay, salt_deployed)
 
-
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
 @pytest.fixture(scope='function')
 def sl_deployed(revert_snapshot, request, config,
