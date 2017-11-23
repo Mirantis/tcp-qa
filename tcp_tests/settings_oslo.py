@@ -224,6 +224,8 @@ sl_deploy_opts = [
 sl_opts = [
     ct.Cfg('sl_installed', ct.Boolean(),
            help="", default=False),
+    ct.Cfg('sl_version', ct.String(),
+           help="StackLight version. Could be 1 or 2", default=''),
     ct.Cfg('sl_vip_host', ct.IPAddress(),
            help="Vip address for SL services", default='0.0.0.0'),
     ct.Cfg('sl_prometheus_port', ct.String(),
