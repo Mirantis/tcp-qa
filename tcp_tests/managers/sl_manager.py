@@ -37,9 +37,8 @@ class SLManager(ExecuteCommandsMixin):
         super(SLManager, self).__init__(
             config=config, underlay=underlay)
 
-    def install(self, commands):
-        self.execute_commands(commands,
-                              label='Install SL services')
+    def install(self, commands, label='Install SL services'):
+        self.execute_commands(commands)
         self.__config.stack_light.sl_installed = True
         self.__config.stack_light.sl_vip_host = self.get_sl_vip()
 
