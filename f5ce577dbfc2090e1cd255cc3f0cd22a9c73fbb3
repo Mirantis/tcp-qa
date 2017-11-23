@@ -1,0 +1,210 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1f5f22cc_29c4fd9a",
+        "filename": "tcp_tests/fixtures/stacklight_fixtures.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "It\u0027s actions for StackLight. Please set dependency from openstack_deployed in the test case, no need to use it here.",
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad0d6318_3ff83d10",
+        "filename": "tcp_tests/fixtures/stacklight_fixtures.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "please remove",
+      "range": {
+        "startLine": 149,
+        "startChar": 1,
+        "endLine": 150,
+        "endChar": 2
+      },
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a9f66013_d6e218d6",
+        "filename": "tcp_tests/fixtures/stacklight_fixtures.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "please move this to the testcase",
+      "range": {
+        "startLine": 206,
+        "startChar": 1,
+        "endLine": 209,
+        "endChar": 61
+      },
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5170f5ce_922c78cf",
+        "filename": "tcp_tests/helpers/ext.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "please remove",
+      "range": {
+        "startLine": 50,
+        "startChar": 2,
+        "endLine": 51,
+        "endChar": 21
+      },
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "20f4bbfd_0e2bfa2a",
+        "filename": "tcp_tests/managers/sl_manager.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "parametrize \u0027label\u0027",
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6f2606e9_b343c897",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 218,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "Please remove",
+      "range": {
+        "startLine": 201,
+        "startChar": 1,
+        "endLine": 218,
+        "endChar": 68
+      },
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eaffa362_66da66a6",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 253,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "please add an additional option \u0027sl_version\u0027 and set it to \u0027\u0027",
+      "range": {
+        "startLine": 252,
+        "startChar": 1,
+        "endLine": 253,
+        "endChar": 1
+      },
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "13bf0966_e35a884d",
+        "filename": "tcp_tests/tests/system/conftest.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "please remove",
+      "range": {
+        "startLine": 62,
+        "startChar": 0,
+        "endLine": 64,
+        "endChar": 21
+      },
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "88dcd855_769a65a1",
+        "filename": "tcp_tests/tests/system/test_upgrade_stacklight.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "Create path to the yaml file with upgrade steps and use the sl_deployed.install(command, label\u003d\"Upgrading from SL1 to SL2\") to perform upgrade",
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "994f2a28_88785219",
+        "filename": "tcp_tests/tests/system/test_upgrade_stacklight.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-11-23T13:58:39Z",
+      "side": 1,
+      "message": "Then, run stacklight_tests for upgraded SLv2",
+      "revId": "f5ce577dbfc2090e1cd255cc3f0cd22a9c73fbb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
