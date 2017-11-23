@@ -224,6 +224,8 @@ sl_deploy_opts = [
 sl_opts = [
     ct.Cfg('sl_installed', ct.Boolean(),
            help="", default=False),
+    ct.Cfg('sl_version', ct.String(),
+           help="StackLight version. Could be 1 or 2", default=''),
     ct.Cfg('sl_vip_host', ct.IPAddress(),
            help="Vip address for SL services", default='0.0.0.0'),
     ct.Cfg('sl_prometheus_port', ct.String(),
@@ -421,7 +423,6 @@ def register_opts(config):
                      title="SL deploy config and credentials",
                      help=""))
     config.register_opts(group='sl_deploy', opts=sl_deploy_opts)
-
     config.register_group(cfg.OptGroup(name='k8s_deploy',
                                        title="K8s deploy configuration"))
     config.register_opts(group='k8s_deploy', opts=k8s_deploy_opts)
