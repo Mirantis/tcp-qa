@@ -2,6 +2,22 @@
 
 {% import 'shared-sl-tests.yaml' as SHARED_SL_TESTS with context %}
 
+# Some workarounds for revert environment from snapshot
+
+- description: Force update time.
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C '*' cmd.run "systemctl stop ntp && ntpd -gq && systemctl start ntp"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Restart keepalived. Workaroud for revert virtual environment
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@keepalived:cluster' cmd.run "systemctl restart keepalived"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 # Install docker swarm
 - description: Install keepalived on mon nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False

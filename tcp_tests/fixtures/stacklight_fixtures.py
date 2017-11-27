@@ -11,7 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-
+import time
 
 import pytest
 
@@ -74,6 +74,7 @@ def sl_deployed(revert_snapshot, request, config,
     LOG.warning('Restarting keepalived service on mon nodes...')
     sl_actions._salt.local(tgt='mon*', fun='cmd.run',
                            args='systemctl restart keepalived.service')
+    time.sleep(10)
     return sl_actions
 
 
