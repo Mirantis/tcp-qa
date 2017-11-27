@@ -14,6 +14,8 @@
 
 import pytest
 
+import time
+
 from tcp_tests import logger
 from tcp_tests import settings
 
@@ -39,8 +41,8 @@ class Test_Mcp11_install(object):
 
         """
         openstack_actions._salt.local(
-                tgt='*', fun='cmd.run',
-                args='service ntp stop; ntpd -gq; service ntp start')
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
             openstack_actions.run_tempest(pattern=settings.PATTERN)

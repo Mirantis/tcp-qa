@@ -6,6 +6,22 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
+# Some workarounds for revert environment from snapshot
+
+- description: Force update time.
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C '*' cmd.run "systemctl stop ntp && ntpd -gq && systemctl start ntp"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Restart keepalived. Workaroud for revert virtual environment
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@keepalived:cluster' cmd.run "systemctl restart keepalived"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 # Install OpenStack control services
 
 - description: Install glance on all controllers
