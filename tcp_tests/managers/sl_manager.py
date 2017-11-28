@@ -255,7 +255,10 @@ class SLManager(ExecuteCommandsMixin):
             assert res['exit_code'] == 0, (
                 'Unexpected exit code for command {0}, '
                 'current result {1}'.format(cmd, res))
-            return res['stdout'][0].rstrip()
+            if res['stdout']:
+                return res['stdout'][0].rstrip()
+            else:
+                return ''
 
     def start_service(self, node_sub_name, service_name):
         target_node_name = [node_name for node_name
