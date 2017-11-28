@@ -5,6 +5,10 @@
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 
+
+{% set ENABLE_COMPUTES_SELF_REGISTER = os_env('ENABLE_COMPUTES_SELF_REGISTER', '') %}
+# Different templates using this mechanism.
+
 {% import 'shared-salt.yaml' as SHARED with context %}
 
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
@@ -18,6 +22,10 @@
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
 {{ SHARED.ADJUST_K8S_OPTS() }}
+
+{%- if ENABLE_COMPUTES_SELF_REGISTER != '' %}
+{{ SHARED.REGISTER_COMPUTE_NODES() }}
+{%- endif %}
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
