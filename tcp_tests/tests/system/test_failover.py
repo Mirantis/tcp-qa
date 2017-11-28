@@ -11,6 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+from devops.helpers import helpers
 import pytest
 
 from tcp_tests import logger
@@ -265,24 +266,28 @@ class TestFailover(object):
             'tests/prometheus/', 'test_alerts.py')
         failed_tests = [test['name'] for test in
                         before_result if 'passed' not in test['outcome']]
+
         # STEP #5
-
         sl_deployed.kill_sl_service_on_node('mon01', 'influxdb-relay')
+
         # STEP #6
-
         sl_deployed.post_data_into_influx('mon02')
-        # STEP #7
 
+        # STEP #7
         assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
         assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon03')
+
         # STEP #8
-
         sl_deployed.start_service('mon01', 'influxdb-relay')
+
         # STEP #9
+        def check_relay_mon01():
+            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
+        helpers.wait(check_relay_mon01,
+                     timeout=10, interval=2,
+                     timeout_msg=('Influxdb data was not replicated to mon01'))
 
-        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
         # STEP #10
-
         after_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus/', 'test_alerts.py')
@@ -338,7 +343,11 @@ class TestFailover(object):
 
         sl_deployed.start_service('mon01', 'influxd')
         # STEP #9
-        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
+        def check_relay_mon01():
+            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
+        helpers.wait(check_relay_mon01,
+                     timeout=10, interval=2,
+                     timeout_msg=('Influxdb data was not replicated to mon01'))
         # STEP #10
 
         after_result = sl_deployed.run_sl_tests_json(
@@ -395,9 +404,17 @@ class TestFailover(object):
         sl_deployed.start_service('mon01', 'influxdb-relay')
         sl_deployed.start_service('mon02', 'influxdb-relay')
         # STEP #9
+        def check_relay_mon01():
+            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
+        def check_relay_mon02():
+            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
+        helpers.wait(check_relay_mon01,
+                     timeout=10, interval=2,
+                     timeout_msg=('Influxdb data was not replicated to mon01'))
+        helpers.wait(check_relay_mon02,
+                     timeout=10, interval=2,
+                     timeout_msg=('Influxdb data was not replicated to mon02'))
 
-        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
-        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
         # STEP #10
 
         after_result = sl_deployed.run_sl_tests_json(
@@ -454,9 +471,17 @@ class TestFailover(object):
         sl_deployed.start_service('mon01', 'influxdb')
         sl_deployed.start_service('mon02', 'influxdb')
         # STEP #9
+        def check_relay_mon01():
+            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
+        def check_relay_mon02():
+            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
+        helpers.wait(check_relay_mon01,
+                     timeout=10, interval=2,
+                     timeout_msg=('Influxdb data was not replicated to mon01'))
+        helpers.wait(check_relay_mon02,
+                     timeout=10, interval=2,
+                     timeout_msg=('Influxdb data was not replicated to mon02'))
 
-        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
-        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
         # STEP #10
 
         after_result = sl_deployed.run_sl_tests_json(
