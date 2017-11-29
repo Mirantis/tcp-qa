@@ -35,6 +35,9 @@
 {% set SALT_FORMULAS_REFS = os_env('SALT_FORMULAS_REFS', '') %}
 {% set SALT_FORMULAS_REPO = os_env('SALT_FORMULAS_REPO', 'https://gerrit.mcp.mirantis.net/salt-formulas') %}
 
+# Needed for using different models in different templates
+{% set CLUSTER_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) %}
+
 
 {%- macro MACRO_INSTALL_SALT_MASTER() %}
 {######################################}
@@ -144,7 +147,7 @@
     # Disable checkouting the model from remote repository
     cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
     classes:
-    - cluster.{{ LAB_CONFIG_NAME }}.infra.config
+    - cluster.{{ CLUSTER_NAME }}.infra.config
     parameters:
       _param:
         linux_system_codename: xenial
@@ -684,7 +687,7 @@
     exec > >(tee -i /tmp/cloud-init-bootstrap.log) 2>&1
     export network01_prefix={{ IPV4_NET_ADMIN_PREFIX }}
     export network02_prefix={{ IPV4_NET_CONTROL_PREFIX }}
-    export cluster_name={{ LAB_CONFIG_NAME }}
+    export cluster_name={{ CLUSTER_NAME }}
     export config_host={{ config.salt.salt_master_host }}
     export node_domain={{ DOMAIN_NAME }}
     export nodes_os="xenial"
