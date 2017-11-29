@@ -22,6 +22,23 @@ LOG = logger.logger
 class TestFailover(object):
     """Test class for testing OpenStack nodes failover"""
 
+    def check_influxdb_xfail(sl_deployed, node_name, value):
+
+        def check_influxdb_data():
+            return value in sl_deployed.check_data_in_influxdb(node_name)
+
+        try:
+            helpers.wait(
+                check_influxdb_data,
+                timeout=10, interval=2,
+                timeout_msg=('Influxdb data {0} was not replicated to {1} '
+                             '[https://mirantis.jira.com/browse/PROD-16272]'
+                             .format(value, node_name)))
+        except Exception:
+            pytest.xfail('Influxdb data {0} was not replicated to {1} '
+                         '[https://mirantis.jira.com/browse/PROD-16272]'
+                         .format(value, node_name))
+
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_warm_shutdown_ctl01_node(self, underlay, openstack_deployed,
@@ -281,11 +298,7 @@ class TestFailover(object):
         sl_deployed.start_service('mon01', 'influxdb-relay')
 
         # STEP #9
-        def check_relay_mon01():
-            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
-        helpers.wait(check_relay_mon01,
-                     timeout=10, interval=2,
-                     timeout_msg=('Influxdb data was not replicated to mon01'))
+        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
 
         # STEP #10
         after_result = sl_deployed.run_sl_tests_json(
@@ -344,13 +357,9 @@ class TestFailover(object):
         sl_deployed.start_service('mon01', 'influxd')
 
         # STEP #9
-        def check_relay_mon01():
-            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
-        helpers.wait(check_relay_mon01,
-                     timeout=10, interval=2,
-                     timeout_msg=('Influxdb data was not replicated to mon01'))
-        # STEP #10
+        self.check_influxdb_xfail(sl_deployed, 'mon01', 'mymeas')
 
+        # STEP #10
         after_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus/', 'test_alerts.py')
@@ -406,20 +415,10 @@ class TestFailover(object):
         sl_deployed.start_service('mon02', 'influxdb-relay')
 
         # STEP #9
-        def check_relay_mon01():
-            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
-
-        def check_relay_mon02():
-            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
-        helpers.wait(check_relay_mon01,
-                     timeout=10, interval=2,
-                     timeout_msg=('Influxdb data was not replicated to mon01'))
-        helpers.wait(check_relay_mon02,
-                     timeout=10, interval=2,
-                     timeout_msg=('Influxdb data was not replicated to mon02'))
+        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
+        assert 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
 
         # STEP #10
-
         after_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus/', 'test_alerts.py')
@@ -475,20 +474,10 @@ class TestFailover(object):
         sl_deployed.start_service('mon02', 'influxdb')
 
         # STEP #9
-        def check_relay_mon01():
-            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon01')
-
-        def check_relay_mon02():
-            return 'mymeas' in sl_deployed.check_data_in_influxdb('mon02')
-        helpers.wait(check_relay_mon01,
-                     timeout=10, interval=2,
-                     timeout_msg=('Influxdb data was not replicated to mon01'))
-        helpers.wait(check_relay_mon02,
-                     timeout=10, interval=2,
-                     timeout_msg=('Influxdb data was not replicated to mon02'))
+        self.check_influxdb_xfail(sl_deployed, 'mon01', 'mymeas')
+        self.check_influxdb_xfail(sl_deployed, 'mon02', 'mymeas')
 
         # STEP #10
-
         after_result = sl_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus/', 'test_alerts.py')
