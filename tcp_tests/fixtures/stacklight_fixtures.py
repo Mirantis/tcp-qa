@@ -52,7 +52,7 @@ def sl_deployed(revert_snapshot, request, config,
     :param tcp_actions: fixture provides SLManager instance
     :rtype: SLManager
     """
-    # Create Salt cluster
+    # Deploy SL services
     if not config.stack_light.sl_installed:
         steps_path = config.sl_deploy.sl_steps_path
         commands = underlay.read_template(steps_path)
@@ -80,42 +80,14 @@ def sl_deployed(revert_snapshot, request, config,
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
 @pytest.fixture(scope='function')
-def deploy_sl(revert_snapshot, request, config,
-              hardware, underlay, common_services_deployed,
-              sl_actions):
-    """Fixture to get or install OpenStack services on environment
+def sl_openstack_deployed(revert_snapshot,
+                          openstack_deployed,
+                          sl_deployed):
+    """Fixture to get or install SL and OpenStack services on environment
 
-    :param revert_snapshot: fixture that reverts snapshot that is specified
-                            in test with @pytest.mark.revert_snapshot(<name>)
-    :param request: fixture provides pytest data
-    :param config: fixture provides oslo.config
-    :param hardware: fixture provides enviromnet manager
-    :param underlay: fixture provides underlay manager
-    :param tcp_actions: fixture provides OpenstackManager instance
-    :rtype: SLManager
+    Uses fixtures openstack_deployed and sl_deployed, with 'sl_deployed'
+    top-level snapshot.
 
-    If you want to revert 'sl_deployed' snapshot, please use mark:
-    @pytest.mark.revert_snapshot("sl_deployed")
+    Returns SLManager instance object
     """
-    # Create Salt cluster
-    if not config.stack_light.sl_installed:
-        steps_path = config.sl_deploy.sl_steps_path
-        commands = utils.read_template(steps_path)
-        sl_actions.install(commands)
-        hardware.create_snapshot(ext.SNAPSHOT.sl_deployed)
-
-    else:
-        # 1. hardware environment created and powered on
-        # 2. config.underlay.ssh contains SSH access to provisioned nodes
-        #    (can be passed from external config with TESTS_CONFIGS variable)
-        # 3. config.tcp.* options contain access credentials to the already
-        #    installed TCP API endpoint
-        pass
-    # Workaround for keepalived hang issue after env revert from snapshot
-    # see https://mirantis.jira.com/browse/PROD-12038
-    LOG.warning('Restarting keepalived service on controllers...')
-    sl_actions._salt.local(tgt='ctl*', fun='cmd.run',
-                           args='systemctl restart keepalived.service')
-    sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                           args='systemctl restart keepalived.service')
-    return sl_actions
+    return sl_deployed
