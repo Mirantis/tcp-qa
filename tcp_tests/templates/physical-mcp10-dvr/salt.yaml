@@ -1,0 +1,329 @@
+{% from 'physical-mcp10-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'physical-mcp10-dvr/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'physical-mcp10-dvr/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'physical-mcp10-dvr/underlay.yaml' import HOSTNAME_KVM01 with context %}
+{% from 'physical-mcp10-dvr/underlay.yaml' import HOSTNAME_KVM02 with context %}
+{% from 'physical-mcp10-dvr/underlay.yaml' import HOSTNAME_KVM03 with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-baremetal-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','physical-mcp10-dvr') %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-contrail-dpdk.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environmentmcp10.yaml','lab04-physical-inventory.yaml'] %}
+{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2422') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2423') %}
+
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+
+### Modifying existing model
+- description: Change cfg address
+  cmd: |
+    reclass-tools add-key parameters._param.infra_config_address 172.16.49.66 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+    reclass-tools add-key parameters._param.infra_config_deploy_address 172.16.49.66 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Change control network
+  cmd: |
+    files=`grep -rl "10.167.4" /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/`
+    for i in $files; do sed -i 's/10\.167\.4\./10\.167\.8\./g' $i; done
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Change cluster public host to parametrized value
+  cmd: |
+    reclass-tools add-key parameters._param.cluster_public_host '${_param:openstack_proxy_address}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Change cluster domain
+  cmd: |
+    reclass-tools add-key parameters._param.cluster_domain 'physical-mcp10-dvr.local' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Change infra kvm deploy addresses
+  cmd: |
+    reclass-tools add-key parameters._param.infra_kvm_node01_deploy_address 172.16.49.67 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+    reclass-tools add-key parameters._param.infra_kvm_node02_deploy_address 172.16.49.68 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+    reclass-tools add-key parameters._param.infra_kvm_node03_deploy_address 172.16.49.69 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Adding required parameters in model
+  cmd: |
+    reclass-tools add-key parameters._param.dns_server01 8.8.8.8 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    reclass-tools add-key parameters._param.dns_server02 8.8.4.4 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    reclass-tools add-key parameters._param.control_network_netmask 255.255.255.0  /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    reclass-tools add-key parameters._param.deploy_network_gateway 172.16.49.126 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    reclass-tools add-key parameters._param.control_vlan '2422' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    reclass-tools add-key parameters._param.deploy_network_netmask 255.255.255.192 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://images.mirantis.com/ubuntu-14-04-x64-mcp1.0.qcow2' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://images.mirantis.com/ubuntu-16-04-x64-mcp1.0.qcow2' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    reclass-tools add-key parameters._param.deploy_nic 'enp9s0f0'  /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/gateway.yml;
+    reclass-tools add-key parameters._param.primary_first_nic 'enp9s0f1'  /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/gateway.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml;
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml;
+    sed -i 's/linux\:/linux\:\n    system\:\n      service\:\n        apt\-daily\.timer\:\n          status: dead/g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/init.yml;
+    sed -i 's/\-\ system\.ceph\.client\.single//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control.yml;
+    sed -i 's/\-\ system\.glance\.control\.storage\.ceph//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control.yml;
+    sed -i 's/\-\ system\.cinder\.control\.backend\.ceph//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control.yml;
+    sed -i 's/\-\ system\.cinder\.volume\.backend\.ceph//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control.yml;
+    sed -i 's/\-\ system\.ceph\.client\.single//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/compute.yml;
+    reclass-tools add-key parameters._param.keepalived_vip_interface 'ens3' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/telemetry.yml;
+    reclass-tools add-key 'classes' 'service.keepalived.cluster.single' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/telemetry.yml --merge ;
+    sed -i 's/trusty/xenial/g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/telemetry.yml;
+    reclass-tools add-key parameters._param.salt_master_host '${_param:infra_config_address}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+    reclass-tools del-key parameters.linux.network /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/cicd/control/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Remove Stacklight from deploy
+  cmd: |
+    sed -i 's/\-\ cluster\.physical\-mcp10\-dvr\.stacklight\.proxy//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/proxy.yml;
+    sed -i 's/\-\ cluster\.physical\-mcp10\-dvr\.stacklight\.client//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+    sed -i 's/\-\ cluster\.physical\-mcp10\-dvr\.stacklight//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+    sed -i 's/\-\ system\.salt\.control\.cluster\.stacklight\_.*//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml;
+    sed -i 's/\-\ system\.reclass\.storage\.system\.stacklight\_.*//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml;
+    rm -rf /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/stacklight/*;
+    sed -i 's/\-\ system\.galera\.server\.database\.grafana//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/database.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Del storage definition from model
+  cmd: |
+    reclass-tools del-key parameters.reclass.storage.node.storage_node01 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.storage_node02 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.storage_node03 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Change gateway cluster to gateway single
+  cmd: |
+    reclass-tools del-key parameters.reclass.storage.node.openstack_gateway_node02 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_gateway_node03 /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml;
+    sed -i 's/openstack_gateway_cluster/openstack_gateway_single/g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml;
+    reclass-tools add-key parameters._param.openstack_gateway_address '${_param:openstack_gateway_node01_address}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+    reclass-tools add-key parameters._param.tenant_address '${_param:openstack_gateway_node01_tenant_address}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/gateway.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+##############################################
+##### We will add these parameters later #####
+##############################################
+- description: Remove some classes from env templates due to mcp1.0 system model incompatibility
+  cmd: |
+    sed -i 's/\-\ system\.openssh\.server\.team\.all/\-\ system\.openssh\.server\.team\.mcp_qa/g' /srv/salt/reclass/classes/environment/physical-mcp10-dvr/init.yml;
+    sed -i 's/\-\ system\.openssh\.server\.team\.all/\-\ system\.openssh\.server\.team\.mcp_qa/g' /srv/salt/reclass/classes/environment/physical-mcp10-dvr/overrides.yml;
+    reclass-tools del-key parameters.known_hosts /srv/salt/reclass/classes/system/openssh/client/lab.yml;
+    reclass-tools del-key parameters.openssh.client.user.root.known_hosts /srv/salt/reclass/classes/system/openssh/client/lab.yml;
+    sed -i 's/\-\ system\.salt\.control\.cluster\.cicd\_control\_cluster//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml;
+    sed -i 's/\-\ system\.salt\.control\.cluster\.openstack\_upgrade\_single//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml;
+    sed -i 's/\-\ cluster\.physical\-mcp10\-dvr\.cicd//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml;
+    sed -i 's/\-\ system\.neutron\.control\.openvswitch\.single//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/upgrade.yml;
+    sed -i 's/\-\ system\.cinder\.volume\.local//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/upgrade.yml;
+    sed -i 's/\-\ system\.backupninja\.server\.single//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/upgrade.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "kibana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas"') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+- description: (REMOVE asap) Hack CFG of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+
+- description: "Workaround for PROD-14060"
+  cmd: |
+    set -e;
+    # Add tenant and single addresses for computes
+    salt-call reclass.cluster_meta_set deploy_address 172.16.49.72 /srv/salt/reclass/nodes/_generated/cmp001.physical-mcp10-dvr.local.yml
+    salt-call reclass.cluster_meta_set tenant_address 192.168.0.101 /srv/salt/reclass/nodes/_generated/cmp001.physical-mcp10-dvr.local.yml
+    salt-call reclass.cluster_meta_set single_address 10.167.8.101 /srv/salt/reclass/nodes/_generated/cmp001.physical-mcp10-dvr.local.yml
+
+    salt-call reclass.cluster_meta_set deploy_address 172.16.49.74 /srv/salt/reclass/nodes/_generated/cmp002.physical-mcp10-dvr.local.yml
+    salt-call reclass.cluster_meta_set tenant_address 192.168.0.102 /srv/salt/reclass/nodes/_generated/cmp002.physical-mcp10-dvr.local.yml
+    salt-call reclass.cluster_meta_set single_address 10.167.8.102 /srv/salt/reclass/nodes/_generated/cmp002.physical-mcp10-dvr.local.yml
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+
+- description: Temporary WR (Remove ASAP) for downgrade packages
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.system.repo;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get update"
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get install -y --allow-downgrades vlan";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+########################################
+# Spin up Control Plane VMs on KVM nodes
+########################################
+
+- description: Execute 'libvirt' states to create necessary libvirt networks
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+
+#############################################################
+# We do not need spawn upg01 node now. So
+# we will add it later, after mcp10 will be deployed,
+# because we will fail on some states which are using targets 
+# like glance:server, or keystone:server etc
+# This target is matching on upg01 node too.
+# We temporary delete definition of upg01 node
+#############################################################
+
+- description: Temporary remove upgrade node VM definition, while mcp10 is not deployed
+  cmd: |
+    sed -i 's/\-\ system\.salt\.control\.cluster\.openstack\_upgrade\_single//g' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml;
+    salt 'kvm*' saltutil.refresh_pillar;
+    sleep 5;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+ 
+- description: Create VMs for control plane
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls salt.control
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: '*Workaround* for waiting the control-plane VMs in the salt-key (instead of sleep)'
+  cmd: |
+    salt-key -l acc| sort > /tmp/current_keys.txt &&
+    salt 'kvm*' cmd.run 'virsh list --name' | grep -v 'kvm'|sort|xargs -I {} fgrep {} /tmp/current_keys.txt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 20, delay: 30}
+  skip_fail: false
+
+- description: wait for apt-daily finished work (Temporary)
+  cmd: sleep 900;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+#########################################
+# Configure all running salt minion nodes
+#########################################
+
+- description: Refresh pillars on all minions
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Determine latest version of salt-minion
+  cmd: |
+    salt --timeout=300 '*' pkg.latest_version salt-minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install latest version of salt-minion
+  cmd: |
+    salt --timeout=300 '*' pkg.install salt-minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Show  reclass-salt --top for generated nodes
+  cmd: reclass-salt --top -u /srv/salt/reclass/nodes/_generated/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Temporary WR (Remove ASAP) for downgrade packages
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.system.repo;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get update"
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get install -y --allow-downgrades vlan";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Configure linux on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure salt.minion on other nodes
+  cmd: |
+    salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls salt.minion;
+    sleep 60;
+    jids=`salt '*' saltutil.running | grep -A1 "jid\:" | grep 2018 | uniq`;
+    for jid in $jids; do
+      salt '*' saltutil.kill_job $jid;
+    done
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 15}
+  skip_fail: true
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+- description: Hack resolv.conf on VCP nodes for internal services access
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf;"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
