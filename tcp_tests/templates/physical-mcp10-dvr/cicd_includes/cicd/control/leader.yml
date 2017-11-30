@@ -1,0 +1,33 @@
+classes:
+  # Services
+  - system.docker.client
+  - system.aptly.server.docker
+  - system.aptly.client.publisher
+  # Jenkins
+  - system.jenkins.master.config
+  - system.jenkins.client
+  - system.jenkins.client.credential.gerrit
+  - system.jenkins.client.credential.salt
+  # Jobs
+  - system.jenkins.client.job.aptly
+  - system.jenkins.client.job.git-mirrors.downstream.pipelines
+  - system.jenkins.client.job.deploy.openstack
+  - system.jenkins.client.job.deploy.update.package
+  - system.jenkins.client.job.deploy.update.config
+  - system.jenkins.client.job.deploy.update.upgrade
+  # Security
+  - system.jenkins.client.security.ldap
+  - system.jenkins.client.security.matrix
+  # OpenLDAP
+  - system.openldap.client
+  - system.openldap.client.people.admin
+
+  # Gerrit
+  - system.gerrit.client
+  - system.gerrit.client.project.ci
+
+  - system.docker.swarm.master
+  - cluster.physical-mcp10-dvr.infra
+  - cluster.physical-mcp10-dvr.cicd.control
+
+  #- system.jenkins.client.user.admin
