@@ -159,8 +159,8 @@ class TestFailover(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
-    def test_restart_mon01_node(self, sl_os_deployed,
-                                openstack_actions, show_step):
+    def test_restart_mon01_node(self, openstack_actions,
+                                sl_os_deployed, show_step):
         """Test restart mon01
 
         Scenario:
