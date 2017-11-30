@@ -1,0 +1,33 @@
+parameters:
+  _param:
+    cicd_control_address: 10.167.8.90
+    cicd_control_node01_address: 10.167.8.91
+    cicd_control_node02_address: 10.167.8.92
+    cicd_control_node03_address: 10.167.8.93
+    cicd_control_hostname: cid
+    cicd_control_node01_hostname: cid01
+    cicd_control_node02_hostname: cid02
+    cicd_control_node03_hostname: cid03
+  linux:
+    network:
+      host:
+        ci:
+          address: ${_param:cicd_control_address}
+          names:
+          - ${_param:cicd_control_hostname}
+          - ${_param:cicd_control_hostname}.${_param:cluster_domain}
+        ci01:
+          address: ${_param:cicd_control_node01_address}
+          names:
+          - ${_param:cicd_control_node01_hostname}
+          - ${_param:cicd_control_node01_hostname}.${_param:cluster_domain}
+        ci02:
+          address: ${_param:cicd_control_node02_address}
+          names:
+          - ${_param:cicd_control_node02_hostname}
+          - ${_param:cicd_control_node02_hostname}.${_param:cluster_domain}
+        ci03:
+          address: ${_param:cicd_control_node03_address}
+          names:
+          - ${_param:cicd_control_node03_hostname}
+          - ${_param:cicd_control_node03_hostname}.${_param:cluster_domain}
