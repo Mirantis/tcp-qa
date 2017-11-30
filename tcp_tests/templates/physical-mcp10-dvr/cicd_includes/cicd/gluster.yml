@@ -1,0 +1,9 @@
+classes:
+
+  # GlusterFS
+  - system.glusterfs.server.cluster
+  - system.glusterfs.server.volume.aptly
+  - system.glusterfs.server.volume.gerrit
+  - system.glusterfs.server.volume.jenkins
+  - system.glusterfs.server.volume.mysql
+  - system.glusterfs.server.volume.registry
