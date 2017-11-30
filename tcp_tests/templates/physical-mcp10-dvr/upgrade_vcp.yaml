@@ -1,0 +1,42 @@
+{% from 'physical-mcp10-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'physical-mcp10-dvr/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'physical-mcp10-dvr/underlay.yaml' import DOMAIN_NAME with context %}
+
+- description: Modifying model for upgrades
+  cmd: |
+    reclass-tools add-key parameters._param.openstack_version 'ocata' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml ;
+    reclass-tools add-key parameters._param.openstack_upgrade_node01_hostname 'upg01' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml ;
+    reclass-tools add-key parameters._param.openstack_upgrade_node01_address '10.167.4.95' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml ;
+    reclass-tools add-key parameters._param.horizon_identity_version '2' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/init.yml ;
+    reclass-tools add-key parameters.salt.control.cluster.internal.node.ctl01.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml ;
+    reclass-tools add-key parameters.salt.control.cluster.internal.node.ctl02.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml ;
+    reclass-tools add-key parameters.salt.control.cluster.internal.node.ctl03.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml ;
+    reclass-tools add-key parameters._param.keepalived_vip_interface 'ens3' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control.yml ;
+    reclass-tools add-key parameters._param.backupninja_backup_host '${_param:openstack_upgrade_node01_address}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/database_init.yml ;
+    reclass-tools add-key parameters._param.backupninja_backup_host '${_param:openstack_upgrade_node01_address}' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/init.yml ;
+    reclass-tools add-key 'classes' 'system.salt.control.cluster.openstack_upgrade_single' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/kvm.yml ;
+    reclass-tools add-key 'classes' 'system.keystone.client.service.nova-placement' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control_init.yml --merge ;
+    reclass-tools add-key 'classes' 'system.keystone.client.service.glare' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control_init.yml --merge ;
+    reclass-tools add-key 'classes' 'system.keystone.client.service.cinder3' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control_init.yml --merge ;
+    reclass-tools add-key 'classes' 'system.haproxy.proxy.listen.openstack.nova-placement' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control.yml --merge ;
+    reclass-tools add-key 'classes' 'system.haproxy.proxy.listen.openstack.glare' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/control.yml --merge ;
+    reclass-tools add-key 'classes' 'system.linux.system.repo.mcp.openstack' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml --merge ;
+    reclass-tools add-key 'classes' 'system.mysql.client.single_upgrade' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/database_init.yml --merge ;
+    reclass-tools add-key 'classes' 'system.backupninja.client.single' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/database_init.yml --merge ;
+    reclass-tools add-key 'classes' 'system.xtrabackup.client.single' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/openstack/database_init.yml --merge ;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Backup created model
+  cmd: |
+    cp -ar /srv/salt/reclass/classes/cluster/physical-mcp10-dvr /root/cluster_upgrade.bak/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+cp -ar /srv/salt/reclass/classes/cluster/<name> /root/cluster_upgrade.bak/
+
+#reclass-tools add-key 'classes' 'system.xtrabackup.server.single' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml --merge ;
+#reclass-tools add-key 'classes' 'system.backupninja.server.single' /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/infra/config.yml --merge ;
