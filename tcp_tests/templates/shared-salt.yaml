@@ -507,13 +507,6 @@
   skip_fail: false
 {%- endif %}
 
-- description: "*Workaround* [PROD-15791] increase keepalived garp repeat count"
-  cmd: |
-    sed -i 's/^    garp_master_repeat .*$/    garp_master_repeat 100000/' /usr/share/salt-formulas/env/keepalived/files/keepalived.conf
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
 - description: Refresh pillars on salt-master minion
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}

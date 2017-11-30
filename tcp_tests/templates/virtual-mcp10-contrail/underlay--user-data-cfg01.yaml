@@ -34,7 +34,6 @@
    # Prepare network connection
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
-   - sudo ifup ens4
 
    # Create swap
    - fallocate -l 4G /swapfile
@@ -72,8 +71,6 @@
      content: |
           auto ens3
           iface ens3 inet dhcp
-          auto ens4
-          iface ens4 inet dhcp
 
    - path: /root/.ssh/config
      owner: root:root
