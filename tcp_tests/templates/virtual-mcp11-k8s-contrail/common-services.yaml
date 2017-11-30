@@ -58,26 +58,26 @@
 #  retry: {count: 1, delay: 5}
 #  skip_fail: false
 
-- description: Install Galera on first server
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@galera:master' state.sls galera
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+#- description: Install Galera on first server
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@galera:master' state.sls galera
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
-- description: Install Galera on other servers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@galera:slave' state.sls galera
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+#- description: Install Galera on other servers
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@galera:slave' state.sls galera
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
-- description: Check mysql status
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@galera:*' mysql.status | grep -A1 -e "wsrep_incoming_addresses\|wsrep_cluster_size"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+#- description: Check mysql status
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@galera:*' mysql.status | grep -A1 -e "wsrep_incoming_addresses\|wsrep_cluster_size"
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
 - description: Install nginx
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
