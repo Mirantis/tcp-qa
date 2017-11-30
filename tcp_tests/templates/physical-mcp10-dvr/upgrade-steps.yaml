@@ -1,0 +1,15 @@
+{% from 'physical-mcp10-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+- description: "Upload cicd includes to {{ HOSTNAME_CFG01 }}"
+  upload:
+    local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/cicd_includes/
+    local_filename: {{ CLUSTER_CONTEXT_NAME }}
+    remote_path: /tmp/
+  node_name: {{ HOSTNAME_CFG01 }}
+
+- description: Copy cicd to reclass model
+  cmd: |
+    cp -r /tmp/cicd_includes/* /srv/salt/reclass/classes/cluster/physical-mcp10-dvr/;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
