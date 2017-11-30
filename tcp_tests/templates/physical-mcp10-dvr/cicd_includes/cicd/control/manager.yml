@@ -1,0 +1,4 @@
+classes:
+  - system.docker.swarm.manager
+  - cluster.physical-mcp10-dvr
+  - cluster.physical-mcp10-dvr.cicd.control
