@@ -228,7 +228,9 @@
     pushd /tmp/cookiecutter-templates
     git checkout {{ COOKIECUTTER_TEMPLATE_COMMIT }}
     popd
+    curl 'https://raw.githubusercontent.com/Mirantis/mk2x-cookiecutter-reclass-model/master/generate.py?token=AOFVZP_Zo0Oxo4RnlmncZ8LbUTfD1Fuqks5adDBdwA%3D%3D' > /tmp/cookiecutter-templates/generate.py
     {%- endif %}
+
 
     {%- if COOKIECUTTER_REF_CHANGE != '' %}
     pushd /tmp/cookiecutter-templates
@@ -413,6 +415,7 @@
     declare -a formula_services=({{ FORMULA_SERVICES }});
     echo -e "\nInstalling all required salt formulas\n";
     eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
+    sed -i 's/HAS_JENKINS\ \=\ True/HAS_JENKINS\ \=\ False/g' /usr/share/salt-formulas/env/_grains/jenkins_plugins.py;
     for formula_service in "${formula_services[@]}"; do
       echo -e "\nLink service metadata for formula ${formula_service} ...\n";
       [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
@@ -611,7 +614,7 @@
     reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: true
 
 - description: Sync all salt resources
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
