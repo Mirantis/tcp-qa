@@ -39,7 +39,6 @@
    # Prepare network connection
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
-   #- sudo ifup ens4
 
    # Create swap
    - fallocate -l 16G /swapfile
