@@ -1,0 +1,90 @@
+nodes:
+    # Virtual Control Plane nodes
+
+    ctl01.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_control_node01
+      roles:
+      - openstack_control_leader
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    ctl02.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_control_node02
+      roles:
+      - openstack_control
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    ctl03.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_control_node03
+      roles:
+      - openstack_control
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs01.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_database_node01
+      roles:
+      - openstack_database_leader
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs02.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_database_node02
+      roles:
+      - openstack_database
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs03.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_database_node03
+      roles:
+      - openstack_database
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg01.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_message_queue_node01
+      roles:
+      - openstack_message_queue
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg02.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_message_queue_node02
+      roles:
+      - openstack_message_queue
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg03.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_message_queue_node03
+      roles:
+      - openstack_message_queue
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    prx01.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_proxy_node01
+      roles:
+      - openstack_proxy
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    bmk01.physical-mcp10-dvr.local:
+      reclass_storage_name: openstack_benchmark_node01
+      roles:
+      - openstack_benchmark
+      interfaces:
+        ens3:
+          role: single_ctl
