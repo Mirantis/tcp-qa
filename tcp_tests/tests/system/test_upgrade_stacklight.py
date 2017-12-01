@@ -42,15 +42,6 @@ class TestUpgradeStacklight(object):
         sl_actions.install(commands, label='Upgrade SL services')
         hardware.create_snapshot(name='sl_v1_upgraded')
 
-# Workaround for keepalived hang issue after env revert from snapshot
-# see https://mirantis.jira.com/browse/PROD-12038
-        LOG.warning('Restarting keepalived service on controllers...')
-        sl_actions._salt.local(tgt='ctl*', fun='cmd.run',
-                               args='systemctl restart keepalived.service')
-        LOG.warning('Restarting keepalived service on mon nodes...')
-        sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                               args='systemctl restart keepalived.service')
-
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 

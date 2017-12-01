@@ -66,14 +66,6 @@ def sl_deployed(revert_snapshot, request, config,
         #    installed TCP API endpoint
         pass
 
-    # Workaround for keepalived hang issue after env revert from snapshot
-    # see https://mirantis.jira.com/browse/PROD-12038
-    LOG.warning('Restarting keepalived service on controllers...')
-    sl_actions._salt.local(tgt='ctl*', fun='cmd.run',
-                           args='systemctl restart keepalived.service')
-    LOG.warning('Restarting keepalived service on mon nodes...')
-    sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                           args='systemctl restart keepalived.service')
     return sl_actions
 
 

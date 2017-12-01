@@ -69,14 +69,6 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-v /root/:/home/rally {2} "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
                    .format(conf_name, pattern, registry))
-        LOG.info("Restart keepalived service before running tempest tests")
-        restart_keepalived_cmd = ("salt --hard-crash "
-                                  "--state-output=mixed "
-                                  "--state-verbose=True "
-                                  "-C 'I@keepalived:cluster:enabled:True' "
-                                  "service.restart keepalived")
-        self.__underlay.check_call(cmd=restart_keepalived_cmd,
-                                   host=self.__config.salt.salt_master_host)
         LOG.info("Running tempest testing on node {0} using the following "
                  "command:\n{1}".format(target_name[0], cmd))
 

@@ -170,20 +170,7 @@ class SLManager(ExecuteCommandsMixin):
         :param nodes: list of strings, names of nodes with keepalived VIP
         """
         prometheus_client = self.api
-        try:
-            current_targets = prometheus_client.get_targets()
-        except Exception:
-            LOG.info('Restarting keepalived service on mon nodes...')
-            for node in nodes:
-                self._salt.local(tgt=node, fun='cmd.run',
-                                 args='systemctl restart keepalived')
-            LOG.warning(
-                'Ip states after force restart {0}'.format(
-                    self._salt.local(tgt='mon*',
-                                     fun='cmd.run', args='ip a')))
-            self._salt.local(tgt="mon*", fun='cmd.run',
-                             args='systemctl restart keepalived')
-            current_targets = prometheus_client.get_targets()
+        current_targets = prometheus_client.get_targets()
 
         LOG.debug('Current targets after install {0}'
                   .format(current_targets))
