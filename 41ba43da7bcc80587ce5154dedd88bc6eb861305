@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5d18f8ae_94bdb770",
+        "filename": "tcp_tests/tests/system/test_install_mcp11_ovs_ocata.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-01T16:44:57Z",
+      "side": 1,
+      "message": "Please move into test_failover. We already has there sl snapshot, so test will be with the same workflow as you want. And please do not mark them with cz8119 as server with that label already busy (all tests run by this labels take ~ 8h)",
+      "range": {
+        "startLine": 89,
+        "startChar": 17,
+        "endLine": 89,
+        "endChar": 23
+      },
+      "revId": "41ba43da7bcc80587ce5154dedd88bc6eb861305",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25a7ddfe_98e21448",
+        "filename": "tcp_tests/tests/system/test_install_mcp11_ovs_ocata.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 152,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-01T16:44:57Z",
+      "side": 1,
+      "message": "How we can be sure that test result after fail are ok? May be  run tests before fail and some after ? and compare the results",
+      "range": {
+        "startLine": 152,
+        "startChar": 20,
+        "endLine": 152,
+        "endChar": 43
+      },
+      "revId": "41ba43da7bcc80587ce5154dedd88bc6eb861305",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "22b7ef3f_5ed8575e",
+        "filename": "tcp_tests/tests/system/test_install_mcp11_ovs_ocata.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 166,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-01T16:44:57Z",
+      "side": 1,
+      "message": "the same here",
+      "range": {
+        "startLine": 166,
+        "startChar": 17,
+        "endLine": 166,
+        "endChar": 23
+      },
+      "revId": "41ba43da7bcc80587ce5154dedd88bc6eb861305",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "89a994dd_9dc5b8a3",
+        "filename": "tcp_tests/tests/system/test_install_mcp11_ovs_ocata.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 237,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-01T16:44:57Z",
+      "side": 1,
+      "message": "the same here",
+      "range": {
+        "startLine": 237,
+        "startChar": 27,
+        "endLine": 237,
+        "endChar": 29
+      },
+      "revId": "41ba43da7bcc80587ce5154dedd88bc6eb861305",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "592d2421_d54fcfe4",
+        "filename": "tcp_tests/tests/system/test_install_mcp11_ovs_ocata.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-01T16:44:57Z",
+      "side": 1,
+      "message": "please move to failover test un do not mark by 19 label",
+      "range": {
+        "startLine": 247,
+        "startChar": 17,
+        "endLine": 247,
+        "endChar": 23
+      },
+      "revId": "41ba43da7bcc80587ce5154dedd88bc6eb861305",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f9ab068f_6b5d85f2",
+        "filename": "tcp_tests/tests/system/test_install_mcp11_ovs_ocata.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 315,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-01T16:44:57Z",
+      "side": 1,
+      "message": "Where is the tests for prometheus -relay?",
+      "range": {
+        "startLine": 315,
+        "startChar": 14,
+        "endLine": 315,
+        "endChar": 18
+      },
+      "revId": "41ba43da7bcc80587ce5154dedd88bc6eb861305",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
