@@ -199,7 +199,7 @@ def underlay(revert_snapshot, config, hardware):
 
 
 @pytest.fixture(scope='function', autouse=True)
-def grab_versions(request, underlay):
+def grab_versions(request, func_name, underlay):
     """Fixture for grab package versions at the end of test
 
     Marks:
@@ -211,11 +211,10 @@ def grab_versions(request, underlay):
     grab_version = request.keywords.get('grab_versions', None)
 
     def test_fin():
-        default_name = getattr(request.node.function, '_name',
-                               request.node.function.__name__)
-        if hasattr(request.node, 'rep_call') and request.node.rep_call.passed \
+        if hasattr(request.node, 'rep_call') and \
+                (request.node.rep_call.passed or request.node.rep_call.failed)\
                 and grab_version:
             artifact_name = utils.extract_name_from_mark(grab_version) or \
-                "{}".format(default_name)
+                "{}".format(func_name)
             underlay.get_logs(artifact_name)
     request.addfinalizer(test_fin)

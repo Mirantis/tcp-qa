@@ -14,7 +14,8 @@
 import datetime
 import json
 
-from junit_xml import TestSuite, TestCase
+from devops import error
+from functools32 import lru_cache
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -26,147 +27,247 @@ LOG = logger.logger
 class RallyManager(object):
     """docstring for RallyManager"""
 
-    image_name = 'rallyforge/rally'
-    image_version = '0.9.1'
+    image_name = (
+        'docker-prod-virtual.docker.mirantis.net/'
+        'mirantis/oscore/rally-tempest')
+    image_version = 'latest'
+    tempest_tag = "16.0.0"
+    designate_tag = "0.2.0"
 
-    def __init__(self, underlay, admin_host):
+    def __init__(self, underlay, rally_node='gtw01.'):
         super(RallyManager, self).__init__()
-        self._admin_host = admin_host
         self._underlay = underlay
+        self._node_name = self.get_target_node(target=rally_node)
 
-    def prepare(self):
-        content = """
-sed -i 's|#swift_operator_role = Member|swift_operator_role=SwiftOperator|g' /etc/rally/rally.conf  # noqa
-source /home/rally/openrc
-rally-manage db recreate
-rally deployment create --fromenv --name=tempest
-rally verify create-verifier --type tempest --name tempest-verifier
-rally verify configure-verifier
-rally verify configure-verifier --show
-"""
-        cmd = "cat > {path} << EOF\n{content}\nEOF".format(
-            path='/root/rally/install_tempest.sh', content=content)
-        cmd1 = "chmod +x /root/rally/install_tempest.sh"
-        cmd2 = "scp ctl01:/root/keystonercv3 /root/rally/openrc"
+    @property
+    @lru_cache(maxsize=None)
+    def image_id(self):
+        LOG.info("Getting image id")
+        cmd = ("docker images | grep {0}| grep {1}| awk '{{print $3}}'"
+               .format(self.image_name, self.image_version))
+        res = self._underlay.check_call(cmd, node_name=self._node_name)
+        image_id = res['stdout'][0].strip()
+        LOG.info("Image ID is {}".format(image_id))
+        return image_id
 
-        with self._underlay.remote(host=self._admin_host) as remote:
-            LOG.info("Create rally workdir")
-            remote.check_call('mkdir -p /root/rally')
-            LOG.info("Create install_tempest.sh")
-            remote.check_call(cmd)
-            LOG.info("Chmod +x install_tempest.sh")
-            remote.check_call(cmd1)
-            LOG.info("Copy openstackrc")
-            remote.check_call(cmd2)
+    @property
+    @lru_cache(maxsize=None)
+    def docker_id(self):
+        cmd = ("docker ps | grep {image_id} | "
+               "awk '{{print $1}}'| head -1").format(
+                   image_id=self.image_id)
+        LOG.info("Getting container id")
+        res = self._underlay.check_call(cmd, node_name=self._node_name)
+        docker_id = res['stdout'][0].strip()
+        LOG.info("Container ID is {}".format(docker_id))
+        return docker_id
 
-    def pull_image(self, version=None):
-        version = version or self.image_version
-        image = self.image_name
-        cmd = ("apt-get -y install docker.io &&"
-               " docker pull {image}:{version}".format(image=image,
-                                                       version=version))
-        with self._underlay.remote(host=self._admin_host) as remote:
-            LOG.info("Pull {image}:{version}".format(image=image,
-                                                     version=version))
-            remote.check_call(cmd)
+    # Move method to underlay
+    def get_target_node(self, target='gtw01.'):
+        return [node_name for node_name
+                in self._underlay.node_names()
+                if node_name.startswith(target)][0]
 
-        with self._underlay.remote(host=self._admin_host) as remote:
-            LOG.info("Getting image id")
-            cmd = "docker images | grep {0}| awk '{print $3}'".format(
-                self.image_version)
-            res = remote.check_call(cmd)
-            self.image_id = res['stdout'][0].strip()
-            LOG.info("Image ID is {}".format(self.image_id))
+    def _docker_exec(self, cmd, timeout=None, verbose=False):
+        docker_cmd = ('docker exec -i {docker_id} bash -c "{cmd}"'
+                      .format(cmd=cmd, docker_id=self.docker_id))
+        LOG.info("Executing: {docker_cmd}".format(docker_cmd=docker_cmd))
+        self._underlay.check_call(docker_cmd, node_name=self._node_name,
+                                  verbose=verbose, timeout=timeout)
 
-    def run(self):
-        with self._underlay.remote(host=self._admin_host) as remote:
-            cmd = ("docker run --net host -v /root/rally:/home/rally "
-                   "-tid -u root {image_id}".format(image_id=self.image_id))
+    def _run(self):
+        """Start the rally container in the background"""
+        with self._underlay.remote(node_name=self._node_name) as remote:
+            cmd = ("docker run --net host -v /root/rally:/home/rally/.rally "
+                   "-v /etc/ssl/certs/:/etc/ssl/certs/ "
+                   "-tid -u root --entrypoint /bin/bash {image_id}"
+                   .format(image_id=self.image_id))
             LOG.info("Run Rally container")
             remote.check_call(cmd)
 
-            cmd = ("docker ps | grep {image_id} | "
-                   "awk '{{print $1}}'| head -1").format(
-                       image_id=self.image_id)
-            LOG.info("Getting container id")
-            res = remote.check_call(cmd)
-            self.docker_id = res['stdout'][0].strip()
-            LOG.info("Container ID is {}".format(self.docker_id))
+    def run_container(self, version=None):
+        """Install docker, configure and run rally container"""
+        version = version or self.image_version
+        image = self.image_name
+        LOG.info("Pull {image}:{version}".format(image=image,
+                                                 version=version))
+        cmd = ("apt-get -y install docker.io &&"
+               " docker pull {image}:{version}".format(image=image,
+                                                       version=version))
+        self._underlay.check_call(cmd, node_name=self._node_name)
 
-    def run_tempest(self, test=''):
-        docker_exec = ('docker exec -i {docker_id} bash -c "{cmd}"')
-        commands = [
-            docker_exec.format(cmd="./install_tempest.sh",
-                               docker_id=self.docker_id),
-            docker_exec.format(
-                cmd="source /home/rally/openrc && "
-                    "rally verify start {test}".format(test=test),
-                docker_id=self.docker_id),
-            docker_exec.format(
-                cmd="rally verify report --type json --to result.json",
-                docker_id=self.docker_id),
-            docker_exec.format(
-                cmd="rally verify report --type html --to result.html",
-                docker_id=self.docker_id),
+        LOG.info("Create rally workdir")
+        cmd = 'mkdir -p /root/rally; chown 65500 /root/rally'
+        self._underlay.check_call(cmd, node_name=self._node_name)
+
+        LOG.info("Copy keystonercv3")
+        cmd = "cp /root/keystonercv3 /root/rally/keystonercv3"
+        self._underlay.check_call(cmd, node_name=self._node_name)
+        self._run()
+
+        LOG.info("Create rally deployment")
+        self._docker_exec("rally-manage db recreate")
+        self._docker_exec("source /home/rally/.rally/keystonercv3;"
+                          "rally deployment create --fromenv --name=Abathur")
+        self._docker_exec("rally deployment list")
+
+    def prepare_rally_task(self, target_node='ctl01.'):
+        """Prepare cirros image and private network for rally task"""
+        ctl_node_name = self._underlay.get_target_node_names(
+            target=target_node)[0]
+        cmds = [
+            ". keystonercv3 ; openstack flavor create --public m1.tiny",
+            ("wget http://download.cirros-cloud.net/0.3.4/"
+             "cirros-0.3.4-i386-disk.img"),
+            (". /root/keystonercv3; glance --timeout 120 image-create "
+             "--name cirros-disk --visibility public --disk-format qcow2 "
+             "--container-format bare --progress "
+             "< /root/cirros-0.3.4-i386-disk.img"),
+            ". /root/keystonercv3; neutron net-create net04",
         ]
-        with self._underlay.remote(host=self._admin_host) as remote:
-            LOG.info("Run tempest inside Rally container")
-            for cmd in commands:
-                remote.check_call(cmd, verbose=True)
 
-    def get_results(self, store=True, store_file='tempest.xml'):
-        LOG.info('Storing tests results...')
-        res_file_name = 'result.json'
-        file_prefix = 'results_' + datetime.datetime.now().strftime(
-            '%Y%m%d_%H%M%S') + '_'
-        file_dst = '{0}/{1}{2}'.format(
-            settings.LOGS_DIR, file_prefix, res_file_name)
-        with self._underlay.remote(host=self._admin_host) as remote:
-            remote.download(
-                '/root/rally/{0}'.format(res_file_name),
-                file_dst)
-            res = json.load(remote.open('/root/rally/result.json'))
-        if not store:
-            return res
+        for cmd in cmds:
+            self._underlay.check_call(cmd, node_name=ctl_node_name)
 
-        formatted_tc = []
-        failed_cases = [res['test_cases'][case]
-                        for case in res['test_cases']
-                        if res['test_cases'][case]['status']
-                        in 'fail']
-        for case in failed_cases:
-            if case:
-                tc = TestCase(case['name'])
-                tc.add_failure_info(case['traceback'])
-                formatted_tc.append(tc)
+    def prepare_tempest_task(self):
+        """Configure rally.conf for tempest tests"""
+        pass
+#        LOG.info("Modify rally.conf")
+#        cmd = ("sed -i 's|#swift_operator_role = Member|"
+#               "swift_operator_role=SwiftOperator|g' "
+#               "/etc/rally/rally.conf")
+#        self._docker_exec(cmd)
 
-        skipped_cases = [res['test_cases'][case]
-                         for case in res['test_cases']
-                         if res['test_cases'][case]['status'] in 'skip']
-        for case in skipped_cases:
-            if case:
-                tc = TestCase(case['name'])
-                tc.add_skipped_info(case['reason'])
-                formatted_tc.append(tc)
+    def create_rally_task(self, task_path, task_content):
+        """Create a file with rally task definition
 
-        error_cases = [res['test_cases'][case] for case in res['test_cases']
-                       if res['test_cases'][case]['status'] in 'error']
+        :param task_path: path to JSON or YAML file on target node
+        :task_content: string with json or yaml content to store in file
+        """
+        cmd = "cat > {task_path} << EOF\n{task_content}\nEOF".format(
+            task_path=task_path, task_content=task_content)
+        self._underlay.check_call(cmd, node_name=self._node_name)
 
-        for case in error_cases:
-            if case:
-                tc = TestCase(case['name'])
-                tc.add_error_info(case['traceback'])
-                formatted_tc.append(tc)
+    def run_task(self, task='', timeout=None, raise_on_timeout=True):
+        """Run rally task
 
-        success = [res['test_cases'][case] for case in res['test_cases']
-                   if res['test_cases'][case]['status'] in 'success']
-        for case in success:
-            if case:
-                tc = TestCase(case['name'])
-                formatted_tc.append(tc)
+        :param taks: path to json or yaml file with the task definition
+        :param raise_on_timeout: bool, ignore TimeoutError if False
+        """
+        try:
+            self._docker_exec("rally task start {task}".format(task=task),
+                              timeout=timeout, verbose=True)
+        except error.TimeoutError:
+            if raise_on_timeout:
+                raise
+            else:
+                pass
 
-        ts = TestSuite("tempest", formatted_tc)
-        with open(store_file, 'w') as f:
-            ts.to_file(f, [ts], prettyprint=False)
+    # Updated to replace the OpenStackManager method run_tempest
+    def run_tempest(self, conf_name='/var/lib/lvm_mcp.conf',
+                    pattern='set=smoke', concurrency=0, timeout=None,
+                    report_prefix='', report_types=None):
+        """Run tempest tests
 
-        return res
+        :param conf_name: tempest config placed in the rally container
+        :param pattern: tempest testcase name or one of existing 'set=...'
+        :param concurrency: how many threads to use in parallel. 0 means
+                            to take the amount of the cores on the node
+                            <self._node_name>.
+        :param timeout: stop tempest tests after specified timeout.
+        :param report_prefix: str, prefix for report filenames. Usually the
+                              output of the fixture 'func_name'
+        :param report_types: list of the report types that need to download
+                             from the environment: ['html', 'xml', 'json'].
+                             None by default.
+        """
+        report_types = report_types or []
+
+        cmd = (
+            "cat > /root/rally/install_tempest.sh << EOF\n"
+            "rally verify create-verifier"
+            "  --type tempest "
+            "  --name tempest-verifier"
+            "  --source /var/lib/tempest"
+            "  --version {tempest_tag}"
+            "  --system-wide\n"
+            "rally verify add-verifier-ext"
+            "  --source /var/lib/designate-tempest-plugin"
+            "  --version {designate_tag}\n"
+            "rally verify configure-verifier --extend {tempest_conf}\n"
+            "rally verify configure-verifier --show\n"
+            "EOF".format(tempest_tag=self.tempest_tag,
+                         designate_tag=self.designate_tag,
+                         tempest_conf=conf_name))
+        with self._underlay.remote(node_name=self._node_name) as remote:
+            LOG.info("Create install_tempest.sh")
+            remote.check_call(cmd)
+            remote.check_call("chmod +x /root/rally/install_tempest.sh")
+
+        LOG.info("Run tempest inside Rally container")
+        self._docker_exec("/home/rally/.rally/install_tempest.sh")
+        self._docker_exec(
+            ("source /home/rally/.rally/keystonercv3 && "
+             "rally verify start --skip-list /var/lib/mcp_skip.list "
+             "  --concurrency {concurrency} --pattern {pattern}"
+             .format(concurrency=concurrency, pattern=pattern)),
+            timeout=timeout, verbose=True)
+        if report_prefix:
+            report_filename = '{0}_report_{1}'.format(
+                report_prefix,
+                datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
+        else:
+            report_filename = 'report_{1}'.format(
+                datetime.datetime.now().strftime('%Y%m%d_%H%M%S'))
+        docker_file_prefix = '/home/rally/.rally/' + report_filename
+
+        # Create reports
+        if 'xml' in report_types:
+            self._docker_exec(
+                "rally verify report --type junit-xml --to {0}.xml"
+                .format(docker_file_prefix))
+        if 'html' in report_types:
+            self._docker_exec(
+                "rally verify report --type html --to {0}.html"
+                .format(docker_file_prefix))
+        # Always create report in JSON to return results into test case
+        # However, it won't be downloaded until ('json' in report_prefix)
+        self._docker_exec("rally verify report --type json --to {0}.json"
+                          .format(docker_file_prefix))
+
+        # Download reports to the settings.LOGS_DIR
+        file_src_prefix = '/root/rally/{0}'.format(report_filename)
+        file_dst_prefix = '{0}/{1}'.format(settings.LOGS_DIR, report_filename)
+        with self._underlay.remote(node_name=self._node_name) as remote:
+            for suffix in report_types:
+                remote.download(file_src_prefix + '.' + suffix,
+                                file_dst_prefix + '.' + suffix)
+            res = json.load(remote.open(file_src_prefix + '.json'))
+
+        # Get latest verification ID to find the lates testcases in the report
+        vtime = {vdata['finished_at']: vid
+                 for vid, vdata in res['verifications'].items()}
+        vlatest_id = vtime[max(vtime.keys())]
+
+        # Each status has the dict with pairs:
+        #   <status>: {
+        #       <case_name>: <case_details>,
+        #    }
+        formatted_tc = {
+            'success': {},
+            'fail': {},
+            'xfail': {},
+            'skip': {}
+        }
+
+        for tname, tdata in res['tests'].items():
+            status = tdata['by_verification'][vlatest_id]['status']
+            details = tdata['by_verification'][vlatest_id].get('details', '')
+            if status not in formatted_tc:
+                # Fail if tempest return a new status that may be
+                # necessary to take into account in test cases
+                raise Exception("Unknown testcase {0} status: {1} "
+                                .format(tname, status))
+            formatted_tc[status][tdata['name']] = details
+        LOG.debug("Formatted testcases: {0}".format(formatted_tc))
+        return formatted_tc
