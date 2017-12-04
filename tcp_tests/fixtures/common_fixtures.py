@@ -52,6 +52,7 @@ def pytest_runtest_teardown(item):
     finish_step = "FINISH {} TEST. TOOK {} min {} sec".format(
         step_name, minutes, seconds
     )
+    print("\n\n")
     foot = "\n" + "<" * 5 + "#" * 30 + "[ {} ]" + "#" * 30 + ">" * 5
     foot = foot.format(finish_step)
     LOG.info(foot)
@@ -69,3 +70,10 @@ def steps(request):
     steps_mark = request.keywords.get('steps', None)
     steps = steps_mark.args[0]
     return steps
+
+
+@pytest.fixture(scope='function', autouse=True)
+def func_name(request):
+    """Name of the current test function"""
+    return getattr(request.node.function, '_name',
+                   request.node.function.__name__)
