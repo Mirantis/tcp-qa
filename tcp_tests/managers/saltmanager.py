@@ -158,6 +158,10 @@ class SaltManager(ExecuteCommandsMixin):
         result = self.local(tgt=tgt, fun='pillar.get', args=pillar)
         return result['return']
 
+    def get_grains(self, tgt, grains):
+        result = self.local(tgt=tgt, fun='grains.get', args=grains)
+        return result['return']
+
     def get_ssh_data(self):
         """Generate ssh config for Underlay
 
@@ -192,3 +196,15 @@ class SaltManager(ExecuteCommandsMixin):
             host(k, next(i for i in v['ipv4'] if i in pool_net))
             for k, v in hosts.items()
             if next(i for i in v['ipv4'] if i in pool_net)]
+
+    def service_status(self, tgt, service):
+        result = self.local(tgt=tgt, fun='service.status', args=service)
+        return result['return']
+
+    def service_restart(self, tgt, service):
+        result = self.local(tgt=tgt, fun='service.restart', args=service)
+        return result['return']
+
+    def service_stop(self, tgt, service):
+        result = self.local(tgt=tgt, fun='service.stop', args=service)
+        return result['return']
