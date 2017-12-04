@@ -41,7 +41,7 @@ def openstack_actions(config, hardware, underlay, salt_deployed):
 @pytest.fixture(scope='function')
 def openstack_deployed(revert_snapshot, request, config,
                        hardware, underlay, common_services_deployed,
-                       openstack_actions):
+                       openstack_actions, rally):
     """Fixture to get or install OpenStack services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -52,11 +52,13 @@ def openstack_deployed(revert_snapshot, request, config,
     :param underlay: fixture provides underlay manager
     :param common_services_deployed: fixture provides CommonServicesManager
     :param openstack_actions: fixture provides OpenstackManager instance
+    :param rally: fixture provides RallyManager instance
     :rtype: OpenstackManager
 
     If config.openstack.openstack_installed is not set, this fixture assumes
     that the openstack services were not installed, and do the following:
     - install openstack services
+    - [optional] prepare docker with rally container
     - make snapshot with name 'openstack_deployed'
     - return OpenstackManager instance
 
@@ -64,14 +66,38 @@ def openstack_deployed(revert_snapshot, request, config,
     the openstack services were already installed, and do the following:
     - return OpenstackManager instance
 
+    If you want to prepare 'rally', please use mark:
+    @pytest.mark.with_rally(rally_node=<str>,
+                            prepare_openstack=<bool>,
+                            prepare_tempest=<bool>)
+    :param rally_node: first chars of the node name where rally should
+                       be started
+    :param prepare_openstack: if True, prepare OpenStack objects for
+                              rally tasks: cirros image, private net04
+
     If you want to revert 'openstack_deployed' snapshot, please use mark:
     @pytest.mark.revert_snapshot("openstack_deployed")
     """
+
     # Deploy Openstack cluster
     if not config.openstack.openstack_installed:
         steps_path = config.openstack_deploy.openstack_steps_path
         commands = underlay.read_template(steps_path)
         openstack_actions.install(commands)
+
+        # If @pytest.mark.with_rally() is set, then prepare Rally
+        # container for 'openstack_deployed' snapshot.
+        with_rally = request.keywords.get('with_rally', None)
+        if with_rally:
+            prepare_openstack = with_rally.kwargs.get("prepare_openstack",
+                                                      False)
+            prepare_tempest = with_rally.kwargs.get("prepare_tempest", False)
+            if prepare_openstack:
+                rally.prepare_rally_task(target_node='ctl01')
+            if prepare_tempest:
+                rally.prepare_tempest_task()
+            rally.run_container()
+
         hardware.create_snapshot(ext.SNAPSHOT.openstack_deployed)
 
     else:

@@ -32,6 +32,7 @@ __all__ = sorted([  # sort for documentation
     'show_step',
     'revert_snapshot',
     'snapshot',
+    'func_name',
     # config_fixtures
     'config',
     # underlay_fixtures

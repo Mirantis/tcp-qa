@@ -422,6 +422,8 @@ class UnderlaySSHManager(object):
         minion_nodes = [ssh for ssh in self.config_ssh
                         if node_role not in ssh['roles']]
         for node in minion_nodes:
+            LOG.info("Archiving logs on the node {0}"
+                     .format(node['node_name']))
             try:
                 with self.remote(host=node['host']) as r_node:
                     r_node.check_call((
@@ -431,11 +433,13 @@ class UnderlaySSHManager(object):
                         '-czf {t} {d}'.format(
                             t='{0}.tar.gz'.format(node['node_name']),
                             d='/var/log')),
-                            verbose=True, raise_on_err=False)
+                            raise_on_err=False)
             except Exception:
                 LOG.info("Can not ssh for node {}".format(node))
         with self.remote(master_node['node_name']) as r:
             for node in minion_nodes:
+                LOG.info("Copying logs from {0} to {1}"
+                         .format(node['node_name'], master_node['node_name']))
                 packages_minion_cmd = ("salt '{0}*' cmd.run "
                                        "'dpkg -l' > /var/log/"
                                        "{0}_packages.output".format(
@@ -443,9 +447,58 @@ class UnderlaySSHManager(object):
                 r.check_call(packages_minion_cmd)
                 r.check_call("rsync {0}:/root/*.tar.gz "
                              "/var/log/".format(node['node_name']),
-                             verbose=True, raise_on_err=False)
-            r.check_call(cmd)
+                             raise_on_err=False)
 
+            r.check_call(cmd)
             r.check_call(tar_cmd)
-            r.download(destination='{0}_log.tar.gz'.format(artifact_name),
-                       target=os.getcwd())
+
+            destination_name = '{0}_log.tar.gz'.format(artifact_name)
+            LOG.info("Downloading the artifact {0}".format(destination_name))
+            r.download(destination=destination_name, target=os.getcwd())
+
+    def delayed_call(
+            self, cmd,
+            node_name=None, host=None, address_pool=None,
+            verbose=True, timeout=5,
+            delay_min=None, delay_max=None):
+        """Delayed call of the specified command in background
+
+        :param delay_min: minimum delay in minutes before run
+                          the command
+        :param delay_max: maximum delay in minutes before run
+                          the command
+        The command will be started at random time in the range
+        from delay_min to delay_max in minutes from 'now'
+        using the command 'at'.
+
+        'now' is rounded to integer by 'at' command, i.e.:
+          now(28 min 59 sec) == 28 min 00 sec.
+
+        So, if delay_min=1 , the command may start in range from
+        1 sec to 60 sec.
+
+        If delay_min and delay_max are None, then the command will
+        be executed in the background right now.
+        """
+        time_min = delay_min or delay_max
+        time_max = delay_max or delay_min
+
+        delay = None
+        if time_min is not None and time_max is not None:
+            delay = random.randint(time_min, time_max)
+
+        delay_str = ''
+        if delay:
+            delay_str = " + {0} min".format(delay)
+
+        delay_cmd = "cat << EOF | at now {0}\n{1}\nEOF".format(delay_str, cmd)
+
+        self.check_call(delay_cmd, node_name=node_name, host=host,
+                        address_pool=address_pool, verbose=verbose,
+                        timeout=timeout)
+
+    def get_target_node_names(self, target='gtw01.'):
+        """Get all node names which names starts with <target>"""
+        return [node_name for node_name
+                in self.node_names()
+                if node_name.startswith(target)]
