@@ -121,3 +121,15 @@ class EnvironmentIsNotSet(BaseException):
 class BaseImageIsNotSet(BaseException):
     def __str__(self):
         return "Base image for creating VMs is not set!"
+
+
+class SaltPillarError(BaseException):
+    def __init__(self, minion_id, pillar, message=''):
+        super(SaltPillarError, self).__init__()
+        self.minion_id = minion_id
+        self.pillar = pillar
+        self.message = message
+
+    def __str__(self):
+        return ("Salt pillar '{0}' error on minion {1}: {2}"
+                .format(self.minion_id, self.pillar, self.message))
