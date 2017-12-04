@@ -60,7 +60,7 @@ def log_step(func, step_num):
                   "found!".format(step_num, func.__name__))
     test_case_steps = parse_test_doc(func.__doc__)['steps']
     try:
-        LOG.info(" *** [STEP#{0}] {1} ***".format(
+        LOG.info("\n *** [STEP#{0}] {1} ***".format(
             step_num,
             test_case_steps[step_num - 1]))
     except IndexError:

@@ -18,13 +18,19 @@ from tcp_tests.managers import rallymanager
 
 
 @pytest.fixture(scope='function')
-def rally(config, underlay):
+def rally(request, config, underlay):
     """Fixture that provides various actions for TCP
 
+    :param request: fixture provides pytest data
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :rtype: RallyManager
 
     For use in tests or fixtures to deploy a custom TCP
     """
-    return rallymanager.RallyManager(underlay, config.salt.salt_master_host)
+    with_rally = request.keywords.get('with_rally', None)
+    rally_node = "gtw01."
+    if with_rally:
+        rally_node = with_rally.kwargs.get("rally_node", "gtw01.")
+
+    return rallymanager.RallyManager(underlay, rally_node)
