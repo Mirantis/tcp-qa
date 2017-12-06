@@ -6,8 +6,8 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
     'service ntp stop; ntpd -gq;  service ntp start'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+  retry: {count: 3, delay: 30}
+  skip_fail: true
 
 - description: Restart keepalived service
   cmd: salt -C 'mon*' cmd.run "systemctl restart keepalived"
@@ -104,6 +104,13 @@
   cmd: salt -C 'I@kibana:server' state.sls kibana.server -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Workaround for https://mirantis.jira.com/browse/PROD-12798
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@elasticsearch:server' service.restart 'keepalived'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Install elasticsearch client
