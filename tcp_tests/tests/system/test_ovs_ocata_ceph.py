@@ -34,7 +34,7 @@ class TestInstallOvsOcataCeph(object):
         1. Prepare salt on hosts
         2. Setup controller nodes
         3. Setup compute nodes
-        4. Setup ceph
+        4. Setup ceph RBD, replication factor 2 for cinder, nova, glance
         5. Run tempest
 
         """
@@ -43,6 +43,7 @@ class TestInstallOvsOcataCeph(object):
                 args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.run_tempest(pattern=settings.PATTERN,
+                                          conf_name='ceph_mcp.conf')
             openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
