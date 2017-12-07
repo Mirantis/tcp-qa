@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "554286d9_aa2231bb",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/common-services.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2017-12-07T14:02:24Z",
+      "side": 1,
+      "message": "It\u0027s just checks that target exists. There is no galera target on sl-k8s-contrail model but in virtual-mcp11-k8s-contrail model galera is present, so these lines needed only for control galera installation. But I just need to check, will exit code correct or not in case if galera not present. Seems no, but need to check.",
+      "parentUuid": "9dbf3fbb_dcf7f842",
+      "range": {
+        "startLine": 64,
+        "startChar": 21,
+        "endLine": 64,
+        "endChar": 22
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "11a41034_468dc044",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
         "patchSetId": 3
@@ -96,6 +120,30 @@
     },
     {
       "key": {
+        "uuid": "9852b31e_efcae80e",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2017-12-07T14:02:24Z",
+      "side": 1,
+      "message": "It\u0027s not a bug. If u trying to continue deployment with snapshot revert from stage \u0027k8s_deployed\u0027, it can be turns that one ore two minions lagging and not sending any response to the salt, that fails deployment.",
+      "parentUuid": "e7fd1498_1803f740",
+      "range": {
+        "startLine": 9,
+        "startChar": 17,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "c7ed7355_86d7247c",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
         "patchSetId": 3
@@ -107,6 +155,30 @@
       "writtenOn": "2017-12-07T13:36:34Z",
       "side": 1,
       "message": "Not a good idea to skip the NTP if it doesn\u0027t work.",
+      "range": {
+        "startLine": 10,
+        "startChar": 13,
+        "endLine": 10,
+        "endChar": 17
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "998c54df_156f7686",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2017-12-07T14:02:24Z",
+      "side": 1,
+      "message": "Will be changed.",
+      "parentUuid": "c7ed7355_86d7247c",
       "range": {
         "startLine": 10,
         "startChar": 13,
@@ -142,6 +214,30 @@
     },
     {
       "key": {
+        "uuid": "976e3b0d_6be5b926",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2017-12-07T14:02:24Z",
+      "side": 1,
+      "message": "Restart of keepalived helps me yesterday. There is no VIP address on any mon* node. \u003d( Can\u0027t understand why this happened, since in very beginning of this part we have checks for VIP.",
+      "parentUuid": "9269cfb8_caec4ec1",
+      "range": {
+        "startLine": 109,
+        "startChar": 30,
+        "endLine": 109,
+        "endChar": 73
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "8f7c2cdf_fea87be2",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
         "patchSetId": 3
@@ -165,6 +261,30 @@
     },
     {
       "key": {
+        "uuid": "b82b114e_0fead9e1",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2017-12-07T14:02:24Z",
+      "side": 1,
+      "message": "Two times I saw it while deploying this template.",
+      "parentUuid": "8f7c2cdf_fea87be2",
+      "range": {
+        "startLine": 114,
+        "startChar": 13,
+        "endLine": 114,
+        "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b56cf61c_27d5743c",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
         "patchSetId": 3
@@ -176,6 +296,30 @@
       "writtenOn": "2017-12-07T13:20:05Z",
       "side": 1,
       "message": "why do we need that?",
+      "range": {
+        "startLine": 169,
+        "startChar": 17,
+        "endLine": 169,
+        "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9456daa4_480674be",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2017-12-07T14:02:24Z",
+      "side": 1,
+      "message": "Because of this step can fail, but rerun helps.",
+      "parentUuid": "b56cf61c_27d5743c",
       "range": {
         "startLine": 169,
         "startChar": 17,
