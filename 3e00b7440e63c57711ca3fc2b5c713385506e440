@@ -73,6 +73,30 @@
     },
     {
       "key": {
+        "uuid": "86b28023_9b54690b",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/common-services.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-12-07T14:38:13Z",
+      "side": 1,
+      "message": "\"There is no galera target on sl-k8s-contrail model\"  - please use different template for different model. It is not a production pipeline, each template is aligned to the model that is deployed with the template.\n\nReason: if \u0027galera\u0027 targed someday will be disappeared from virtual-mcp11-k8s-contrail, your change will skip the galera instead of indicate that the model is wrong.",
+      "parentUuid": "554286d9_aa2231bb",
+      "range": {
+        "startLine": 64,
+        "startChar": 21,
+        "endLine": 64,
+        "endChar": 22
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "11a41034_468dc044",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
         "patchSetId": 3
@@ -132,6 +156,30 @@
       "side": 1,
       "message": "It\u0027s not a bug. If u trying to continue deployment with snapshot revert from stage \u0027k8s_deployed\u0027, it can be turns that one ore two minions lagging and not sending any response to the salt, that fails deployment.",
       "parentUuid": "e7fd1498_1803f740",
+      "range": {
+        "startLine": 9,
+        "startChar": 17,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ca6d39c2_1916e98a",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-12-07T14:38:13Z",
+      "side": 1,
+      "message": "So, it is connected to the minions availability after revert. This is different task from time sync and could be solved separately.",
+      "parentUuid": "9852b31e_efcae80e",
       "range": {
         "startLine": 9,
         "startChar": 17,
@@ -226,6 +274,30 @@
       "side": 1,
       "message": "Restart of keepalived helps me yesterday. There is no VIP address on any mon* node. \u003d( Can\u0027t understand why this happened, since in very beginning of this part we have checks for VIP.",
       "parentUuid": "9269cfb8_caec4ec1",
+      "range": {
+        "startLine": 109,
+        "startChar": 30,
+        "endLine": 109,
+        "endChar": 73
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9257a7b4_642e1d8b",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-12-07T14:38:13Z",
+      "side": 1,
+      "message": "Please look at the bug that I shown carefully. There are several keepalived instances with the same settings on mon* nodes, and keepalived is constantly switching between them.  One of the instances configured to use non-existing interface.\n\nRestart won\u0027t help here, just postpone the failure for several minutes.",
+      "parentUuid": "976e3b0d_6be5b926",
       "range": {
         "startLine": 109,
         "startChar": 30,
