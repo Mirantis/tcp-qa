@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "333b18ab_9912b9fd",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/common-services.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-07T13:20:05Z",
+      "side": 1,
+      "message": "do not see sense in this ) if galera state fails - then we have something  broken",
+      "range": {
+        "startLine": 64,
+        "startChar": 21,
+        "endLine": 64,
+        "endChar": 22
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "11a41034_468dc044",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-07T13:20:05Z",
+      "side": 1,
+      "message": "the same here - we we need 3 retries to run ntp state? May be the is some problem in ntp formula to force you workaround-ed it by retries?",
+      "range": {
+        "startLine": 9,
+        "startChar": 17,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8f7c2cdf_fea87be2",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-07T13:20:05Z",
+      "side": 1,
+      "message": "hm, when this issue appears? as we see green test now",
+      "range": {
+        "startLine": 114,
+        "startChar": 13,
+        "endLine": 114,
+        "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b56cf61c_27d5743c",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 169,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-07T13:20:05Z",
+      "side": 1,
+      "message": "why do we need that?",
+      "range": {
+        "startLine": 169,
+        "startChar": 17,
+        "endLine": 169,
+        "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
