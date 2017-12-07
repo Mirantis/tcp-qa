@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "9dbf3fbb_dcf7f842",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/common-services.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-12-07T13:36:34Z",
+      "side": 1,
+      "message": "+1 to Tanya. What the issue it should solve?  If targets are not accessible, then galera states won\u0027t be executed there.\n\njust for instance: test.ping is NOT ICMP network check and has nothing with checking the network connectivity, only accessibility of the minions.",
+      "parentUuid": "333b18ab_9912b9fd",
+      "range": {
+        "startLine": 64,
+        "startChar": 21,
+        "endLine": 64,
+        "endChar": 22
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "11a41034_468dc044",
         "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
         "patchSetId": 3
@@ -41,6 +65,76 @@
         "startChar": 17,
         "endLine": 9,
         "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e7fd1498_1803f740",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-12-07T13:36:34Z",
+      "side": 1,
+      "message": "+1, please link the bug where issue with NTP is described. Usually it is an issue with infrastructure services, in this case it would be solved by pointing NTP servers to the local NTPD on the host where you are running the test.",
+      "parentUuid": "11a41034_468dc044",
+      "range": {
+        "startLine": 9,
+        "startChar": 17,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c7ed7355_86d7247c",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-12-07T13:36:34Z",
+      "side": 1,
+      "message": "Not a good idea to skip the NTP if it doesn\u0027t work.",
+      "range": {
+        "startLine": 10,
+        "startChar": 13,
+        "endLine": 10,
+        "endChar": 17
+      },
+      "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9269cfb8_caec4ec1",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-contrail/sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 109,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2017-12-07T13:36:34Z",
+      "side": 1,
+      "message": "Looks like the bug here is a duplicate of https://mirantis.jira.com/browse/PROD-16383. Restart of keepalived won\u0027t help here , need the fix to the model.",
+      "range": {
+        "startLine": 109,
+        "startChar": 30,
+        "endLine": 109,
+        "endChar": 73
       },
       "revId": "3e00b7440e63c57711ca3fc2b5c713385506e440",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
