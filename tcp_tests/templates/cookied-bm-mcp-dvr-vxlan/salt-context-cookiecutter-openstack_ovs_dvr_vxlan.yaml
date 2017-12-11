@@ -42,8 +42,8 @@ default_context:
   maas_hostname: cfg01
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
-  openstack_benchmark_node01_address: 10.167.4.95
-  openstack_benchmark_node01_hostname: bmk01
+  #openstack_benchmark_node01_address: 10.167.4.95
+  #openstack_benchmark_node01_hostname: bmk01
   openstack_compute_count: '2'
   openstack_compute_rack01_hostname: cmp
   openstack_compute_rack01_single_subnet: 10.167.4
