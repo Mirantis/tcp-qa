@@ -124,7 +124,7 @@ nodes:
       reclass_storage_name: openstack_benchmark_node01
       roles:
       - openstack_benchmark
-      - linux_system_codename_trusty
+      - linux_system_codename_xenial
       interfaces:
         ens3:
           role: single_ctl
