@@ -145,13 +145,13 @@
 # Install compute node
 
 - description: Apply formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply pillar='{"openssh": {"server": {"enabled": False}}}'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
 
 - description: Re-apply(as in doc) formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply pillar='{"openssh": {"server": {"enabled": False}}}'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
