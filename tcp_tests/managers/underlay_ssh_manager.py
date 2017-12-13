@@ -421,23 +421,22 @@ class UnderlaySSHManager(object):
                        t='{0}_log.tar.gz'.format(artifact_name), d='/var/log'))
         minion_nodes = [ssh for ssh in self.config_ssh
                         if node_role not in ssh['roles']]
-        for node in minion_nodes:
-            LOG.info("Archiving logs on the node {0}"
-                     .format(node['node_name']))
-            try:
-                with self.remote(host=node['host']) as r_node:
-                    r_node.check_call((
-                        'tar '
-                        '--absolute-names '
-                        '--warning=no-file-changed '
-                        '-czf {t} {d}'.format(
-                            t='{0}.tar.gz'.format(node['node_name']),
-                            d='/var/log')),
-                            raise_on_err=False)
-            except Exception:
-                LOG.info("Can not ssh for node {}".format(node))
+
         with self.remote(master_node['node_name']) as r:
             for node in minion_nodes:
+                LOG.info("Archiving logs on the node {0}"
+                         .format(node['node_name']))
+                r.check_call((
+                    "salt '{n}*' cmd.run "
+                    "'tar "
+                    "--absolute-names "
+                    "--warning=no-file-changed "
+                    "-czf {t} {d}'".format(
+                        n=node['node_name'],
+                        t='{0}.tar.gz'.format(node['node_name']),
+                        d='/var/log')),
+                        raise_on_err=False)
+
                 LOG.info("Copying logs from {0} to {1}"
                          .format(node['node_name'], master_node['node_name']))
                 packages_minion_cmd = ("salt '{0}*' cmd.run "
