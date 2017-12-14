@@ -38,14 +38,15 @@ class SaltManager(ExecuteCommandsMixin):
         'runStates': 'run_states',
     }
 
-    def __init__(self, config, underlay, host=None, port='6969'):
+    def __init__(self, config, underlay, host=None, port='6969',
+                 username=None, password=None):
         self.__config = config
         self.__underlay = underlay
         self.__port = port
         self.__host = host
         self.__api = None
-        self.__user = settings.SALT_USER
-        self.__password = settings.SALT_PASSWORD
+        self.__user = username or settings.SALT_USER
+        self.__password = password or settings.SALT_PASSWORD
         self._salt = self
 
         super(SaltManager, self).__init__(config=config, underlay=underlay)
@@ -59,6 +60,10 @@ class SaltManager(ExecuteCommandsMixin):
 
         self.execute_commands(commands=commands,
                               label="Install and configure salt")
+
+    def change_creds(self, username, password):
+        self.__user = username
+        self.__password = password
 
     @property
     def port(self):
