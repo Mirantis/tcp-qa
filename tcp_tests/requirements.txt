@@ -19,3 +19,4 @@ salt-pepper
 setuptools<=36.2.0
 netaddr
 mock>=1.2
+python-jenkins

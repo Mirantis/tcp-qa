@@ -1,0 +1,378 @@
+# Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+
+{% import 'physical-mcp-ocata-offline-ovs/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'physical-mcp-ocata-offline-ovs/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+
+
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'physical-mcp-ocata-offline-ovs') %}
+#{% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'offline-ocata-vxlan.local') %}
+{% set HOSTNAME_APT = os_env('HOSTNAME_CFG01', 'apt.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CFG01 = os_env('HOSTNAME_APT01', 'cfg01.' + DOMAIN_NAME) %}
+
+{% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_KVM02 = os_env('HOSTNAME_KVM02', 'kvm02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM03', 'kvm03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM04', 'kvm04.' + DOMAIN_NAME) %}
+{% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM05', 'kvm05.' + DOMAIN_NAME) %}
+{% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM06', 'kvm06.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP001 = os_env('HOSTNAME_CMP001', 'cmp001.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP002', 'cmp002.' + DOMAIN_NAME) %}
+{% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_GTW03 = os_env('HOSTNAME_GTW03', 'gtw03.' + DOMAIN_NAME) %}
+
+{% set HOSTNAME_CTL = os_env('HOSTNAME_CTL', 'ctl.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_DBS = os_env('HOSTNAME_DBS', 'dbs.' + DOMAIN_NAME) %}
+{% set HOSTNAME_DBS01 = os_env('HOSTNAME_DBS01', 'dbs01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_DBS02 = os_env('HOSTNAME_DBS02', 'dbs02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_DBS03 = os_env('HOSTNAME_DBS03', 'dbs03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MSG = os_env('HOSTNAME_MSG', 'msg.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MSG01 = os_env('HOSTNAME_MSG01', 'msg01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MSG02 = os_env('HOSTNAME_MSG02', 'msg02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MSG03 = os_env('HOSTNAME_MSG03', 'msg03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON = os_env('HOSTNAME_MON', 'mon.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_LOG = os_env('HOSTNAME_LOG', 'log.' + DOMAIN_NAME) %}
+{% set HOSTNAME_LOG01 = os_env('HOSTNAME_LOG01', 'log01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_LOG02 = os_env('HOSTNAME_LOG02', 'log02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_LOG03 = os_env('HOSTNAME_LOG03', 'log03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MTR = os_env('HOSTNAME_MTR', 'mtr.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MTR01 = os_env('HOSTNAME_MTR01', 'mtr01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MTR02 = os_env('HOSTNAME_MTR02', 'mtr02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MTR03 = os_env('HOSTNAME_MTR03', 'mtr03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_PRX02 = os_env('HOSTNAME_PRX02', 'prx02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_PRX03 = os_env('HOSTNAME_PRX03', 'prx03.' + DOMAIN_NAME) %}
+
+
+
+{% set ETH0_IP_ADDRESS_APT = os_env('ETH0_IP_ADDRESS_ATP', '10.10.0.14') %}
+{% set ETH0_IP_ADDRESS_CFG01 = os_env('ETH0_IP_ADDRESS_CFG01', '10.10.0.15') %}
+{% set ETH0_IP_ADDRESS_PRX01 = os_env('ETH0_IP_ADDRESS_PRX01', '10.10.0.11') %}
+{% set ETH0_IP_ADDRESS_PRX02 = os_env('ETH0_IP_ADDRESS_PRX02', '10.10.0.12') %}
+{% set ETH0_IP_ADDRESS_PRX03 = os_env('ETH0_IP_ADDRESS_PRX03', '10.10.0.13') %}
+{% set ETH0_IP_ADDRESS_CTL = os_env('ETH0_IP_ADDRESS_CTL', '10.10.0.10') %}
+{% set ETH0_IP_ADDRESS_CTL01 = os_env('ETH0_IP_ADDRESS_CTL01', '10.10.0.11') %}
+{% set ETH0_IP_ADDRESS_CTL02 = os_env('ETH0_IP_ADDRESS_CTL02', '10.10.0.12') %}
+{% set ETH0_IP_ADDRESS_CTL03 = os_env('ETH0_IP_ADDRESS_CTL03', '10.10.0.13') %}
+{% set ETH0_IP_ADDRESS_MSG = os_env('ETH0_IP_ADDRESS_MSG', '10.10.0.40') %}
+{% set ETH0_IP_ADDRESS_MSG01 = os_env('ETH0_IP_ADDRESS_MSG01', '10.10.0.41') %}
+{% set ETH0_IP_ADDRESS_MSG02 = os_env('ETH0_IP_ADDRESS_MSG02', '10.10.0.42') %}
+{% set ETH0_IP_ADDRESS_MSG03 = os_env('ETH0_IP_ADDRESS_MSG03', '10.10.0.43') %}
+{% set ETH0_IP_ADDRESS_DBS = os_env('ETH0_IP_ADDRESS_DBS', '10.10.0.50') %}
+{% set ETH0_IP_ADDRESS_DBS01 = os_env('ETH0_IP_ADDRESS_DBS01', '10.10.0.51') %}
+{% set ETH0_IP_ADDRESS_DBS02 = os_env('ETH0_IP_ADDRESS_DBS02', '10.10.0.52') %}
+{% set ETH0_IP_ADDRESS_DBS03 = os_env('ETH0_IP_ADDRESS_DBS03', '10.10.0.53') %}
+{% set ETH0_IP_ADDRESS_KVM01 = os_env('ETH0_IP_ADDRESS_KVM01', '10.10.0.241') %}
+{% set ETH0_IP_ADDRESS_KVM02 = os_env('ETH0_IP_ADDRESS_KVM02', '10.10.0.242') %}
+{% set ETH0_IP_ADDRESS_KVM03 = os_env('ETH0_IP_ADDRESS_KVM03', '10.10.0.243') %}
+{% set ETH0_IP_ADDRESS_KVM04 = os_env('ETH0_IP_ADDRESS_KVM04', '10.10.0.244') %}
+{% set ETH0_IP_ADDRESS_KVM05 = os_env('ETH0_IP_ADDRESS_KVM05', '10.10.0.245') %}
+{% set ETH0_IP_ADDRESS_KVM06 = os_env('ETH0_IP_ADDRESS_KVM06', '10.10.0.246') %}
+{% set ETH0_IP_ADDRESS_CMP001 = os_env('ETH0_IP_ADDRESS_CMP001', '10.10.0.101') %}
+{% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '10.10.0.102') %}
+{% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '10.10.0.224') %}
+{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '10.10.0.225') %}
+{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '10.10.0.226') %}
+
+
+{% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '10.11.0.15') %}
+{% set ETH1_IP_ADDRESS_PRX01 = os_env('ETH1_IP_ADDRESS_PRX01', '10.11.0.11') %}
+{% set ETH1_IP_ADDRESS_PRX02 = os_env('ETH1_IP_ADDRESS_PRX02', '10.11.0.12') %}
+{% set ETH1_IP_ADDRESS_PRX03 = os_env('ETH1_IP_ADDRESS_PRX03', '10.11.0.13') %}
+{% set ETH1_IP_ADDRESS_CTL = os_env('ETH1_IP_ADDRESS_CTL', '10.11.0.10') %}
+{% set ETH1_IP_ADDRESS_CTL01 = os_env('ETH1_IP_ADDRESS_CTL01', '10.11.0.11') %}
+{% set ETH1_IP_ADDRESS_CTL02 = os_env('ETH1_IP_ADDRESS_CTL02', '10.11.0.12') %}
+{% set ETH1_IP_ADDRESS_CTL03 = os_env('ETH1_IP_ADDRESS_CTL03', '10.11.0.13') %}
+{% set ETH1_IP_ADDRESS_MSG = os_env('ETH1_IP_ADDRESS_MSG', '10.11.0.40') %}
+{% set ETH1_IP_ADDRESS_MSG01 = os_env('ETH1_IP_ADDRESS_MSG01', '10.11.0.41') %}
+{% set ETH1_IP_ADDRESS_MSG02 = os_env('ETH1_IP_ADDRESS_MSG02', '10.11.0.42') %}
+{% set ETH1_IP_ADDRESS_MSG03 = os_env('ETH1_IP_ADDRESS_MSG03', '10.11.0.43') %}
+{% set ETH1_IP_ADDRESS_DBS = os_env('ETH1_IP_ADDRESS_DBS', '10.11.0.50') %}
+{% set ETH1_IP_ADDRESS_DBS01 = os_env('ETH1_IP_ADDRESS_DBS01', '10.11.0.51') %}
+{% set ETH1_IP_ADDRESS_DBS02 = os_env('ETH1_IP_ADDRESS_DBS02', '10.11.0.52') %}
+{% set ETH1_IP_ADDRESS_DBS03 = os_env('ETH1_IP_ADDRESS_DBS03', '10.11.0.53') %}
+{% set ETH1_IP_ADDRESS_KVM01 = os_env('ETH1_IP_ADDRESS_KVM01', '10.11.0.241') %}
+{% set ETH1_IP_ADDRESS_KVM02 = os_env('ETH1_IP_ADDRESS_KVM02', '10.11.0.242') %}
+{% set ETH1_IP_ADDRESS_KVM03 = os_env('ETH1_IP_ADDRESS_KVM03', '10.11.0.243') %}
+{% set ETH1_IP_ADDRESS_KVM04 = os_env('ETH1_IP_ADDRESS_KVM04', '10.11.0.244') %}
+{% set ETH1_IP_ADDRESS_KVM05 = os_env('ETH1_IP_ADDRESS_KVM05', '10.11.0.245') %}
+{% set ETH1_IP_ADDRESS_KVM06 = os_env('ETH1_IP_ADDRESS_KVM06', '10.11.0.246') %}
+{% set ETH1_IP_ADDRESS_CMP001 = os_env('ETH1_IP_ADDRESS_CMP001', '10.11.0.101') %}
+{% set ETH1_IP_ADDRESS_CMP002 = os_env('ETH1_IP_ADDRESS_CMP002', '10.11.0.102') %}
+{% set ETH1_IP_ADDRESS_GTW01 = os_env('ETH1_IP_ADDRESS_GTW01', '10.11.0.224') %}
+{% set ETH1_IP_ADDRESS_GTW02 = os_env('ETH1_IP_ADDRESS_GTW02', '10.11.0.225') %}
+{% set ETH1_IP_ADDRESS_GTW02 = os_env('ETH1_IP_ADDRESS_GTW02', '10.11.0.226') %}
+
+{% set ETH2_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.44.33') %}
+
+{% set ETH0_IP_ADDRESS_CFG01_PREFIX = '.'.join(ETH0_IP_ADDRESS_CFG01.split('.')[0:3]) %}
+{% set ETH1_IP_ADDRESS_CFG01_PREFIX = '.'.join(ETH1_IP_ADDRESS_CFG01.split('.')[0:3]) %}
+{% set ETH2_IP_ADDRESS_CFG01_PREFIX = '.'.join(ETH2_IP_ADDRESS_CFG01.split('.')[0:3]) %}
+
+
+---
+aliases:
+ - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
+ - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
+ - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
+
+
+template:
+  devops_settings:
+    env_name: {{ os_env('ENV_NAME', 'phy-mcp-ocata-offline-ovs_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+
+    address_pools:
+      managment-pool01:
+        net: {{ os_env('MGMT_ADDRESS_POOL01', '10.11.0.0/24:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_CFG01 }}: {{ ETH1_IP_ADDRESS_CFG01 }}
+            default_{{ HOSTNAME_KVM01 }}: {{ ETH1_IP_ADDRESS_KVM01 }}
+            default_{{ HOSTNAME_KVM02 }}: {{ ETH1_IP_ADDRESS_KVM02 }}
+            default_{{ HOSTNAME_KVM03 }}: {{ ETH1_IP_ADDRESS_KVM03 }}
+            default_{{ HOSTNAME_KVM04 }}: {{ ETH1_IP_ADDRESS_KVM04 }}
+            default_{{ HOSTNAME_KVM05 }}: {{ ETH1_IP_ADDRESS_KVM05 }}
+            default_{{ HOSTNAME_KVM06 }}: {{ ETH1_IP_ADDRESS_KVM06 }}
+            default_{{ HOSTNAME_CMP001 }}: {{ ETH1_IP_ADDRESS_CMP001 }}
+            default_{{ HOSTNAME_CMP002 }}: {{ ETH1_IP_ADDRESS_CMP002 }}
+            default_{{ HOSTNAME_GTW01 }}: {{ ETH1_IP_ADDRESS_GTW01 }}
+            default_{{ HOSTNAME_GTW02 }}: {{ ETH1_IP_ADDRESS_GTW02 }}
+            default_{{ HOSTNAME_CTL }}: {{ ETH1_IP_ADDRESS_CTL }}
+            default_{{ HOSTNAME_CTL01 }}: {{ ETH1_IP_ADDRESS_CTL02 }}
+            default_{{ HOSTNAME_CTL02 }}: {{ ETH1_IP_ADDRESS_CTL03 }}
+            default_{{ HOSTNAME_CTL03 }}: {{ ETH1_IP_ADDRESS_CTL04 }}
+            default_{{ HOSTNAME_MSG }}: {{ ETH1_IP_ADDRESS_MSG }}
+            default_{{ HOSTNAME_MSG01 }}: {{ ETH1_IP_ADDRESS_MSG02 }}
+            default_{{ HOSTNAME_MSG02 }}: {{ ETH1_IP_ADDRESS_MSG03 }}
+            default_{{ HOSTNAME_MSG03 }}: {{ ETH1_IP_ADDRESS_MSG04 }}
+            default_{{ HOSTNAME_MON }}: {{ ETH1_IP_ADDRESS_MON }}
+            default_{{ HOSTNAME_MON01 }}: {{ ETH1_IP_ADDRESS_MON01 }}
+            default_{{ HOSTNAME_MON02 }}: {{ ETH1_IP_ADDRESS_MON02 }}
+            default_{{ HOSTNAME_MON03 }}: {{ ETH1_IP_ADDRESS_MON03 }}
+            default_{{ HOSTNAME_DBS }}: {{ ETH1_IP_ADDRESS_DBS }}
+            default_{{ HOSTNAME_DBS01 }}: {{ ETH1_IP_ADDRESS_DBS02 }}
+            default_{{ HOSTNAME_DBS02 }}: {{ ETH1_IP_ADDRESS_DBS03 }}
+            default_{{ HOSTNAME_DBS03 }}: {{ ETH1_IP_ADDRESS_DBS04 }}
+            default_{{ HOSTNAME_LOG }}: {{ ETH1_IP_ADDRESS_LOG }}
+            default_{{ HOSTNAME_LOG01 }}: {{ ETH1_IP_ADDRESS_LOG02 }}
+            default_{{ HOSTNAME_LOG02 }}: {{ ETH1_IP_ADDRESS_LOG03 }}
+            default_{{ HOSTNAME_LOG03 }}: {{ ETH1_IP_ADDRESS_LOG04 }}
+            default_{{ HOSTNAME_MTR }}: {{ ETH1_IP_ADDRESS_MTR }}
+            default_{{ HOSTNAME_MTR01 }}: {{ ETH1_IP_ADDRESS_MTR02 }}
+            default_{{ HOSTNAME_MTR02 }}: {{ ETH1_IP_ADDRESS_MTR03 }}
+            default_{{ HOSTNAME_MTR03 }}: {{ ETH1_IP_ADDRESS_MTR04 }}
+
+      admin-pool01:
+        net: {{ os_env('DEPLOY_ADDRESS_POOL01', '10.10.0.0/24:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_APT }}: {{ ETH0_IP_ADDRESS_APT }}
+            default_{{ HOSTNAME_CFG01 }}: {{ ETH0_IP_ADDRESS_CFG01 }}
+            default_{{ HOSTNAME_KVM01 }}: {{ ETH0_IP_ADDRESS_KVM01 }}
+            default_{{ HOSTNAME_KVM02 }}: {{ ETH0_IP_ADDRESS_KVM02 }}
+            default_{{ HOSTNAME_KVM03 }}: {{ ETH0_IP_ADDRESS_KVM03 }}
+            default_{{ HOSTNAME_KVM04 }}: {{ ETH0_IP_ADDRESS_KVM04 }}
+            default_{{ HOSTNAME_KVM05 }}: {{ ETH0_IP_ADDRESS_KVM05 }}
+            default_{{ HOSTNAME_KVM06 }}: {{ ETH0_IP_ADDRESS_KVM06 }}
+            default_{{ HOSTNAME_CMP001 }}: {{ ETH0_IP_ADDRESS_CMP001 }}
+            default_{{ HOSTNAME_CMP002 }}: {{ ETH0_IP_ADDRESS_CMP002 }}
+            default_{{ HOSTNAME_GTW01 }}: {{ ETH0_IP_ADDRESS_GTW01 }}
+            default_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
+            default_{{ HOSTNAME_CTL }}: {{ ETH0_IP_ADDRESS_CTL }}
+            default_{{ HOSTNAME_CTL01 }}: {{ ETH0_IP_ADDRESS_CTL02 }}
+            default_{{ HOSTNAME_CTL02 }}: {{ ETH0_IP_ADDRESS_CTL03 }}
+            default_{{ HOSTNAME_CTL03 }}: {{ ETH0_IP_ADDRESS_CTL04 }}
+            default_{{ HOSTNAME_MSG }}: {{ ETH0_IP_ADDRESS_MSG }}
+            default_{{ HOSTNAME_MSG01 }}: {{ ETH0_IP_ADDRESS_MSG02 }}
+            default_{{ HOSTNAME_MSG02 }}: {{ ETH0_IP_ADDRESS_MSG03 }}
+            default_{{ HOSTNAME_MSG03 }}: {{ ETH0_IP_ADDRESS_MSG04 }}
+            default_{{ HOSTNAME_MON }}: {{ ETH0_IP_ADDRESS_MON }}
+            default_{{ HOSTNAME_MON01 }}: {{ ETH0_IP_ADDRESS_MON01 }}
+            default_{{ HOSTNAME_MON02 }}: {{ ETH0_IP_ADDRESS_MON02 }}
+            default_{{ HOSTNAME_MON03 }}: {{ ETH0_IP_ADDRESS_MON03 }}
+            default_{{ HOSTNAME_DBS }}: {{ ETH0_IP_ADDRESS_DBS }}
+            default_{{ HOSTNAME_DBS01 }}: {{ ETH0_IP_ADDRESS_DBS02 }}
+            default_{{ HOSTNAME_DBS02 }}: {{ ETH0_IP_ADDRESS_DBS03 }}
+            default_{{ HOSTNAME_DBS03 }}: {{ ETH0_IP_ADDRESS_DBS04 }}
+            default_{{ HOSTNAME_LOG }}: {{ ETH0_IP_ADDRESS_LOG }}
+            default_{{ HOSTNAME_LOG01 }}: {{ ETH0_IP_ADDRESS_LOG02 }}
+            default_{{ HOSTNAME_LOG02 }}: {{ ETH0_IP_ADDRESS_LOG03 }}
+            default_{{ HOSTNAME_LOG03 }}: {{ ETH0_IP_ADDRESS_LOG04 }}
+            default_{{ HOSTNAME_MTR }}: {{ ETH0_IP_ADDRESS_MTR }}
+            default_{{ HOSTNAME_MTR01 }}: {{ ETH0_IP_ADDRESS_MTR02 }}
+            default_{{ HOSTNAME_MTR02 }}: {{ ETH0_IP_ADDRESS_MTR03 }}
+            default_{{ HOSTNAME_MTR03 }}: {{ ETH0_IP_ADDRESS_MTR04 }}
+
+
+      public-pool01:
+        net: {{ os_env('PUBLIC_ADDRESS_POOL01', '172.16.44.0/22:22') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_CFG01 }}: {{ ETH2_IP_ADDRESS_CFG01 }}
+
+
+    groups:
+
+      - name: default
+        driver:
+          name: devops.driver.libvirt
+          params:
+            connection_string: !os_env CONNECTION_STRING, qemu:///system
+            storage_pool_name: !os_env STORAGE_POOL_NAME, default
+            stp: False
+            hpet: False
+            enable_acpi: true
+            use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
+
+        network_pools:
+          admin: admin-pool01
+          managment: managment-pool01
+          public: public-pool01
+
+        l2_network_devices:
+          # Ironic management interface
+          managment:
+            address_pool: managment-pool01
+            dhcp: false
+            forward:
+              mode: bridge
+            parent_iface:
+              phys_dev: !os_env ADMIN_BRIDGE
+
+          admin: # deploy
+            address_pool: admin-pool01
+            dhcp: false
+            forward:
+              mode: bridge
+            parent_iface:
+              phys_dev: !os_env DEPLOY_BRIDGE
+
+          public:
+            address_pool: public-pool01
+            dhcp: false
+            forward:
+              mode: bridge
+            parent_iface:
+              phys_dev: !os_env PUBLIC_BRIDGE
+
+          #admin:
+          #  address_pool: admin-pool01
+          #  dhcp: true
+
+        #group_volumes:
+        #
+        #
+        #
+
+        nodes:
+          - name: {{ HOSTNAME_CFG01 }}
+            role: salt_master
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  shared_backing_store_name: !os_env CFG01_VOLUME_NAME
+                  format: qcow2
+                - name: config
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  source_image: !os_env CFG01_CONFIG_PATH
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_cfg01
+
+
+              interfaces:
+                - label: ens3
+                  l2_network_device: admin # deploy
+                  interface_model: *interface_model
+
+                - label: ens4
+                  l2_network_device: managment
+                  interface_model: *interface_model
+
+                - label: ens5
+                  l2_network_device: public
+                  interface_model: *interface_model
+
+                #- label: ens6
+                #  l2_network_device: admin
+                #  interface_model: *interface_model
+
+
+              network_config:
+                ens3:
+                  networks:
+                    - admin # deploy
+                ens4:
+                  networks:
+                    - managment
+                ens5:
+                  networks:
+                    - public
+                #ens6:
+                #  networks:
+                #    - admin
+
+          - name: {{ HOSTNAME_APT }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              boot:
+                - hd
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 550
+                  shared_backing_store_name: !os_env APT_VOLUME_NAME
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  # capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  source_image: !os_env APT_CONFIG_PATH
+
+              interfaces:
+                - label: ens3
+                  l2_network_device: admin # deploy
+                  interface_model: *interface_model
+                #- label: ens4
+                #  l2_network_device: admin
+                #  interface_model: *interface_model
+
+              network_config:
+                ens3:
+                  networks:
+                    - admin
+                #ens4:
+                #  networks:
+                #    - admin
+
