@@ -1,0 +1,26 @@
+{% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
+# {% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import LAB_CONFIG_NAME with context %}
+# {% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import DOMAIN_NAME with context %}
+
+# Environment model name stored in https://github.com/Mirantis/tcp-qa/tree/master/tcp_tests/environments
+# {% set ENVIRONMENT_MODEL_NAME = os_env('ENVIRONMENT_MODEL_NAME','physical-mcp-ocata-offline-ovs') %}
+
+# {% import 'shared-salt.yaml' as SHARED with context %}
+
+- description: Wait while a salt-minion is started
+  cmd: timeout 90s bash -c 'while ! systemctl is-active salt-minion; do sleep 10; echo salt-minion isnt run; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Refresh pillars on master node
+  cmd: sleep 90; salt-call --hard-crash --state-output=mixed --state-verbose=False saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources on master node
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
