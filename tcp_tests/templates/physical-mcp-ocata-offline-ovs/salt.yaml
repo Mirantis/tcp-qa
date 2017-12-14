@@ -1,0 +1,130 @@
+{% from 'physical_mcp11_ovs_dpdk/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'physical_mcp11_ovs_dpdk/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'physical_mcp11_ovs_dpdk/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-baremetal-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+# Environment model name stored in https://github.com/Mirantis/tcp-qa/tree/master/tcp_tests/environments
+{% set ENVIRONMENT_MODEL_NAME = os_env('ENVIRONMENT_MODEL_NAME','lab03_ovs_dpdk') %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch"') }}
+
+- description: "[EXPERIMENTAL] Remove linux.network.interface object from the cluster/system models and use fixed 'environment' model instead"
+  cmd: |
+    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    pip install git+https://github.com/dis-xcom/reclass-tools;
+    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/cluster/;
+    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
+    reclass-tools del-key parameters.linux.network.interface /usr/share/salt-formulas/reclass/;
+    git clone https://github.com/Mirantis/tcp-qa /tmp/tcp-qa;
+    ln -s /tmp/tcp-qa/tcp_tests/environment/ /srv/salt/reclass/classes;
+    if ! reclass-tools get-key 'classes' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_NAME }}$"; then
+      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_NAME }}' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml --merge ;
+    fi;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+########################################
+# Spin up Control Plane VMs on KVM nodes
+########################################
+
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+- description: Refresh pillars for present baremetal nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: '*Workaround* enable hugepages on cmp* nodes for OVS setup in linux formula'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
+      'sudo apt-get install -y hugepages; sudo echo 2048 > /proc/sys/vm/nr_hugepages'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources for present baremetal nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+#- description: '*Workaround* Avoid reboot when IP addresses are doubled on interfaces and bridges at the same time. For test environments only!'
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'kvm*' cmd.run
+#    "salt-call state.sls linux.network.interface && ls -1 /var/run/ | grep dhclient | awk -F'.' '{print \$2}' | xargs -I {} ifconfig {} 0.0.0.0"
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 3, delay: 5}
+#  skip_fail: false
+
+- description: Configure linux for present baremetal nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not
+    cfg01*' state.sls linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: ovs-dvr-vlan model specific Execute 'libvirt' states to create necessary libvirt networks
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Create VMs for control plane
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls salt.control
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: '*Workaround* for waiting the control-plane VMs in the salt-key (instead of sleep)'
+  cmd: |
+    salt-key -l acc| sort > /tmp/current_keys.txt &&
+    salt 'kvm*' cmd.run 'virsh list --name' | grep -v 'kvm'|sort|xargs -I {} fgrep {} /tmp/current_keys.txt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 20, delay: 30}
+  skip_fail: false
+
+#########################################
+# Configure all running salt minion nodes
+#########################################
+
+- description: Refresh pillars on all minions
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show  reclass-salt --top for generated nodes
+  cmd: reclass-salt --top -u /srv/salt/reclass/nodes/_generated/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Execute salt.minion on config node to generate certificate
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt.minion;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
