@@ -1,0 +1,16 @@
+{% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+
+- description: Approve cfg01 ssh key for jenkins user
+  cmd: mkdir -p /var/lib/jenkins/.ssh && ssh-keyscan cfg01 > /var/lib/jenkins/.ssh/known_hosts && chown jenkins /var/lib/jenkins/.ssh/known_hosts
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+
+- description: Install jq for parse json output
+  cmd: apt install -y jq
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
