@@ -247,13 +247,16 @@ class UnderlaySSHManager(object):
         """
         ssh_data = self.__ssh_data(node_name=node_name, host=host,
                                    address_pool=address_pool)
+        ssh_auth = ssh_client.SSHAuth(
+            username=ssh_data['login'],
+            password=ssh_data['password'],
+            keys=[rsakey.RSAKey(file_obj=StringIO.StringIO(key))
+                  for key in ssh_data['keys']])
+
         return ssh_client.SSHClient(
             host=ssh_data['host'],
             port=ssh_data['port'] or 22,
-            username=ssh_data['login'],
-            password=ssh_data['password'],
-            private_keys=[rsakey.RSAKey(file_obj=StringIO.StringIO(key))
-                          for key in ssh_data['keys']])
+            auth=ssh_auth)
 
     def local(self):
         """Get Subprocess instance for local operations like:
