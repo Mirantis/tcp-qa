@@ -39,7 +39,7 @@ def sl_actions(config, underlay, salt_deployed):
 @pytest.fixture(scope='function')
 def sl_deployed(revert_snapshot, request, config,
                 hardware, underlay, common_services_deployed,
-                sl_actions):
+                salt_deployed, sl_actions):
     """Fixture to get or install SL services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -57,6 +57,7 @@ def sl_deployed(revert_snapshot, request, config,
         commands = underlay.read_template(steps_path)
         sl_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.sl_deployed)
+        salt_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on

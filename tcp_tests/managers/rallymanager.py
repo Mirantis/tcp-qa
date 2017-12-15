@@ -72,8 +72,8 @@ class RallyManager(object):
         docker_cmd = ('docker exec -i {docker_id} bash -c "{cmd}"'
                       .format(cmd=cmd, docker_id=self.docker_id))
         LOG.info("Executing: {docker_cmd}".format(docker_cmd=docker_cmd))
-        self._underlay.check_call(docker_cmd, node_name=self._node_name,
-                                  verbose=verbose, timeout=timeout)
+        return self._underlay.check_call(docker_cmd, node_name=self._node_name,
+                                         verbose=verbose, timeout=timeout)
 
     def _run(self):
         """Start the rally container in the background"""
@@ -148,20 +148,26 @@ class RallyManager(object):
             task_path=task_path, task_content=task_content)
         self._underlay.check_call(cmd, node_name=self._node_name)
 
-    def run_task(self, task='', timeout=None, raise_on_timeout=True):
+    def run_task(self, task='', timeout=None, raise_on_timeout=True,
+                 verbose=False):
         """Run rally task
 
         :param taks: path to json or yaml file with the task definition
         :param raise_on_timeout: bool, ignore TimeoutError if False
+        :param verbose: show rally output to console if True
         """
         try:
-            self._docker_exec("rally task start {task}".format(task=task),
-                              timeout=timeout, verbose=True)
+            res = self._docker_exec(
+                "rally task start {task}".format(task=task),
+                timeout=timeout,
+                verbose=verbose)
         except error.TimeoutError:
             if raise_on_timeout:
                 raise
             else:
+                res = None
                 pass
+        return res
 
     # Updated to replace the OpenStackManager method run_tempest
     def run_tempest(self, conf_name='/var/lib/lvm_mcp.conf',

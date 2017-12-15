@@ -17,7 +17,8 @@ import netaddr
 from collections import defaultdict
 
 from datetime import datetime
-from pepper.libpepper import Pepper
+from pepper import libpepper
+from tcp_tests.helpers import utils
 from tcp_tests import settings
 from tcp_tests import logger
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
@@ -94,7 +95,7 @@ class SaltManager(ExecuteCommandsMixin):
         url = "http://{host}:{port}".format(
             host=self.host, port=self.port)
         LOG.info("Connecting to Salt API {0}".format(url))
-        self.__api = Pepper(url)
+        self.__api = libpepper.Pepper(url)
         self.__session_start = login()
         return self.__api
 
@@ -208,3 +209,18 @@ class SaltManager(ExecuteCommandsMixin):
     def service_stop(self, tgt, service):
         result = self.local(tgt=tgt, fun='service.stop', args=service)
         return result['return']
+
+    @utils.retry(3, exception=libpepper.PepperException)
+    def sync_time(self, tgt='*'):
+        LOG.info("NTP time sync on the salt minions '{0}'".format(tgt))
+        # Force authentication update on the next API access
+        # because previous authentication most probably is not valid
+        # before or after time sync.
+        self.__api = None
+        self.run_state(
+            tgt,
+            'cmd.run', 'service ntp stop; ntpd -gq; service ntp start')
+        new_time_res = self.run_state(tgt, 'cmd.run', 'date')
+        for node_name, time in sorted(new_time_res[0]['return'][0].items()):
+            LOG.info("{0}: {1}".format(node_name, time))
+        self.__api = None

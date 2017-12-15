@@ -78,6 +78,7 @@ def salt_deployed(revert_snapshot, request, config,
                         for n in config.underlay.ssh)]
 
         hardware.create_snapshot(ext.SNAPSHOT.salt_deployed)
+        salt_actions.sync_time()
 
     else:
         # 1. hardware environment created and powered on
@@ -86,5 +87,7 @@ def salt_deployed(revert_snapshot, request, config,
         # 3. config.tcp.* options contain access credentials to the already
         #    installed TCP API endpoint
         pass
+
+    salt_actions.sync_time()
 
     return salt_actions

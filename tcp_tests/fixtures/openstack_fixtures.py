@@ -41,7 +41,7 @@ def openstack_actions(config, hardware, underlay, salt_deployed):
 @pytest.fixture(scope='function')
 def openstack_deployed(revert_snapshot, request, config,
                        hardware, underlay, common_services_deployed,
-                       openstack_actions, rally):
+                       salt_deployed, openstack_actions, rally):
     """Fixture to get or install OpenStack services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -99,6 +99,7 @@ def openstack_deployed(revert_snapshot, request, config,
             rally.run_container()
 
         hardware.create_snapshot(ext.SNAPSHOT.openstack_deployed)
+        salt_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on
