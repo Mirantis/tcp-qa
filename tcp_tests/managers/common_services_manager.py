@@ -41,6 +41,9 @@ class CommonServicesManager(ExecuteCommandsMixin):
         """Get minion ID where keepalived VIP is at the moment"""
         tgt = 'I@keepalived:cluster:enabled:True'
         grains = 'ip_interfaces'
+        # Refresh grains first
+        self._salt.run_state(tgt, 'saltutil.refresh_grains')
+        # Get grains
         result = self._salt.get_grains(tgt=tgt, grains=grains)[0]
         minion_ids = [
             minion_id for minion_id, interfaces in result.items()

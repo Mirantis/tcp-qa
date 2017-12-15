@@ -40,7 +40,7 @@ def ceph_actions(config, hardware, underlay, salt_deployed):
 @pytest.fixture(scope='function')
 def ceph_deployed(revert_snapshot, request, config,
                   hardware, underlay, common_services_deployed,
-                  ceph_actions):
+                  salt_deployed, ceph_actions):
     """Fixture to get or install Ceph services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -72,6 +72,7 @@ def ceph_deployed(revert_snapshot, request, config,
         commands = underlay.read_template(steps_path)
         ceph_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.ceph_deployed)
+        salt_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on

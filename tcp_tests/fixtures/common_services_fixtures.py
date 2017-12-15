@@ -71,6 +71,7 @@ def common_services_deployed(revert_snapshot, request, config,
         commands = underlay.read_template(steps_path)
         common_services_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.common_services_deployed)
+        salt_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on

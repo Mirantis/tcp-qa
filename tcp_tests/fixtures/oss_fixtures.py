@@ -68,6 +68,7 @@ def oss_deployed(revert_snapshot, request, config,
         commands = underlay.read_template(steps_path)
         oss_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.oss_deployed)
+        salt_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on
