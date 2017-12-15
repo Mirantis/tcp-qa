@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f35a4ce1_b0d43140",
+        "filename": "tcp_tests/tests/system/test_failover.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 547,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-15T11:35:07Z",
+      "side": 1,
+      "message": "please fix step ordering",
+      "range": {
+        "startLine": 547,
+        "startChar": 12,
+        "endLine": 547,
+        "endChar": 17
+      },
+      "revId": "325b24d4e7005385402330af74376170e3abe782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f4cafd5a_7d1ccf22",
+        "filename": "tcp_tests/tests/system/test_failover.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 680,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-15T11:35:07Z",
+      "side": 1,
+      "message": "please assert result in tests, before downloading them",
+      "range": {
+        "startLine": 680,
+        "startChar": 13,
+        "endLine": 680,
+        "endChar": 24
+      },
+      "revId": "325b24d4e7005385402330af74376170e3abe782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "160a2322_f4ed3ac7",
+        "filename": "tcp_tests/tests/system/test_failover.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 706,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-15T11:35:07Z",
+      "side": 1,
+      "message": "please fix step order",
+      "range": {
+        "startLine": 706,
+        "startChar": 10,
+        "endLine": 706,
+        "endChar": 11
+      },
+      "revId": "325b24d4e7005385402330af74376170e3abe782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "297c0f30_a95b9927",
+        "filename": "tcp_tests/tests/system/test_failover.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 752,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-15T11:35:07Z",
+      "side": 1,
+      "message": "please assert results in tests before downloading them",
+      "range": {
+        "startLine": 752,
+        "startChar": 27,
+        "endLine": 752,
+        "endChar": 29
+      },
+      "revId": "325b24d4e7005385402330af74376170e3abe782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "03e85b02_8eeaa835",
+        "filename": "tcp_tests/tests/system/test_failover.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 757,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-15T11:35:07Z",
+      "side": 1,
+      "message": "I still can not find Prometheus relay test",
+      "range": {
+        "startLine": 757,
+        "startChar": 12,
+        "endLine": 757,
+        "endChar": 14
+      },
+      "revId": "325b24d4e7005385402330af74376170e3abe782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
