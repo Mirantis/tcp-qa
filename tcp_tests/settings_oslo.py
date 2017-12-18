@@ -288,6 +288,8 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_externaldns_provider', ct.String(),
            help="", default='coredns'),
     ct.Cfg('kubernetes_coredns_enabled', ct.Boolean(),
+           help="", default=False),
+    ct.Cfg('kubelet_fail_on_swap', ct.Boolean(),
            help="", default=False)
 ]
 
