@@ -1,0 +1,56 @@
+{# Collection of common macroses shared across different deployments #}
+
+{%- macro MACRO_INSTALL_SMTP_ALERTS_RECEIVER() %}
+- description: Install exim4 on {{ HOSTNAME_CFG01 }}
+  cmd: apt -y install exim4-daemon-light
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Configure exim4 to receive emails to the ~/Maildir for local users
+  cmd: |
+    sed -i "s/dc_other_hostnames=.*/dc_other_hostnames='*'/g" /etc/exim4/update-exim4.conf.conf
+    sed -i "s/dc_local_interfaces=.*/dc_local_interfaces=''/g" /etc/exim4/update-exim4.conf.conf
+    sed -i "s/dc_localdelivery=.*/dc_localdelivery='maildir_home'/g" /etc/exim4/update-exim4.conf.conf
+    update-exim4.conf
+    service exim4 restart
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Create a special user to receive alerts
+  cmd: useradd _alertsreceiver -m
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Modify SL pillars to send alerts to SMTP server on {{ HOSTNAME_CFG01 }}
+  cmd: |
+    # Remove existing definitions for email alerting
+    export REPLACE_DIR="/srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}"
+    find ${REPLACE_DIR} -type f -exec sed -i '/pushkin_smtp_host:.*/d' {} +
+    find ${REPLACE_DIR} -type f -exec sed -i '/pushkin_smtp_port:.*/d' {} +
+    find ${REPLACE_DIR} -type f -exec sed -i '/pushkin_email_sender_password:.*/d' {} +
+    find ${REPLACE_DIR} -type f -exec sed -i '/webhook_from:.*/d' {} +
+    find ${REPLACE_DIR} -type f -exec sed -i '/webhook_recipients:.*/d' {} +
+
+    salt-call reclass.cluster_meta_set name='pushkin_smtp_host' value='${_param:salt_master_host}' file_name=${REPLACE_DIR}/stacklight/init.yml
+    salt-call reclass.cluster_meta_set name='pushkin_smtp_port' value='25' file_name=${REPLACE_DIR}/stacklight/init.yml
+    salt-call reclass.cluster_meta_set name='pushkin_email_sender_password' value='""' file_name=${REPLACE_DIR}/stacklight/init.yml
+    salt-call reclass.cluster_meta_set name='webhook_from' value='monitoring@{{ LAB_CONFIG_NAME }}.local' file_name=${REPLACE_DIR}/stacklight/init.yml
+    salt-call reclass.cluster_meta_set name='webhook_recipients' value='alerts@integration.ci.local' file_name=${REPLACE_DIR}/stacklight/init.yml
+
+    salt '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{%- endmacro %}
+
+
+
+
+
+
+
+
