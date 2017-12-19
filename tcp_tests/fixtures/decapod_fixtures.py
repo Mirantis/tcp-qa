@@ -68,6 +68,7 @@ def decapod_deployed(revert_snapshot, request, config,
         commands = underlay.read_template(steps_path)
         decapod_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.decapod_deployed)
+        salt_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on
