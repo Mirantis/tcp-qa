@@ -38,8 +38,6 @@ nodes:
       - openstack_database_leader
       - linux_system_codename_xenial
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -49,8 +47,6 @@ nodes:
       - openstack_database
       - linux_system_codename_xenial
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -60,8 +56,6 @@ nodes:
       - openstack_database
       - linux_system_codename_xenial
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -71,8 +65,6 @@ nodes:
       - openstack_message_queue
       - linux_system_codename_xenial
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -82,8 +74,6 @@ nodes:
       - openstack_message_queue
       - linux_system_codename_xenial
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -93,8 +83,6 @@ nodes:
       - openstack_message_queue
       - linux_system_codename_xenial
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -104,8 +92,6 @@ nodes:
       - openstack_proxy
       - linux_system_codename_xenial
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -115,16 +101,32 @@ nodes:
       - openstack_proxy
       - linux_system_codename_xenial
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
           role: single_ctl
 
-#      bmk01.cookied-bm-mcp-dvr-vxlan.local:
-#      reclass_storage_name: openstack_benchmark_node01
-#      roles:
-#      - openstack_benchmark
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_ctl
+    mtr01.cookied-bm-mcp-dvr-vxlan.local:
+      reclass_storage_name: stacklight_telemetry_node01
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    mtr02.cookied-bm-mcp-dvr-vxlan.local:
+      reclass_storage_name: stacklight_telemetry_node02
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    mtr03.cookied-bm-mcp-dvr-vxlan.local:
+      reclass_storage_name: stacklight_telemetry_node03
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
