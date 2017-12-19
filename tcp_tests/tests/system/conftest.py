@@ -52,6 +52,7 @@ __all__ = sorted([  # sort for documentation
     # oss_fixtures
     'oss_actions',
     'oss_deployed',
+    'oss_sl_os_deployed',
     # decapod_fixtures
     'decapod_actions',
     'decapod_deployed',
