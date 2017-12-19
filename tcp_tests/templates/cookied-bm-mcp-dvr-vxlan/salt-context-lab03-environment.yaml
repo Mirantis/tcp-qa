@@ -48,6 +48,7 @@ nodes:
       reclass_storage_name: openstack_compute_node01
       roles:
       - openstack_compute
+      - features_lvm_backend
       - linux_system_codename_xenial
       interfaces:
         enp3s0f0:
@@ -66,6 +67,7 @@ nodes:
       reclass_storage_name: openstack_compute_node02
       roles:
       - openstack_compute
+      - features_lvm_backend
       - linux_system_codename_xenial
       interfaces:
         eno1:
