@@ -4,7 +4,8 @@
 #{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW02 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
-{% set PATTERN = os_env('PATTERN', 'smoke') %}
+{% set PATTERN = os_env('PATTERN', 'false') %}
+{% set RUN_TEMPEST = os_env('RUN_TEMPEST', 'false') %}
 
 # Install OpenStack control services
 
@@ -88,6 +89,25 @@
 - description: Install cinder
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@cinder:controller' state.sls cinder -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+#- description: Create loop
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run "fallocate -l 60G /cinder-volume"
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 15}
+#  skip_fail: false
+
+#- description: losetup loop
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run "losetup /dev/loop8 /cinder-volume"
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 15}
+#  skip_fail: false
+
+- description: Install cinder volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:volume' state.sls cinder
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
