@@ -198,3 +198,31 @@ class CommonServicesManager(ExecuteCommandsMixin):
 
         LOG.debug("keepalived pillars check passed: {0}".format(vips))
         return vips
+
+    def get_haproxy_status(self, tgt):
+        """Get haproxy status for all backends on a specified minion"""
+        cmd = ("echo 'show stat' | "
+               "socat 'UNIX-CONNECT:/run/haproxy/admin.sock' STDIO")
+        # Refresh grains first
+        res = self._salt.run_state(tgt, 'cmd.run', cmd)
+        output = res[0]['return'][0]
+        assert len(output.keys()) == 1, "Please specify a single minion in tgt"
+        minion_id = output.keys()[0]
+
+        haproxy_status = {}
+        for line in output[minion_id].splitlines():
+            if line.startswith("#"):
+                continue
+            status = line.split(",")
+            pxname = status[0]
+            svname = status[1]
+            if pxname not in haproxy_status:
+                haproxy_status[pxname] = {}
+            haproxy_status[pxname][svname] = {
+                'scur': status[4],     # sessions current
+                'smax': status[5],     # sessions max
+                'status': status[17],  # status: UP or DOWN
+                'rate': status[33],    # sessions rate
+            }
+        LOG.debug("Haproxy status: \n{0}".format(haproxy_status))
+        return haproxy_status
