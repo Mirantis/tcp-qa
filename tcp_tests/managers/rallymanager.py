@@ -144,7 +144,8 @@ class RallyManager(object):
         :param task_path: path to JSON or YAML file on target node
         :task_content: string with json or yaml content to store in file
         """
-        cmd = "cat > {task_path} << EOF\n{task_content}\nEOF".format(
+        cmd = ("mkdir -p $(dirname {task_path}) && "
+               "cat > {task_path} << EOF\n{task_content}\nEOF").format(
             task_path=task_path, task_content=task_content)
         self._underlay.check_call(cmd, node_name=self._node_name)
 
