@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b2ddec10_06876686",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2017-12-21T13:54:33Z",
+      "side": 1,
+      "message": "for offline case we need split this action for 2 case: clone a git repo, update submodule file and then go ahead\ngit config submodule.\"classes/system\".url \"{{ SALT_MODELS_SYSTEM_REPOSITORY }}\" ;\n    git submodule update --init --recursive \u0026\u0026",
+      "range": {
+        "startLine": 125,
+        "startChar": 4,
+        "endLine": 125,
+        "endChar": 10
+      },
+      "revId": "3fbbc7fc9a00f5e95d8f9344696002dbb352783c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
