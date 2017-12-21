@@ -12,6 +12,13 @@
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/xenial ' + REPOSITORY_SUITE + ' salt') %}
+{% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') %}
+{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb http://repo.saltstack.local.test/apt/ubuntu/16.04/amd64/2016.3 xenial main") %}
+{% set SALT_GPG = os_env('SALT_GPG', 'http://repo.saltstack.local.test/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub') %}
+{% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb http://archive.ubuntu.com/ubuntu/ xenial main universe restricted") %}
+{% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb http://archive.ubuntu.com/ubuntu/ xenial-updates main universe restricted") %}
+{% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb http://archive.ubuntu.com/ubuntu/ xenial-security main universe restricted") %}
 
 {# Address pools for reclass cluster model are taken in the following order:
  # 1. environment variables,
@@ -39,10 +46,32 @@
 {% set CLUSTER_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) %}
 
 
+{%- macro MACRO_INSTALL_PACKAGES_ON_NODES(NODE_NAME) %}
+{#####################################################}
+
+- description: 'Configure key on nodes and install packages'
+  cmd: |
+    rm -rf trusted* ;
+    rm -rf /etc/apt/sources.list ;
+    echo "{{ FORMULA_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_salt.list;
+    wget -O - "{{ FORMULA_GPG }}" | apt-key add -;
+    echo "{{ SALT_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_saltstack.list;
+    wget -O - "{{ SALT_GPG }}" | apt-key add -;
+    echo "{{ UBUNTU_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu.list
+    echo "{{ UBUNTU_UPDATES_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_updates.list
+    echo "{{ UBUNTU_SECURITY_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_security.list
+    eatmydata apt-get clean && apt-get update;
+  node_name: {{ NODE_NAME }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+
 {%- macro MACRO_INSTALL_SALT_MASTER() %}
 {######################################}
 - description: Installing salt master on cfg01
-  cmd:  eatmydata apt-get install -y reclass git salt-master
+  cmd:  eatmydata apt-get install -y --allow-unauthenticated reclass git salt-master
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -70,15 +99,16 @@
 - description: Configure GIT settings and certificates
   cmd: |
     set -e;
-    touch /root/.git_trusted_certs.pem;
-    for server in github.com; do \
-        openssl s_client -showcerts -connect $server:443 </dev/null \
-        | openssl x509 -outform PEM \
-        >> /root/.git_trusted_certs.pem;
-    done;
-    HOME=/root git config --global http.sslCAInfo /root/.git_trusted_certs.pem;
-    HOME=/root git config --global user.email "tcp-qa@example.com";
-    HOME=/root git config --global user.name "TCP QA";
+    #touch /root/.git_trusted_certs.pem;
+    #for server in github.com; do \
+    #    openssl s_client -showcerts -connect $server:443 </dev/null \
+    #    | openssl x509 -outform PEM \
+    #    >> /root/.git_trusted_certs.pem;
+    #done;
+    #HOME=/root git config --global http.sslCAInfo /root/.git_trusted_certs.pem;
+    HOME=/root git config --global user.email "mcp-integration-qa@example.com";
+    HOME=/root git config --global user.name "MCP Integration QA";
+    HOME=/root git config submodule."classes/system".url "{{ SALT_MODELS_SYSTEM_REPOSITORY }}";
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -91,7 +121,7 @@
 - description: Clone reclass models with submodules
   cmd: |
     set -e;
-    ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
+    #ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     export GIT_SSL_NO_VERIFY=true; git clone -b {{ SALT_MODELS_BRANCH }} --recurse-submodules {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
     pushd /srv/salt/reclass && \
     {%- if SALT_MODELS_REF_CHANGE != '' %}
@@ -361,11 +391,9 @@
   cmd: |
     set -e;
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
-    FORMULA_REPOSITORY=${FORMULA_REPOSITORY:-deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt};
-    FORMULA_GPG=${FORMULA_GPG:-http://apt.mirantis.com/public.gpg};
     which wget > /dev/null || (apt-get update; apt-get install -y wget);
-    echo "${FORMULA_REPOSITORY}" > /etc/apt/sources.list.d/mcp_salt.list;
-    wget -O - "${FORMULA_GPG}" | apt-key add -;
+    echo "{{ FORMULA_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_salt.list;
+    wget -O - "{{ FORMULA_GPG }}" | apt-key add -;
     apt-get clean; apt-get update;
     [ ! -d /srv/salt/reclass/classes/service ] && mkdir -p /srv/salt/reclass/classes/service;
     declare -a formula_services=({{ FORMULA_SERVICES }});

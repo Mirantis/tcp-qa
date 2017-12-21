@@ -78,6 +78,13 @@
    - cp /srv/pillar/top_localdns.sls /srv/pillar/top.sls;
    - cp /srv/salt/top_localdns.sls /srv/salt/top.sls;
    - find /srv/pillar/ -type f -exec sed -i "s/==LOCAL_DNS_IP==/${LOCAL_DNS_IP}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_APT==/{{ os_env('HOST_APT', 'apt.mirantis.com') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_SALTSTACK==/{{ os_env('HOST_SALTSTACK', 'repo.saltstack.com') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_ARCHIVE_UBUNTU==/{{ os_env('HOST_ARCHIVE_UBUNTU', 'archive.ubuntu.com') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_MIRROR_MCP_MIRANTIS==/{{ os_env('HOST_MIRROR_MCP_MIRANTIS', 'mirror.mcp.mirantis.net') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_MIRROR_FUEL_INFRA==/{{ os_env('HOST_MIRROR_FUEL_INFRA', 'mirror.fuel-infra.org') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_PPA_LAUNCHPAD==/{{ os_env('HOST_PPA_LAUNCHPAD', 'ppa.launchpad.net') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_GERRIT_MCP_MIRANTIS==/{{ os_env('HOST_GERRIT_MCP_MIRANTIS', 'gerrit.mcp.mirantis.net') }}/g" {} +
    - salt-call --local  --state-output=mixed state.sls dnsmasq;
    - salt-call --local  --state-output=mixed state.sls nginx;
    ########################################################

@@ -1,0 +1,82 @@
+{% import 'mcp-local-aptly/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'mcp-local-aptly/underlay--user-data-apt01.yaml' as CLOUDINIT_USER_DATA_APT01 with context %}
+
+---
+aliases:
+ - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
+ - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
+ - &cloudinit_user_data_apt01 {{ CLOUDINIT_USER_DATA_APT01 }}
+
+{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'mcp-local-aptly') + '.local' %}
+{% set HOSTNAME_APT01 = os_env('HOSTNAME_APT01', 'apt01.' + DOMAIN_NAME) %}
+
+template:
+  devops_settings:
+    env_name: {{ os_env('ENV_NAME', 'mcp-local-aptly_' + os_env('BUILD_NUMBER', '')) }}
+
+    address_pools:
+      admin-pool01:
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.170.0.0/16:24') }}
+        params:
+          ip_reserved:
+            gateway: +122
+            l2_network_device: +1
+            default_{{ HOSTNAME_APT01 }}: +122
+          ip_ranges:
+            dhcp: [+90, -10]
+
+    groups:
+      - name: default
+        driver:
+          name: devops.driver.libvirt
+          params:
+            connection_string: !os_env CONNECTION_STRING, qemu:///system
+            storage_pool_name: !os_env STORAGE_POOL_NAME, default
+            stp: False
+            hpet: False
+            enable_acpi: true
+            use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
+            use_hugepages: !os_env DRIVER_USE_HUGEPAGES, false
+
+        network_pools:
+          admin: admin-pool01
+
+        l2_network_devices:
+          admin:
+            address_pool: admin-pool01
+            forward:
+              mode: route
+            dhcp: true
+
+        nodes:
+          - name: {{ HOSTNAME_APT01 }}
+            role: salt-minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 4
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 550
+                  shared_backing_store_name: !os_env APT_VOLUME_NAME
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_apt01
+
+              interfaces:
+                - label: ens3
+                  l2_network_device: admin
+                  interface_model: *interface_model
+              network_config:
+                ens3:
+                  networks:
+                    - admin

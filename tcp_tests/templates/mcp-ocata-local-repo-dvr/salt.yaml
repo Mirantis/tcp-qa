@@ -17,7 +17,7 @@
 # Other salt model repository parameters see in shared-salt.yaml
 
 
-{% import 'shared-salt-offline.yaml' as SHARED with context %}
+{% import 'shared-salt.yaml' as SHARED with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_CONTROL_PREFIX with context %}
 
 #- description: 'Generate nginx cert'
@@ -56,6 +56,13 @@
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
 {{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
+
+- description: 'Workaround of local_repo_url - set to offline image repository structure'
+  cmd: |
+    find /srv/salt/reclass/classes/cluster -type f -exec sed -i 's/local_repo_url: .*/local_repo_url: mirror.mcp.mirantis.local.test/g' {} +
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns"') }}
 
