@@ -16,14 +16,14 @@ template:
 
     address_pools:
       admin-pool01:
-        net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.170.0.0/16:24') }}
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.170.0.240/28:28') }}
         params:
           ip_reserved:
-            gateway: +122
+            gateway: +2
             l2_network_device: +1
-            default_{{ HOSTNAME_APT01 }}: +122
+            default_{{ HOSTNAME_APT01 }}: +2  #10.170.0.242
           ip_ranges:
-            dhcp: [+90, -10]
+            dhcp: [+5, +10]
 
     groups:
       - name: default
