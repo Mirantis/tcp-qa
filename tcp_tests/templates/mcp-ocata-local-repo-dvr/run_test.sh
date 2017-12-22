@@ -14,7 +14,7 @@ export UBUNTU_SECURITY_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/${R
 # Offline deployment simulation, requests to the apt01 node are redirected to an 'offline apt node' with mirrors of repositories
 export FORMULA_REPOSITORY="deb [arch=amd64] http://apt.mirantis.local.test/ubuntu-xenial ${REPOSITORY_SUITE} salt extra"
 export FORMULA_GPG="http://apt.mirantis.local.test/public.gpg"
-export SALT_REPOSITORY="deb [arch=amd64] http://apt.mirantis.local.test/ubuntu-xenial/salt/2016.3/ ${REPOSITORY_SUITE} main"
+export SALT_REPOSITORY="deb [arch=amd64] http://apt.mirantis.local.test/ubuntu-xenial/ ${REPOSITORY_SUITE} salt/2016.3 main"
 export SALT_GPG="http://apt.mirantis.local.test/public.gpg"
 export UBUNTU_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/ubuntu xenial main universe restricted"
 export UBUNTU_UPDATES_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/ubuntu xenial-updates main universe restricted"
