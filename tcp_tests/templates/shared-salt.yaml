@@ -200,7 +200,7 @@
 {%- endmacro %}
 
 
-{%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None) %}
+{%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None, CLUSTER_PRODUCT_MODELS='') %}
 {###################################################################}
 {%- set CLUSTER_CONTEXT_PATH = '/tmp/' + CLUSTER_CONTEXT_NAME %}
 - description: "[EXPERIMENTAL] Upload cookiecutter-templates context to {{ HOSTNAME_CFG01 }}"
@@ -254,9 +254,10 @@
     sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {{ CLUSTER_CONTEXT_PATH }}
 
-    for i in $(ls /tmp/cookiecutter-templates/cluster_product/); do
+    {% set items = CLUSTER_PRODUCT_MODELS or '$(ls /tmp/cookiecutter-templates/cluster_product/)' %}
+    for item in {{ items }}; do
       python /tmp/cookiecutter-templates/generate.py \
-        --template /tmp/cookiecutter-templates/cluster_product/$i \
+        --template /tmp/cookiecutter-templates/cluster_product/$item \
         --config-file {{ CLUSTER_CONTEXT_PATH }} \
         --output-dir /srv/salt/reclass/classes/cluster/;
     done
