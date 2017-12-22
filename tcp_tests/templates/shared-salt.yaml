@@ -43,7 +43,7 @@
 {% set SALT_FORMULAS_REPO = os_env('SALT_FORMULAS_REPO', 'https://gerrit.mcp.mirantis.net/salt-formulas') %}
 
 # Needed for using different models in different templates
-{% set CLUSTER_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) %}
+{% set CLUSTER_NAME = os_env('CLUSTER_NAME', LAB_CONFIG_NAME) %}
 
 
 {%- macro MACRO_INSTALL_PACKAGES_ON_NODES(NODE_NAME) %}
@@ -230,7 +230,7 @@
     mkdir -p /srv/salt/reclass/nodes/_generated
 
     # Override some context parameters
-    sed -i 's/cluster_name:.*/cluster_name: {{ LAB_CONFIG_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/cluster_name:.*/cluster_name: {{ CLUSTER_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/cluster_domain:.*/cluster_domain: {{ DOMAIN_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
     {%- if CONTROL_VLAN  %}
     sed -i 's/control_vlan:.*/control_vlan: {{ CONTROL_VLAN }}/g' {{ CLUSTER_CONTEXT_PATH }}
@@ -268,7 +268,7 @@
     cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
     classes:
     - system.openssh.server.team.all
-    - cluster.{{ LAB_CONFIG_NAME }}.infra.config
+    - cluster.{{ CLUSTER_NAME }}.infra.config
     EOF
 
   node_name: {{ HOSTNAME_CFG01 }}
