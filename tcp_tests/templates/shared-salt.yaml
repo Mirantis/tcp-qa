@@ -175,6 +175,11 @@
     find ${REPLACE_DIRS} -type f -exec sed -i 's/infra_config_deploy_address: 1.*/infra_config_deploy_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {} +
     {%- endif %}
 
+    # Override some context parameters
+    {%- set CLUSTER_CONTEXT_PATH = '/srv/salt/reclass/classes/cluster/' + CLUSTER_NAME %}
+    sed -i 's/cluster_name:.*/cluster_name: {{ CLUSTER_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/cluster_domain:.*/cluster_domain: {{ DOMAIN_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
+
     # Disable checkouting the model from remote repository
     cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
     classes:
