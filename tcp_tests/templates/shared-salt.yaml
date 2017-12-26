@@ -12,10 +12,10 @@
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
-{% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/xenial ' + REPOSITORY_SUITE + ' salt') %}
-{% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') %}
-{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb http://repo.saltstack.local.test/apt/ubuntu/16.04/amd64/2016.3 xenial main") %}
-{% set SALT_GPG = os_env('SALT_GPG', 'http://repo.saltstack.local.test/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub') %}
+{% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://10.170.0.242/ubuntu-xenial ' + REPOSITORY_SUITE + ' salt') %}
+{% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://10.170.0.242/public.gpg') %}
+{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main") %}
+{% set SALT_GPG = os_env('SALT_GPG', 'https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub') %}
 {% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb http://archive.ubuntu.com/ubuntu/ xenial main universe restricted") %}
 {% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb http://archive.ubuntu.com/ubuntu/ xenial-updates main universe restricted") %}
 {% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb http://archive.ubuntu.com/ubuntu/ xenial-security main universe restricted") %}
