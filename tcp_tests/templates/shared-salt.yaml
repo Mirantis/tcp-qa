@@ -120,6 +120,7 @@
 - description: Clone reclass models with submodules
   cmd: |
     set -e;
+    set -x;
     #ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
     export GIT_SSL_NO_VERIFY=true; git clone -b {{ SALT_MODELS_BRANCH }} {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
     pushd /srv/salt/reclass;
