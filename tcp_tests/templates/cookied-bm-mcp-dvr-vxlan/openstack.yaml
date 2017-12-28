@@ -122,6 +122,21 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+# Install designate
+- description: Install powerdns
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'ctl*' state.sls powerdns
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install designate
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@designate:server' state.sls designate -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
 - description: Check neutron agent-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; neutron agent-list'
