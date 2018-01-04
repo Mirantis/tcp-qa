@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 import os
+import requests
 
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 from tcp_tests import logger
@@ -39,6 +40,37 @@ class OpenstackManager(ExecuteCommandsMixin):
         self.execute_commands(commands,
                               label='Install OpenStack services')
         self.__config.openstack.openstack_installed = True
+        horizon_data = self.get_horizon_data()
+        self.__config.openstack.horizon_host = horizon_data['horizon_host']
+        self.__config.openstack.horizon_port = horizon_data['horizon_port']
+        self.__config.openstack.horizon_user = horizon_data['horizon_user']
+        self.__config.openstack.horizon_password = horizon_data['horizon_password']
+        self.auth_in_horizon(
+            horizon_data['horizon_host'],
+            horizon_data['horizon_port'],
+            horizon_data['horizon_user'],
+            horizon_data['horizon_password'])
+
+    def get_horizon_data(self):
+        horizon_data = {}
+        tgt = 'I@nginx:server and not cfg*'
+        pillar_host = 'nginx:server:site:nginx_ssl_redirect_openstack_web:host:name'
+        pillar_port = 'nginx:server:site:nginx_ssl_redirect_openstack_web:host:port'
+        host = self._salt.get_pillar(tgt=tgt, pillar=pillar_host)
+        port = self._salt.get_pillar(tgt=tgt, pillar=pillar_port)
+        tgt = 'I@keystone:server and ctl01*'
+        pillar_user = 'keystone:server:admin_name'
+        pillar_password = 'keystone:server:admin_password'
+        user = self._salt.get_pillar(tgt=tgt, pillar=pillar_user)
+        password = self._salt.get_pillar(tgt=tgt, pillar=pillar_password)
+
+        horizon_data.update({'horizon_host': host})
+        horizon_data.update({'horizon_port': port})
+        horizon_data.update({'horizon_user': user})
+        horizon_data.update({'horizon_password': password})
+        LOG.info("Data from pillars {}".format(horizon_data))
+
+        return horizon_data
 
     def run_tempest(
             self,
@@ -121,3 +153,30 @@ class OpenstackManager(ExecuteCommandsMixin):
         LOG.info('Reboot (warm restart) nodes {0}'.format(node_names))
         self.warm_shutdown_openstack_nodes(node_names, timeout=timeout)
         self.warm_start_nodes(node_names)
+
+    def auth_in_horizon(self, host, port, user, password):
+        client = requests.session()
+        url = "http://{0}:{1}".format(self.__config.openstack.horizon_host,
+                               self.__config.openstack.horizon_port)
+        # Retrieve the CSRF token first
+        client.get(url, verify=False)  # sets cookie
+        if not len(client.cookies):
+            login_data = dict(username=self.__config.openstack.horizon_user,
+                              password=self.__config.openstack.horizon_password,
+                              next='/')
+            resp = client.post(url, data=login_data,
+                               headers=dict(Referer=url), verify=False)
+            LOG.debug("Horizon resp {}".format(resp))
+            assert 200 in resp.status_code
+        else:
+            login_data = dict(username=self.__config.openstack.horizon_user,
+                              password=self.__config.openstack.horizon_password,
+                              next='/')
+            csrftoken = client.cookies.get('csrftoken', None)
+            if csrftoken:
+                login_data['csrfmiddlewaretoken'] = csrftoken
+
+            resp = client.post(url, data=login_data,
+                               headers=dict(Referer=url), verify=False)
+            LOG.debug("Horizon resp {}".format(resp))
+            assert 200 in resp.status_code
