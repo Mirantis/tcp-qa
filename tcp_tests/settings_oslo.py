@@ -174,6 +174,14 @@ openstack_deploy_opts = [
     ct.Cfg('openstack_steps_path', ct.String(),
            help="Path to YAML with steps to deploy openstack",
            default=_default_openstack_steps),
+    ct.Cfg('horizon_host', ct.IPAddress(),
+           help="", default='0.0.0.0'),
+    ct.Cfg('horizon_port', ct.String(),
+           help="", default='5000'),
+    ct.Cfg('horizon_user', ct.String(),
+           help="", default='admin'),
+    ct.Cfg('horizon_password', ct.String(),
+           help="", default='workshop'),
 ]
 openstack_opts = [
     ct.Cfg('openstack_installed', ct.Boolean(),
