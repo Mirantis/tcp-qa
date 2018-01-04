@@ -173,7 +173,8 @@ class RallyManager(object):
     # Updated to replace the OpenStackManager method run_tempest
     def run_tempest(self, conf_name='/var/lib/lvm_mcp.conf',
                     pattern='set=smoke', concurrency=0, timeout=None,
-                    report_prefix='', report_types=None):
+                    report_prefix='', report_types=None,
+                    designate_plugin=True):
         """Run tempest tests
 
         :param conf_name: tempest config placed in the rally container
@@ -182,6 +183,7 @@ class RallyManager(object):
                             to take the amount of the cores on the node
                             <self._node_name>.
         :param timeout: stop tempest tests after specified timeout.
+        :param designate_plugin: enabled by default plugin for designate
         :param report_prefix: str, prefix for report filenames. Usually the
                               output of the fixture 'func_name'
         :param report_types: list of the report types that need to download
@@ -189,23 +191,36 @@ class RallyManager(object):
                              None by default.
         """
         report_types = report_types or []
-
-        cmd = (
-            "cat > /root/rally/install_tempest.sh << EOF\n"
-            "rally verify create-verifier"
-            "  --type tempest "
-            "  --name tempest-verifier"
-            "  --source /var/lib/tempest"
-            "  --version {tempest_tag}"
-            "  --system-wide\n"
-            "rally verify add-verifier-ext"
-            "  --source /var/lib/designate-tempest-plugin"
-            "  --version {designate_tag}\n"
-            "rally verify configure-verifier --extend {tempest_conf}\n"
-            "rally verify configure-verifier --show\n"
-            "EOF".format(tempest_tag=self.tempest_tag,
-                         designate_tag=self.designate_tag,
-                         tempest_conf=conf_name))
+        if not designate_plugin:
+            cmd = (
+                "cat > /root/rally/install_tempest.sh << EOF\n"
+                "rally verify create-verifier"
+                "  --type tempest "
+                "  --name tempest-verifier"
+                "  --source /var/lib/tempest"
+                "  --version {tempest_tag}"
+                "  --system-wide\n"
+                "rally verify configure-verifier --extend {tempest_conf}\n"
+                "rally verify configure-verifier --show\n"
+                "EOF".format(tempest_tag=self.tempest_tag,
+                             tempest_conf=conf_name))
+        else:
+            cmd = (
+                "cat > /root/rally/install_tempest.sh << EOF\n"
+                "rally verify create-verifier"
+                "  --type tempest "
+                "  --name tempest-verifier"
+                "  --source /var/lib/tempest"
+                "  --version {tempest_tag}"
+                "  --system-wide\n"
+                "rally verify add-verifier-ext"
+                "  --source /var/lib/designate-tempest-plugin"
+                "  --version {designate_tag}\n"
+                "rally verify configure-verifier --extend {tempest_conf}\n"
+                "rally verify configure-verifier --show\n"
+                "EOF".format(tempest_tag=self.tempest_tag,
+                             designate_tag=self.designate_tag,
+                             tempest_conf=conf_name))
         with self._underlay.remote(node_name=self._node_name) as remote:
             LOG.info("Create install_tempest.sh")
             remote.check_call(cmd)
