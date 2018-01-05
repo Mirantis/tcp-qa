@@ -348,6 +348,13 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
+- description: Restart cinder volume
+  cmd: |
+    salt -C 'I@cinder:controller' service.restart cinder-volume;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
 - description: Install docker.io on gtw
   cmd: salt-call cmd.run 'apt-get install docker.io -y'
   node_name: {{ HOSTNAME_GTW01 }}
