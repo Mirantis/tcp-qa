@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7baba8fa_a3dd0c2f",
+        "filename": "tcp_tests/tests/system/test_failover.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 550,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-01-09T12:32:22Z",
+      "side": 1,
+      "message": "It\u0027s wrong TR case",
+      "revId": "4c535136cd7d706281d1030c4b97e99529385901",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
