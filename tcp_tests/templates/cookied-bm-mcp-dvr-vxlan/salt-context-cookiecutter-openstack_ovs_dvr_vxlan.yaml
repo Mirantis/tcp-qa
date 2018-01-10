@@ -101,7 +101,7 @@ default_context:
   openstack_proxy_node01_hostname: prx01
   openstack_proxy_node02_address: 10.167.4.82
   openstack_proxy_node02_hostname: prx02
-  openstack_version: ocata
+  openstack_version: pike
   oss_enabled: 'False'
   platform: openstack_enabled
   public_host: ${_param:openstack_proxy_address}
