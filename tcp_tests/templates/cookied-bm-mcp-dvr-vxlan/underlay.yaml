@@ -10,7 +10,7 @@
 {% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP002', 'cmp002.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
-#{% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
 {% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.49.2') %}
 {% set ETH0_IP_ADDRESS_KVM01 = os_env('ETH0_IP_ADDRESS_KVM01', '172.16.49.11') %}
 {% set ETH0_IP_ADDRESS_KVM02 = os_env('ETH0_IP_ADDRESS_KVM02', '172.16.49.12') %}
@@ -18,7 +18,7 @@
 {% set ETH0_IP_ADDRESS_CMP001 = os_env('ETH0_IP_ADDRESS_CMP001', '172.16.49.3') %}
 {% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '172.16.49.31') %}
 {% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '172.16.49.5') %}
-#{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
+{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
 
 {% import 'cookied-bm-mcp-dvr-vxlan/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-bm-mcp-dvr-vxlan/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
@@ -49,7 +49,7 @@ template:
             default_{{ HOSTNAME_CMP001 }}: {{ ETH0_IP_ADDRESS_CMP001 }}
             default_{{ HOSTNAME_CMP002 }}: {{ ETH0_IP_ADDRESS_CMP002 }}
             default_{{ HOSTNAME_GTW01 }}: {{ ETH0_IP_ADDRESS_GTW01 }}
-            #default_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
+            default_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
           ip_ranges:
               dhcp: [+2, -4]
       private-pool01:
@@ -173,7 +173,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: enp2s0f0  # see 'interfaces' below.
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -191,14 +191,14 @@ template:
                   cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces:
-                - label: enp2s0f0
+                - label: enp9s0f0
                   l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_KVM01
-                - label: enp2s0f1
+                - label: enp9s0f1
                   mac_address: !os_env ETH1_MAC_ADDRESS_KVM01
 
               network_config:
-                enp2s0f0:
+                enp9s0f0:
                   networks:
                    - admin
                 bond0:
@@ -206,7 +206,7 @@ template:
                    - control
                   aggregation: active-backup
                   parents:
-                   - enp2s0f1
+                   - enp9s0f1
 
           - name: {{ HOSTNAME_KVM02 }}
             role: salt_minion
@@ -220,7 +220,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: enp2s0f0  # see 'interfaces' below.
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -238,14 +238,14 @@ template:
                   cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces:
-                - label: enp2s0f0
+                - label: enp9s0f0
                   l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_KVM02
-                - label: enp2s0f1
+                - label: enp9s0f1
                   mac_address: !os_env ETH1_MAC_ADDRESS_KVM02
 
               network_config:
-                enp2s0f0:
+                enp9s0f0:
                   networks:
                    - admin
                 bond0:
@@ -253,7 +253,7 @@ template:
                    - control
                   aggregation: active-backup
                   parents:
-                   - enp2s0f1
+                   - enp9s0f1
 
           - name: {{ HOSTNAME_KVM03 }}
             role: salt_minion
@@ -267,7 +267,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: eno1  # see 'interfaces' below.
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -285,14 +285,14 @@ template:
                   cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces:
-                - label: eno1
+                - label: enp9s0f0
                   l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_KVM03
-                - label: eno2
+                - label: enp9s0f1
                   mac_address: !os_env ETH1_MAC_ADDRESS_KVM03
 
               network_config:
-                eno1:
+                enp9s0f0:
                   networks:
                    - admin
                 bond0:
@@ -300,7 +300,7 @@ template:
                    - control
                   aggregation: active-backup
                   parents:
-                   - eno2
+                   - enp9s0f1
 
 
           - name: {{ HOSTNAME_CMP001 }}
@@ -315,7 +315,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -333,20 +333,20 @@ template:
                   cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces:
-                - label: enp3s0f0
+                - label: enp9s0f0
                   l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_CMP001
-                - label: enp3s0f1
+                - label: enp9s0f1
                   mac_address: !os_env ETH1_MAC_ADDRESS_CMP001
-                - label: enp5s0f0
-                  mac_address: !os_env ETH2_MAC_ADDRESS_CMP001
-                - label: enp5s0f1
-                  mac_address: !os_env ETH3_MAC_ADDRESS_CMP001
-                - label: enp5s0f2
-                  mac_address: !os_env ETH4_MAC_ADDRESS_CMP001
+#                - label: enp9s0f0
+#                 mac_address: !os_env ETH2_MAC_ADDRESS_CMP001
+#               - label: enp5s0f1
+#                 mac_address: !os_env ETH3_MAC_ADDRESS_CMP001
+#               - label: enp5s0f2
+#                 mac_address: !os_env ETH4_MAC_ADDRESS_CMP001
 
               network_config:
-                enp3s0f0:
+                enp9s0f0:
                   networks:
                    - admin
                 bond0:
@@ -354,8 +354,8 @@ template:
                    - control
                   aggregation: active-backup
                   parents:
-                   - enp3s0f1
-                   - enp5s0f0
+                   - enp9s0f0
+                   - enp9s0f1
 
 
 
@@ -371,7 +371,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: eno1  # see 'interfaces' below.
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -389,20 +389,19 @@ template:
                   cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces:
-                - label: eno1
+                - label: enp9s0f0
                   l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_CMP002
-                - label: eth0
+                - label: enp9s0f1
                   mac_address: !os_env ETH1_MAC_ADDRESS_CMP002
-                - label: eth3
-                  mac_address: !os_env ETH2_MAC_ADDRESS_CMP002
-                - label: eth2
-                  mac_address: !os_env ETH3_MAC_ADDRESS_CMP002
-                - label: eth4
-                  mac_address: !os_env ETH4_MAC_ADDRESS_CMP002
-
+#               - label: eth3
+#                 mac_address: !os_env ETH2_MAC_ADDRESS_CMP002
+#               - label: eth2
+#                 mac_address: !os_env ETH3_MAC_ADDRESS_CMP002
+#               - label: eth4
+#                 mac_address: !os_env ETH4_MAC_ADDRESS_CMP002
               network_config:
-                eno1:
+                enp9s0f0:
                   networks:
                    - admin
                 bond0:
@@ -410,8 +409,8 @@ template:
                    - control
                   aggregation: active-backup
                   parents:
-                   - eth0
-                   - eth3
+                   - enp9s0f0
+                   - enp9s0f1
 
 
           - name: {{ HOSTNAME_GTW01 }}
@@ -426,7 +425,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
+              cloud_init_iface_up: enp2s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -444,14 +443,14 @@ template:
                   cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces:
-                - label: enp3s0f0
+                - label: enp2s0f0
                   l2_network_device: admin
                   mac_address: !os_env ETH0_MAC_ADDRESS_GTW01
-                - label: enp3s0f1
+                - label: enp2s0f1
                   mac_address: !os_env ETH1_MAC_ADDRESS_GTW01
 
               network_config:
-                enp3s0f0:
+                enp2s0f0:
                   networks:
                    - admin
                 bond0:
@@ -459,51 +458,51 @@ template:
                    - control
                   aggregation: active-backup
                   parents:
-                   - enp3s0f1
+                   - enp2s0f1
 
-#          - name: {{ HOSTNAME_GTW02 }}
-#            role: salt_minion
-#            params:
-#              ipmi_user: !os_env IPMI_USER
-#              ipmi_password: !os_env IPMI_PASSWORD
-#              ipmi_previlegies: OPERATOR
-#              ipmi_host: !os_env IPMI_HOST_GTW02  # hostname or IP address
-#              ipmi_lan_interface: lanplus
-#              ipmi_port: 623
-#
-#              root_volume_name: system     # see 'volumes' below
-#              cloud_init_volume_name: iso  # see 'volumes' below
-#              cloud_init_iface_up: eno1  # see 'interfaces' below.
-#              volumes:
-#                - name: system
-#                  capacity: !os_env NODE_VOLUME_SIZE, 200
-#
-#                  # The same as for agent URL, here is an URL to the image that should be
-#                  # used for deploy the node. It should also be accessible from deploying
-#                  # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
-#                  source_image: !os_env IRONIC_SOURCE_IMAGE_URL
-#                  source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
-#
-#                - name: iso  # Volume with name 'iso' will be used
-#                             # for store image with cloud-init metadata.
-#
-#                  cloudinit_meta_data: *cloudinit_meta_data
-#                  cloudinit_user_data: *cloudinit_user_data_1604
-#
-#              interfaces:
-#                - label: eno1
-#                  l2_network_device: admin
-#                  mac_address: !os_env ETH0_MAC_ADDRESS_GTW02
-#                - label: eno2
-#                  mac_address: !os_env ETH1_MAC_ADDRESS_GTW02
-#
-#              network_config:
-#                eno1:
-#                  networks:
-#                   - admin
-#                bond0:
-#                  networks:
-#                   - control
-#                  aggregation: active-backup
-#                  parents:
-#                   - eno2
+          - name: {{ HOSTNAME_GTW02 }}
+            role: salt_minion
+            params:
+              ipmi_user: !os_env IPMI_USER
+              ipmi_password: !os_env IPMI_PASSWORD
+              ipmi_previlegies: OPERATOR
+              ipmi_host: !os_env IPMI_HOST_GTW02  # hostname or IP address
+              ipmi_lan_interface: lanplus
+              ipmi_port: 623
+
+              root_volume_name: system     # see 'volumes' below
+              cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: enp2s0f0  # see 'interfaces' below.
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 200
+
+                  # The same as for agent URL, here is an URL to the image that should be
+                  # used for deploy the node. It should also be accessible from deploying
+                  # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
+                  source_image: !os_env IRONIC_SOURCE_IMAGE_URL
+                  source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
+
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces:
+                - label: enp2s0f0
+                  l2_network_device: admin
+                  mac_address: !os_env ETH0_MAC_ADDRESS_GTW02
+                - label: enp2s0f1
+                  mac_address: !os_env ETH1_MAC_ADDRESS_GTW02
+
+              network_config:
+                enp2s0f0:
+                  networks:
+                   - admin
+                bond0:
+                  networks:
+                   - control
+                  aggregation: active-backup
+                  parents:
+                   - enp2s0f1
