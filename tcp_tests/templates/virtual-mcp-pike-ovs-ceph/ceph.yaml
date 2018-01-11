@@ -1,4 +1,5 @@
-{% from 'virtual-mcp-ocata-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
 
 # Install ceph mons
 - description: Update grains
@@ -96,9 +97,11 @@
 
 - description: Install radosgw if exists
   cmd: |
-    salt -C 'I@ceph:radosgw' saltutil.sync_grains;
-    salt -C 'I@ceph:radosgw' state.sls ceph.radosgw;
-    salt -C 'I@keystone:client' state.sls keystone.client;
+    if salt -C 'I@ceph:radosgw' match.pillar 'ceph:radosgw' ; then
+      salt -C 'I@ceph:radosgw' saltutil.sync_grains;
+      salt -C 'I@ceph:radosgw' state.sls ceph.radosgw;
+      salt -C 'I@keystone:client' state.sls keystone.client;
+    fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
