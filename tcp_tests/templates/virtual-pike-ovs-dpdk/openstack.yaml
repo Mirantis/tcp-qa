@@ -1,8 +1,7 @@
-{% from 'virtual-mcp-ocata-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'virtual-mcp-ocata-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_CTL01 with context %}
-{% from 'virtual-mcp-ocata-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_CTL02 with context %}
-{% from 'virtual-mcp-ocata-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_CTL03 with context %}
-{% from 'virtual-mcp-ocata-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'virtual-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'virtual-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'virtual-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
@@ -64,7 +63,7 @@
 
 - description: Check glance image-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; glance image-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; glance image-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -79,9 +78,9 @@
 
 - description: Check nova service-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; nova --debug service-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; nova service-list'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 
@@ -89,12 +88,12 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@cinder:controller' state.sls cinder -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Check cinder list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; cinder list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; cinder list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -114,9 +113,10 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+
 - description: Check neutron agent-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; neutron agent-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; neutron agent-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -183,6 +183,13 @@
   retry: {count: 2, delay: 30}
   skip_fail: false
 
+- description: Register image in glance
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
@@ -199,7 +206,7 @@
 
 - description: Create net04
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04'
+    '. /root/keystonercv3; neutron net-create net04 --provider:network_type gre'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -213,7 +220,7 @@
 
 - description: Create router
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-create net04_router01'
+    '. /root/keystonercv3; neutron router-create net04_router01 --ha False'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -246,27 +253,39 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: sync time
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-    'service ntp stop; ntpd -gq;  service ntp start'
-  node_name: {{ HOSTNAME_CFG01 }}
+# Configure cinder-volume salt-call
+- description: Set disks 01
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Install docker.io on gtw
-  cmd: salt-call cmd.run 'apt-get install docker.io -y'
-  node_name: {{ HOSTNAME_GTW01 }}
+- description: Set disks 02
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL02 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: create rc file on cfg
-  cmd: scp ctl01:/root/keystonercv3 /root
-  node_name: {{ HOSTNAME_CFG01 }}
+- description: Set disks 03
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Copy rc file
-  cmd: scp /root/keystonercv3 gtw01:/root
-  node_name: {{ HOSTNAME_CFG01 }}
+- description: Create partitions 01
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create partitions 02
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create partitions 03
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
