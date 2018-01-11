@@ -1,4 +1,4 @@
-{% from 'virtual-mcp-ocata-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp-pike-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install support services
 - description: Install keepalived on ctl01
