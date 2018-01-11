@@ -304,7 +304,7 @@ k8s_opts = [
            default=False),
     ct.Cfg('k8s_conformance_image', ct.String(),
            default='docker-dev-virtual.docker.mirantis.net/mirantis/'
-                   'kubernetes/k8s-conformance:v1.7.5-2_1504192939316')
+                   'kubernetes/k8s-conformance:v1.7.5-2_1515625946151')
 ]
 
 _group_opts = [
