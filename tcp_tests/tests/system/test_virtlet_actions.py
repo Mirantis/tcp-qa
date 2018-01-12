@@ -21,6 +21,8 @@ LOG = logger.logger
 class TestVirtletActions(object):
     """Test class for testing Virtlet actions"""
 
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
     def test_virtlet_create_delete_vm(self, show_step, config, k8s_deployed):
         """Test for deploying an mcp environment with virtlet
 
@@ -44,6 +46,8 @@ class TestVirtletActions(object):
         show_step(3)
         k8s_deployed.delete_vm(vm_name)
 
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
     def test_vm_resource_quotas(self, show_step, config, k8s_deployed):
         """Test for deploying a VM with specific quotas
 
