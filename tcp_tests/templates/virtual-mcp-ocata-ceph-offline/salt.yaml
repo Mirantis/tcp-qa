@@ -64,6 +64,7 @@
 - description: 'Workaround of local_repo_url - set to offline image repository structure'
   cmd: |
     find /srv/salt/reclass/classes/cluster -type f -exec sed -i 's/local_repo_url: .*/local_repo_url: mirror.mcp.mirantis.local.test/g' {} +
+    find /srv/salt/reclass/classes/cluster -type f -exec sed -i 's/aptly_server_address: .*/aptly_server_address: {{ os_env('HOST_APT') }}/g' {} +
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
