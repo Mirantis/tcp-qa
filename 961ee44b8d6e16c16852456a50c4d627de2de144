@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2791ed19_627b844d",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 257,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-01-16T14:29:45Z",
+      "side": 1,
+      "message": "k8s 1.8.5 was not provided into to backlog for integration testing.\nIf you need different setting here, please use:\nexport KUBERNETES_HYPERKUBE_IMAGE\u003d\u0027docker-prod-virtual.docker.mirantis.net/mirantis/kubernetes/hyperkube-amd64:v1.8.5-4\u0027",
+      "revId": "961ee44b8d6e16c16852456a50c4d627de2de144",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8378ff71_88de9584",
+        "filename": "tcp_tests/settings_oslo.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 307,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-01-16T14:29:45Z",
+      "side": 1,
+      "message": "If you need different setting here, please use:\nexport K8S_CONFORMANCE_IMAGE\u003d\u0027docker-prod-virtual.docker.mirantis.net/mirantis/kubernetes/k8s-conformance:v1.8.5-4\u0027",
+      "range": {
+        "startLine": 307,
+        "startChar": 47,
+        "endLine": 307,
+        "endChar": 55
+      },
+      "revId": "961ee44b8d6e16c16852456a50c4d627de2de144",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
