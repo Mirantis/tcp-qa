@@ -42,7 +42,7 @@ class TestVirtletActions(object):
         show_step(1)
         vm_name = k8s_deployed.run_vm()
         show_step(2)
-        k8s_deployed.wait_active_state(vm_name)
+        k8s_deployed.wait_active_state(vm_name, timeout=360)
         show_step(3)
         k8s_deployed.delete_vm(vm_name)
 
@@ -75,7 +75,7 @@ class TestVirtletActions(object):
                                              target_yaml=target_yaml)
         show_step(2)
         vm_name = k8s_deployed.run_vm(target_yaml)
-        k8s_deployed.wait_active_state(vm_name)
+        k8s_deployed.wait_active_state(vm_name, timeout=360)
         show_step(3)
         domain_name = k8s_deployed.get_domain_name(vm_name)
         cpu = k8s_deployed.get_vm_cpu_count(domain_name)
