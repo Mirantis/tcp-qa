@@ -15,6 +15,7 @@
 import pytest
 
 from tcp_tests.helpers import ext
+from tcp_tests.helpers import utils
 from tcp_tests import logger
 from tcp_tests.managers import k8smanager
 
@@ -80,3 +81,19 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
                             args='systemctl restart keepalived.service')
 
     return k8s_actions
+
+
+@pytest.fixture(scope='function', autouse=True)
+def grab_virtlet_results(request, func_name, underlay, k8s_deployed):
+    """Finalizer to extract virtlet conformance logs"""
+
+    grab_virtlet_result = request.keywords.get('grab_virtlet_results', None)
+
+    def test_fin():
+        if hasattr(request.node, 'rep_call') and \
+                (request.node.rep_call.passed or request.node.rep_call.failed)\
+                and grab_virtlet_result:
+            artifact_name = utils.extract_name_from_mark(grab_virtlet_result) \
+                            or "{}".format(func_name)
+            k8s_deployed.download_virtlet_conformance_log(artifact_name)
+    request.addfinalizer(test_fin)
