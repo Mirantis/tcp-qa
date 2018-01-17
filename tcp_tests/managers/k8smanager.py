@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import os
 import time
 from uuid import uuid4
 
@@ -88,6 +89,12 @@ class K8SManager(ExecuteCommandsMixin):
     def ctl_host(self):
         nodes = [node for node in self.__config.underlay.ssh if
                  ext.UNDERLAY_NODE_ROLES.k8s_controller in node['roles']]
+        return nodes[0]['node_name']
+
+    @property
+    def master_node(self):
+        nodes = [node for node in self.__config.underlay.ssh if
+                 ext.UNDERLAY_NODE_ROLES.salt_master in node['roles']]
         return nodes[0]['node_name']
 
     def get_pod_phase(self, pod_name, namespace=None):
@@ -496,3 +503,43 @@ class K8SManager(ExecuteCommandsMixin):
                "tail -n +3 | awk {{'print $2'}}".format(domain_id))
         result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
         return result['stdout'].strip()
+
+    def run_virtlet_conformance(self, timeout=60 * 60,
+                                log_file='virtlet_conformance.log'):
+        if self.__config.k8s.run_extended_virtlet_conformance:
+            ci_image = "cloud-images.ubuntu.com/xenial/current/" \
+                       "xenial-server-cloudimg-amd64-disk1.img"
+            cmd = ("set -o pipefail; "
+                   "docker run --net=host {0} /virtlet-e2e-tests "
+                   "-include-cloud-init-tests -image {2} "
+                   "-sshuser ubuntu -memoryLimit 1024 "
+                   "-alsologtostderr -cluster-url http://127.0.0.1:8080 "
+                   "-ginkgo.focus '\[Conformance\]' "
+                   "| tee {1}".format(
+                    self.__config.k8s_deploy.kubernetes_virtlet_image,
+                    log_file, ci_image))
+        else:
+            cmd = ("set -o pipefail; "
+                   "docker run --net=host {0} /virtlet-e2e-tests "
+                   "-alsologtostderr -cluster-url http://127.0.0.1:8080 "
+                   "-ginkgo.focus '\[Conformance\]' "
+                   "| tee {1}".format(
+                    self.__config.k8s_deploy.kubernetes_virtlet_image,
+                    log_file))
+        LOG.info("Executing: {}".format(cmd))
+        with self.__underlay.remote(
+                node_name=self.ctl_host) as remote:
+            result = remote.check_call(cmd, timeout=timeout)
+            stderr = result['stderr']
+            stdout = result['stdout']
+            LOG.info("Test results stdout: {}".format(stdout))
+            LOG.info("Test results stderr: {}".format(stderr))
+        return result
+
+    def download_virtlet_conformance_log(self,
+                                         log_file='virtlet_conformance.log'):
+        with self.__underlay.remote(node_name=self.master_node) as r:
+            cmd = "rsync {0}:/root/{1} /root/".format(self.ctl_host, log_file)
+            r.check_call(cmd, raise_on_err=False)
+            LOG.info("Downloading the artifact {0}".format(log_file))
+            r.download(destination=log_file, target=os.getcwd())
