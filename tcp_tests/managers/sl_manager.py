@@ -93,15 +93,14 @@ class SLManager(ExecuteCommandsMixin):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
-        if skip_tests:
-            cmd = ("cd {0}; "
-                   "export VOLUME_STATUS='available'; "
-                   "pytest -k 'not {1}' {2}".format(
-                       tests_path, skip_tests, test_to_run))
-        else:
-            cmd = ("cd {0}; "
-                   "export VOLUME_STATUS='available'; "
-                   "pytest -k {1}".format(tests_path, test_to_run))
+        cmd = ("cd {0}; "
+               ". venv-stacklight-pytest/bin/activate;"
+               "export VOLUME_STATUS='available';"
+               "pytest -k {1} {2}".format(
+                   tests_path,
+                   "'not " + skip_tests + "'" if skip_tests else '',
+                   test_to_run))
+
         with self.__underlay.remote(node_name=target_node_name[0]) \
                 as node_remote:
             LOG.debug("Run {0} on the node {1}".format(
@@ -115,21 +114,19 @@ class SLManager(ExecuteCommandsMixin):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
-        if skip_tests:
-            cmd = ("cd {0}; "
-                   "export VOLUME_STATUS='available'; "
-                   "pytest  --json=report.json -k 'not {1}' {2}".format(
-                       tests_path, skip_tests, test_to_run))
-        else:
-            cmd = ("cd {0}; "
-                   "export VOLUME_STATUS='available'; "
-                   "pytest --json=report.json -k {1}".format(
-                       tests_path, test_to_run))
+        cmd = ("cd {0}; "
+               ". venv-stacklight-pytest/bin/activate;"
+               "export VOLUME_STATUS='available';"
+               "pip install pytest-json;"
+               "pytest --json=report.json -k {1} {2}".format(
+                   tests_path,
+                   "'not " + skip_tests + "'" if skip_tests else '',
+                   test_to_run))
+
         with self.__underlay.remote(node_name=target_node_name[0]) \
                 as node_remote:
             LOG.debug("Run {0} on the node {1}".format(
                 cmd, target_node_name[0]))
-            node_remote.execute('pip install pytest-json')
             node_remote.execute(cmd)
             res = node_remote.execute('cd {0}; cat report.json'.format(
                 tests_path))

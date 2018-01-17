@@ -6,13 +6,14 @@
 
 {%- macro MACRO_CLONE_SL_TESTS() %}
 {############################################################}
-- description: Clone repo and install tests on cfg node
+- description: Install stacklight-pytest into virlual environemnt
   cmd: |
     set -e;
+    apt-get -y install python-virtualenv;
+    virtualenv venv-stacklight-pytest;
+    . venv-stacklight-pytest/bin/activate;
     git clone -b {{ SL_TEST_BRANCH }} {{ SL_TEST_REPO }} /root/stacklight-pytest;
-    cd /root/stacklight-pytest;
-    python setup.py sdist;
-    pip install dist/stacklight_tests-1.0.tar.gz --process-dependency-links
+    pip install /root/stacklight-pytest;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -24,11 +25,10 @@
 - description: Configure tests
   cmd: |
     set -e;
+    . venv-stacklight-pytest/bin/activate;
     stl-tests gen-config-mk;
     cp /usr/local/lib/python2.7/dist-packages/stacklight_tests/fixtures/config.yaml /root/stacklight-pytest/stacklight_tests/fixtures/config.yaml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
 {%- endmacro %}
-
-
