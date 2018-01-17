@@ -302,6 +302,8 @@ k8s_opts = [
            help="", default=443),
     ct.Cfg("k8s_conformance_run", ct.Boolean(),
            default=False),
+    ct.Cfg("run_extended_virtlet_conformance", ct.Boolean(),
+           default=False),
     ct.Cfg('k8s_conformance_image', ct.String(),
            default='docker-prod-virtual.docker.mirantis.net/mirantis/'
                    'kubernetes/k8s-conformance:v1.7.5-2')
