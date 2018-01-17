@@ -89,6 +89,23 @@ class TestVirtletActions(object):
         show_step(4)
         k8s_deployed.delete_vm(target_yaml)
 
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    def test_virtlet_conformance(self, show_step, config, k8s_deployed):
+        """Test run of virtlet conformance tests
+
+        Scenario:
+            1. Start virtlet conformance
+            2. Download logs
+
+        """
+
+        show_step(1)
+        k8s_deployed.run_virtlet_conformance()
+        show_step(2)
+        k8s_deployed.download_virtlet_conformance_log()
+
+
     @pytest.mark.skip(reason="No configuration with ceph and k8s")
     def test_rbd_flexvolume_driver(self, show_step, config, k8s_deployed):
         """Test for deploying a VM with Ceph RBD volume using flexvolumeDriver
