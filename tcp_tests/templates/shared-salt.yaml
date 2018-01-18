@@ -9,6 +9,7 @@
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
+{% set COOKIECUTTER_TEMPLATE_BRANCH = os_env('COOKIECUTTER_TEMPLATE_BRANCH','master') %}
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
@@ -221,7 +222,7 @@
   cmd: |
     set -e;
     pip install cookiecutter
-    export GIT_SSL_NO_VERIFY=true; git clone  https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates /tmp/cookiecutter-templates
+    export GIT_SSL_NO_VERIFY=true; git clone  https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates -b {{ COOKIECUTTER_TEMPLATE_BRANCH }} /tmp/cookiecutter-templates
 
     {%- if COOKIECUTTER_REF_CHANGE != '' %}
     pushd /tmp/cookiecutter-templates
