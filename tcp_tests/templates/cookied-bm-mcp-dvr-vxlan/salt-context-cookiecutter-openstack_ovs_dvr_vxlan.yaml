@@ -1,4 +1,5 @@
 default_context:
+  mcp_version: testing
   ceph_enabled: 'False'
   cicd_enabled: 'False'
   cluster_domain: cookied-bm-mcp-dvr-vxlan.local

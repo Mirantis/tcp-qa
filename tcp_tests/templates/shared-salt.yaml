@@ -245,6 +245,7 @@
     # Override some context parameters
     sed -i 's/cluster_name: .*/cluster_name: {{ CLUSTER_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/cluster_domain: .*/cluster_domain: {{ DOMAIN_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/mcp_version:.*/mcp_version: {{ REPOSITORY_SUITE }}/g' {{ CLUSTER_CONTEXT_PATH }}
     {%- if CONTROL_VLAN  %}
     sed -i 's/control_vlan: .*/control_vlan: {{ CONTROL_VLAN }}/g' {{ CLUSTER_CONTEXT_PATH }}
     {%- endif %}
@@ -304,10 +305,8 @@
     popd
     {%- endif %}
 
-    export REPLACE_DIRS="/srv/salt/reclass/classes/ /srv/salt/reclass/nodes/"
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
-
     {%- if IS_CONTRAIL_LAB %}
+    export REPLACE_DIRS="/srv/salt/reclass/classes/ /srv/salt/reclass/nodes/"
     # vSRX IPs for tcp-qa images have 172.16.10.90 hardcoded
     find ${REPLACE_DIRS} -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: 172.16.10.90/g' {} +
     find ${REPLACE_DIRS} -type f -exec sed -i 's/infra_config_deploy_address: 1.*/infra_config_deploy_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {} +

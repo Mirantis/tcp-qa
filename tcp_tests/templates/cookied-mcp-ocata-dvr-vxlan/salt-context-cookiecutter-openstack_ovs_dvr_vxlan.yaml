@@ -1,4 +1,5 @@
 default_context:
+  mcp_version: testing
   cicd_control_node01_address: 10.167.4.91
   cicd_control_node01_hostname: cid01
   cicd_control_node02_address: 10.167.4.92

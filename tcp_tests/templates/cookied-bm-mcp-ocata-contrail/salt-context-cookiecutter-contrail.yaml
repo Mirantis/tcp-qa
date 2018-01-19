@@ -1,4 +1,5 @@
 default_context:
+  mcp_version: testing
   cicd_enabled: 'False'
   cluster_domain: cookied-bm-mcp-ocata-contrail.local
   cluster_name: deployment_name
