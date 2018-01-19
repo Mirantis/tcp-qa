@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9feaff84_0ba0e866",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/underlay.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 176,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-01-19T13:30:56Z",
+      "side": 1,
+      "message": "Please fix the interface name here and below",
+      "revId": "f8ccb89c7b8fae002dbf760fa552490920e48283",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
