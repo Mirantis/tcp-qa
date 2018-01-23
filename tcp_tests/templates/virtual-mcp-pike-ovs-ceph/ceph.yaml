@@ -113,6 +113,15 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+{% for ssh in config.underlay.ssh %}
+- description: Restart salt-minion as workaround of PROD-16970
+  cmd: |
+    service salt-minion restart;  # For case if salt-minion was already installed
+  node_name: {{ ssh['node_name'] }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{% endfor %}
+
 - description: Connect ceph to glance
   cmd: |
     salt -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring,glance;
