@@ -611,7 +611,7 @@
     reclass-salt --top
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: true
 
 - description: Sync all salt resources
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
