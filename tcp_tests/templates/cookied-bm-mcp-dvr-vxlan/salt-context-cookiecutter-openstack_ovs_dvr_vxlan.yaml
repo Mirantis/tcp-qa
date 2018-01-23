@@ -78,8 +78,8 @@ default_context:
   openstack_gateway_node01_hostname: gtw01
   openstack_gateway_node01_tenant_address: 10.167.6.6
   openstack_gateway_node02_address: 10.167.4.225
-  #openstack_gateway_node02_hostname: gtw02
-  #openstack_gateway_node02_tenant_address: 10.167.6.7
+  openstack_gateway_node02_hostname: gtw02
+  openstack_gateway_node02_tenant_address: 10.167.6.7
   openstack_message_queue_address: 10.167.4.40
   openstack_message_queue_hostname: msg
   openstack_message_queue_node01_address: 10.167.4.41
@@ -102,7 +102,8 @@ default_context:
   openstack_proxy_node01_hostname: prx01
   openstack_proxy_node02_address: 10.167.4.82
   openstack_proxy_node02_hostname: prx02
-  openstack_version: ocata
+  openstack_version: pike
+  cinder_version: ${_param:openstack_version}
   oss_enabled: 'False'
   platform: openstack_enabled
   public_host: ${_param:openstack_proxy_address}
