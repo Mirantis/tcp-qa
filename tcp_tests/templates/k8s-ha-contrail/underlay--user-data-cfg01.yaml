@@ -32,6 +32,7 @@
    - sudo resolvconf -u
 
    # Prepare network connection
+   - sudo ifdown ens3
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
    - sudo ifup ens4
