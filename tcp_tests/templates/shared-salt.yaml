@@ -79,7 +79,7 @@
 
 - description: Configure salt-master on cfg01
   cmd: |
-    cat << 'EOF' >> /etc/salt/master.d/master.conf
+    cat << 'EOF' > /etc/salt/master.d/master.conf
     file_roots:
       base:
       - /usr/share/salt-formulas/env
@@ -185,7 +185,7 @@
     find {{ CLUSTER_PATH }} -type f -exec sed -i 's/cluster_domain: .*/cluster_domain: {{ DOMAIN_NAME }}/g' {} +
 
     # Disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
+    cat << 'EOF' > /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
     classes:
     - cluster.{{ CLUSTER_NAME }}.infra.config
     parameters:
@@ -282,7 +282,7 @@
     export GIT_SSL_NO_VERIFY=true; git clone https://gerrit.mcp.mirantis.net/salt-models/reclass-system /srv/salt/reclass/classes/system/
 
     # Create the cfg01 node and disable checkouting the model from remote repository
-    cat << 'EOF' >> /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
+    cat << 'EOF' > /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
     classes:
     - system.openssh.server.team.all
     - cluster.{{ CLUSTER_NAME }}.infra.config
@@ -423,7 +423,7 @@
     [ ! -L /srv/salt/env/prd ] && ln -s ${FORMULA_PATH}/env /srv/salt/env/prd;
     [ ! -d /etc/reclass ] && mkdir /etc/reclass;
 
-    cat << 'EOF' >> /etc/reclass/reclass-config.yml
+    cat << 'EOF' > /etc/reclass/reclass-config.yml
     storage_type: yaml_fs
     pretty_print: True
     output: yaml
@@ -469,7 +469,7 @@
 - description: Configure salt-minion on {{ ssh['node_name'] }}
   cmd: |
     [ ! -d /etc/salt/minion.d ] && mkdir -p /etc/salt/minion.d;
-    cat << "EOF" >> /etc/salt/minion.d/minion.conf
+    cat << "EOF" > /etc/salt/minion.d/minion.conf
     id: {{ ssh['node_name'] }}
     master: {{ config.salt.salt_master_host }}
     EOF
