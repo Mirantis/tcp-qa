@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "63542566_2a5d7468",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-01-24T11:07:41Z",
+      "side": 1,
+      "message": "It\u0027s not needed, see below",
+      "range": {
+        "startLine": 95,
+        "startChar": 3,
+        "endLine": 95,
+        "endChar": 26
+      },
+      "revId": "d587ab9d649f92f161ef5eefa04c4bb2571ba4a1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2ebda773_ac8f9250",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 541,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-01-24T11:07:41Z",
+      "side": 1,
+      "message": "Please use \u0027host\u003dconfig.salt.salt_master_host\u0027 instead of this, because \u0027config.salt.salt_master_host\u0027 set by the fixture which install the salt cluster.",
+      "range": {
+        "startLine": 541,
+        "startChar": 36,
+        "endLine": 541,
+        "endChar": 62
+      },
+      "revId": "d587ab9d649f92f161ef5eefa04c4bb2571ba4a1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
