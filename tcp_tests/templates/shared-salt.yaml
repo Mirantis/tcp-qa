@@ -126,8 +126,7 @@
 
     # In the day01 image, /srv/salt/reclass directory is already exists, so clone the model into the reclass.tmp directory
     export GIT_SSL_NO_VERIFY=true; git clone -b {{ SALT_MODELS_BRANCH }} {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass.tmp;
-    cp -r /srv/salt/reclass.tmp/* /srv/salt/reclass/
-    cp -r /srv/salt/reclass.tmp/.git /srv/salt/reclass/
+    rsync -a /srv/salt/reclass.tmp/ /srv/salt/reclass;
 
     pushd /srv/salt/reclass;
     git config submodule."classes/system".url "{{ SALT_MODELS_SYSTEM_REPOSITORY }}";
