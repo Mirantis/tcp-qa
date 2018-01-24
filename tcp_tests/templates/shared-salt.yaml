@@ -597,6 +597,12 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: temp fix - remove jenkins
+  cmd: salt "cfg01*" cmd.run "sed -i 's/HAS_JENKINS\ \=\ True/HAS_JENKINS\ \=\ False/g' /var/cache/salt/minion/extmods/grains/jenkins_plugins.py"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Refresh pillars on all minions
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
