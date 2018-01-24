@@ -77,6 +77,12 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
+- description: Remove any existing minion keys
+  cmd:  salt-key -y -D || true
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 - description: Configure salt-master on cfg01
   cmd: |
     cat << 'EOF' > /etc/salt/master.d/master.conf
