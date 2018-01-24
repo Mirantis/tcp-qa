@@ -35,6 +35,7 @@
    - update-grub
 
    # Prepare network connection
+   - sudo ifdown ens3
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
 

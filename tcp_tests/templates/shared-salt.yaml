@@ -123,7 +123,12 @@
     set -e;
     set -x;
     #ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
-    export GIT_SSL_NO_VERIFY=true; git clone -b {{ SALT_MODELS_BRANCH }} {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass;
+
+    # In the day01 image, /srv/salt/reclass directory is already exists, so clone the model into the reclass.tmp directory
+    export GIT_SSL_NO_VERIFY=true; git clone -b {{ SALT_MODELS_BRANCH }} {{ SALT_MODELS_REPOSITORY }} /srv/salt/reclass.tmp;
+    cp -r /srv/salt/reclass.tmp/* /srv/salt/reclass/
+    cp -r /srv/salt/reclass.tmp/.git /srv/salt/reclass/
+
     pushd /srv/salt/reclass;
     git config submodule."classes/system".url "{{ SALT_MODELS_SYSTEM_REPOSITORY }}";
     git submodule update --init --recursive;
@@ -144,8 +149,6 @@
     git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD;
     {%- endfor %}
     popd;
-    {%- else %}
-    git submodule update --init --recursive;
     {%- endif %}
     popd;
     mkdir -p /srv/salt/reclass/classes/service;
