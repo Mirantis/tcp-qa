@@ -261,12 +261,12 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description:  Allow all tcp
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description:  Allow all tcp
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+#    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+# skip_fail: false
 
 #- description:  Allow all icmp
 #  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
@@ -275,12 +275,12 @@
 #  retry: {count: 1, delay: 30}
 #  skip_fail: false
 
-#- description: sync time
-# cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-#   'service ntp stop; ntpd -gq;  service ntp start'
-# node_name: {{ HOSTNAME_CFG01 }}
-# retry: {count: 1, delay: 30}
-# skip_fail: false
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 
 - description: Temp workaround of  PROD-13167
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
@@ -310,9 +310,9 @@
 - description: Run tests
   cmd: |
     if [[ {{ PATTERN }} == "false" ]]; then
-        docker run --rm --net=host -e SOURCE_FILE=/home/rally/keystonercv3 -e SET=full -e CUSTOM="--pattern tempest --detail" -e CONCURRENCY=2 -e TEMPEST_CONF=lvm_mcp.conf -e SKIP_LIST=mcp_skip.list -e DO_CLEANUP_RESOURCES=false -v /root/keystonercv3:/home/rally/keystonercv3 -v /root/rally_reports:/home/rally/rally_reports -v /etc/ssl/certs/:/etc/ssl/certs/ docker-prod-local.artifactory.mirantis.com/mirantis/oscore/rally-tempest    else
+        docker run --rm --net=host -e SOURCE_FILE=/home/rally/keystonercv3 -e SET=full -e CUSTOM="--pattern tempest --detail" -e CONCURRENCY=2 -e TEMPEST_CONF=lvm_mcp.conf -e SKIP_LIST=mcp_skip.list -e DO_CLEANUP_RESOURCES=false -v /root/keystonercv3:/home/rally/keystonercv3 -v /root/rally_reports:/home/rally/rally_reports -v /etc/ssl/certs/:/etc/ssl/certs/ docker-prod-local.artifactory.mirantis.com/mirantis/oscore/rally-tempest
     else
-        docker run --rm --net=host -e SOURCE_FILE=/home/rally/keystonercv3 -e SET=full -e CUSTOM="--pattern {{ PATTERN }} --detail" -e CONCURRENCY=2 -e TEMPEST_CONF=lvm_mcp.conf -e SKIP_LIST=mcp_skip.list -e DO_CLEANUP_RESOURCES=false -v /root/keystonercv3:/home/rally/keystonercv3 -v /root/rally_reports:/home/rally/rally_reports -v /etc/ssl/certs/:/etc/ssl/certs/ docker-prod-local.artifactory.mirantis.com/mirantis/oscore/rally-tempest    else
+        docker run --rm --net=host -e SOURCE_FILE=/home/rally/keystonercv3 -e SET=full -e CUSTOM="--pattern {{ PATTERN }} --detail" -e CONCURRENCY=2 -e TEMPEST_CONF=lvm_mcp.conf -e SKIP_LIST=mcp_skip.list -e DO_CLEANUP_RESOURCES=false -v /root/keystonercv3:/home/rally/keystonercv3 -v /root/rally_reports:/home/rally/rally_reports -v /etc/ssl/certs/:/etc/ssl/certs/ docker-prod-local.artifactory.mirantis.com/mirantis/oscore/rally-tempest
     fi
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 5}
