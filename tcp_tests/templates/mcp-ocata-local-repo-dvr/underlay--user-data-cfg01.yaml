@@ -35,6 +35,7 @@
    - echo "nameserver $LOCAL_IP.1" >> /etc/resolv.conf;
    - echo "supersede domain-name-servers $DNS_IP" >> /etc/dhcp/dhclient.conf
    # Prepare network connection
+   - sudo ifdown ens3
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
 
