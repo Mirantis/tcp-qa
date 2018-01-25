@@ -33,8 +33,11 @@
 
    # Prepare network connection
    - sudo ifdown ens3
+   - sudo ip r d default || true  # remove existing default route to get it from dhcp
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
+   - sudo ifdown ens4
+   - sudo ifdown ens5
    - sudo ifup ens4
    - sudo ifup ens5
 

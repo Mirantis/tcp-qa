@@ -33,6 +33,7 @@
 
    # Prepare network connection
    - sudo ifdown eth0
+   - sudo ip r d default || true  # remove existing default route to get it from dhcp
    - sudo ifup eth0
 
    # Create swap

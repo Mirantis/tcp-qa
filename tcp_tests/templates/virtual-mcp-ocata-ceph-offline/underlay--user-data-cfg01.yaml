@@ -36,6 +36,7 @@
    - echo "supersede domain-name-servers $DNS_IP" >> /etc/dhcp/dhclient.conf
    # Prepare network connection
    - sudo ifdown ens3
+   - sudo ip r d default || true  # remove existing default route to get it from dhcp
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
 
