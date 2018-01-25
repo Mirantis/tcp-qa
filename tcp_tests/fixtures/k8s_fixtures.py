@@ -84,7 +84,7 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
 
 
 @pytest.fixture(scope='function')
-def grab_virtlet_results(request, func_name, underlay, k8s_deployed):
+def virtlet_logs(request, func_name, underlay, k8s_deployed):
     """Finalizer to extract virtlet conformance logs"""
 
     grab_virtlet_result = request.keywords.get('grab_virtlet_results', None)
