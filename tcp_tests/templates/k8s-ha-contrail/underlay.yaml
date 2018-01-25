@@ -152,7 +152,7 @@ template:
               cloud_init_iface_up: ens3
               volumes:
                 - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 20
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
                   backing_store: cfg01_day01_image
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
