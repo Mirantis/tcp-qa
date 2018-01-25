@@ -254,7 +254,7 @@ k8s_deploy_opts = [
            default='sbPfel23ZigJF3Bm'),
     ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
     ct.Cfg('kubernetes_hyperkube_image', ct.String(),
-           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.7.5-2'.format(
+           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.8.6-5'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/node:latest'.format(
@@ -268,9 +268,9 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_netchecker_enabled', ct.Boolean(),
            help="", default=True),
     ct.Cfg('kubernetes_netchecker_agent_image', ct.String(),
-           default='mirantis/k8s-netchecker-agent:stable'),
+           default='mirantis/k8s-netchecker-agent:latest'),
     ct.Cfg('kubernetes_netchecker_server_image', ct.String(),
-           default='mirantis/k8s-netchecker-server:stable'),
+           default='mirantis/k8s-netchecker-server:latest'),
     ct.Cfg('kubernetes_calico_policy_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_calico_policy_image', ct.String(),
@@ -306,7 +306,7 @@ k8s_opts = [
            default=False),
     ct.Cfg('k8s_conformance_image', ct.String(),
            default='docker-prod-virtual.docker.mirantis.net/mirantis/'
-                   'kubernetes/k8s-conformance:v1.7.5-2')
+                   'kubernetes/k8s-conformance:v1.8.6-5')
 ]
 
 _group_opts = [
