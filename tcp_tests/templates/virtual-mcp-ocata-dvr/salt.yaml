@@ -21,6 +21,8 @@
   cmd: |
     set -e;
     apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    . /root/venv-reclass-tools/bin/activate;
     pip install git+https://github.com/dis-xcom/reclass-tools;
 
     # Combine 'dns' role with compute nodes

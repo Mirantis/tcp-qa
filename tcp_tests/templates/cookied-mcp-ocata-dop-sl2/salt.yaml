@@ -34,6 +34,7 @@
     sed -i '/system.reclass.storage.system.stacklight_telemetry_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
     sed -i '/system.reclass.storage.system.stacklight_log_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
 
+    . /root/venv-reclass-tools/bin/activate;
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node02 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node03 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;

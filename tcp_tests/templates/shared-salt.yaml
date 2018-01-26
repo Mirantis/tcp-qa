@@ -362,6 +362,8 @@
   cmd: |
     set -e;
     apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    . /root/venv-reclass-tools/bin/activate;
     pip install git+https://github.com/dis-xcom/reclass-tools;
     reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/cluster/;
     reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
@@ -388,6 +390,7 @@
 - description: "[EXPERIMENTAL] Create environment model for virtual environment"
   cmd: |
     set -e;
+    . /root/venv-reclass-tools/bin/activate;
     reclass-tools render --template-dir /tmp/environment/environment_template/ \
                          --output-dir /srv/salt/reclass/classes/environment/ \
                          {% for ENVIRONMENT_CONTEXT_NAME in ENVIRONMENT_CONTEXT_NAMES %} --context /tmp/environment/{{ENVIRONMENT_CONTEXT_NAME}}{% endfor %} \

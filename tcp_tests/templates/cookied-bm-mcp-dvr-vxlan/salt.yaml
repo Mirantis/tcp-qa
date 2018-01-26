@@ -37,6 +37,7 @@
   cmd: |
     set -e;
     # Remove rack01 key
+    . /root/venv-reclass-tools/bin/activate;
     reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
 
     # Add openstack_compute_node definition from system
