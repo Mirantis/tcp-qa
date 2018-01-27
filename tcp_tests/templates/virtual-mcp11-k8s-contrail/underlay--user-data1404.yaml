@@ -48,7 +48,12 @@
    #- sleep 120
    - echo "Preparing base OS"
    - which wget >/dev/null || (apt-get update; apt-get install -y wget)
-   - sudo add-apt-repository universe
+
+   # Configure Ubuntu mirrors
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial main restricted universe" > /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list
+
    - echo "deb [arch=amd64] http://apt.mirantis.com/trusty {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list
    - wget -O - http://apt.mirantis.com/public.gpg | apt-key add -
    - echo "deb http://repo.saltstack.com/apt/ubuntu/14.04/amd64/2016.3 trusty main" > /etc/apt/sources.list.d/saltstack.list
