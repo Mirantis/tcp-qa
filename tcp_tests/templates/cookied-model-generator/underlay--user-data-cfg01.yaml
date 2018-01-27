@@ -10,11 +10,15 @@
      {% for key in config.underlay.ssh_keys %}
       - ssh-rsa {{ key['public'] }}
      {% endfor %}
+   - name: salt
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
 
   disable_root: false
   chpasswd:
    list: |
     root:r00tme
+    salt:hovno12345!
    expire: False
 
   bootcmd:
@@ -36,16 +40,15 @@
 
    # Prepare network connection
    - sudo ifdown ens3
-   - sudo ip r d default || true  # remove existing default route to get it from dhcp
    - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
 
    # Create swap
-   - fallocate -l 16G /swapfile
-   - chmod 600 /swapfile
-   - mkswap /swapfile
-   - swapon /swapfile
-   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+   #- fallocate -l 16G /swapfile
+   #- chmod 600 /swapfile
+   #- mkswap /swapfile
+   #- swapon /swapfile
+   #- echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
 
    ############## TCP Cloud cfg01 node ##################
    #- sleep 120
@@ -53,26 +56,27 @@
 
    - echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
    - echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
-   - which wget >/dev/null || (apt-get update; apt-get install -y wget);
+   #- which wget >/dev/null || (apt-get update; apt-get install -y wget);
 
-   # Configure Ubuntu mirrors
-   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial main restricted universe" > /etc/apt/sources.list
-   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list
-   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list
-
-   - echo "deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
-   - wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
-   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
-   - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+   #- echo "deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+   #- wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
+   #- echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+   #- wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
 
    - apt-get clean
    - apt-get update
 
    # Install common packages
-   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
+   #- eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
 
    # Install salt-minion and stop it until it is configured
-   - eatmydata apt-get install -y salt-minion && service salt-minion stop
+   #- eatmydata apt-get install -y salt-minion && service salt-minion stop
+
+   # Ensure that the salt-master service is ready to receive requests
+   - salt-key -y -D
+   - service salt-master restart
+   - service salt-minion restart
+   - salt-call --timeout=180 test.ping
 
    ########################################################
    # Node is ready, allow SSH access
@@ -101,3 +105,9 @@
             ServerAliveCountMax 10
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null
+
+   # Fix hardcoded IP address in the minion.conf
+   - path: /etc/salt/minion.d/minion.conf
+     content: |
+          master: 127.0.0.1
+          id: cfg01.{{ DOMAIN_NAME }}
