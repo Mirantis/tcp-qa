@@ -27,6 +27,12 @@
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
   runcmd:
+   # Prepare network connection
+   - sudo ifdown ens3
+   - sudo ip r d default || true  # remove existing default route to get it from dhcp
+   - sudo ifup ens3
+
+   #- sudo route add default gw {gateway} {interface_name}
    - rm /etc/resolv.conf
    - touch /etc/resolv.conf
    - LOCAL_IP=$(ifconfig ens3 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1 | cut -d"." -f1-3)
@@ -34,11 +40,6 @@
    - echo "nameserver $DNS_IP" >> /etc/resolv.conf;
    - echo "nameserver $LOCAL_IP.1" >> /etc/resolv.conf;
    - echo "supersede domain-name-servers $DNS_IP" >> /etc/dhcp/dhclient.conf
-   # Prepare network connection
-   - sudo ifdown ens3
-   - sudo ip r d default || true  # remove existing default route to get it from dhcp
-   - sudo ifup ens3
-   #- sudo route add default gw {gateway} {interface_name}
 
    # Create swap
    - fallocate -l 4G /swapfile

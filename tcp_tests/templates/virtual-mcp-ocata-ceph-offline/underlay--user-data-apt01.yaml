@@ -27,6 +27,13 @@
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
   runcmd:
+   # Prepare network connection
+   - sudo ifup ens3
+   #- sudo route add default gw {gateway} {interface_name}
+   - sudo ifup ens4
+   - sudo ifup ens5
+   - sudo ifup ens6
+
    - rm /etc/resolv.conf
    - touch /etc/resolv.conf
    - export LOCAL_DNS_IP=$(ifconfig ens3 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1)
@@ -36,13 +43,6 @@
    - echo "supersede domain-name-servers $LOCAL_DNS_IP, 8.8.8.8, 172.18.208.44" >> /etc/dhcp/dhclient.conf
    - export TERM=linux
    - export LANG=C
-
-   # Prepare network connection
-   - sudo ifup ens3
-   #- sudo route add default gw {gateway} {interface_name}
-   - sudo ifup ens4
-   - sudo ifup ens5
-   - sudo ifup ens6
 
    # Create swap
    - fallocate -l 4G /swapfile
