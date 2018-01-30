@@ -407,6 +407,14 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
+- description: Refresh pillars for environment class
+  cmd: |
+    set -e;
+    salt-call saltutil.refresh_pillar; sleep 5;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 {%- endmacro %}
 
 
@@ -599,8 +607,15 @@
   skip_fail: false
 {%- endmacro %}
 
-{%- macro MACRO_GENERATE_INVENTORY() %}
-{#####################################}
+{%- macro MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=false) %}
+{#################################################################}
+
+- description: Refresh pillars before generating nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls reclass
@@ -608,8 +623,19 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+{%- if RERUN_SALTMASTER_STATE %}
+- description: Regenerate salt.master states for the newly uploaded/created model
+  cmd: |
+    # Need to refresh installed formulas that are required in the model
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar; sleep 5;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' state.sls salt.master;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+{%- endif %}
+
 - description: Refresh pillars on all minions
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar; sleep 5
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
