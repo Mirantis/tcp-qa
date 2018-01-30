@@ -1,0 +1,96 @@
+| # All the data below will be stored as a string object
+  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
+
+  disable_root: false
+  chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+  bootcmd:
+   # Block access to SSH while node is preparing
+   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+  output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+  runcmd:
+   # Prepare network connection
+   - sudo ifdown ens3
+   - sudo ifup ens3
+   #- sudo route add default gw {gateway} {interface_name}
+
+   # Configure dhclient
+   - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
+   - sudo resolvconf -u
+
+   # Enable grub menu using updated config below
+   - update-grub
+
+   # Create swap
+   #- fallocate -l 16G /swapfile
+   #- chmod 600 /swapfile
+   #- mkswap /swapfile
+   #- swapon /swapfile
+   #- echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
+   ############## TCP Cloud cfg01 node ##################
+   - echo "Preparing base OS"
+
+   - echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
+   - echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
+
+   - apt-get clean
+   - apt-get update
+
+   # Ensure that the salt-master service is ready to receive requests
+   - salt-key -y -D
+   - service salt-master restart
+   - service salt-minion restart
+   - salt-call --timeout=180 test.ping
+
+   ########################################################
+   # Node is ready, allow SSH access
+   - echo "Allow SSH access ..."
+   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ########################################################
+
+  write_files:
+   - path: /etc/default/grub.d/97-enable-grub-menu.cfg
+     content: |
+         GRUB_RECORDFAIL_TIMEOUT=30
+         GRUB_TIMEOUT=3
+         GRUB_TIMEOUT_STYLE=menu
+
+   - path: /etc/network/interfaces
+     content: |
+          auto ens3
+          iface ens3 inet dhcp
+
+   - path: /root/.ssh/config
+     owner: root:root
+     permissions: '0600'
+     content: |
+          Host *
+            ServerAliveInterval 300
+            ServerAliveCountMax 10
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+
+   # Fix hardcoded IP address in the minion.conf
+   - path: /etc/salt/minion.d/minion.conf
+     content: |
+          master: 127.0.0.1
+          id: cfg01.{{ DOMAIN_NAME }}
