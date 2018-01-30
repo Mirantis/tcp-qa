@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2cf0afbd_1131f6d6",
+        "filename": "tcp_tests/templates/physical-mcp-ocata-offline-ovs/salt.yaml",
+        "patchSetId": 5
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-01-30T11:08:20Z",
+      "side": 1,
+      "message": "Please use virtualenv for reclass-tools because it changes some python system libraries which are used by salt.\nLike here: https://review.gerrithub.io/#/c/396598/",
+      "revId": "79b12ee8025271e8b51bdd415b9be4eefc8b0744",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
