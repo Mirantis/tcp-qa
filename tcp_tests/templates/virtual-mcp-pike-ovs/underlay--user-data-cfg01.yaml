@@ -53,9 +53,9 @@
    - which wget >/dev/null || (apt-get update; apt-get install -y wget);
 
    # Configure Ubuntu mirrors
-   - echo "deb [arch=amd64] http://5.43.230.129/{{ REPOSITORY_SUITE }}/ubuntu/ xenial main restricted universe" > /etc/apt/sources.list
-   - echo "deb [arch=amd64] http://5.43.230.129/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list
-   - echo "deb [arch=amd64] http://5.43.230.129/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial main restricted universe" > /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list
 
    - echo "deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
    - wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
