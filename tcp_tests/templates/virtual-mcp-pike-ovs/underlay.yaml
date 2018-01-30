@@ -160,6 +160,9 @@ template:
          - name: cfg01_day01_image               # Pre-configured day01 image
            source_image: {{ os_env('IMAGE_PATH_CFG01_DAY01', os_env('IMAGE_PATH1604')) }} # http://images.mirantis.com/cfg01-day01.qcow2 or fallback to IMAGE_PATH1604
            format: qcow2
+         - name: mcp_ubuntu_1604_image           # Pre-configured image for control plane
+           source_image: !os_env MCP_IMAGE_PATH1604
+           format: qcow2
 
         nodes:
           - name: {{ HOSTNAME_CFG01 }}
@@ -212,7 +215,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
+                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: cinder
                   capacity: 50
@@ -253,7 +256,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
+                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: cinder
                   capacity: 50
@@ -282,7 +285,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
+                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: cinder
                   capacity: 50
@@ -311,7 +314,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
+                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
@@ -337,7 +340,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
+                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
@@ -363,7 +366,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
+                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
@@ -389,7 +392,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: cloudimage1604
+                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: cinder
                   capacity: 50
