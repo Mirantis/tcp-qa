@@ -1,0 +1,86 @@
+# Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-model-generator') %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME + '.local') %}
+{% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
+
+{% import 'cookied-model-generator/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'cookied-model-generator/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+
+---
+aliases:
+ - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
+ - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
+ - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
+
+template:
+  devops_settings:
+    env_name: {{ os_env('ENV_NAME', LAB_CONFIG_NAME + '_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+
+    address_pools:
+      admin-pool01:
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.70.0.0/16:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_CFG01 }}: +15
+          ip_ranges:
+            dhcp: [+90, -10]
+
+    groups:
+      - name: default
+        driver:
+          name: devops.driver.libvirt
+          params:
+            connection_string: {{ os_env('CONNECTION_STRING', 'qemu:///system') }}
+            storage_pool_name: {{ os_env('STORAGE_POOL_NAME', 'default') }}
+            stp: False
+            hpet: False
+            enable_acpi: true
+            use_host_cpu: {{ os_env('DRIVER_USE_HOST_CPU', true) }}
+            use_hugepages: {{ os_env('DRIVER_USE_HUGEPAGES', false) }}
+
+        network_pools:
+          admin: admin-pool01
+
+        l2_network_devices:
+          admin:
+            address_pool: admin-pool01
+            dhcp: true
+            forward:
+              mode: nat
+
+        nodes:
+          - name: {{ HOSTNAME_CFG01 }}
+            role: salt_master
+            params:
+              vcpu: {{ os_env('CFG_NODE_CPU', 4) }}
+              memory: {{ os_env('CFG_NODE_MEMORY', 4096) }}
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: {{ os_env('CFG_NODE_VOLUME_SIZE', 150) }}
+                  shared_backing_store_name: {{ os_env('CFG01_DAY01_VOLUME_NAME') }}
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_cfg01
+
+              interfaces:
+                - label: ens3
+                  l2_network_device: admin
+                  interface_model: *interface_model
+              network_config:
+                ens3:
+                  networks:
+                    - admin
