@@ -37,11 +37,11 @@
    - update-grub
 
    # Prepare network connection
-   - sudo ifup {interface_name}
+   - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
 
    # Create swap
-   - fallocate -l 4G /swapfile
+   - fallocate -l 16G /swapfile
    - chmod 600 /swapfile
    - mkswap /swapfile
    - swapon /swapfile
@@ -51,8 +51,6 @@
    ############## TCP Cloud cfg01 node ##################
    #- sleep 120
    - echo "Preparing base OS"
-   - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
-   - echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
    - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
    # Configure Ubuntu mirrors
@@ -74,10 +72,14 @@
    # Install salt-minion and stop it until it is configured
    - eatmydata apt-get install -y salt-minion && service salt-minion stop
 
+   # Install latest kernel
+   - eatmydata apt-get install -y {{ os_env('LINUX_KERNEL_HWE_PACKAGE_NAME', 'linux-image-extra-4.10.0-42-generic') }}
+
    ########################################################
    # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   #- echo "Allow SSH access ..."
+   #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   - reboot
    ########################################################
 
   write_files:
@@ -89,8 +91,6 @@
 
    - path: /etc/network/interfaces
      content: |
-          # The loopback network interface
-          auto lo
-          iface lo inet loopback
-          auto {interface_name}
-          iface {interface_name} inet dhcp
+          auto ens3
+          iface ens3 inet dhcp
+

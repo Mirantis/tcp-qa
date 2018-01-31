@@ -74,10 +74,14 @@
    # Install salt-minion and stop it until it is configured
    - eatmydata apt-get install -y salt-minion && service salt-minion stop
 
+   # Install latest kernel
+   - eatmydata apt-get install -y {{ os_env('LINUX_KERNEL_HWE_PACKAGE_NAME', 'linux-image-extra-4.10.0-42-generic') }}
+
    ########################################################
    # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   #- echo "Allow SSH access ..."
+   #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   - reboot
    ########################################################
 
   write_files:
