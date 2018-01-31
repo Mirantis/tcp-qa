@@ -26,34 +26,43 @@
   output:
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
+  misc_bucket:
+   - &runcmd_commands |
+     #!/bin/bash
+     set -x
+     # Prepare network connection
+     sudo ifup ens3
+     #- sudo route add default gw {gateway} {interface_name}
+     rm /etc/resolv.conf
+     touch /etc/resolv.conf
+     export LOCAL_DNS_IP=$(ifconfig ens3 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1)
+     echo "nameserver $LOCAL_DNS_IP" >> /etc/resolv.conf;
+     echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
+     echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
+     echo "supersede domain-name-servers $LOCAL_DNS_IP, 8.8.8.8, 172.18.208.44" >> /etc/dhcp/dhclient.conf
+     export TERM=linux
+     export LANG=C
+
+     # Create swap
+     fallocate -l 4G /swapfile
+     chmod 600 /swapfile
+     mkswap /swapfile
+     swapon /swapfile
+     echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
+
+     ########################################################
+     # Node is ready, allow SSH access
+     echo "Allow SSH access ..."
+     sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+     ########################################################
+     # Mirror from https://github.com/Mirantis/mcp-common-scripts/blob/master/config-drive/mirror_config.sh
+     echo "Configuring salt"
+     service salt-minion stop
+     systemctl disable salt-minion.service
+     # envsubst < /root/minion.conf > /etc/salt/minion.d/minion.conf
+
   runcmd:
-   # Prepare network connection
-   - sudo ifup ens3
-   #- sudo route add default gw {gateway} {interface_name}
-
-   - rm /etc/resolv.conf
-   - touch /etc/resolv.conf
-   - export LOCAL_DNS_IP=$(ifconfig ens3 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1)
-   - echo "nameserver $LOCAL_DNS_IP" >> /etc/resolv.conf;
-   - echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
-   - echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
-   - echo "supersede domain-name-servers $LOCAL_DNS_IP, 8.8.8.8, 172.18.208.44" >> /etc/dhcp/dhclient.conf
-   - export TERM=linux
-   - export LANG=C
-
-
-   # Create swap
-   - fallocate -l 4G /swapfile
-   - chmod 600 /swapfile
-   - mkswap /swapfile
-   - swapon /swapfile
-   - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
-
-   ########################################################
-   # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-   ########################################################
+   - [ sh, -c, *runcmd_commands ]
 
   write_files:
    - path: /etc/network/interfaces
