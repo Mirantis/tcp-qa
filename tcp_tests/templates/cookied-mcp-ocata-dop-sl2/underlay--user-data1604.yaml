@@ -73,7 +73,7 @@
    - eatmydata apt-get install -y salt-minion && service salt-minion stop
 
    # Install latest kernel
-   - eatmydata apt-get install -y linux-generic-hwe-16.04
+   - eatmydata apt-get install -y {{ os_env('LINUX_KERNEL_HWE_PACKAGE_NAME', 'linux-generic-hwe-16.04-edge') }}
 
    ########################################################
    # Node is ready, allow SSH access

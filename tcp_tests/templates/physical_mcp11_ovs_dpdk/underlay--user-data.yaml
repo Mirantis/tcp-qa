@@ -69,7 +69,7 @@
    # Node is ready, allow SSH access
    #- echo "Allow SSH access ..."
    #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-   - apt-get install linux-generic-hwe-16.04 -y
+   - apt-get install {{ os_env('LINUX_KERNEL_HWE_PACKAGE_NAME', 'linux-generic-hwe-16.04-edge') }} -y
    - reboot
    ########################################################
 
