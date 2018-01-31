@@ -67,8 +67,10 @@
 
    ########################################################
    # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   #- echo "Allow SSH access ..."
+   #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   - apt-get install {{ os_env('LINUX_KERNEL_HWE_PACKAGE_NAME', 'linux-image-extra-4.10.0-42-generic') }} -y
+   - reboot
    ########################################################
 
   write_files:

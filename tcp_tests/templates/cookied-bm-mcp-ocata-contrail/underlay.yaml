@@ -26,6 +26,7 @@
 {% import 'cookied-bm-mcp-ocata-contrail/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-bm-mcp-ocata-contrail/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
 {% import 'cookied-bm-mcp-ocata-contrail/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA with context %}
+{% import 'cookied-bm-mcp-ocata-contrail/underlay--user-data1604-hwe.yaml' as CLOUDINIT_USER_DATA_HWE with context %}
 
 ---
 aliases:
@@ -33,6 +34,7 @@ aliases:
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data {{ CLOUDINIT_USER_DATA }}
+ - &cloudinit_user_data_hwe {{ CLOUDINIT_USER_DATA_HWE }}
 
 
 template:
@@ -395,7 +397,7 @@ template:
                              # for store image with cloud-init metadata.
 
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data
+                  cloudinit_user_data: *cloudinit_user_data_hwe
 
               interfaces:
                 - label: enp2s0f0
@@ -455,7 +457,7 @@ template:
                              # for store image with cloud-init metadata.
 
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data
+                  cloudinit_user_data: *cloudinit_user_data_hwe
 
               interfaces:
                 # - label: eno1

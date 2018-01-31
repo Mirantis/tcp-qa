@@ -21,6 +21,7 @@
 {% import 'cookied-mcp-ocata-dop-sl2/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-mcp-ocata-dop-sl2/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
 {% import 'cookied-mcp-ocata-dop-sl2/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+{% import 'cookied-mcp-ocata-dop-sl2/underlay--user-data1604-hwe.yaml' as CLOUDINIT_USER_DATA_1604_HWE with context %}
 
 ---
 aliases:
@@ -28,6 +29,7 @@ aliases:
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
+ - &cloudinit_user_data_1604_hwe {{ CLOUDINIT_USER_DATA_1604_HWE }}
 
 template:
   devops_settings:
@@ -575,7 +577,7 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_1604
+                  cloudinit_user_data: *cloudinit_user_data_1604_hwe
 
 
               interfaces: &all_interfaces
@@ -626,7 +628,7 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_1604
+                  cloudinit_user_data: *cloudinit_user_data_1604_hwe
 
               interfaces: *all_interfaces
               network_config: *all_network_config
@@ -652,7 +654,7 @@ template:
                   device: cdrom
                   bus: ide
                   cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_1604
+                  cloudinit_user_data: *cloudinit_user_data_1604_hwe
 
               interfaces: *all_interfaces
               network_config: *all_network_config

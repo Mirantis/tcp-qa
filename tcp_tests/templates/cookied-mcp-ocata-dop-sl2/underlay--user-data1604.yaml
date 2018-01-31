@@ -72,14 +72,10 @@
    # Install salt-minion and stop it until it is configured
    - eatmydata apt-get install -y salt-minion && service salt-minion stop
 
-   # Install latest kernel
-   - eatmydata apt-get install -y linux-generic-hwe-16.04
-
    ########################################################
    # Node is ready, allow SSH access
-   #- echo "Allow SSH access ..."
-   #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-   - reboot
+   - echo "Allow SSH access ..."
+   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    ########################################################
 
   write_files:
