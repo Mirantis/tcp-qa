@@ -95,7 +95,7 @@ underlay_opts = [
                     ext.UNDERLAY_NODE_ROLES.k8s_controller]),
     ct.Cfg('bootstrap_timeout', ct.Integer(),
            help="Timeout of waiting SSH for nodes with specified roles",
-           default=600),
+           default=1800),
     ct.Cfg('nameservers', ct.JSONList(),
            help="IP addresses of DNS servers",
            default=[]),
