@@ -191,7 +191,7 @@
     find {{ CLUSTER_PATH }} -type f -exec sed -i 's/cluster_domain: .*/cluster_domain: {{ DOMAIN_NAME }}/g' {} +
 
     # Disable checkouting the model from remote repository
-    cat << 'EOF' > /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
+    cat << 'EOF' > /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml
     classes:
     - cluster.{{ CLUSTER_NAME }}.infra.config
     parameters:
@@ -219,7 +219,7 @@
 {%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None, CLUSTER_PRODUCT_MODELS='') %}
 {###################################################################}
 {%- set CLUSTER_CONTEXT_PATH = '/tmp/' + CLUSTER_CONTEXT_NAME %}
-- description: "[EXPERIMENTAL] Upload cookiecutter-templates context to {{ HOSTNAME_CFG01 }}"
+- description: "[EXPERIMENTAL] Upload cookiecutter-templates context to cfg01.{{ DOMAIN_NAME }}"
   upload:
     local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
     local_filename: {{ CLUSTER_CONTEXT_NAME }}
@@ -288,7 +288,7 @@
     export GIT_SSL_NO_VERIFY=true; git clone https://gerrit.mcp.mirantis.net/salt-models/reclass-system /srv/salt/reclass/classes/system/
 
     # Create the cfg01 node and disable checkouting the model from remote repository
-    cat << 'EOF' > /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml
+    cat << 'EOF' > /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml
     classes:
     - system.openssh.server.team.all
     - cluster.{{ CLUSTER_NAME }}.infra.config
@@ -329,7 +329,7 @@
 {%- macro MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() %}
 {########################################################}
 
-- description: "[EXPERIMENTAL] Clone 'environment-template' repository to {{ HOSTNAME_CFG01 }}."
+- description: "[EXPERIMENTAL] Clone 'environment-template' repository to cfg01.{{ DOMAIN_NAME }}"
   cmd: |
     set -e;
     mkdir -p /tmp/environment/;
@@ -350,7 +350,7 @@
 {%- endif %}
 
 {%- for ENVIRONMENT_CONTEXT_NAME in ENVIRONMENT_CONTEXT_NAMES %}
-- description: "[EXPERIMENTAL] Upload environment inventory to {{ HOSTNAME_CFG01 }}"
+- description: "[EXPERIMENTAL] Upload environment inventory to cfg01.{{ DOMAIN_NAME }}"
   upload:
     local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
     local_filename: {{ ENVIRONMENT_CONTEXT_NAME }}
@@ -369,9 +369,9 @@
     reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
     reclass-tools del-key parameters.linux.network.interface /usr/share/salt-formulas/reclass/;
 
-    if ! reclass-tools get-key 'classes' /srv/salt/reclass/nodes/{{ HOSTNAME_CFG01 }}.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
-      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local' /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml --merge ;
-      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/nodes/_generated/{{ HOSTNAME_CFG01 }}.yml --merge ;
+    if ! reclass-tools get-key 'classes' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
+      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml --merge ;
+      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml --merge ;
     fi;
 
   node_name: {{ HOSTNAME_CFG01 }}
@@ -450,10 +450,10 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: "*Workaround* remove all cfg01 nodes except {{ HOSTNAME_CFG01 }} to not depend on other clusters in 'reclass --top'"
+- description: "*Workaround* remove all cfg01 nodes except cfg01.{{ DOMAIN_NAME }} to not depend on other clusters in 'reclass --top'"
   cmd: |
-    # Remove all other nodes except {{ HOSTNAME_CFG01 }} to not rely on them for 'reclass --top'
-    find /srv/salt/reclass/nodes/ -type f -not -name {{ HOSTNAME_CFG01 }}.yml -delete
+    # Remove all other nodes except cfg01.{{ DOMAIN_NAME }} to not rely on them for 'reclass --top'
+    find /srv/salt/reclass/nodes/ -type f -not -name cfg01.{{ DOMAIN_NAME }}.yml -delete
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -714,16 +714,6 @@
 
 {%- macro MACRO_NETWORKING_WORKAROUNDS() %}
 {#########################################}
-
-#- description: '*Workaround 1/2* of the bug PROD-9576 to get bond0-connectivity *without* rebooting nodes'
-#  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False cmd.run
-#    "mkdir -p /tmp/PROD-9576; cd /tmp/PROD-9576; git clone https://gerrit.mcp.mirantis.net/salt-formulas/linux; cd linux;
-#    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/linux refs/changes/54/2354/16 && git checkout FETCH_HEAD;
-#    cp -f linux/network/interface.sls /srv/salt/env/prd/linux/network/;
-#    cp -f linux/map.jinja /srv/salt/env/prd/linux/;"
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
 
 - description: '*Workaround: Load bonding module before call state.linux'
   cmd: salt -C "I@linux:network:interface:*:type:bond" cmd.run 'modprobe bonding'

@@ -34,7 +34,7 @@ class TestGenerateModel(object):
         commands = underlay.read_template(config.salt_deploy.salt_steps_path)
         salt_actions.install(commands)
 
-        node_name = underlay.get_target_node_names('cfg01.')[0]
+        node_name = underlay.get_target_node_names('cfg01')[0]
         arch_model_name = 'model_{0}.tar.gz'.format(settings.ENV_NAME)
         commands = [
             {
