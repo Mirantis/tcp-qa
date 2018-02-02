@@ -407,14 +407,6 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Refresh pillars for environment class
-  cmd: |
-    set -e;
-    salt-call saltutil.refresh_pillar; sleep 5;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 {%- endmacro %}
 
 
