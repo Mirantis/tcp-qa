@@ -158,19 +158,21 @@
 # Aptly
 #------
 
-- description: "Wait for Aptly to come up in container..."
-  cmd: timeout 300 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' cmd.run
-      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
-       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8084/api/version  && break; sleep 2; done'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 15}
-  skip_fail: false
+#### Steps are commented due to PROD-17598
 
-- description: "Setup Aptly"
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' state.sls aptly
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 10}
-  skip_fail: false
+#- description: "Wait for Aptly to come up in container..."
+#  cmd: timeout 300 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' cmd.run
+#      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
+#       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8084/api/version  && break; sleep 2; done'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 3, delay: 15}
+#  skip_fail: false
+
+#- description: "Setup Aptly"
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:server' state.sls aptly
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 3, delay: 10}
+#  skip_fail: false
 
 # OpenLDAP
 #---------
