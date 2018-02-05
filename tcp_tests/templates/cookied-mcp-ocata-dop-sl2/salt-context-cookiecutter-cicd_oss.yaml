@@ -132,6 +132,7 @@ default_context:
   salt_master_management_address: 10.167.5.15
   stacklight_enabled: 'True'
   stacklight_version: '2'
+  fluentd_enabled: 'True'
   stacklight_monitor_address: 10.167.4.70
   stacklight_monitor_hostname: mon
   stacklight_monitor_node01_address: 10.167.4.71

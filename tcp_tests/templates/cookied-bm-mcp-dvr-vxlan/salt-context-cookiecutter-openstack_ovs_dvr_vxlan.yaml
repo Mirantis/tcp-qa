@@ -141,6 +141,7 @@ default_context:
   stacklight_telemetry_node03_address: 10.167.8.88
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
+  fluentd_enabled: 'True'
   tenant_network_gateway: 10.167.6.1
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: 10.167.6.0/24
