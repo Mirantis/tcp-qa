@@ -15,7 +15,7 @@
 import pytest
 
 from tcp_tests import logger
-from tcp_tests import settings
+# from tcp_tests import settings
 
 LOG = logger.logger
 
@@ -25,8 +25,9 @@ class TestOpenContrail(object):
     """Test class for testing OpenContrail on a TCP lab"""
 
     @pytest.mark.fail_snapshot
-    def test_opencontrail(self, config, openstack_deployed,
-                          show_step, sl_deployed):
+    @pytest.mark.with_rally(rally_node="ctl01.", prepare_openstack=True)
+    def test_opencontrail(self, underlay, openstack_deployed, oss_deployed,
+                          sl_deployed, show_step):
         """Runner for Juniper contrail-tests
 
         Scenario:
