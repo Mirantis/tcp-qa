@@ -1,0 +1,101 @@
+nodes:
+    # Virtual Control Plane nodes
+
+    ctl01.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_control_node01
+      roles:
+      - openstack_control_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    ctl02.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_control_node02
+      roles:
+      - openstack_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    ctl03.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_control_node03
+      roles:
+      - openstack_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs01.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_database_node01
+      roles:
+      - openstack_database_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs02.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_database_node02
+      roles:
+      - openstack_database
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs03.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_database_node03
+      roles:
+      - openstack_database
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg01.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_message_queue_node01
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg02.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_message_queue_node02
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg03.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_message_queue_node03
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    prx01.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_proxy_node01
+      roles:
+      - openstack_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    prx02.ocata-cicd-contrail.local:
+      reclass_storage_name: openstack_proxy_node02
+      roles:
+      - openstack_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
