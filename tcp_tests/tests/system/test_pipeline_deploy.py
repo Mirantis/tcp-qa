@@ -38,7 +38,7 @@ class TestPipeline(object):
         """
         nodes = underlay.node_names()
         LOG.info("Nodes - {}".format(nodes))
-        cfg_node = 'cfg01.ocata-cicd.local'
+        cfg_node = 'cfg01.ocata-cicd-contrail.local'
         salt_api = salt_deployed.get_pillar(
             cfg_node, '_param:jenkins_salt_api_url')
         salt_api = salt_api[0].get(cfg_node)
@@ -50,7 +50,7 @@ class TestPipeline(object):
         # Creating param list for openstack deploy
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
-        params['STACK_INSTALL'] = 'core,kvm,openstack,ovs'
+        params['STACK_INSTALL'] = 'core,kvm,openstack,contrail'
         show_step(4)
         build = jenkins.run_build('deploy_openstack', params)
         jenkins.wait_end_of_build(
