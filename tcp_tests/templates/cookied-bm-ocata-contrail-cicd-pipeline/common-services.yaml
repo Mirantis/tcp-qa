@@ -1,0 +1,49 @@
+{% from 'cookied-bm-ocata-contrail-cicd-pipeline/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+- description: Approve cfg01 ssh key for jenkins user
+  cmd: mkdir -p /var/lib/jenkins/.ssh && ssh-keyscan cfg01 > /var/lib/jenkins/.ssh/known_hosts && chown jenkins /var/lib/jenkins/.ssh/known_hosts
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Install jq for parse json output
+  cmd: apt install -y jq
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+# Install support services
+- description: Install keepalived on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster and *01*' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Install keepalived
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install haproxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' state.sls haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check haproxy status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.status haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Restart rsyslog
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.restart rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
