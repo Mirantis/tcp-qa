@@ -21,12 +21,12 @@ LOG = logger.logger
 
 
 @pytest.mark.deploy
-class TestMcp11NewtonInstall(object):
+class TestMcp11MitakaInstall(object):
     """Test class for testing mcp11 vxlan deploy"""
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_mcp11_newton_ovs_install(self, underlay, openstack_deployed,
+    def test_mcp11_mitaka_ovs_install(self, underlay, openstack_deployed,
                                       openstack_actions, show_step):
         """Test for deploying an mcp environment and check it
 
@@ -48,7 +48,7 @@ class TestMcp11NewtonInstall(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_mcp11_newton_dvr_install(self, underlay, openstack_deployed,
+    def test_mcp11_mitaka_dvr_install(self, underlay, openstack_deployed,
                                       openstack_actions, show_step):
         """Test for deploying an mcp environment and check it
 
