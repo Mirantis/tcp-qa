@@ -1,0 +1,61 @@
+| # All the data below will be stored as a string object
+  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
+
+  disable_root: false
+  chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+  bootcmd:
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+  output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+  runcmd:
+   - export TERM=linux
+   - export LANG=C
+   # Configure dhclient
+   - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
+   - sudo resolvconf -u
+
+   # Enable grub menu using updated config below
+   - update-grub
+
+   # Prepare network connection
+   - sudo ifup {interface_name}
+
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
+   - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
+
+  write_files:
+   - path: /etc/default/grub.d/97-enable-grub-menu.cfg
+     content: |
+         GRUB_RECORDFAIL_TIMEOUT=30
+         GRUB_TIMEOUT=3
+         GRUB_TIMEOUT_STYLE=menu
+
+   - path: /etc/network/interfaces
+     content: |
+          # The loopback network interface
+          auto lo
+          iface lo inet loopback
+          auto {interface_name}
+          iface {interface_name} inet dhcp
