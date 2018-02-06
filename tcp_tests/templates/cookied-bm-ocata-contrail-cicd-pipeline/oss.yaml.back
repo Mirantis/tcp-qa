@@ -1,0 +1,242 @@
+{% from 'ocata-cicd-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+# Install OSS: Operational Support System Tools
+
+# Keepalived
+#-----------
+- description: Install keepalived
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster:enabled:True' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install haproxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@haproxy:proxy:enabled:True' state.sls haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Check the CICD VIP
+  cmd: |
+    CICD_CONTROL_ADDRESS=`salt --out=newline_values_only -C 'I@haproxy:proxy and I@jenkins:client' pillar.get _param:cluster_vip_address`;
+    echo "_param:cluster_vip_address (vip): ${CICD_CONTROL_ADDRESS}";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C "I@keepalived:cluster:instance:*:address:${CICD_CONTROL_ADDRESS}" cmd.run "ip a | grep ${CICD_CONTROL_ADDRESS}" | grep -B1 ${CICD_CONTROL_ADDRESS}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# Glusterfs
+#-----------
+
+- description: Prepare glusterfs service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@glusterfs:server:enabled:True' state.sls glusterfs.server.service
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup glusterfs server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@glusterfs:server:enabled:True' state.sls glusterfs.server.setup -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Setup glusterfs client
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@glusterfs:client:enabled:True' state.sls glusterfs.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check the gluster status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server:enabled:True' cmd.run 'gluster peer status; gluster volume status' -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# Elasticsearch (system service)
+#-------------------------------
+- description: Setup Elasticsearch
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:server' state.sls elasticsearch.server -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: Setup Elasticsearch
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+# Setup Docker Swarm
+#-------------------
+
+- description: "Workaround: create /var/lib/jenkins to get Jenkins slaves working"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' cmd.run 'mkdir -p /var/lib/jenkins'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Prepare Docker host
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:host:enabled:True' state.sls docker.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Docker Swarm master
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker.swarm
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Collect grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls salt.minion.grains &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' mine.flush &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' mine.update &&
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' saltutil.refresh_modules &&
+    sleep 10
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 15}
+  skip_fail: false
+
+- description: Install Docker Swarm on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls docker.swarm
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Show Docker Swarm nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' cmd.run 'docker node ls'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# Configure OSS services
+#-----------------------
+
+# Deploy Docker services
+#-----------------------
+
+# Original comment from pipeline:  XXX: for some weird unknown reason, refresh_pillar is required to execute here
+
+- description: "Workaround from the pipeline: XXX: for some weird unknown reason, refresh_pillar is required to execute here"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:publisher' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Workaround from the pipeline: We need /etc/aptly-publisher.yaml to be present before services are deployed. [dd: there were issues when /etc/aptly-publisher.yaml becomes a directory, so this step should be considered]"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aptly:publisher' state.sls aptly.publisher
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install Docker client
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: "Workaround from the pipeline: sync all salt objects"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Waiting for OpenLDAP to come up in container..."
+  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@openldap:client' cmd.run
+      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
+       while true; do curl -sf ldap://${CICD_CONTROL_ADDRESS} && break; sleep 2; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 8, delay: 30}
+  skip_fail: false
+
+- description: "Setup OpenLDAP"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@openldap:client' state.sls openldap &&
+    sleep 20
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: "Waiting for Gerrit to come up in container..."
+  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gerrit:client' cmd.run
+      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
+       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8080/config/server/version && break; sleep 2; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 8, delay: 30}
+  skip_fail: false
+
+- description: "Setup Gerrit"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gerrit:client' state.sls gerrit
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+# Jenkins
+#--------
+
+- description: "Waiting for Jenkins to come up in container..."
+  cmd: timeout 60 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client and not cfg01*' cmd.run
+      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
+       export JENKINS_CLIENT_USER=$(salt-call --out=newline_values_only pillar.get _param:jenkins_client_user);
+       export JENKINS_CLIENT_PASSWORD=$(salt-call --out=newline_values_only pillar.get _param:jenkins_client_password);
+       while true; do
+         curl -f -u ${JENKINS_CLIENT_USER}:${JENKINS_CLIENT_PASSWORD} http://${CICD_CONTROL_ADDRESS}:8081/api/json?pretty=true && break;
+         sleep 2;
+       done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 8, delay: 10}
+  skip_fail: false
+
+- description: "Setup Jenkins"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@jenkins:client' state.sls jenkins
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
+
+# Elasticsearch (in container, disabled until https://mirantis.jira.com/browse/PROD-15297 is not fixed)
+#--------------
+#- description: 'Waiting for Elasticsearch to come up in container...'
+#  cmd: timeout 30 salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' cmd.run
+#      'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
+#       while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:9200/?pretty && break; sleep 2; done'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 3, delay: 10}
+#  skip_fail: false
+#
+#- description: Setup Elasticsearch
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 3, delay: 10}
+#  skip_fail: false
+
+
+# Generate docs
+#--------------
+
+- description: Install sphinx (may fail depending on the model)
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@sphinx:server' state.sls sphinx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Run salt minion to create cert files for nginx
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install nginx
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@nginx:server' state.sls nginx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+# Final checks
+#-------------
+
+- description: Check for system services in failed state
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run "systemctl --failed | grep -E 'loaded[ \t]+failed' && echo 'Command execution failed'  || true"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
