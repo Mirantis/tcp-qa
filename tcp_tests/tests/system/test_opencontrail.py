@@ -15,7 +15,7 @@
 import pytest
 
 from tcp_tests import logger
-from tcp_tests import settings
+# from tcp_tests import settings
 
 LOG = logger.logger
 
@@ -25,6 +25,7 @@ class TestOpenContrail(object):
     """Test class for testing OpenContrail on a TCP lab"""
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.with_rally(rally_node="ctl01.", prepare_openstack=True)
     def test_opencontrail(self, config, openstack_deployed,
                           show_step, sl_deployed):
         """Runner for Juniper contrail-tests
@@ -39,6 +40,7 @@ class TestOpenContrail(object):
         openstack_deployed._salt.local(
             tgt='*', fun='cmd.run',
             args='service ntp stop; ntpd -gq; service ntp start')
+<<<<<<< HEAD
 
         if settings.RUN_TEMPEST:
             openstack_deployed.run_tempest(target='ctl01',
@@ -52,3 +54,5 @@ class TestOpenContrail(object):
         # opencontrail.run_tests(
         #     tags=config.opencontrail.opencontrail_tags,
         #     features=config.opencontrail.opencontrail_features)
+=======
+>>>>>>> 312915e... Added model for initial ocata with contrail deploy
