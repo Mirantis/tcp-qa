@@ -66,8 +66,8 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Configure collector
-  cmd: salt -C 'I@heka:log_collector' state.sls heka.log_collector
+- description: Configure fluentd
+  cmd: salt -C 'I@fluentd:agent' state.sls fluentd
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -141,7 +141,7 @@
 
 # Configure the services running in Docker Swarm
 - description: Install prometheus alertmanager
-  cmd: salt -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
+  cmd: salt -C 'I@docker:swarm' state.sls prometheus -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
