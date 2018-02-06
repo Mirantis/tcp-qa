@@ -63,17 +63,6 @@
 
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins"') }}
 
-- description: "Workaround for haproxy without listen"
-  cmd: |
-    set -e;
-    git clone https://gerrit.mcp.mirantis.net/salt-formulas/haproxy;
-    cd haproxy/;
-    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/haproxy refs/changes/39/11339/1 && git checkout FETCH_HEAD;
-    cp haproxy/files/haproxy.cfg /srv/salt/env/prd/haproxy/files/;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
-
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
 - description: (REMOVE asap) Hack CFG of Hash sum mismatch
@@ -114,7 +103,7 @@
   cmd: |
     set -e;
     # Add tenant and single addresses for computes
-    salt-call reclass.cluster_meta_set deploy_address 172.16.49.72 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
+    salt-call reclass.cluster_meta_set deploy_address 172.16.49.73 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
     salt-call reclass.cluster_meta_set tenant_address 192.168.0.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
     salt-call reclass.cluster_meta_set single_address 10.167.8.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
 

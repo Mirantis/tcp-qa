@@ -51,7 +51,7 @@ nodes:
       interfaces:
         enp2s0f1:
           role: single_mgm
-          deploy_address: 172.16.49.72
+          deploy_address: 172.16.49.73
         enp5s0f0:
           role: bond2_contrail_dpdk_prv
           dpdk_pci: "'0000:05:00.0'"

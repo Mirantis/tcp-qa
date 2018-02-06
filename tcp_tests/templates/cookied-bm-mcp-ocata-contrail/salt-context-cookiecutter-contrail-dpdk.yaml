@@ -73,7 +73,7 @@ default_context:
   openstack_compute_node02_address: 10.167.8.102
   openstack_compute_node01_single_address: 10.167.8.101
   openstack_compute_node02_single_address: 10.167.8.102
-  openstack_compute_node01_deploy_address: 172.16.49.72
+  openstack_compute_node01_deploy_address: 172.16.49.73
   openstack_compute_node02_deploy_address: 172.16.49.74
 
   openstack_control_address: 10.167.8.10
