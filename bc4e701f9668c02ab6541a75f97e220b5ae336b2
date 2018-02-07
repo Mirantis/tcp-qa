@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "19a58aba_e0a07982",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/openstack.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-02-07T10:30:53Z",
+      "side": 1,
+      "message": "Maybe we can delete this too?",
+      "revId": "bc4e701f9668c02ab6541a75f97e220b5ae336b2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
