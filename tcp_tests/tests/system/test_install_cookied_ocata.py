@@ -34,6 +34,9 @@ class Test_Mcp11_install(object):
         3. Setup compute nodes
 
         """
+        if settings.RUN_TEMPEST:
+            openstack_deployed.run_tempest(pattern=settings.PATTERN)
+            openstack_deployed.download_tempest_report()
         LOG.info("*************** DONE **************")
 
     @pytest.mark.grab_versions
@@ -47,6 +50,9 @@ class Test_Mcp11_install(object):
         3. Setup compute nodes
 
         """
+        if settings.RUN_TEMPEST:
+            openstack_deployed.run_tempest(pattern=settings.PATTERN)
+            openstack_deployed.download_tempest_report()
         LOG.info("*************** DONE **************")
 
     @pytest.mark.grab_versions
@@ -60,12 +66,18 @@ class Test_Mcp11_install(object):
         2. Setup CICD nodes
         3. Setup OpenStack
         4. Setup StackLight v2
-        5. Get monitoring nodes
-        6. Check that docker services are running
-        7. Check current prometheus targets are UP
-        8. Run SL component tests
-        9. Download SL component tests report
+        5. Run Tempest for OpenStack cluster
+        6. Get monitoring nodes
+        7. Check that docker services are running
+        8. Check current prometheus targets are UP
+        9. Run SL component tests
+        10. Download SL component tests report
         """
+        show_step(5)
+        if settings.RUN_TEMPEST:
+            openstack_deployed.run_tempest(pattern=settings.PATTERN)
+            openstack_deployed.download_tempest_report()
+
         expected_service_list = ['monitoring_remote_storage_adapter',
                                  'monitoring_server',
                                  'monitoring_remote_agent',
@@ -73,23 +85,23 @@ class Test_Mcp11_install(object):
                                  'monitoring_alertmanager',
                                  'monitoring_remote_collector',
                                  'monitoring_pushgateway']
-        show_step(5)
+        show_step(6)
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
-        show_step(6)
+        show_step(7)
         sl_deployed.check_docker_services(mon_nodes, expected_service_list)
 
-        show_step(7)
+        show_step(8)
         sl_deployed.check_prometheus_targets(mon_nodes)
 
-        show_step(8)
+        show_step(9)
         # Run SL component tetsts
         sl_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/tests/prometheus')
 
-        show_step(9)
+        show_step(10)
         # Download report
         sl_deployed.download_sl_test_report(
             'cfg01',

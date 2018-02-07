@@ -254,19 +254,19 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description:  Allow all tcp
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description:  Allow all tcp
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+#    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
 
-- description:  Allow all icmp
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description:  Allow all icmp
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+#    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
 
 - description: sync time
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
@@ -372,30 +372,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
-
-- description: Run tests
-  cmd: |
-    if [[ {{ PATTERN }} == "false" ]]; then
-        docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /etc/ssl/certs/:/etc/ssl/certs/ -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output
-    else
-        docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /etc/ssl/certs/:/etc/ssl/certs/ -e CUSTOM='--pattern {{ PATTERN }}' -v /root/:/home/rally docker-sandbox.sandbox.mirantis.net/rally-tempest/rally-tempest:with_designate  >> image.output
-    fi
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Download xml results
-  download:
-    remote_path: /root
-    remote_filename: "report_*.xml"
-    local_path: {{ os_env('PWD') }}
-  node_name: {{ HOSTNAME_GTW01 }}
-  skip_fail: true
-
-- description: Download html results
-  download:
-    remote_path: /root
-    remote_filename: "report_*.html"
-    local_path: {{ os_env('PWD') }}
-  node_name: {{ HOSTNAME_GTW01 }}
-  skip_fail: true
