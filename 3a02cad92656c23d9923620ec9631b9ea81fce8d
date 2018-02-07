@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71a83fd3_b3343f77",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/openstack.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 295,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-02-07T10:45:35Z",
+      "side": 1,
+      "message": "Please remove this downloading steps",
+      "revId": "3a02cad92656c23d9923620ec9631b9ea81fce8d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
