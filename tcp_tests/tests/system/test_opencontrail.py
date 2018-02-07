@@ -41,9 +41,9 @@ class TestOpenContrail(object):
             args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            # openstack_deployed.run_tempest(target='ctl01',
-            #                               pattern=settings.PATTERN)
-            openstack_deployed.download_tempest_report(stored_node='cfg01')
+            openstack_deployed.run_tempest(target='ctl01',
+                                          pattern=settings.PATTERN)
+            openstack_deployed.download_tempest_report(stored_node='ctl01')
         LOG.info("*************** DONE **************")
 
         # opencontrail.prepare_tests(
