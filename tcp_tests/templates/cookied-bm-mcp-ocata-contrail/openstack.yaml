@@ -382,33 +382,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: true
-
-{%- if RUN_TEMPEST %}
-- description: Run tests
-  cmd: |
-    if [[ {{ PATTERN }} == "false" ]]; then
-        salt "ctl01*" cmd.run "docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /etc/ssl/certs/:/etc/ssl/certs/ -v /root/:/home/rally sandriichenko/rally_tempest_docker:mcp1.1_ocata  >> image.output"
-    else
-        salt "ctl01*" cmd.run "docker run --rm --net=host  -e TEMPEST_CONF=lvm_mcp.conf  -e SKIP_LIST=mcp_skip.list  -e SOURCE_FILE=keystonercv3 -v /etc/ssl/certs/:/etc/ssl/certs/ -e CUSTOM='--pattern {{ PATTERN }}' -v /root/:/home/rally sandriichenko/rally_tempest_docker:mcp1.1_ocata  >> image.output"
-    fi
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Download xml and html results
-  cmd: |
-    d=$(date +%Y-%m-%d)
-    ctl01_ip=`salt --out=newline_values_only 'ctl01*' grains.get ip4_interfaces:ens2`;
-    scp root@$ctl01_ip:/root/report*.xml /root/report_$d.xml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-{%- endif %}
-
-#- description: Download html results
-#  download:
-#    remote_path: /root
-#    remote_filename: "report_*.html"
-#    local_path: {{ os_env('PWD') }}
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  skip_fail: true
