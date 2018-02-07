@@ -93,8 +93,8 @@ class SLManager(ExecuteCommandsMixin):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
-        cmd = ("cd {0}; "
-               ". venv-stacklight-pytest/bin/activate;"
+        cmd = (". venv-stacklight-pytest/bin/activate;"
+               "cd {0}; "
                "export VOLUME_STATUS='available';"
                "pytest -k {1} {2}".format(
                    tests_path,
@@ -105,7 +105,7 @@ class SLManager(ExecuteCommandsMixin):
                 as node_remote:
             LOG.debug("Run {0} on the node {1}".format(
                 cmd, target_node_name[0]))
-            result = node_remote.execute(cmd)
+            result = node_remote.check_call(cmd, verbose=True)
             LOG.debug("Test execution result is {}".format(result))
         return result
 
@@ -114,8 +114,8 @@ class SLManager(ExecuteCommandsMixin):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
-        cmd = ("cd {0}; "
-               ". venv-stacklight-pytest/bin/activate;"
+        cmd = (". venv-stacklight-pytest/bin/activate;"
+               "cd {0}; "
                "export VOLUME_STATUS='available';"
                "pip install pytest-json;"
                "pytest --json=report.json -k {1} {2}".format(
@@ -127,9 +127,9 @@ class SLManager(ExecuteCommandsMixin):
                 as node_remote:
             LOG.debug("Run {0} on the node {1}".format(
                 cmd, target_node_name[0]))
-            node_remote.execute(cmd)
-            res = node_remote.execute('cd {0}; cat report.json'.format(
-                tests_path))
+            node_remote.check_call(cmd, verbose=True)
+            res = node_remote.check_call('cd {0}; cat report.json'.format(
+                tests_path), verbose=True)
             LOG.debug("Test execution result is {}".format(res['stdout']))
             result = json.loads(res['stdout'][0])
         return result['report']['tests']
