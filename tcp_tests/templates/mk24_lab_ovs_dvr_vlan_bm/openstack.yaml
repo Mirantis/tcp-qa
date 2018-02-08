@@ -159,7 +159,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
 - description: Check IP on computes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
