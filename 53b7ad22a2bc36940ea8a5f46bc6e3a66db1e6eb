@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fc3d1482_88547d89",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 518,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-02-09T03:26:54Z",
+      "side": 1,
+      "message": "Why don\u0027t mount an external directory into container and put the report.xml file in this mounted directory?\nIn this case you don\u0027t need the extract_file_to_node() method.\n\nFor example, for rally : https://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/managers/openstack_manager.py#L69\n, and then the report.xml by default is found in the /root/.rally directory on the host.",
+      "revId": "53b7ad22a2bc36940ea8a5f46bc6e3a66db1e6eb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
