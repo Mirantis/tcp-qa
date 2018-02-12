@@ -110,7 +110,7 @@ def revert_snapshot(request, hardware):
     return None
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function')
 def snapshot(request, hardware):
     """Fixture for creating snapshot at the end of test if it's needed
 
@@ -198,7 +198,7 @@ def underlay(revert_snapshot, config, hardware):
     return underlay
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function')
 def grab_versions(request, func_name, underlay):
     """Fixture for grab package versions at the end of test
 

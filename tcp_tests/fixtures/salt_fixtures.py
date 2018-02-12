@@ -35,7 +35,7 @@ def salt_actions(config, underlay):
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.salt_deployed)
 @pytest.fixture(scope='function')
 def salt_deployed(revert_snapshot, request, config,
-                  hardware, underlay, salt_actions):
+                  hardware, underlay, salt_actions, grab_versions, snapshot):
     """Fixture to get or install salt service on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
