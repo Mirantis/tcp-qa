@@ -19,7 +19,6 @@
 
 - description: "Workaround for PROD-14831 , add 'dns' role to cmp01 and cmp02 nodes"
   cmd: |
-    set -e;
     apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
     [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
     . /root/venv-reclass-tools/bin/activate;

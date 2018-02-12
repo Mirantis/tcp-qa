@@ -105,7 +105,6 @@
 
 - description: Configure GIT settings and certificates
   cmd: |
-    set -e;
     #touch /root/.git_trusted_certs.pem;
     #for server in github.com; do \
     #    openssl s_client -showcerts -connect $server:443 </dev/null \
@@ -126,8 +125,6 @@
 
 - description: Clone reclass models with submodules
   cmd: |
-    set -e;
-    set -x;
     #ssh-keyscan -H github.com >> ~/.ssh/known_hosts;
 
     # In the day01 image, /srv/salt/reclass directory is already exists, so clone the model into the reclass.tmp directory
@@ -228,7 +225,6 @@
 
 - description: Create cluster model from cookiecutter templates
   cmd: |
-    set -e;
     pip install cookiecutter
     export GIT_SSL_NO_VERIFY=true; git clone  https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates /tmp/cookiecutter-templates
 
@@ -300,7 +296,6 @@
 
 - description: Modify generated model and reclass-system if necessary
   cmd: |
-    set -e;
     {%- if SALT_MODELS_SYSTEM_COMMIT != '' %}
     pushd /srv/salt/reclass/classes/system/
     git checkout {{ SALT_MODELS_SYSTEM_COMMIT }} && \
@@ -331,7 +326,6 @@
 
 - description: "[EXPERIMENTAL] Clone 'environment-template' repository to cfg01.{{ DOMAIN_NAME }}"
   cmd: |
-    set -e;
     mkdir -p /tmp/environment/;
     export GIT_SSL_NO_VERIFY=true; git clone https://github.com/Mirantis/environment-template /tmp/environment/environment_template
   node_name: {{ HOSTNAME_CFG01 }}
@@ -340,7 +334,6 @@
 {%- if ENVIRONMENT_TEMPLATE_REF_CHANGE != '' %}
 - description: Fetch changes for environment templates
   cmd: |
-    set -e;
     pushd /tmp/environment/environment_template &&
     git fetch https://github.com/Mirantis/environment-template {{ ENVIRONMENT_TEMPLATE_REF_CHANGE }} &&
     git checkout FETCH_HEAD &&
@@ -360,7 +353,6 @@
 
 - description: "[EXPERIMENTAL] Remove linux.network.interface object from the cluster/system models and use fixed 'environment' model instead"
   cmd: |
-    set -e;
     apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
     [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
     . /root/venv-reclass-tools/bin/activate;
@@ -380,7 +372,6 @@
 
 - description: "Workaround for PROD-15923: all keepalive instances must be named 'VIP'"
   cmd: |
-    set -e;
     find /srv/salt/reclass/classes/{system,cluster}/ -name '*.yml' -type f -exec sed -ri '/^  keepalived:/{:1;N;/\n      instance:/!b1 {N; /\n        [[:graph:]]+:/ { s/\n      instance:\n        [[:graph:]]+:/\n      instance:\n        VIP:/ } } }' {} +
 
   node_name: {{ HOSTNAME_CFG01 }}
@@ -389,7 +380,6 @@
 
 - description: "[EXPERIMENTAL] Create environment model for virtual environment"
   cmd: |
-    set -e;
     . /root/venv-reclass-tools/bin/activate;
     reclass-tools render --template-dir /tmp/environment/environment_template/ \
                          --output-dir /srv/salt/reclass/classes/environment/ \
@@ -414,7 +404,6 @@
 {#######################################################}
 - description: Configure reclass
   cmd: |
-    set -e;
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
     which wget > /dev/null || (apt-get update; apt-get install -y wget);
     echo "{{ FORMULA_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_salt.list;
@@ -535,7 +524,6 @@
 {%- if SALT_FORMULAS_REFS != '' %}
 - description: Replace needed formulas to desired version
   cmd: |
-    set -e;
     {%- for formula_set in SALT_FORMULAS_REFS.split(' ') %}
     {% set formula = formula_set.split(':') %}
     {% set formula_name = formula[0] %}
@@ -634,7 +622,6 @@
 
 - description: Show reclass-salt --top for all generated nodes
   cmd: |
-    set -e
     if salt-call sys.doc reclass.validate_node_params | grep -q reclass.validate_node_params ; then salt-call reclass.validate_nodes_params ; fi
     if salt-call sys.doc reclass.validate_pillar | grep -q reclass.validate_pillar ; then salt-call reclass.validate_pillar ; fi
     reclass-salt --top
