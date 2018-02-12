@@ -35,7 +35,6 @@
 
 - description: "Workaround for rack01 compute generator"
   cmd: |
-    set -e;
     # Remove rack01 key
     . /root/venv-reclass-tools/bin/activate;
     reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
@@ -66,8 +65,6 @@
 
 - description: "Lab03 workaround: Control network access from cfg01 node using sshuttle via kvm01"
   cmd: |
-    set -e;
-    set -x;
     KVM01_DEPLOY_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address);
     apt-get install -y sshuttle;
     sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D >/dev/null;

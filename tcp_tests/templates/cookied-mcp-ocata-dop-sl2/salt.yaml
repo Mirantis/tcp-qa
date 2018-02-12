@@ -27,7 +27,6 @@
 
 - description: "Workaround for combined roles: remove unnecessary classes"
   cmd: |
-    set -e;
     sed -i '/system.reclass.storage.system.physical_control_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
     sed -i '/system.reclass.storage.system.openstack_database_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
     sed -i '/system.reclass.storage.system.openstack_message_queue_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
