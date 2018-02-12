@@ -64,18 +64,18 @@ class ExecuteCommandsMixin(object):
             # skip_fail = step.get('skip_fail', False)
 
             msg = "[ {0} #{1} ] {2}".format(label, n + 1, description)
-            LOG.info("\n\n{0}\n{1}".format(msg, '=' * len(msg)))
 
             if action_cmd:
-                self.execute_command(step)
-            elif action_do:
+                self.execute_command(step, msg)
+            LOG.info("\n\n{0}\n{1}".format(msg, '=' * len(msg)))
+            if action_do:
                 self.command2(step)
             elif action_upload:
                 self.action_upload(step)
             elif action_download:
                 self.action_download(step)
 
-    def execute_command(self, step):
+    def execute_command(self, step, msg):
         # Required fields
         cmd = step.get('cmd')
         node_name = step.get('node_name')
@@ -87,10 +87,14 @@ class ExecuteCommandsMixin(object):
         skip_fail = step.get('skip_fail', False)
 
         with self.__underlay.remote(node_name=node_name) as remote:
+            retry_msg = ' (try {0} of {1}, skip_fail={2})'.format(
+                retry_count - x + 1, retry_count, skip_fail)
+            LOG.info("\n\n{0}\n{1}".format(
+                msg + retry_msg, '=' * len(msg + retry_msg)))
 
             for x in range(retry_count, 0, -1):
                 time.sleep(3)
-                result = remote.execute(cmd, verbose=True)
+                result = remote.execute('set -ex; ' + cmd, verbose=True)
 
                 # Workaround of exit code 0 from salt in case of failures
                 failed = 0
@@ -106,16 +110,11 @@ class ExecuteCommandsMixin(object):
 
                 if result.exit_code != 0:
                     time.sleep(retry_delay)
-                    LOG.info(
-                        " === RETRY ({0}/{1}) ========================="
-                        .format(x - 1, retry_count))
                 elif failed != 0:
                     LOG.error(
                         " === SALT returned exit code = 0 while "
                         "there are failed modules! ===")
-                    LOG.info(
-                        " === RETRY ({0}/{1}) ======================="
-                        .format(x - 1, retry_count))
+                    time.sleep(retry_delay)
                 else:
                     break
 
@@ -163,7 +162,7 @@ class ExecuteCommandsMixin(object):
                 LOG.error("States finished with failures.\n{}".format(
                     all_fails))
                 time.sleep(retry_delay)
-                LOG.info(" === RETRY ({0}/{1}) ========================="
+                LOG.info(" === RE-TRIES LEFT {0} of {1} ========================="
                          .format(x - 1, retry_count))
             else:
                 break
