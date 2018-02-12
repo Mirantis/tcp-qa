@@ -198,7 +198,7 @@ def underlay(revert_snapshot, config, hardware):
     return underlay
 
 
-@pytest.fixture(scope='function', autouse=True)
+@pytest.fixture(scope='function')
 def grab_versions(request, func_name, underlay):
     """Fixture for grab package versions at the end of test
 
