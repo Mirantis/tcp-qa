@@ -503,6 +503,12 @@
 
 {# Prepare salt services and nodes settings #}
 
+- description: "*Workaround* for https://mirantis.jira.com/browse/PROD-17822"
+  cmd: apt-get remove -y python-jenkins
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 - description: Run 'linux' formula on cfg01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' state.sls linux;
   node_name: {{ HOSTNAME_CFG01 }}
