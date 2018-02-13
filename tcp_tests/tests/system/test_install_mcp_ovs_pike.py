@@ -137,13 +137,22 @@ class TestMcpInstallOvsPike(object):
             '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_mcp11_pike_dpdk_install(self, underlay, openstack_deployed,
-                                     show_step):
+                                     show_step, openstack_actions):
         """Test for deploying an mcp dpdk environment and check it
         Scenario:
         1. Prepare salt on hosts
         2. Setup controller nodes
         3. Setup compute nodes
         """
+        LOG.info("*************** DONE **************")
+        openstack_actions._salt.local(
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
+
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
