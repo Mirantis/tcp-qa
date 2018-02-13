@@ -597,6 +597,12 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
+
+- description: "*Workaround* for https://mirantis.jira.com/browse/PROD-17822"
+  cmd: apt-get remove -y python-jenkins
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
 {%- endmacro %}
 
 {%- macro MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=false) %}
