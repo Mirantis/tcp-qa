@@ -42,6 +42,10 @@ _default_oss_steps = pkg_resources.resource_filename(
     __name__,
     'templates/{0}/oss.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_drivetrain_steps = pkg_resources.resource_filename(
+    __name__,
+    'templates/{0}/drivetrain.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 _default_decapod_steps = pkg_resources.resource_filename(
     __name__,
     'templates/{0}/decapod.yaml'.format(
@@ -156,6 +160,17 @@ oss_deploy_opts = [
 
 oss_opts = [
     ct.Cfg('oss_installed', ct.Boolean(),
+           help="", default=False),
+]
+
+drivetrain_deploy_opts = [
+    ct.Cfg('drivetrain_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy Drivetrain",
+           default=_default_drivetrain_steps),
+]
+
+drivetrain_opts = [
+    ct.Cfg('drivetrain_installed', ct.Boolean(),
            help="", default=False),
 ]
 
@@ -318,6 +333,8 @@ _group_opts = [
     ('common_services', common_services_opts),
     ('oss_deploy', oss_deploy_opts),
     ('oss', oss_opts),
+    ('drivetrain_deploy', drivetrain_deploy_opts),
+    ('drivetrain', drivetrain_opts),
     ('decapod_deploy', decapod_deploy_opts),
     ('decapod', decapod_opts),
     ('openstack_deploy', openstack_deploy_opts),
@@ -368,6 +385,15 @@ def register_opts(config):
                           title="OSS deploy config", help=""))
     config.register_opts(group='oss_deploy',
                          opts=oss_deploy_opts)
+
+    config.register_group(cfg.OptGroup(name='drivetrain',
+                          title="Drivetrain Tools", help=""))
+    config.register_opts(group='drivetrain', opts=drivetrain_opts)
+
+    config.register_group(cfg.OptGroup(name='drivetrain_deploy',
+                          title="Drivetrain deploy config", help=""))
+    config.register_opts(group='drivetrain_deploy',
+                         opts=drivetrain_deploy_opts)
 
     config.register_group(cfg.OptGroup(name='decapod',
                           title="Decapod options for Ceph", help=""))
