@@ -39,8 +39,8 @@
 
 - description: Install ceph mgr if defined(needed only for Luminious)
   cmd: |
-    if salt -C 'I@ceph:mgr' match.pillar 'ceph:mgr' ; then
-      salt -C 'I@ceph:mgr' state.sls ceph.mgr
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:mgr' match.pillar 'ceph:mgr' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:mgr' state.sls ceph.mgr
     fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
@@ -97,10 +97,10 @@
 
 - description: Install radosgw if exists
   cmd: |
-    if salt -C 'I@ceph:radosgw' match.pillar 'ceph:radosgw' ; then
-      salt -C 'I@ceph:radosgw' saltutil.sync_grains;
-      salt -C 'I@ceph:radosgw' state.sls ceph.radosgw;
-      salt -C 'I@keystone:client' state.sls keystone.client;
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:radosgw' match.pillar 'ceph:radosgw' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:radosgw' saltutil.sync_grains;
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:radosgw' state.sls ceph.radosgw;
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keystone:client' state.sls keystone.client;
     fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
@@ -115,34 +115,34 @@
 
 - description: Connect ceph to glance
   cmd: |
-    salt -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring,glance;
-    salt -C 'I@ceph:common and I@glance:server' service.restart glance-api;
-    salt -C 'I@ceph:common and I@glance:server' service.restart glance-glare;
-    salt -C 'I@ceph:common and I@glance:server' service.restart glance-registry;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring,glance;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' service.restart glance-api;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' service.restart glance-glare;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' service.restart glance-registry;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Connect ceph to cinder and nova
   cmd: |
-    salt -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring,cinder;
-    salt -C 'I@ceph:common and I@nova:compute' state.sls ceph.common,ceph.setup.keyring;
-    salt -C 'I@ceph:common and I@nova:compute' saltutil.sync_grains;
-    salt -C 'I@ceph:common and I@nova:compute' state.sls nova;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring,cinder;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' state.sls ceph.common,ceph.setup.keyring;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' saltutil.sync_grains;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' state.sls nova;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Restart cinder volume
   cmd: |
-    salt -C 'I@cinder:controller' service.restart cinder-volume;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@cinder:controller' service.restart cinder-volume;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Restart nova-compute
   cmd: |
-    salt -C 'I@nova:compute' service.restart nova-compute;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@nova:compute' service.restart nova-compute;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
