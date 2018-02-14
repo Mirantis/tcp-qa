@@ -21,7 +21,7 @@ LOG = logger.logger
 
 
 @pytest.mark.deploy
-class TestMcp11Install(object):
+class TestMcp11NewtonInstall(object):
     """Test class for testing mcp11 vxlan deploy"""
 
     @pytest.mark.grab_versions
