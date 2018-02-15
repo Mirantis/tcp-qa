@@ -197,20 +197,26 @@ sl_deploy_opts = [
            help="Path to YAML with steps to deploy sl",
            default=_default_sl_prepare_tests_steps_path),
     ct.Cfg('docker_image_alertmanager', ct.String(),
-           default='{}/openstack-docker/alertmanager:latest'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{0}/openstack-docker/alertmanager:{1}'.format(
+               settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
     ct.Cfg('docker_image_pushgateway', ct.String(),
-           default='{}/openstack-docker/pushgateway:latest'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{0}/openstack-docker/pushgateway:{1}'.format(
+               settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
     ct.Cfg('docker_image_prometheus', ct.String(),
-           default='{}/openstack-docker/prometheus:latest'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{0}/openstack-docker/prometheus:{1}'.format(
+               settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
     ct.Cfg('docker_image_remote_agent', ct.String(),
-           default='{}/openstack-docker/telegraf:latest'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{0}/openstack-docker/telegraf:{1}'.format(
+               settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
     ct.Cfg('docker_image_remote_storage_adapter', ct.String(),
-           default='{}/openstack-docker/remote_storage_adapter:latest'.format(
-               settings.DOCKER_REGISTRY)),
+           default='{0}/openstack-docker/remote_storage_adapter:{1}'.format(
+               settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
+    ct.Cfg('docker_image_prometheus_relay', ct.String(),
+           default='{0}/openstack-docker/prometheus_relay:{1}'.format(
+               settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
+    ct.Cfg('docker_image_grafana', ct.String(),
+           default='{0}/mirantis/external/grafana:{1}'.format(
+               settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
     # SalesForce connection options for pushkin
     ct.Cfg('sfdc_sandbox_enabled', ct.String(), default='False'),
     ct.Cfg('sfdc_auth_url', ct.String(), default=''),
