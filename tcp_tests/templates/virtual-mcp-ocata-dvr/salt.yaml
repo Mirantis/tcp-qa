@@ -17,6 +17,8 @@
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
+{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/cluster/' + SHARED.CLUSTER_NAME + '/stacklight/server.yml') }}
+
 - description: "Workaround for PROD-14831 , add 'dns' role to cmp01 and cmp02 nodes"
   cmd: |
     set -e;

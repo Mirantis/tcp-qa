@@ -764,8 +764,9 @@
 
 {%- endmacro %}
 
+
 {%- macro ADJUST_K8S_OPTS() %}
-{#########################################}
+{############################}
 
 - description: Set k8s deploy parameters
   cmd: |
@@ -780,8 +781,31 @@
 
 {%- endmacro %}
 
+
+{%- macro ADJUST_SL_OPTS(OVERRIDES_FILENAME='') %}
+{#############################################}
+- description: Set SL docker images deploy parameters
+  cmd: |
+  {#- For cookiecutter-generated model, use overrides.yml from environment model instead of cluster model #}
+  {%- for sl_opt, value in config.sl_deploy.items() %}
+    {%- if value|string() %}
+      {%- if OVERRIDES_FILENAME %}
+    salt-call reclass.cluster_meta_set name={{ sl_opt }} value={{ value }} file_name={{ OVERRIDES_FILENAME }};
+      {%- else %}
+    salt-call reclass.cluster_meta_set name={{ sl_opt }} value={{ value }};
+      {%- endif %}
+    {%- endif %}
+  {%- endfor %}
+    salt '*' saltutil.refresh_pillar;
+    sleep 10
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{%- endmacro %}
+
+
 {%- macro REGISTER_COMPUTE_NODES() %}
-{#########################################}
+{###################################}
 
 {% for ssh in config.underlay.ssh %}
 {% if ssh["node_name"].startswith("cmp") %}
