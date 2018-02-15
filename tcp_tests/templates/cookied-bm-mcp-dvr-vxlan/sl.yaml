@@ -144,7 +144,7 @@
 
 # Configure the services running in Docker Swarm
 - description: Install prometheus alertmanager
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls prometheus -b 1
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:server' state.sls prometheus -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 10}
   skip_fail: false
