@@ -143,22 +143,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-# Change environment configuration before deploy
-- description: Set SL docker images deploy parameters
-  cmd: |
-  {#- For cookiecutter-generated model, use overrides.yml from environment model instead of cluster model #}
-  {%- set OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml' %}
-  {%- for sl_opt, value in config.sl_deploy.items() %}
-    {%- if value|string() %}
-    salt-call reclass.cluster_meta_set name={{ sl_opt }} value={{ value }} file_name={{ OVERRIDES_FILENAME }};
-    {%- endif %}
-  {%- endfor %}
-    salt '*' saltutil.refresh_pillar;
-    sleep 10
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 # Configure the services running in Docker Swarm
 - description: Install prometheus alertmanager
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:server' state.sls prometheus -b 1

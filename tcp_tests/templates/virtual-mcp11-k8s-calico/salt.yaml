@@ -22,6 +22,8 @@
 
 {{ SHARED.ADJUST_K8S_OPTS() }}
 
+{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/cluster/' + SHARED.CLUSTER_NAME + '/stacklight/server.yml') }}
+
 {%- if ENABLE_COMPUTES_SELF_REGISTER != '' %}
 {{ SHARED.REGISTER_COMPUTE_NODES() }}
 {%- endif %}

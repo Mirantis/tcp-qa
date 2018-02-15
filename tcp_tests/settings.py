@@ -52,9 +52,10 @@ SALT_USER = os.environ.get('SALT_USER', 'salt')
 SALT_PASSWORD = os.environ.get('SALT_PASSWORD', 'hovno12345!')
 
 DOCKER_REGISTRY = os.environ.get('DOCKER_REGISTRY',
-                                 'docker-prod-virtual.docker.mirantis.net')
+                                 'docker-prod-local.artifactory.mirantis.com')
 DOCKER_NAME = os.environ.get('DOCKER_NAME',
                              'mirantis/oscore/rally-tempest:latest')
+DOCKER_IMAGES_SL_TAG = os.environ.get('DOCKER_IMAGES_SL_TAG', 'latest')
 
 PATTERN = os.environ.get('PATTERN', None)
 RUN_TEMPEST = get_var_as_bool('RUN_TEMPEST', False)
