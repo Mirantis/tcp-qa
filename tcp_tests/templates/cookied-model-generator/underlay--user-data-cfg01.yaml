@@ -59,6 +59,9 @@
    - salt-key -y -D
    - service salt-master restart
    - service salt-minion restart
+   - apt-get install -y salt-formula-*
+   - rm -rf /srv/salt/reclass/classes/service
+   - ln -s /usr/share/salt-formulas/reclass/service /srv/salt/reclass/classes/service
    - salt-call --timeout=180 test.ping
 
    ########################################################
