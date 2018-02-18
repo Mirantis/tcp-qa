@@ -2,8 +2,8 @@ default_context:
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   cicd_enabled: 'False'
-  cluster_domain: cookied-mcp-pike-ovs.local
-  cluster_name: cookied-mcp-pike-ovs
+  cluster_domain: virtual-mcp-pike-ovs.local
+  cluster_name: virtual-mcp-pike-ovs
   compute_bond_mode: active-backup
   compute_primary_first_nic: eth1
   compute_primary_second_nic: eth2
