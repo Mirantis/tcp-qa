@@ -2,8 +2,9 @@ default_context:
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   cicd_enabled: 'False'
-  cluster_domain: cookied-mcp-ocata-ovs.local
-  cluster_name: cookied-mcp-ocata-ovs
+  cluster_domain: cookied-mcp-ocata-dvr.local
+  cluster_name: cookied-mcp-ocata-dvr
+  compute_bond_mode: active-backup
   compute_primary_first_nic: eth1
   compute_primary_second_nic: eth2
   context_seed: wUqrwKeBTCpRpVrhK1KwZQv4cjM9VhG7L2vQ0iQsTuMrXASklEBDmJEf6bnPEqcK
@@ -16,14 +17,30 @@ default_context:
   deploy_network_gateway: 192.168.10.1
   deploy_network_netmask: 255.255.255.0
   deploy_network_subnet: 192.168.10.0/24
-  deployment_type: heat
+  deployment_type: physical
   dns_server01: 8.8.8.8
   dns_server02: 8.8.4.4
   email_address: ddmitriev@mirantis.com
   gateway_primary_first_nic: eth1
   gateway_primary_second_nic: eth2
+  infra_bond_mode: active-backup
+  infra_deploy_nic: eth0
+  infra_kvm01_control_address: 172.16.10.101
+  infra_kvm01_deploy_address: 192.168.10.101
+  infra_kvm01_hostname: kvm01
+  infra_kvm02_control_address: 172.16.10.102
+  infra_kvm02_deploy_address: 192.168.10.102
+  infra_kvm02_hostname: kvm02
+  infra_kvm03_control_address: 172.16.10.103
+  infra_kvm03_deploy_address: 192.168.10.103
+  infra_kvm03_hostname: kvm03
+  infra_kvm_vip_address: 172.16.10.100
+  infra_primary_first_nic: eth1
+  infra_primary_second_nic: eth2
   kubernetes_enabled: 'False'
   local_repositories: 'False'
+  maas_deploy_address: 192.168.10.90
+  maas_hostname: cfg01
   mcp_version: stable
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
@@ -42,13 +59,13 @@ default_context:
   openstack_control_node02_hostname: ctl02
   openstack_control_node03_address: 172.16.10.103
   openstack_control_node03_hostname: ctl03
-  openstack_database_address: 172.16.10.50
+  openstack_database_address: 172.16.10.100
   openstack_database_hostname: dbs
-  openstack_database_node01_address: 172.16.10.51
+  openstack_database_node01_address: 172.16.10.101
   openstack_database_node01_hostname: dbs01
-  openstack_database_node02_address: 172.16.10.52
+  openstack_database_node02_address: 172.16.10.102
   openstack_database_node02_hostname: dbs02
-  openstack_database_node03_address: 172.16.10.53
+  openstack_database_node03_address: 172.16.10.103
   openstack_database_node03_hostname: dbs03
   openstack_enabled: 'True'
   openstack_gateway_node01_address: 172.16.10.110
@@ -60,13 +77,13 @@ default_context:
   openstack_gateway_node03_address: 172.16.10.112
   openstack_gateway_node03_hostname: gtw03
   openstack_gateway_node03_tenant_address: 10.1.0.8
-  openstack_message_queue_address: 172.16.10.40
+  openstack_message_queue_address: 172.16.10.100
   openstack_message_queue_hostname: msg
-  openstack_message_queue_node01_address: 172.16.10.41
+  openstack_message_queue_node01_address: 172.16.10.101
   openstack_message_queue_node01_hostname: msg01
-  openstack_message_queue_node02_address: 172.16.10.42
+  openstack_message_queue_node02_address: 172.16.10.102
   openstack_message_queue_node02_hostname: msg02
-  openstack_message_queue_node03_address: 172.16.10.43
+  openstack_message_queue_node03_address: 172.16.10.103
   openstack_message_queue_node03_hostname: msg03
   openstack_network_engine: ovs
   openstack_neutron_qos: 'False'
@@ -101,13 +118,13 @@ default_context:
   salt_master_management_address: 192.168.10.90
   shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
   stacklight_enabled: 'True'
-  stacklight_log_address: 172.16.10.60
+  stacklight_log_address: 172.16.10.70
   stacklight_log_hostname: log
-  stacklight_log_node01_address: 172.16.10.61
+  stacklight_log_node01_address: 172.16.10.107
   stacklight_log_node01_hostname: log01
-  stacklight_log_node02_address: 172.16.10.62
+  stacklight_log_node02_address: 172.16.10.108
   stacklight_log_node02_hostname: log02
-  stacklight_log_node03_address: 172.16.10.63
+  stacklight_log_node03_address: 172.16.10.109
   stacklight_log_node03_hostname: log03
   stacklight_monitor_address: 172.16.10.70
   stacklight_monitor_hostname: mon
@@ -119,13 +136,13 @@ default_context:
   stacklight_monitor_node03_hostname: mon03
   stacklight_notification_address: alerts@localhost
   stacklight_notification_smtp_host: 127.0.0.1
-  stacklight_telemetry_address: 172.16.10.85
+  stacklight_telemetry_address: 172.16.10.70
   stacklight_telemetry_hostname: mtr
-  stacklight_telemetry_node01_address: 172.16.10.86
+  stacklight_telemetry_node01_address: 172.16.10.107
   stacklight_telemetry_node01_hostname: mtr01
-  stacklight_telemetry_node02_address: 172.16.10.87
+  stacklight_telemetry_node02_address: 172.16.10.108
   stacklight_telemetry_node02_hostname: mtr02
-  stacklight_telemetry_node03_address: 172.16.10.88
+  stacklight_telemetry_node03_address: 172.16.10.109
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
@@ -134,4 +151,4 @@ default_context:
   tenant_network_subnet: 10.1.0.0/24
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
-  use_default_network_scheme: 'True'
+  use_default_network_scheme: 'False'
