@@ -17,16 +17,6 @@
 
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
 
-{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
-
-{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd"') }}
-
-{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
-
-{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
-
-{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml') }}
-
 - description: "Workaround for combined roles: remove unnecessary classes"
   cmd: |
     set -e;
@@ -51,6 +41,16 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml') }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd"') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
@@ -65,21 +65,3 @@
   skip_fail: true
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
-
-#- description: Hack gtw node
-#  cmd: salt 'gtw*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
-#- description: Hack cmp01 node
-#  cmd: salt 'cmp01*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
-#- description: Hack cmp02 node
-#  cmd: salt 'cmp02*' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false

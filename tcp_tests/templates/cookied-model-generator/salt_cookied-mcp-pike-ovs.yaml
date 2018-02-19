@@ -15,8 +15,6 @@
 
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
 
-{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
-
 - description: "Workaround for combined roles: remove unnecessary classes"
   cmd: |
     set -e;
@@ -40,5 +38,7 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}

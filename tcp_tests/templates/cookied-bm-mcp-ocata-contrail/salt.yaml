@@ -58,25 +58,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-
-{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
-
-{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins"') }}
-
-{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
-
-- description: (REMOVE asap) Hack CFG of Hash sum mismatch
+- description: Temporary workaround for removing cinder-volume from CTL nodes
   cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
+    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
+    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
-
-{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
-
-{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml') }}
 
 - description: "Workaround for rack01 compute generator"
   cmd: |
@@ -96,10 +84,28 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml') }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins"') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+- description: (REMOVE asap) Hack CFG of Hash sum mismatch
+  cmd: |
+    rm -rf /var/lib/apt/lists/*;
+    apt-get clean;
+    apt-get update;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
-
 
 - description: "Workaround for PROD-14060"
   cmd: |
@@ -117,14 +123,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-
-- description: Temporary workaround for removing cinder-volume from CTL nodes
-  cmd: |
-    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
-    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
 
 - description: Temporary WR (Remove ASAP) for downgrade packages
   cmd: |

@@ -389,9 +389,17 @@
     reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
     reclass-tools del-key parameters.linux.network.interface /usr/share/salt-formulas/reclass/;
 
-    if ! reclass-tools get-key 'classes' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
-      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml --merge ;
-      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml --merge ;
+    if ! reclass-tools get-key 'classes' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
+    mv /srv/salt/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config.yml /srv/salt/reclass/classes/cluster/virtual-mcp-ocata-ovs/infra/config_orig.yml;
+    cat << 'EOF' > /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml
+    classes:
+    - cluster.{{ CLUSTER_NAME }}.infra.config_orig
+    - environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local
+    - environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}
+    parameters:
+      _param:
+        foo: bar  # placeholder to keep the type(parameters:_param) == dict
+    EOF
     fi;
 
   node_name: {{ HOSTNAME_CFG01 }}

@@ -14,8 +14,6 @@
 
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
 
-{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
-
 - description: Temporary WR for cinder backend defined by default in reclass.system
   cmd: |
     sed -i 's/backend\:\ {}//g' /srv/salt/reclass/classes/system/cinder/control/cluster.yml;
@@ -51,13 +49,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-#- description: Refresh pillars and install dependencies for salt-master
-#  cmd: |
-#    salt '*' saltutil.refresh_pillar; sleep 5;
-#    salt '*' state.sls salt.master;
-#    salt '*' saltutil.refresh_pillar; sleep 5;
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
