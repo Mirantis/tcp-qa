@@ -505,8 +505,8 @@ class K8SManager(ExecuteCommandsMixin):
                        "xenial-server-cloudimg-amd64-disk1.img"
             cmd = ("set -o pipefail; "
                    "docker run --net=host {0} /virtlet-e2e-tests "
-                   "-include-cloud-init-tests -image {2} "
-                   "-sshuser ubuntu -memoryLimit 1024 "
+                   "-include-cloud-init-tests -junitOutput report.xml "
+                   "-image {2} -sshuser ubuntu -memoryLimit 1024 "
                    "-alsologtostderr -cluster-url http://127.0.0.1:8080 "
                    "-ginkgo.focus '\[Conformance\]' "
                    "| tee {1}".format(
@@ -515,6 +515,7 @@ class K8SManager(ExecuteCommandsMixin):
         else:
             cmd = ("set -o pipefail; "
                    "docker run --net=host {0} /virtlet-e2e-tests "
+                   "-junitOutput report.xml "
                    "-alsologtostderr -cluster-url http://127.0.0.1:8080 "
                    "-ginkgo.focus '\[Conformance\]' "
                    "| tee {1}".format(
@@ -530,11 +531,37 @@ class K8SManager(ExecuteCommandsMixin):
             LOG.info("Test results stderr: {}".format(stderr))
         return result
 
-    def download_virtlet_conformance_log(self,
-                                         log_file='virtlet_conformance.log'):
+    def extract_file_to_node(self, container='virtlet',
+                             file_path='report.xml'):
+        """
+        Download file from docker container to node
+
+        :param container: Full name of part of name
+        :param file_path: File path in container
+        :return:
+        """
+        with self.__underlay.remote(
+                node_name=self.ctl_host) as remote:
+            cmd = ("docker ps --all | grep {0} |"
+                   " awk '{{print $1}}'".format(container))
+            result = remote.check_call(cmd)
+            container_id = result['stdout'][0].strip()
+            cmd = "docker start {}".format(container_id)
+            remote.check_call(cmd)
+            cmd = "docker cp {0}:/{1} .".format(container_id, file_path)
+            remote.check_call(cmd)
+
+    def download_virtlet_conformance_log(self, files):
+        """
+        Download JUnit report and conformance logs from cluster
+        :param files:
+        :return:
+        """
         master_host = self.__config.salt.salt_master_host
         with self.__underlay.remote(host=master_host) as r:
-            cmd = "rsync {0}:/root/{1} /root/".format(self.ctl_host, log_file)
-            r.check_call(cmd, raise_on_err=False)
-            LOG.info("Downloading the artifact {0}".format(log_file))
-            r.download(destination=log_file, target=os.getcwd())
+            for log_file in files:
+                cmd = "rsync {0}:/root/{1} /root/".format(self.ctl_host,
+                                                          log_file)
+                r.check_call(cmd, raise_on_err=False)
+                LOG.info("Downloading the artifact {0}".format(log_file))
+                r.download(destination=log_file, target=os.getcwd())

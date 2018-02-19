@@ -93,7 +93,8 @@ def virtlet_logs(request, func_name, underlay, k8s_deployed):
         if hasattr(request.node, 'rep_call') and \
                 (request.node.rep_call.passed or request.node.rep_call.failed)\
                 and grab_virtlet_result:
-            artifact_name = utils.extract_name_from_mark(grab_virtlet_result) \
+            files = utils.extract_name_from_mark(grab_virtlet_result) \
                             or "{}".format(func_name)
-            k8s_deployed.download_virtlet_conformance_log(artifact_name)
+            k8s_deployed.extract_file_to_node()
+            k8s_deployed.download_virtlet_conformance_log(files)
     request.addfinalizer(test_fin)
