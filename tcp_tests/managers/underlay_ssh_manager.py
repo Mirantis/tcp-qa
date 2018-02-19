@@ -175,6 +175,7 @@ class UnderlaySSHManager(object):
                     else:
                         ssh_data = ssh
         if ssh_data is None:
+            LOG.debug("config_ssh - {}".format(self.config_ssh))
             raise Exception('Auth data for node was not found using '
                             'node_name="{}" , host="{}" , address_pool="{}"'
                             .format(node_name, host, address_pool))
