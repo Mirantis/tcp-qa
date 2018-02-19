@@ -48,6 +48,7 @@
    # Node is ready, allow SSH access
    - echo "Allow SSH access ..."
    - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   - touch /is_cloud_init_finish
    ########################################################
 
   write_files:
