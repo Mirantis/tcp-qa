@@ -63,3 +63,6 @@ class JenkinsClient(object):
             timeout=timeout,
             timeout_msg='Timeout waiting, job {0} are not finished "{1}" build'
                         ' still'.format(name, build_id))
+
+    def get_build_output(self, name, build_id):
+        return self.__client.get_build_console_output(name, build_id)
