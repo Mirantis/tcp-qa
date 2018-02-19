@@ -94,19 +94,23 @@ class OpenstackManager(ExecuteCommandsMixin):
             self,
             target='gtw01', pattern=None,
             conf_name='lvm_mcp.conf',
-            registry=None):
+            registry=None, node_name=None):
         if not registry:
             registry = ('{0}/{1}'.format(settings.DOCKER_REGISTRY,
                                          settings.DOCKER_NAME))
-        target_name = [node_name for node_name
-                       in self.__underlay.node_names() if target in node_name]
+        if node_name is None and target is not None:
+            target_name = next(
+                name for name in self.__underlay.node_names()
+                if target in name)
+        else:
+            target_name = node_name
 
         cmd = ("apt-get -y install docker.io")
-        with self.__underlay.remote(node_name=target_name[0]) as node_remote:
+        with self.__underlay.remote(node_name=target_name) as node_remote:
             result = node_remote.execute(cmd, verbose=True)
 
         cmd_iptables = "iptables --policy FORWARD ACCEPT"
-        with self.__underlay.remote(node_name=target_name[0]) as node_remote:
+        with self.__underlay.remote(node_name=target_name) as node_remote:
             result = node_remote.execute(cmd_iptables, verbose=True)
 
         with self.__underlay.remote(
