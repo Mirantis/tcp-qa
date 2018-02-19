@@ -108,6 +108,7 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-e SOURCE_FILE=keystonercv3  "
                    "-e CUSTOM='--pattern {1}' "
                    "-v /root/:/home/rally {2} "
+                   "-v /var/log/:/home/rally/rally_reports/ "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
                    .format(conf_name, pattern, registry))
         else:
@@ -117,6 +118,7 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-e SET=full "
                    "-e SOURCE_FILE=keystonercv3  "
                    "-v /root/:/home/rally {2} "
+                   "-v /var/log/:/home/rally/rally_reports/ "
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
                    .format(conf_name, pattern, registry))
         LOG.info("Running tempest testing on node {0} using the following "
@@ -132,7 +134,7 @@ class OpenstackManager(ExecuteCommandsMixin):
                             in self.__underlay.node_names()
                             if stored_node in node_name]
         with self.__underlay.remote(node_name=target_node_name[0]) as r:
-            result = r.execute('find /root -name "report_*.{}"'.format(
+            result = r.execute('find /var/log/ -name "report_*.{}"'.format(
                 file_fromat))
             LOG.debug("Find result {0}".format(result))
             assert len(result['stdout']) > 0, ('No report find, please check'
