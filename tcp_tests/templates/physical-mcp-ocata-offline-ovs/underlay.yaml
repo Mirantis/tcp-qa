@@ -131,7 +131,7 @@ template:
 
     address_pools:
       managment-pool01:
-        net: {{ os_env('MGMT_ADDRESS_POOL01', '10.11.0.0/24:24') }}
+        net: {{ os_env('MGMT_ADDRESS_POOL01', '10.11.0.0/16:16') }}
         params:
           ip_reserved:
             gateway: +1
@@ -173,7 +173,7 @@ template:
             default_{{ HOSTNAME_MTR03 }}: {{ ETH1_IP_ADDRESS_MTR04 }}
 
       admin-pool01:
-        net: {{ os_env('DEPLOY_ADDRESS_POOL01', '10.10.0.0/24:24') }}
+        net: {{ os_env('DEPLOY_ADDRESS_POOL01', '10.10.0.0/16:16') }}
         params:
           ip_reserved:
             gateway: +1
