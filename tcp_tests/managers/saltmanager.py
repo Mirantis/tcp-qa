@@ -12,6 +12,8 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import signal
+
 import netaddr
 
 from collections import defaultdict
@@ -198,10 +200,20 @@ class SaltManager(ExecuteCommandsMixin):
                 'password': settings.SSH_NODE_CREDENTIALS['password']
             }
 
-        return [
-            host(k, next(i for i in v['ipv4'] if i in pool_net))
-            for k, v in hosts.items()
-            if next(i for i in v['ipv4'] if i in pool_net)]
+        try:
+            ret = [
+                host(k, next(i for i in v['ipv4'] if i in pool_net))
+                for k, v in hosts.items()
+                if next(i for i in v['ipv4'] if i in pool_net)]
+            LOG.debug("Fetched ssh data from salt grains - {}".format(ret))
+            return ret
+        except StopIteration:
+            msg = ("Can't match nodes ip address with network cidr\n"
+                   "Managment network - {net}\n"
+                   "Host with address - {host_list}".format(
+                       net=pool_net,
+                       host_list={k: v['ipv4'] for k, v in hosts.items()}))
+            raise StopIteration(msg)
 
     def service_status(self, tgt, service):
         result = self.local(tgt=tgt, fun='service.status', args=service)
