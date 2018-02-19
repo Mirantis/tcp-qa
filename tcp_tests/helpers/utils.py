@@ -18,6 +18,7 @@ import shutil
 import StringIO
 import time
 import traceback
+import signal
 
 import jinja2
 import paramiko
@@ -444,3 +445,23 @@ def get_top_fixtures_marks(request, mark_name):
               .format(top_fixtures_marks))
 
     return top_fixtures_marks
+
+
+class RunLimit(object):
+    def __init__(self, seconds=60, error_message='Timeout'):
+        self.seconds = seconds
+        self.error_message = error_message
+
+    def handle_timeout(self, signum, frame):
+        raise TimeoutException(self.error_message)
+
+    def __enter__(self):
+        signal.signal(signal.SIGALRM, self.handle_timeout)
+        signal.alarm(self.seconds)
+
+    def __exit__(self, exc_type, value, traceback):
+        signal.alarm(0)
+
+
+class TimeoutException(Exception):
+    pass
