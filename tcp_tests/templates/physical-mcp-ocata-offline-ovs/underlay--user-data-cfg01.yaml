@@ -19,10 +19,9 @@
 
   bootcmd:
    # Block access to SSH while node is preparing
-   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   - cloud-init-per once sudo echo 'sshd:ALL' >> /etc/hosts.deny
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
-   - service sshd restart
   output:
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
@@ -39,6 +38,9 @@
    - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
 
    # Run user data script from config drive
+   - ifdown ens3; ifconfig ens3 down; ip a flush dev ens3
+   - ifdown ens4; ifconfig ens4 down; ip a flush dev ens4
+   - ifdown ens5; ifconfig ens5 down; ip a flush dev ens5
    - cd /root/config-drive && /bin/bash -xe ./user-data
 
    # Enable root access
@@ -47,7 +49,8 @@
    ########################################################
    # Node is ready, allow SSH access
    - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   - "sed -i -e '/sshd:ALL/d' /etc/hosts.deny"
+   - touch /is_cloud_init_finish
    ########################################################
 
   write_files:
@@ -60,3 +63,13 @@
             ServerAliveCountMax 10
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
