@@ -19,10 +19,9 @@
 
   bootcmd:
    # Block access to SSH while node is preparing
-   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   - cloud-init-per once sudo service sshd stop
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
-   - service sshd restart
   output:
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
@@ -47,7 +46,8 @@
    ########################################################
    # Node is ready, allow SSH access
    - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   - sudo service sshd start
    ########################################################
 
   write_files:
