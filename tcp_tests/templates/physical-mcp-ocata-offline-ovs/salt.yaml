@@ -20,7 +20,31 @@
   skip_fail: false
 
 - description: Sync all salt resources on master node
-  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False saltutil.sync_all && sleep 5
+  cmd: sleep 60; salt-call --hard-crash --state-output=mixed --state-verbose=False saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: MaaS auth
+  cmd: maas logout mirantis && maas login mirantis http://localhost:5240/MAAS/api/2.0/ 'FTvqwe7ybBp68gPar2:5mcctTAXVL8mns4ef4:zrA9LZwu2tMc8BAZpsPUfwWwTyQnAtDN'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Set upstream dns in MaaS
+  cmd: maas mirantis maas set-config name=upstream_dns value='10.10.0.15 8.8.8.8 8.8.4.4'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup NTP
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls ntp.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Wait until salt is up
+  cmd: sleep 60
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
