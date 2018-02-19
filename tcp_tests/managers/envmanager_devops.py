@@ -305,13 +305,15 @@ class EnvironmentManager(object):
         for node in self.__env.get_nodes(role__in=underlay_node_roles):
             LOG.info("Waiting for SSH on node '{0}' / {1} ...".format(
                 node.name, self.node_ip(node)))
-            helpers.wait(
-                lambda: helpers.tcp_ping(self.node_ip(node), 22),
-                timeout=timeout,
-                timeout_msg="Node '{}' didn't open SSH in {} sec".format(
-                    node.name, timeout
-                )
-            )
+            helpers.wait_ssh_cmd(
+                self.node_ip(node), 22, 'test -f /is_cloud_init_finish', timeout=timeout)
+            # helpers.wait(
+            #     lambda: helpers.tcp_ping(self.node_ip(node), 22),
+            #     timeout=timeout,
+            #     timeout_msg="Node '{}' didn't open SSH in {} sec".format(
+            #         node.name, timeout
+            #     )
+            # )
         LOG.info('Environment "{0}" ready'.format(self.__env.name))
 
     def resume(self):
