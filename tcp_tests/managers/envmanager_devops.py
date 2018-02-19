@@ -16,6 +16,7 @@ import os
 
 from devops import error
 from devops.helpers import helpers
+from devops.helpers.helpers import ssh_client
 from devops import models
 from django import db
 from oslo_config import cfg
@@ -305,8 +306,31 @@ class EnvironmentManager(object):
         for node in self.__env.get_nodes(role__in=underlay_node_roles):
             LOG.info("Waiting for SSH on node '{0}' / {1} ...".format(
                 node.name, self.node_ip(node)))
-            helpers.wait(
-                lambda: helpers.tcp_ping(self.node_ip(node), 22),
+            # helpers.wait_ssh_cmd(
+            #    self.node_ip(node), 22, 'test -f /is_cloud_init_finish', timeout=timeout)
+            # helpers.wait(
+            #     lambda: helpers.tcp_ping(self.node_ip(node), 22),
+            #     timeout=timeout,
+            #     timeout_msg="Node '{}' didn't open SSH in {} sec".format(
+            #         node.name, timeout
+            #     )
+            # )
+
+            def _ssh_wait(host,
+                          port,
+                          check_cmd,
+                          username=settings.SSH_NODE_CREDENTIALS['login'],
+                      password=settings.SSH_NODE_CREDENTIALS['password'],
+                          timeout=0):
+                ssh = ssh_client.SSHClient(
+                    host=host, port=port,
+                    auth=ssh_client.SSHAuth(
+                        username=username,
+                        password=password))
+                return ssh.execute(check_cmd)['exit_code'] == 0
+
+            helpers.wait_pass(
+                lambda: _ssh_wait(self.node_ip(node), 22, 'test -f /is_cloud_init_finish'),
                 timeout=timeout,
                 timeout_msg="Node '{}' didn't open SSH in {} sec".format(
                     node.name, timeout
