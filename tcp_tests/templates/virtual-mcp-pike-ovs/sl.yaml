@@ -80,8 +80,8 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Configure collector
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:log_collector' state.sls heka.log_collector
+- description: Configure fluentd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@fluentd:agent' state.sls fluentd
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
