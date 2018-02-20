@@ -60,13 +60,13 @@ default_context:
   openstack_control_node03_address: 172.16.10.103
   openstack_control_node03_hostname: ctl03
   openstack_database_address: 172.16.10.100
-  openstack_database_hostname: dbs
+  openstack_database_hostname: ctl
   openstack_database_node01_address: 172.16.10.101
-  openstack_database_node01_hostname: dbs01
+  openstack_database_node01_hostname: ctl01
   openstack_database_node02_address: 172.16.10.102
-  openstack_database_node02_hostname: dbs02
+  openstack_database_node02_hostname: ctl02
   openstack_database_node03_address: 172.16.10.103
-  openstack_database_node03_hostname: dbs03
+  openstack_database_node03_hostname: ctl03
   openstack_enabled: 'True'
   openstack_gateway_node01_address: 172.16.10.110
   openstack_gateway_node01_hostname: gtw01
@@ -78,13 +78,13 @@ default_context:
   openstack_gateway_node03_hostname: gtw03
   openstack_gateway_node03_tenant_address: 10.1.0.8
   openstack_message_queue_address: 172.16.10.100
-  openstack_message_queue_hostname: msg
+  openstack_message_queue_hostname: ctl
   openstack_message_queue_node01_address: 172.16.10.101
-  openstack_message_queue_node01_hostname: msg01
+  openstack_message_queue_node01_hostname: ctl01
   openstack_message_queue_node02_address: 172.16.10.102
-  openstack_message_queue_node02_hostname: msg02
+  openstack_message_queue_node02_hostname: ctl02
   openstack_message_queue_node03_address: 172.16.10.103
-  openstack_message_queue_node03_hostname: msg03
+  openstack_message_queue_node03_hostname: ctl03
   openstack_network_engine: ovs
   openstack_neutron_qos: 'False'
   openstack_neutron_vlan_aware_vms: 'False'
@@ -119,13 +119,13 @@ default_context:
   shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
   stacklight_enabled: 'True'
   stacklight_log_address: 172.16.10.70
-  stacklight_log_hostname: log
+  stacklight_log_hostname: mon
   stacklight_log_node01_address: 172.16.10.107
-  stacklight_log_node01_hostname: log01
+  stacklight_log_node01_hostname: mon01
   stacklight_log_node02_address: 172.16.10.108
-  stacklight_log_node02_hostname: log02
+  stacklight_log_node02_hostname: mon02
   stacklight_log_node03_address: 172.16.10.109
-  stacklight_log_node03_hostname: log03
+  stacklight_log_node03_hostname: mon03
   stacklight_monitor_address: 172.16.10.70
   stacklight_monitor_hostname: mon
   stacklight_monitor_node01_address: 172.16.10.107
@@ -137,13 +137,13 @@ default_context:
   stacklight_notification_address: alerts@localhost
   stacklight_notification_smtp_host: 127.0.0.1
   stacklight_telemetry_address: 172.16.10.70
-  stacklight_telemetry_hostname: mtr
+  stacklight_telemetry_hostname: mon
   stacklight_telemetry_node01_address: 172.16.10.107
-  stacklight_telemetry_node01_hostname: mtr01
+  stacklight_telemetry_node01_hostname: mon01
   stacklight_telemetry_node02_address: 172.16.10.108
-  stacklight_telemetry_node02_hostname: mtr02
+  stacklight_telemetry_node02_hostname: mon02
   stacklight_telemetry_node03_address: 172.16.10.109
-  stacklight_telemetry_node03_hostname: mtr03
+  stacklight_telemetry_node03_hostname: mon03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
   tenant_network_gateway: 10.1.0.1
@@ -151,4 +151,4 @@ default_context:
   tenant_network_subnet: 10.1.0.0/24
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
-  use_default_network_scheme: 'True'
+  use_default_network_scheme: 'False'
