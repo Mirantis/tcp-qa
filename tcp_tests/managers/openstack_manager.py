@@ -112,15 +112,6 @@ class OpenstackManager(ExecuteCommandsMixin):
                  scp /root/keystonercv3 gtw01:/root;",
                 verbose=True)
 
-  cmd: scp ctl01:/root/keystonercv3 /root
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Copy rc file
-  cmd: scp /root/keystonercv3 gtw01:/root
-
-
         if pattern:
             cmd = ("docker run --rm --net=host  "
                    "-e TEMPEST_CONF={0} "
