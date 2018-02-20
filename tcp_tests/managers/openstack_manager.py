@@ -101,6 +101,10 @@ class OpenstackManager(ExecuteCommandsMixin):
         target_name = [node_name for node_name
                        in self.__underlay.node_names() if target in node_name]
 
+        cmd = ("apt-get -y install docker.io")
+        with self.__underlay.remote(node_name=target_name[0]) as node_remote:
+            result = node_remote.execute(cmd, verbose=True)
+
         if pattern:
             cmd = ("docker run --rm --net=host  "
                    "-e TEMPEST_CONF={0} "
