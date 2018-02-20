@@ -105,7 +105,7 @@ class SLManager(ExecuteCommandsMixin):
                 as node_remote:
             LOG.debug("Run {0} on the node {1}".format(
                 cmd, target_node_name[0]))
-            result = node_remote.check_call(cmd, verbose=True)
+            result = node_remote.execute(cmd, verbose=True)
             LOG.debug("Test execution result is {}".format(result))
         return result
 
@@ -127,7 +127,7 @@ class SLManager(ExecuteCommandsMixin):
                 as node_remote:
             LOG.debug("Run {0} on the node {1}".format(
                 cmd, target_node_name[0]))
-            node_remote.check_call(cmd, verbose=True)
+            node_remote.execute(cmd, verbose=True)
             res = node_remote.check_call('cd {0}; cat report.json'.format(
                 tests_path), verbose=True)
             LOG.debug("Test execution result is {}".format(res['stdout']))
