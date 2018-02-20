@@ -92,7 +92,7 @@
     # Install salt-master and reclass
     eatmydata apt-get install -y --allow-unauthenticated reclass salt-master
     # Install common packages
-    eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
+    eatmydata apt-get install -y python-pip git curl at tmux byobu iputils-ping traceroute htop tree mc
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
