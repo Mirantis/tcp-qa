@@ -105,6 +105,22 @@ class OpenstackManager(ExecuteCommandsMixin):
         with self.__underlay.remote(node_name=target_name[0]) as node_remote:
             result = node_remote.execute(cmd, verbose=True)
 
+        with self.__underlay.remote(
+                host=self.__config.salt.salt_master_host) as node_remote:
+            result = node_remote.execute(
+                "scp ctl01:/root/keystonercv3 /root;
+                 scp /root/keystonercv3 gtw01:/root;",
+                verbose=True)
+
+  cmd: scp ctl01:/root/keystonercv3 /root
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Copy rc file
+  cmd: scp /root/keystonercv3 gtw01:/root
+
+
         if pattern:
             cmd = ("docker run --rm --net=host  "
                    "-e TEMPEST_CONF={0} "
@@ -139,7 +155,7 @@ class OpenstackManager(ExecuteCommandsMixin):
             result = r.execute('find /root -name "report_*.{}"'.format(
                 file_fromat))
             LOG.debug("Find result {0}".format(result))
-            assert len(result['stdout']) > 0, ('No report find, please check'
+            assert len(result['stdout']) > 0, ('No report found, please check'
                                                ' if test run was successful.')
             file_name = result['stdout'][0].rstrip()
             LOG.debug("Found files {0}".format(file_name))
