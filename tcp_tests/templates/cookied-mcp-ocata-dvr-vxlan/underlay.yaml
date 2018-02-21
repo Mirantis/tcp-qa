@@ -314,6 +314,8 @@ template:
           private:
             address_pool: private-pool01
             dhcp: false
+            forward:
+              mode: route
 
           #tenant:
           #  address_pool: tenant-pool01

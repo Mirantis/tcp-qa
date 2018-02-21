@@ -243,8 +243,10 @@ class EnvironmentManager(object):
                      "because MAKE_SNAPSHOT_STAGES=false".format(name))
             return
 
-        LOG.info("Reverting from snapshot named '{0}'".format(name))
         if self.__env is not None:
+            LOG.info("Suspending environment to stop IO"
+            self.__env.suspend()
+            LOG.info("Reverting from snapshot named '{0}'".format(name))
             self.__env.revert(name=name)
             LOG.info("Resuming environment after revert")
             self.__env.resume()
