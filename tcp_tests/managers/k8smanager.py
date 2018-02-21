@@ -498,7 +498,7 @@ class K8SManager(ExecuteCommandsMixin):
         result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
         return result['stdout'].strip()
 
-    def run_virtlet_conformance(self, timeout=60 * 60,
+    def run_virtlet_conformance(self, timeout=60 * 120,
                                 log_file='virtlet_conformance.log'):
         if self.__config.k8s.run_extended_virtlet_conformance:
             ci_image = "cloud-images.ubuntu.com/xenial/current/" \
