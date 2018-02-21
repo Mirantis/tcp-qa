@@ -195,15 +195,18 @@ template:
             forward:
               mode: nat
 
-          private:
+         private_br:
             address_pool: private-pool01
             dhcp: false
             forward:
               mode: route
+            vlan_ifaces:
+             - 10
 
-          #tenant:
-          #  address_pool: tenant-pool01
-          #  dhcp: false
+          private:
+            parent_iface:
+              l2_net_dev: private_br
+              tag: 10
 
           external:
             address_pool: external-pool01
