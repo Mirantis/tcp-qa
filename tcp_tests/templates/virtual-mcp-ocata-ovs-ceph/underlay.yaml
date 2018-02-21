@@ -145,6 +145,8 @@ template:
           private:
             address_pool: private-pool01
             dhcp: true
+            forward:
+              mode: route
 
           admin:
             address_pool: admin-pool01
