@@ -119,8 +119,8 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-e SOURCE_FILE=keystonercv3  "
                    "-e CUSTOM='--pattern {1}' "
                    "-v /root/:/home/rally  "
-                   "-v /var/log/:/home/rally/rally_reports/ {2} "
-                   "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
+                   "-v /var/log/:/home/rally/rally_reports/ "
+                   "-v /etc/ssl/certs/:/etc/ssl/certs/ {2} >> image.output"
                    .format(conf_name, pattern, registry))
         else:
             cmd = ("docker run --rm --net=host  "
@@ -129,8 +129,8 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-e SET=full "
                    "-e SOURCE_FILE=keystonercv3  "
                    "-v /root/:/home/rally "
-                   "-v /var/log/:/home/rally/rally_reports/ {2} "
-                   "-v /etc/ssl/certs/:/etc/ssl/certs/ >> image.output"
+                   "-v /var/log/:/home/rally/rally_reports/ "
+                   "-v /etc/ssl/certs/:/etc/ssl/certs/ {2} >> image.output"
                    .format(conf_name, pattern, registry))
         LOG.info("Running tempest testing on node {0} using the following "
                  "command:\n{1}".format(target_name[0], cmd))
