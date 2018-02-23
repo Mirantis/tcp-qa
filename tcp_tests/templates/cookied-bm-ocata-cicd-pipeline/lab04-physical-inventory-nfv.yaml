@@ -81,7 +81,7 @@ nodes:
         enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
-    cmp001.ocata-cicd.local:
+    cmp01.ocata-cicd.local:
       reclass_storage_name: openstack_compute_node01
       roles:
       - openstack_compute_dpdk
@@ -97,16 +97,16 @@ nodes:
           single_address: 10.167.8.101
         enp5s0f0:
           role: single_ovs_dpdk_prv
-          tenant_address: 192.168.0.101          
+          tenant_address: 192.168.0.101
           dpdk_pci: "0000:05:00.0"
 
-    cmp002.ocata-cicd.local:
+    cmp02.ocata-cicd.local:
       reclass_storage_name: openstack_compute_node02
       roles:
       - openstack_compute_dpdk
       - features_lvm_backend
       - linux_system_codename_xenial
-      - openstack_compute_sriov  
+      - openstack_compute_sriov
       interfaces:
         enp2s0f0:
           role: single_mgm
