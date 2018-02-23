@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e76347e4_0ea48ba7",
+        "filename": "tcp_tests/helpers/utils.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 449,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-02-23T08:36:50Z",
+      "side": 1,
+      "message": "Why don\u0027t use it directly from fuel-devops?\nfrom devops.helpers import helpers\n\nhelpers.RunLimit(...)\n\nhttps://github.com/openstack/fuel-devops/blob/master/devops/helpers/helpers.py#L84",
+      "revId": "b36c6b33babc1519da29f4e9a7773055d40cecbf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cdc1b8eb_50c07896",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-02-23T08:36:50Z",
+      "side": 1,
+      "message": "You could use salt_actions.execute_commands() instead of series of underlay.check_call() to run a sequence of commands like from template, see the example:\n\nhttps://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/tests/environment/test_generate_model.py#L39-L64",
+      "revId": "b36c6b33babc1519da29f4e9a7773055d40cecbf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
