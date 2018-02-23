@@ -1,5 +1,6 @@
 {% from 'cookied-bm-ocata-cicd-pipeline/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% from 'cookied-bm-ocata-cicd-pipeline/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-bm-ocata-cicd-pipeline/underlay.yaml' import LAB_CONFIG_NAME with context %}
 
 {% set NFV_ENABLED = os_env('NFV_ENABLED','false') %}
 
