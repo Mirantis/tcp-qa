@@ -81,7 +81,7 @@ nodes:
         enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
-    cmp001.ocata-cicd.local:
+    cmp01.ocata-cicd.local:
       reclass_storage_name: openstack_compute_node01
       roles:
       - openstack_compute_dpdk
@@ -100,7 +100,7 @@ nodes:
           tenant_address: 192.168.0.101          
           dpdk_pci: "0000:05:00.0"
 
-    cmp002.ocata-cicd.local:
+    cmp02.ocata-cicd.local:
       reclass_storage_name: openstack_compute_node02
       roles:
       - openstack_compute_dpdk
