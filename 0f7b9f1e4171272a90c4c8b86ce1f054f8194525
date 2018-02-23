@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6396d4f8_7ca70f07",
+        "filename": "tcp_tests/templates/ocata-cicd/salt.yaml",
+        "patchSetId": 76
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-02-23T10:15:13Z",
+      "side": 1,
+      "message": "https://gerrit.mcp.mirantis.net/#/c/14806 merged already, please remove the workaround step",
+      "revId": "0f7b9f1e4171272a90c4c8b86ce1f054f8194525",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cd0108e3_26612916",
+        "filename": "tcp_tests/templates/ocata-cicd/salt.yaml",
+        "patchSetId": 76
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-02-23T10:15:13Z",
+      "side": 1,
+      "message": "8.8.8.8 is excess here, please remove. It may bring floating errors during access to the internal resources.",
+      "revId": "0f7b9f1e4171272a90c4c8b86ce1f054f8194525",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
