@@ -210,8 +210,9 @@
     find {{ CLUSTER_PATH }} -type f -exec sed -i 's/cluster_name: .*/cluster_name: {{ CLUSTER_NAME }}/g' {} +
     find {{ CLUSTER_PATH }} -type f -exec sed -i 's/cluster_domain: .*/cluster_domain: {{ DOMAIN_NAME }}/g' {} +
 
-    # Disable checkouting the model from remote repository
-    cat << 'EOF' > /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml
+    # Create the cfg01 inventory file or use existing
+    export CFG01_INVENTORY_FILE="/srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml"
+    [ -f ${CFG01_INVENTORY_FILE} ] || cat << 'EOF' > ${CFG01_INVENTORY_FILE}
     classes:
     - cluster.{{ CLUSTER_NAME }}.infra.config
     parameters:
@@ -307,8 +308,9 @@
 
     export GIT_SSL_NO_VERIFY=true; git clone https://gerrit.mcp.mirantis.net/salt-models/reclass-system /srv/salt/reclass/classes/system/
 
-    # Create the cfg01 node and disable checkouting the model from remote repository
-    cat << 'EOF' > /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml
+    # Create the cfg01 inventory file or use existing
+    export CFG01_INVENTORY_FILE="/srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml"
+    [ -f ${CFG01_INVENTORY_FILE} ] || cat << 'EOF' > ${CFG01_INVENTORY_FILE}
     classes:
     - system.openssh.server.team.all
     - cluster.{{ CLUSTER_NAME }}.infra.config
