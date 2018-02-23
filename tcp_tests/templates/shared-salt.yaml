@@ -394,11 +394,6 @@
       cp /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
       # Remove parameters:_param from the infra.config to have possibility to override them from the environment classes
       reclass-tools del-key parameters._param /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml;
-      reclass-tools del-key classes /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-      reclass-tools del-key parameters.jenkins /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-      reclass-tools del-key parameters.salt /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-      reclass-tools del-key parameters.reclass /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-
       reclass-tools add-key 'classes' 'cluster.{{ CLUSTER_NAME }}.infra.config_orig' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml --merge;
       reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml --merge;
       reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml --merge;
