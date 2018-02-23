@@ -389,19 +389,9 @@
     reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
     reclass-tools del-key parameters.linux.network.interface /usr/share/salt-formulas/reclass/;
 
-    if ! reclass-tools get-key 'classes' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
-      # Move the config.yml into a separate class 'infra.config_orig' to keep parameters:_param there
-      cp /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-      # Remove parameters:_param from the infra.config to have possibility to override them from the environment classes
-      reclass-tools del-key parameters._param /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml;
-      reclass-tools del-key classes /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-      reclass-tools del-key parameters.jenkins /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-      reclass-tools del-key parameters.salt /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-      reclass-tools del-key parameters.reclass /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config_orig.yml;
-
-      reclass-tools add-key 'classes' 'cluster.{{ CLUSTER_NAME }}.infra.config_orig' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml --merge;
-      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml --merge;
-      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/config.yml --merge;
+    if ! reclass-tools get-key 'classes' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml | grep -q "environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}$"; then
+      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml --merge ;
+      reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml --merge ;
     fi;
 
   node_name: {{ HOSTNAME_CFG01 }}
