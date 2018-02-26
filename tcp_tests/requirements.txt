@@ -1,5 +1,5 @@
 # git+git://github.com/openstack/fuel-devops.git@887368d#egg=project[postgre]   # Use this requirement for PostgreSQL
-git+git://github.com/openstack/fuel-devops.git@c39a2a9   # Use this requirement for Sqlite3, or if requirements for PostgreSQL are already installed
+git+git://github.com/openstack/fuel-devops.git@cce44f4   # Use this requirement for Sqlite3, or if requirements for PostgreSQL are already installed
 git+git://github.com/dis-xcom/fuel-devops-driver-ironic
 paramiko
 six
