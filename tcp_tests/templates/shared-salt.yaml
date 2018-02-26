@@ -186,15 +186,15 @@
     # 10.16.0 -> <external network>
     # So let's replace constant networks to the keywords, and then keywords to the desired networks.
     export REPLACE_DIRS="/srv/salt/reclass/classes/ /srv/salt/reclass/nodes/"
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/192\.168\.10\./==IPV4_NET_ADMIN_PREFIX==/g' {} +
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/172\.16\.10\./==IPV4_NET_CONTROL_PREFIX==/g' {} +
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.1\.0\./==IPV4_NET_TENANT_PREFIX==/g' {} +
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.16\.0\./==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/192\.168\.10/==IPV4_NET_ADMIN_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/172\.16\.10/==IPV4_NET_CONTROL_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.1\.0/==IPV4_NET_TENANT_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.16\.0/==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
 
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}./g' {} +
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}./g' {} +
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}./g' {} +
-    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}/g' {} +
 
     find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
@@ -289,12 +289,12 @@
     sed -i 's/10\.167\.5/==IPV4_NET_ADMIN_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/10\.167\.4/==IPV4_NET_CONTROL_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/172\.17\.16\./==IPV4_NET_EXTERNAL_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/172\.17\.16/==IPV4_NET_EXTERNAL_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
 
     sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}./g' {{ CLUSTER_CONTEXT_PATH }}
+    sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
 
     {% set items = CLUSTER_PRODUCT_MODELS or '$(ls /tmp/cookiecutter-templates/cluster_product/)' %}
     for item in {{ items }}; do
