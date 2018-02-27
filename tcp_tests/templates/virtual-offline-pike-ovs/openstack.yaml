@@ -114,6 +114,16 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Install bind if pillars 'bind:server' exists on any server
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@bind:server' match.pillar 'bind:server' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False  -C 'I@bind:server' state.sls bind;
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@designate:server' state.sls designate -b 1
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Check neutron agent-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonercv3; neutron agent-list'
