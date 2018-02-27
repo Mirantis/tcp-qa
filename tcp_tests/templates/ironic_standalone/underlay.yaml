@@ -84,7 +84,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  source_image: !os_env IMAGE_PATH1604
+                  source_image: {{ os_env('IRONIC_IMAGE_PATH1604', os_env('IMAGE_PATH1604')) }}
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
