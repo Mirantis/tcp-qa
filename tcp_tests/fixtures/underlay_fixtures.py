@@ -211,10 +211,17 @@ def grab_versions(request, func_name, underlay):
     grab_version = request.keywords.get('grab_versions', None)
 
     def test_fin():
-        if hasattr(request.node, 'rep_call') and \
-                (request.node.rep_call.passed or request.node.rep_call.failed)\
-                and grab_version:
+        fixture_failed = (hasattr(request.node, 'rep_setup') and
+                          request.node.rep_setup.failed)
+        test_passed = (hasattr(request.node, 'rep_call') and
+                       request.node.rep_call.passed)
+        test_failed = (hasattr(request.node, 'rep_call') and
+                       request.node.rep_call.failed)
+
+        if fixture_failed or test_passed or test_failed:
             artifact_name = utils.extract_name_from_mark(grab_version) or \
                 "{}".format(func_name)
             underlay.get_logs(artifact_name)
-    request.addfinalizer(test_fin)
+
+    if grab_version:
+        request.addfinalizer(test_fin)
