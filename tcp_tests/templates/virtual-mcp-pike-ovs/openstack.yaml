@@ -198,6 +198,41 @@
   retry: {count: 2, delay: 30}
   skip_fail: false
 
+- description: Create default sec group
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack  security group create default'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Open ingress icmp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack security group rule create default --protocol icmp --ingress'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Open egress icmp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack security group rule create default --protocol icmp --egress'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Open ingress tcp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack security group rule create default --protocol tcp --ingress'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Open egress tcp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack security group rule create default --protocol tcp --egress'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
 - description: Register image in glance
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
