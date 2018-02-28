@@ -47,7 +47,7 @@ default_context:
   openstack_benchmark_node01_address: 172.16.10.95
   openstack_benchmark_node01_hostname: bmk01
   openstack_cluster_size: compact
-  openstack_compute_count: '100'
+  openstack_compute_count: '2'
   openstack_compute_rack01_hostname: cmp
   openstack_compute_rack01_single_subnet: 172.16.10
   openstack_compute_rack01_tenant_subnet: 10.1.0
