@@ -414,50 +414,84 @@ class UnderlaySSHManager(object):
 
     def get_logs(self, artifact_name,
                  node_role=ext.UNDERLAY_NODE_ROLES.salt_master):
-        master_node = [ssh for ssh in self.config_ssh
-                       if node_role in ssh['roles']][0]
-        cmd = ("dpkg -l | grep formula > "
-               "/var/log/{0}_packages.output".format(master_node['node_name']))
+        dump_commands = (
+            "mkdir /root/$(hostname -f)/;"
+            "rsync -aruv /var/log/ /root/$(hostname -f)/;"
+            "dpkg -l > /root/$(hostname -f)/dump_dpkg_l.txt;"
+            "df -h > /root/$(hostname -f)/dump_df.txt;"
+            "mount > /root/$(hostname -f)/dump_mount.txt;"
+            "blkid -o list > /root/$(hostname -f)/dump_blkid_o_list.txt;"
+            "iptables -t nat -S > /root/$(hostname -f)/dump_iptables_nat.txt;"
+            "iptables -S > /root/$(hostname -f)/dump_iptables.txt;"
+            "ps auxwwf > /root/$(hostname -f)/dump_ps.txt;"
+            "docker images > /root/$(hostname -f)/dump_docker_images.txt;"
+            "docker ps > /root/$(hostname -f)/dump_docker_ps.txt;"
+            "vgdisplay > /root/$(hostname -f)/dump_vgdisplay.txt;"
+            "lvdisplay > /root/$(hostname -f)/dump_lvdisplay.txt;"
+            "ip a > /root/$(hostname -f)/dump_ip_a.txt;"
+            "ip r > /root/$(hostname -f)/dump_ip_r.txt;"
+            "netstat -anp > /root/$(hostname -f)/dump_netstat.txt;"
+            "brctl show > /root/$(hostname -f)/dump_brctl_show.txt;"
+            "arp -an > /root/$(hostname -f)/dump_arp.txt;"
+            "uname -a > /root/$(hostname -f)/dump_uname_a.txt;"
+            "lsmod > /root/$(hostname -f)/dump_lsmod.txt;"
+            "cat /proc/interrupts > /root/$(hostname -f)/dump_interrupts.txt;"
+            "cat /etc/*-release > /root/$(hostname -f)/dump_release.txt;"
+            # OpenStack specific, will fail on other nodes
+            # "rabbitmqctl report > /root/$(hostname -f)/dump_rabbitmqctl.txt;"
 
-        tar_cmd = ('tar --absolute-names'
-                   ' --warning=no-file-changed '
-                   '-czf {t} {d}'.format(
-                       t='{0}_log.tar.gz'.format(artifact_name), d='/var/log'))
-        minion_nodes = [ssh for ssh in self.config_ssh
-                        if node_role not in ssh['roles']]
+            # "ceph health > /root/$(hostname -f)/dump_ceph_health.txt;"
+            # "ceph -s > /root/$(hostname -f)/dump_ceph_s.txt;"
+            # "ceph osd tree > /root/$(hostname -f)/dump_ceph_osd_tree.txt;"
 
-        with self.remote(master_node['node_name']) as r:
-            for node in minion_nodes:
-                LOG.info("Archiving logs on the node {0}"
+            # "for ns in $(ip netns list);"
+            # " do echo Namespace: ${ns}; ip netns exec ${ns} ip a;"
+            # "done > /root/$(hostname -f)/dump_ip_a_ns.txt;"
+
+            # "for ns in $(ip netns list);"
+            # " do echo Namespace: ${ns}; ip netns exec ${ns} ip r;"
+            # "done > /root/$(hostname -f)/dump_ip_r_ns.txt;"
+
+            # "for ns in $(ip netns list);"
+            # " do echo Namespace: ${ns}; ip netns exec ${ns} netstat -anp;"
+            # "done > /root/$(hostname -f)/dump_netstat_ns.txt;"
+
+            "/usr/bin/haproxy-status.sh > "
+            "  /root/$(hostname -f)/dump_haproxy.txt;"
+
+            # Archive the files
+            "cd /root/; tar --absolute-names --warning=no-file-changed "
+            "  -czf $(hostname -f).tar.gz ./$(hostname -f)/;"
+        )
+
+        master_host = self.__config.salt.salt_master_host
+        with self.__underlay.remote(host=master_host) as master:
+            # dump files
+            LOG.info("Archive artifacts on all nodes")
+            master.check_call("salt '*' cmd.run '{0}'".format(dump_commands),
+                              raise_on_err=False)
+
+            # create target dir for archives
+            master.check_call("mkdir /root/dump/")
+
+            # get archived artifacts to the master node
+            for node in self.config_ssh:
+                LOG.info("Getting archived artifacts from the node {0}"
                          .format(node['node_name']))
-                r.check_call((
-                    "salt '{n}*' cmd.run "
-                    "'tar "
-                    "--absolute-names "
-                    "--warning=no-file-changed "
-                    "-czf {t} {d}'".format(
-                        n=node['node_name'],
-                        t='{0}.tar.gz'.format(node['node_name']),
-                        d='/var/log')),
-                        raise_on_err=False)
+                master.check_call("rsync -aruv {0}:/root/*.tar.gz "
+                                  "/root/dump/".format(node['node_name']),
+                                  raise_on_err=False)
 
-                LOG.info("Copying logs from {0} to {1}"
-                         .format(node['node_name'], master_node['node_name']))
-                packages_minion_cmd = ("salt '{0}*' cmd.run "
-                                       "'dpkg -l' > /var/log/"
-                                       "{0}_packages.output".format(
-                                           node['node_name']))
-                r.check_call(packages_minion_cmd)
-                r.check_call("rsync {0}:/root/*.tar.gz "
-                             "/var/log/".format(node['node_name']),
-                             raise_on_err=False)
+            destination_name = '/root/{0}_dump.tar.gz'.format(artifact_name)
+            # Archive the artifacts from all nodes
+            master.check_call(
+                'cd /root/dump/;'
+                'tar --absolute-names --warning=no-file-changed -czf '
+                ' {0} ./'.format(destination_name))
 
-            r.check_call(cmd)
-            r.check_call(tar_cmd)
-
-            destination_name = '{0}_log.tar.gz'.format(artifact_name)
+            # Download the artifact to the host
             LOG.info("Downloading the artifact {0}".format(destination_name))
-            r.download(destination=destination_name, target=os.getcwd())
+            master.download(destination=destination_name, target=os.getcwd())
 
     def delayed_call(
             self, cmd,
