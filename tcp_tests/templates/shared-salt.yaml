@@ -649,6 +649,12 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Validate pillar on salt master node
+  cmd: salt-call reclass.validate_node_params cfg01.{{ DOMAIN_NAME }}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@salt:master' state.sls reclass
