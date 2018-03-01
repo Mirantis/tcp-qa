@@ -718,6 +718,12 @@
   retry: {count: 5, delay: 10}
   skip_fail: false
 
+- description: Execute linux.network.host one more time to apply dynamically registered hosts on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.network.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
 - description: Configure openssh on all nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh &&
     salt --hard-crash --state-output=mixed --state-verbose=False
