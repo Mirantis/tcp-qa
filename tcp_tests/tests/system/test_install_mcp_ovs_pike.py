@@ -26,6 +26,7 @@ class TestMcpInstallOvsPike(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.pike_ovs
     def test_mcp_pike_ovs_install(self, underlay,
                                   openstack_deployed,
                                   openstack_actions):
@@ -48,6 +49,7 @@ class TestMcpInstallOvsPike(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.pike_ovs
     def test_mcp_pike_ovs_sl_install(self, underlay, config,
                                      openstack_deployed,
                                      sl_deployed):
@@ -82,6 +84,7 @@ class TestMcpInstallOvsPike(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.pike_ovs_dvr
     def test_mcp_pike_dvr_install(self,
                                   underlay,
                                   openstack_deployed,
@@ -104,6 +107,7 @@ class TestMcpInstallOvsPike(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.pike_ovs_dvr
     def test_mcp_pike_dvr_sl_install(self, underlay, config,
                                      openstack_deployed,
                                      sl_deployed):
