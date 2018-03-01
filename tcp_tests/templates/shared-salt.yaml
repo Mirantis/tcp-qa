@@ -650,7 +650,10 @@
   skip_fail: false
 
 - description: Validate pillar on salt master node
-  cmd: salt-call reclass.validate_node_params cfg01.{{ DOMAIN_NAME }}
+  cmd: |
+    set -e
+    if salt-call sys.doc reclass.validate_node_params | grep -q reclass.validate_node_params ; then salt-call reclass.validate_nodes_params ; fi
+    if salt-call sys.doc reclass.validate_pillar | grep -q reclass.validate_pillar ; then salt-call reclass.validate_pillar ; fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
