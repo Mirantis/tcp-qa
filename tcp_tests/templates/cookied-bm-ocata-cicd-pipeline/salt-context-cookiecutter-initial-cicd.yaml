@@ -220,6 +220,35 @@ default_context:
   rundeck_iframe_host: ${_param:openstack_proxy_address}
   rundeck_iframe_port: ${_param:haproxy_rundeck_exposed_port}
   rundeck_iframe_ssl: 'False'
+  backup_private_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEowIBAAKCAQEAxL6/rVgCetsETpZaUmXmkj8cZ1WN0eubH1FvMDOi/La9ZJyT
+      k0C6AYpJnIyEm93pMj5cLm08qRqMW+2pdOhYjcH69yg5MrX5SkRk8jCmIHIYoIbh
+      Qnwbnj3dd3I39ZdfU2FO7u2vlbglVou6ZoQxlJDItuLNtzq6EG+w9eF19e7+OsC6
+      6iUItp618zfw1l3J/8nKvCGe2RYDf7mJW6XwCl/DwryJmwwzvPgYJ3QMuDD8/HFj
+      lrJ3xjFTXj4b4Ws1XIoy78fFbtiLr4OwqCYkho03u2E5rOOP1qZxZB63sivHMLMO
+      MM5bOAQKbulFNoyALADGYfc7sf0bZ4u9XXDXxQIDAQABAoIBAQCfmc2MJRT97KW1
+      yqpCpX9BrAiymuiNHf+cjEcSZxEUyHkjIRFmJt+9WB0W7ba1anM92vCUiPDojSzH
+      dig9Oi578JxR20NrK8uqv4jUHzrknynzLveVI3CUEcOSnglfJQijbxDFKfOCFPvV
+      FUyE1UATMNBh6+LNfMprgu+exuMWOPnDyUiYQ+WZ0JfuZY8fuaZte4woJJOb9LUu
+      5rsMG/smIzjpgZ0Z9ZVDMurfq565qhpaXRAqKeIuyht8pacTo31iMQdHB78AvY/3
+      g0z21Gk8k3z0Kr/YFKr2r4FmXY5m/gAUvZly2ZrVQM5XsbTVCzq/JpI5fssNvSbU
+      AKmXzf4RAoGBAOO3d4/cstxERzW6hyOTjZIN1ppR52CsnZTsVPbfd0pCtmzmVZce
+      CtHKdcXSbTwZvvkK09QSWAp3MoSpd0gIOiLU8Wx/R/RIZsu9BlhTS3r3EQLnk72d
+      H/1TTA+j4T/LIYLSojQ1RxvIrHetAD44j732aTwKAHj/SybEAVqNkOB/AoGBAN0u
+      gLcrgqIHGrk4VjWSvlCGymfF40equcx+ud7XhfZDGETUOSahW4dPZ52cjPAkrCBQ
+      MMfcDwSVGsOAjd+mNt11BHUKobnhXwFaWWuyqyn9NmWFbjMbICVh7E3Of5aVN38o
+      lrmo/7LuKMVG7XRwphCv5NkaJmQG4njDyUQWlaW7AoGADCd8wDb9bPhP/LQqBmIX
+      ylXmwHHisaxE9O/wUQT4bwREjGd25gv6c9wkkRx8LBsLsGs9hzI7dMOL9Ly+2x9l
+      SvqmsC3S/1zl77X1Ir2/Z57MT6Vgo1xBmtnZU3Rhz2/eKAdqFPNLClaZrgGT475N
+      HcyLLWMzR0IJFtabY+Puea0CgYA8Zb5wRkldxWLewSuJZZDinGwY+kieAVjLJq/K
+      0j+ah6fQ48LXcah0wpIgz+cMjHcUO9GWQdk3/x9X03rqX5EL2DBnZYfUIl63F9zj
+      M97ZkHOSNWVqPzX//0Vv2butewG0j3jZKfTo/2/SrxOYgEpYtC9huWpSVi7xm0US
+      erhSkQKBgFIf9JEsfgE57ANhvITZ3ZI0uZXNxZkXQaVg8jvScDi79IIhy9iPzhKC
+      aIIQoDNIlWv1ftCRZ5AlBvVXgvQ/QNrwy48JiQTzWZlb9Ezg8w+olQmSbG6fq7Y+
+      7r3i+QUZ7RBdOb24QcQ618q54ozNTCB7OywY78ptFzeoBeptiNr1
+      -----END RSA PRIVATE KEY-----
+  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvr+tWAJ62wROllpSZeaSPxxnVY3R65sfUW8wM6L8tr1knJOTQLoBikmcjISb3ekyPlwubTypGoxb7al06FiNwfr3KDkytflKRGTyMKYgchighuFCfBuePd13cjf1l19TYU7u7a+VuCVWi7pmhDGUkMi24s23OroQb7D14XX17v46wLrqJQi2nrXzN/DWXcn/ycq8IZ7ZFgN/uYlbpfAKX8PCvImbDDO8+BgndAy4MPz8cWOWsnfGMVNePhvhazVcijLvx8Vu2Iuvg7CoJiSGjTe7YTms44/WpnFkHreyK8cwsw4wzls4BApu6UU2jIAsAMZh9zux/Rtni71dcNfF
   salt_api_password: qFc7FCrLBnWkeLxRWWQeezH5dmuI5vsI
   salt_api_password_hash: $6$hbWiURAY$Sfzk6dzos6j1B8gFDK6WoGNDk0I2Bd2IOarWDGOflgY2sBpUJ4KTq1Uw241ri933/ROHTSuhNcodmDe13i5gS.
   salt_master_address: 172.16.49.66
