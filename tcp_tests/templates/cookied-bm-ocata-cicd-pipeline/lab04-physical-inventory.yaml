@@ -4,6 +4,8 @@ nodes:
       roles:
       - infra_config
       - linux_system_codename_xenial
+      classes:
+      - system.openssh.client.lab
       interfaces:
         ens3:
           role: single_dhcp
