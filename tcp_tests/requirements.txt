@@ -15,7 +15,7 @@ jira
 testrail
 functools32
 python-k8sclient==0.4.0
-salt-pepper
+salt-pepper<=0.5.3
 setuptools<=36.2.0
 netaddr
 mock>=1.2
