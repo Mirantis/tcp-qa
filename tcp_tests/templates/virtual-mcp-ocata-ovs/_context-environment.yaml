@@ -65,6 +65,7 @@ nodes:
       reclass_storage_name: openstack_proxy_node01
       roles:
       - openstack_proxy
+      - features_designate_bind9_proxy
       - linux_system_codename_xenial
       interfaces:
         ens3:
