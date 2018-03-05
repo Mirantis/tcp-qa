@@ -26,6 +26,8 @@ from tcp_tests.fixtures.decapod_fixtures import *  # noqa
 from tcp_tests.fixtures.stacklight_fixtures import *  # noqa
 from tcp_tests.fixtures.k8s_fixtures import *  # noqa
 from tcp_tests.fixtures.drivetrain_fixtures import *  # noqa
+from tcp_tests.fixtures.day1_fixtures import *  # noqa
+
 
 __all__ = sorted([  # sort for documentation
     # common_fixtures
@@ -69,5 +71,8 @@ __all__ = sorted([  # sort for documentation
     'ceph_action',
     # k8s fixtures
     'k8s_actions',
-    'k8s_deployed'
+    'k8s_deployed',
+    'day1_underlay',
+    'day1_cfg_config',
+    'day1_salt_action'
 ])

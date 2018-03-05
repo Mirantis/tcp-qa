@@ -1,0 +1,146 @@
+{% from 'virtual-mcp-pike-dvr-maas/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp-pike-dvr-maas/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'virtual-mcp-pike-dvr-maas/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'virtual-mcp-pike-dvr-maas/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'virtual-mcp-pike-dvr-maas/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'virtual-mcp-pike-dvr-maas/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set CLUSTER_NAME = os_env('CLUSTER_NAME', LAB_CONFIG_NAME) %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_CONFIG_DAY01_SALT_MASTER() }}
+
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
+
+- description: Import ssh key for jenkins user
+  cmd: |
+   mkdir -p /var/lib/jenkins/.ssh && \
+   ssh-keyscan cfg01 > /var/lib/jenkins/.ssh/known_hosts && \
+   chown jenkins /var/lib/jenkins/.ssh/known_hosts
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: Upload maas config
+  upload:
+    local_path: {{ config.day1_cfg_config.templates_dir }}{{ LAB_CONFIG_NAME }}/
+    local_filename: {{ config.day1_cfg_config.cluster_maas_config }}
+    remote_path: /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: Rename maas config
+  cmd: mv -v /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/{{ config.day1_cfg_config.cluster_maas_config }} /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/maas.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: Save machines macs
+  cmd: |
+    echo -n '{{ config.day1_cfg_config.maas_machines_macs | tojson }}' | \
+    python -c 'import sys, yaml, json; yaml.safe_dump(json.load(sys.stdin), sys.stdout, default_flow_style=False)' > /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/maas-machines.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+{#
+{{ SHARED.MACRO_INSTALL_FORMULAS(FORMULA_SERVICES='"fluentd"') }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd"') }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/cluster/' + SHARED.CLUSTER_NAME + '/stacklight/server.yml') }}
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+#}
+
+{{ SHARED.MACRO_CONFIG_DAY01_SALT_MINION() }}
+
+- description: Fix config for Jenkins
+  cmd: |
+    export SALT_MASTER_MINION_ID={{ HOSTNAME_CFG01 }}
+    find /var/lib/jenkins/jenkins.model.JenkinsLocationConfiguration.xml -type f -print0 | xargs -0 sed -i -e 's/10.167.4.15/'$SALT_MASTER_DEPLOY_IP'/g'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Setup pipeline libraries
+  cmd: |
+    export PIPELINE_REPO_URL=https://github.com/Mirantis
+    git clone --mirror $PIPELINE_REPO_URL/mk-pipelines.git /home/repo/mk/mk-pipelines/
+    git clone --mirror $PIPELINE_REPO_URL/pipeline-library.git /home/repo/mcp-ci/pipeline-library/
+    chown -R git:www-data /home/repo/mk/mk-pipelines/*
+    chown -R git:www-data /home/repo/mcp-ci/pipeline-library/*
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+- description: Refresh pillars before generating nodes
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure network, linux, openssh and salt on cfg01 node
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls linux.network,linux,openssh,salt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+#- description: Restart MaaS services before run state (need to prevent maas stucking)
+#  cmd: systemctl restart maas-regiond && systemctl restart maas-rackd
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
+
+- description: Configure MaaS(cluster) on cfg01 node
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls maas.cluster
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure MaaS(region) on cfg01 node
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls maas.region
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Configure reclass on cfg01 node
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls reclass
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure jenkins on cfg01 node
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls jenkins.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# - description: Hack gtw node
+#   cmd: salt '{{ HOSTNAME_GTW01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 10}
+#   skip_fail: false
+
+# - description: Hack cmp01 node
+#   cmd: salt '{{ HOSTNAME_CMP01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 10}
+#   skip_fail: false
+
+# - description: Hack cmp02 node
+#   cmd: salt '{{ HOSTNAME_CMP02 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 10}
+#   skip_fail: false
