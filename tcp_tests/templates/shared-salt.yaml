@@ -660,12 +660,12 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@salt:master' state.sls reclass
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+#- description: Generate inventory for all the nodes to the /srv/salt/reclass/nodes/_generated
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@salt:master' state.sls reclass
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
 {%- if RERUN_SALTMASTER_STATE %}
 - description: Regenerate salt.master states for the newly uploaded/created model
@@ -682,6 +682,17 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar; sleep 5
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Workaround for PROD-14060"
+  cmd: |
+    set -e;
+    # Add tenant and single addresses for computes
+    salt-call reclass.cluster_meta_set tenant_address 10.167.12.105 /srv/salt/reclass/nodes/_generated/cmp01.cookied-bm-mcp-ovs-dpdk.yml
+    salt-call reclass.cluster_meta_set tenant_address 10.167.12.106 /srv/salt/reclass/nodes/_generated/cmp02.cookied-bm-mcp-ovs-dpdk.yml
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Show reclass-salt --top for all generated nodes
