@@ -64,7 +64,7 @@
    - export IRONIC_DHCP_POOL_END={{ os_env('IRONIC_DHCP_POOL_END', '10.0.175.200') }}
    - export DNSMASQ_USE_EXTERNAL_DNS=true
    - ip a a $IRONIC_PXE_INTERFACE_ADDRESS/$IRONIC_DHCP_POOL_NETMASK_PREFIX dev $IRONIC_PXE_INTERFACE_NAME
-   - curl https://raw.githubusercontent.com/dis-xcom/underpillar/master/bootstrap.sh -o ./bootstrap.sh && bash ./bootstrap.sh
+   - curl https://raw.githubusercontent.com/obutenko/temp/master/bootstrap.sh -o ./bootstrap.sh && bash ./bootstrap.sh
 
    # Disable dnsmasq in favour to external DHCP provider
    #- systemctl disable dnsmasq
