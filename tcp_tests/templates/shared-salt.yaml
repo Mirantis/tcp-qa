@@ -149,6 +149,68 @@
   skip_fail: false
 {%- endmacro %}
 
+
+{%- macro MACRO_CONFIG_DAY01_SALT_MASTER() %}
+{######################################}
+
+- description: Remove /etc/update-motd.d/52-info
+  cmd: rm -vf /etc/update-motd.d/52-info
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Set up static interface config
+  cmd: |
+    kill $(pidof /sbin/dhclient) || /bin/true
+    cat << 'EOF' > /etc/network/interfaces
+    # This file describes the network interfaces available on your system
+    # and how to activate them. For more information, see interfaces(5).
+
+    # The loopback network interface
+    auto lo
+    iface lo inet loopback
+
+    # The primary network interface
+    auto ens3
+    iface ens3 inet static
+      address {{ IPV4_NET_ADMIN_PREFIX }}.90
+      netmask 255.255.255.0
+      gateway {{ IPV4_NET_ADMIN_PREFIX }}.1
+    EOF
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install common packages on cfg01
+  cmd: eatmydata apt-get update && apt-get install -y python-pip git curl at tmux byobu iputils-ping traceroute htop tree wget jq ntpdate
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Remove any existing minion keys
+  cmd:  salt-key -y -D || true
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Configure GIT settings and certificates
+  cmd: |
+    set -e;
+    #touch /root/.git_trusted_certs.pem;
+    #for server in github.com; do \
+    #    openssl s_client -showcerts -connect $server:443 </dev/null \
+    #    | openssl x509 -outform PEM \
+    #    >> /root/.git_trusted_certs.pem;
+    #done;
+    #HOME=/root git config --global http.sslCAInfo /root/.git_trusted_certs.pem;
+    HOME=/root git config --global user.email "mcp-integration-qa@example.com";
+    HOME=/root git config --global user.name "MCP Integration QA";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{%- endmacro %}
+
+
 {%- macro MACRO_CLONE_RECLASS_MODELS(IS_CONTRAIL_LAB=false) %}
 {############################################################}
 {# Creates a 'cluster' model from cookiecutter-templates and 'environment' model from uploaded template #}
@@ -223,6 +285,8 @@
     [ -f ${CFG01_INVENTORY_FILE} ] || cat << 'EOF' > ${CFG01_INVENTORY_FILE}
     classes:
     - cluster.{{ CLUSTER_NAME }}.infra.config
+    - cluster.{{ CLUSTER_NAME }}.infra.maas
+    - cluster.{{ CLUSTER_NAME }}.infra.maas-machines
     parameters:
       _param:
         linux_system_codename: xenial
@@ -562,6 +626,66 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+{%- endmacro %}
+
+
+{%- macro MACRO_INSTALL_FORMULAS(FORMULA_SERVICES='') %}
+{#######################################################}
+- description: Configure reclass
+  cmd: |
+    set -e;
+    FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
+    which wget > /dev/null || (apt-get update; apt-get install -y wget);
+    . /etc/lsb-release;  # Get DISTRIB_CODENAME variable
+    # echo "{{ FORMULA_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_salt.list;
+    # wget -O - "{{ FORMULA_GPG }}" | apt-key add -;
+    apt-get clean; apt-get update;
+    [ ! -d /srv/salt/reclass/classes/service ] && mkdir -p /srv/salt/reclass/classes/service;
+    declare -a formula_services=({{ FORMULA_SERVICES }});
+    echo -e "\nInstalling all required salt formulas\n";
+    eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
+    for formula_service in "${formula_services[@]}"; do
+      echo -e "\nLink service metadata for formula ${formula_service} ...\n";
+      [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
+    done;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Show reclass-salt --top for cfg01 node
+  cmd: reclass-salt --top
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Restart salt-master service
+  cmd: systemctl restart salt-master;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_CONFIG_DAY01_SALT_MINION() %}
+{#######################################}
+- description: Configure salt-minion on {{ HOSTNAME_CFG01 }}
+  cmd: |
+    export SALT_MASTER_MINION_ID={{ HOSTNAME_CFG01 }}
+    envsubst < /root/minion.conf > /etc/salt/minion.d/minion.conf
+    service salt-minion restart
+
+    while true; do
+     salt-key | grep "$SALT_MASTER_MINION_ID" && break
+     sleep 5
+    done
+
+    sleep 5
+
+    for i in `salt-key -l accepted | grep -v Accepted | grep -v "$SALT_MASTER_MINION_ID"`; do
+     salt-key -d $i -y
+    done
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
 {%- endmacro %}
 
 

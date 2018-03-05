@@ -1,0 +1,147 @@
+---
+classes:
+- system.linux.system.repo.mcp.apt_mirantis.maas
+- system.maas.region.single
+- service.jenkins.client
+- system.jenkins.client.credential.salt
+- system.jenkins.client.job.deploy.openstack
+- cluster.virtual-mcp-pike-dvr.infra
+parameters:
+  _param:
+    maas_admin_username: mirantis
+    maas_admin_password: r00tme
+    maas_db_password: fRqC7NJrBR0x
+    dns_server01: 8.8.8.8
+    maas_region_port: 5240
+    maas_cluster_region_port: ${_param:maas_region_port}
+    infra_config_deploy_address: ${_param:reclass_config_master}
+    jenkins_git_url: 'git@cfg01:/home/repo'
+    jenkins_gerrit_url: ${_param:jenkins_git_url}
+    salt_api_password: hovno12345!
+    jenkins_git_url: 'git@cfg01:/home/repo'
+    jenkins_gerrit_url: ${_param:jenkins_git_url}
+    jenkins_salt_api_url: "http://${_param:reclass_config_master}:6969"
+    jenkins_pipeline_library_url: git@cfg01:/home/repo/mcp-ci/pipeline-library
+    jenkins_pipelines_branch: master
+  jenkins:
+    client:
+      lib:
+        pipeline-library:
+          url: ${_param:jenkins_pipeline_library_url}
+          branch: ${_param:jenkins_pipelines_branch}
+      master:
+        host: ${_param:reclass_config_master}
+        port: 8081
+        password: r00tme
+  maas:
+    region:
+      commissioning_scripts:
+        00-maas-05-simplify-network-interfaces: /etc/maas/files/commisioning_scripts/00-maas-05-simplify-network-interfaces
+      bind:
+        host: ${_param:reclass_config_master}:${_param:maas_region_port}
+        port: 5240
+      maas_config:
+        main_archive: http://mirror.mirantis.com/${_param:apt_mk_version}/ubuntu/
+        disk_erase_with_secure_erase: false
+      machines:
+        ctl01: # cz7341-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "0c:c4:7a:33:1f:e4"
+            # ip: ${_param:infra_kvm_node01_deploy_address}
+            # subnet: "deploy_network" # create it manually... in UI
+            # gateway: ${_param:deploy_network_gateway}
+          power_parameters:
+            # power_address: "185.8.59.161"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+        ctl02: # #cz7342-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "0c:c4:7a:33:20:fc"
+          #   # ip: ${_param:infra_kvm_node02_deploy_address}
+          power_parameters:
+            # power_address: "185.8.59.162"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+        ctl03: # #cz7343-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+            # mac: "0c:c4:7a:31:fb:b6"
+            # ip: ${_param:infra_kvm_node03_deploy_address}
+          power_parameters:
+            # power_address: "185.8.59.163"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+        gtw01: # #cz7055-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+            # mac: "00:25:90:e3:3b:26"
+            # ip: ${_param:infra_kvm_node06_deploy_address}
+          power_parameters:
+            # power_address: "176.74.222.106"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+        cmp01: # cz7054-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+            # mac: "00:25:90:e3:37:2e"
+          power_parameters:
+            # power_address: "176.74.222.104"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+        cmp02: #cz7056-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "00:25:90:e3:3f:2a"
+          power_parameters:
+            # power_address: "176.74.222.108"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+        dns01: #cz7056-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "00:25:90:e3:3f:2a"
+          power_parameters:
+            # power_address: "176.74.222.108"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+        dns02: #cz7056-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "00:25:90:e3:3f:2a"
+          power_parameters:
+            # power_address: "176.74.222.108"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+        prx01: #cz7056-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "00:25:90:e3:3f:2a"
+          power_parameters:
+            # power_address: "176.74.222.108"
+            power_password: "r00tme"
+            power_type: ipmi
+            power_user: admin
+
+    cluster:
+      region:
+        host: ${_param:reclass_config_master}:${_param:maas_cluster_region_port}
+

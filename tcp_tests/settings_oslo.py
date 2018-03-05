@@ -67,7 +67,13 @@ _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))
 _default_net_mgm = os.environ.get("NET_MGMT", "admin-pool01")
-
+_default_configure_steps = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/cfg01_configure.yaml'.format(
+        settings.LAB_CONFIG_NAME))
+# _default_cluster_maas_config = pkg_resources.resource_filename(
+#     __name__, 'templates/{0}/cluster_infra_maas.yml'.format(
+#         settings.LAB_CONFIG_NAME))
+_default_cluster_maas_config = 'cluster_infra_maas.yml'
 
 hardware_opts = [
     ct.Cfg('manager', ct.String(),
@@ -352,6 +358,38 @@ k8s_opts = [
                    'kubernetes/k8s-conformance:v1.8.13-11')
 ]
 
+day1_cfg_config_opts = [
+    ct.Cfg('configure_steps_path', ct.String(),
+           help="Path to YAML with steps to config cfg01 node",
+           default=_default_configure_steps),
+    ct.Cfg('environment_template_dir', ct.String(),
+           help="Path to directory with Environment template and inventory",
+           default=_default_environment_template_dir),
+    ct.Cfg('templates_dir', ct.String(),
+           help="Path to directory with templates",
+           default=_default_templates_dir),
+    ct.Cfg('cluster_maas_config', ct.String(),
+           help="Path to maas class yaml file for cfg node",
+           default=_default_cluster_maas_config),
+    ct.Cfg('maas_machines_macs', ct.JSONDict(),
+           help="""MAC of machines interfaces for maas config:
+                  'parameters': {
+                    'maas' : {
+                      'region' : {
+                        'machines': {
+                          'ctl01': {
+                            'interface': {
+                              'mac': 'aa:bb:cc:dd:ee:ff'
+                            }
+                          }
+                          '...': {
+                            'interface': {
+                              'mac': 'aa:bb:cc:dd:ee:ff'
+                            }
+                          }
+                  }}}}""", default={}),
+]
+
 _group_opts = [
     ('hardware', hardware_opts),
     ('underlay', underlay_opts),
@@ -374,6 +412,8 @@ _group_opts = [
     ('ceph_deploy', ceph_deploy_opts),
     ('k8s_deploy', k8s_deploy_opts),
     ('k8s', k8s_opts),
+    ('day1_cfg_config', day1_cfg_config_opts),
+    ('day1_underlay', underlay_opts),
 ]
 
 
@@ -471,6 +511,14 @@ def register_opts(config):
                      title="Ceph deploy config ",
                      help=""))
     config.register_opts(group='ceph_deploy', opts=ceph_deploy_opts)
+
+    config.register_group(cfg.OptGroup(name='day1_cfg_config',
+                          title="Day01 config node configuration", help=""))
+    config.register_opts(group='day1_cfg_config', opts=day1_cfg_config_opts)
+
+    config.register_group(cfg.OptGroup(name='day1_underlay',
+                          title="Day01 underlay configuration", help=""))
+    config.register_opts(group='day1_underlay', opts=underlay_opts)
 
     return config
 
