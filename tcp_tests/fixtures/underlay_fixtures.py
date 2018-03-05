@@ -152,7 +152,7 @@ def snapshot(request, hardware):
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.underlay)
 @pytest.fixture(scope="function")
-def underlay(revert_snapshot, config, hardware):
+def underlay(request, revert_snapshot, config, hardware):
     """Fixture that should provide SSH access to underlay objects.
 
     - Starts the 'hardware' environment and creates 'underlay' with required
@@ -168,7 +168,8 @@ def underlay(revert_snapshot, config, hardware):
                                  node names or node IPs.
     """
     # Create Underlay
-    if not config.underlay.ssh:
+
+    def basic_underlay():
         # If config.underlay.ssh wasn't provided from external config, then
         # try to get necessary data from hardware manager (fuel-devops)
 
@@ -188,6 +189,53 @@ def underlay(revert_snapshot, config, hardware):
             config.underlay.lvm = underlay.config_lvm
 
         hardware.create_snapshot(ext.SNAPSHOT.underlay)
+
+        return underlay
+
+    def day1_underlay():
+        hardware.start(
+            underlay_node_roles=['salt_master'],
+            timeout=config.underlay.bootstrap_timeout)
+
+        config.underlay.ssh = hardware.get_ssh_data(
+            roles=config.underlay.roles)
+
+        underlay = underlay_ssh_manager.UnderlaySSHManager(config)
+
+        LOG.info("Generate MACs for MaaS")
+        macs = {
+            n.name.split('.')[0]: {
+                "interface": {
+                    "mac": n.get_interface_by_network_name('admin').mac_address},  # noqa
+                "power_parameters": {
+                    "power_address": "{}:{}".format(
+                        n.get_interface_by_network_name('admin').l2_network_device.address_pool.get_ip('l2_network_device'),  # noqa
+                        n.bmc_port
+                        )}} for n in hardware.slave_nodes}
+
+        config.day1_cfg_config.maas_machines_macs = {
+            "parameters": {
+                "maas": {
+                    "region": {
+                        "machines": macs}}}}
+
+        if not config.underlay.lvm:
+            underlay.enable_lvm(hardware.lvm_storages())
+            config.underlay.lvm = underlay.config_lvm
+
+        for node in hardware.slave_nodes:
+            # For correct comissioning by MaaS nodes should be powered off
+            node.destroy()
+
+        hardware.create_snapshot(ext.SNAPSHOT.underlay)
+
+        return underlay
+
+    if not config.underlay.ssh:
+        if request.node.get_marker('day1_underlay'):
+            underlay = day1_underlay()
+        else:
+            underlay = basic_underlay()
 
     else:
         # 1. hardware environment created and powered on

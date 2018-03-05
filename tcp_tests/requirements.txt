@@ -11,7 +11,7 @@ docker-py
 docker-compose==1.7.1
 urllib3
 junit-xml
-jinja2>=2.1
+jinja2>=2.9
 jira
 testrail<=0.3.8
 functools32

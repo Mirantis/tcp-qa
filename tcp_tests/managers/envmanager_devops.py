@@ -25,12 +25,12 @@ from paramiko.ssh_exception import (
     AuthenticationException,
     BadAuthenticationType)
 
-from tcp_tests.helpers import env_config
-from tcp_tests.helpers import exceptions
-from tcp_tests.helpers import ext
-from tcp_tests import logger
 from tcp_tests import settings
 from tcp_tests import settings_oslo
+from tcp_tests.helpers import env_config
+from tcp_tests.helpers import ext
+from tcp_tests.helpers import exceptions
+from tcp_tests import logger
 
 LOG = logger.logger
 
