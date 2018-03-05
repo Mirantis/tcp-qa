@@ -729,7 +729,7 @@
 
 - description: Configure salt.minion on other nodes
   cmd: salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls salt.minion &&
-    sleep 10
+    sleep 20
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 15}
   skip_fail: false
