@@ -235,7 +235,8 @@ class UnderlaySSHManager(object):
                                    address_pool=address_pool)
         return ssh_data['host']
 
-    def remote(self, node_name=None, host=None, address_pool=None):
+    def remote(self, node_name=None, host=None, address_pool=None,
+               username=None):
         """Get SSHClient by a node name or hostname.
 
            One of the following arguments should be specified:
@@ -248,7 +249,7 @@ class UnderlaySSHManager(object):
         ssh_data = self.__ssh_data(node_name=node_name, host=host,
                                    address_pool=address_pool)
         ssh_auth = ssh_client.SSHAuth(
-            username=ssh_data['login'],
+            username=username or ssh_data['login'],
             password=ssh_data['password'],
             keys=[rsakey.RSAKey(file_obj=StringIO.StringIO(key))
                   for key in ssh_data['keys']])
