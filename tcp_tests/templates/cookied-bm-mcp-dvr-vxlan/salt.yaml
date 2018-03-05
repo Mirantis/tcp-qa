@@ -95,6 +95,12 @@
   retry: {count: 2, delay: 10}
   skip_fail: false
 
+- description: Reboot kvm
+  cmd: salt --timeout=600  "kvm*" system.reboot
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
 - description: Create VMs for control plane
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls salt.control
   node_name: {{ HOSTNAME_CFG01 }}
