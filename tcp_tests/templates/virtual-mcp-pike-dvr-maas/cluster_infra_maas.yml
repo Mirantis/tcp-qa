@@ -1,0 +1,139 @@
+---
+classes:
+- system.linux.system.repo.mcp.apt_mirantis.maas
+- system.maas.region.single
+- cluster.virtual-mcp-pike-dvr.infra
+parameters:
+  _param:
+    maas_admin_username: mirantis
+    maas_admin_password: r00tme
+    maas_db_password: fRqC7NJrBR0x
+    dns_server01: 8.8.8.8
+    maas_region_port: 5240
+    maas_cluster_region_port: ${_param:maas_region_port}
+    infra_config_deploy_address: ${_param:reclass_config_master}
+  maas:
+    region:
+      commissioning_scripts:
+        00-maas-05-simplify-network-interfaces: /etc/maas/files/commisioning_scripts/00-maas-05-simplify-network-interfaces
+      bind:
+        host: ${_param:reclass_config_master}:${_param:maas_region_port}
+        port: 5240
+      maas_config:
+        main_archive: http://mirror.mirantis.com/testing/ubuntu/
+        disk_erase_with_secure_erase: false
+      machines:
+        ctl01: # cz7341-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "0c:c4:7a:33:1f:e4"
+            # ip: ${_param:infra_kvm_node01_deploy_address}
+            # subnet: "deploy_network" # create it manually... in UI
+            # gateway: ${_param:deploy_network_gateway}
+          power_parameters:
+            # power_address: "185.8.59.161"
+            # power_password: "GFCdw378ksD"
+            power_type: ipmi
+            power_user: engineer
+        ctl02: # #cz7342-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "0c:c4:7a:33:20:fc"
+          #   # ip: ${_param:infra_kvm_node02_deploy_address}
+          power_parameters:
+            # power_address: "185.8.59.162"
+            # power_password: "GFCdw378ksD"
+            power_type: ipmi
+            power_user: engineer
+        ctl03: # #cz7343-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+            # mac: "0c:c4:7a:31:fb:b6"
+            # ip: ${_param:infra_kvm_node03_deploy_address}
+          power_parameters:
+            # power_address: "185.8.59.163"
+            # power_password: "GFCdw378ksD"
+            power_type: ipmi
+            power_user: engineer
+        mon01: # #cz7345-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "0c:c4:7a:31:f0:12"
+            # ip: ${_param:infra_kvm_node04_deploy_address}
+          power_parameters:
+            # power_address: "185.8.59.17"
+            # power_password: "GFCdw378ksD"
+            power_type: ipmi
+            power_user: engineer
+        mon02: # cz7346-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "0c:c4:7a:31:ef:bc"
+            # ip: ${_param:infra_kvm_node05_deploy_address}
+          power_parameters:
+            # power_address: "185.8.59.18"
+            # power_password: "GFCdw378ksD"
+            power_type: ipmi
+            power_user: engineer
+        mon03: #cz7347-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "0c:c4:7a:31:ef:aa"
+            # ip: ${_param:infra_kvm_node06_deploy_address}
+          power_parameters:
+            # power_address: "185.8.59.19"
+            # power_password: "GFCdw378ksD"
+            power_type: ipmi
+            power_user: engineer
+        gtw01: # #cz7055-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+            # mac: "00:25:90:e3:3b:26"
+            # ip: ${_param:infra_kvm_node06_deploy_address}
+          power_parameters:
+            # power_address: "176.74.222.106"
+            # power_password: "2OPMdwhj#lmfGD"
+            power_type: ipmi
+            power_user: engineer
+        gtw02: # cz7057-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+            # mac: "00:25:90:e3:3b:98"
+          power_parameters:
+            # power_address: "176.74.222.110"
+            # power_password: "2OPMdwhj#lmfGD"
+            power_type: ipmi
+            power_user: engineer
+        cmp001: # cz7054-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+            # mac: "00:25:90:e3:37:2e"
+          power_parameters:
+            # power_address: "176.74.222.104"
+            # power_password: "2OPMdwhj#lmfGD"
+            power_type: ipmi
+            power_user: engineer
+        cmp002: #cz7056-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          interface:
+          #   mac: "00:25:90:e3:3f:2a"
+          power_parameters:
+            # power_address: "176.74.222.108"
+            # power_password: "2OPMdwhj#lmfGD"
+            power_type: ipmi
+            power_user: engineer
+
+    cluster:
+      region:
+        host: ${_param:reclass_config_master}:${_param:maas_cluster_region_port}
+

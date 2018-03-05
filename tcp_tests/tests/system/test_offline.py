@@ -11,7 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-# import pytest
+import pytest
 
 from tcp_tests import logger
 from tcp_tests.managers.jenkins.client import JenkinsClient
@@ -21,6 +21,23 @@ LOG = logger.logger
 
 class TestOfflineDeployment(object):
     """docstring for TestOfflineDeployment"""
+
+    # def test_maas_provision(self, show_step, underlay, day1_cfg_config):
+    @pytest.mark.day1_underlay
+    def test_maas_provision(self, show_step, day1_cfg_config):
+        """Test for deploying an mcp dvr environment and check it
+
+        Scenario:
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
+        """
+
+        show_step(1)
+        show_step(2)
+        show_step(3)
+
+        LOG.info("*************** DONE **************")
 
     def test_deploy_day1(self, show_step, underlay, common_services_deployed,
                          salt_deployed):

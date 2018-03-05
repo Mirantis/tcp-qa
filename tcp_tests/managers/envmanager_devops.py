@@ -20,12 +20,12 @@ from devops import models
 from django import db
 from oslo_config import cfg
 
+from tcp_tests.helpers import env_config
+from tcp_tests.helpers import exceptions
+from tcp_tests.helpers import ext
+from tcp_tests import logger
 from tcp_tests import settings
 from tcp_tests import settings_oslo
-from tcp_tests.helpers import env_config
-from tcp_tests.helpers import ext
-from tcp_tests.helpers import exceptions
-from tcp_tests import logger
 
 LOG = logger.logger
 
@@ -271,8 +271,7 @@ class EnvironmentManager(object):
         """
         if self._devops_config.config is None:
             raise exceptions.DevopsConfigPathIsNotSet()
-        settings = self._devops_config
-        env_name = settings['env_name']
+        env_name = self._devops_config['env_name']
         LOG.debug(
             'Preparing to create environment named "{0}"'.format(env_name)
         )
@@ -281,7 +280,7 @@ class EnvironmentManager(object):
             raise exceptions.EnvironmentNameIsNotSet()
         try:
             self.__env = models.Environment.create_environment(
-                settings.config
+                self._devops_config.config
             )
         except db.IntegrityError:
             LOG.error(

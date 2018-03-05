@@ -1,0 +1,395 @@
+{% from 'virtual-mcp-pike-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp-pike-dvr/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'virtual-mcp-pike-dvr/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'virtual-mcp-pike-dvr/underlay.yaml' import HOSTNAME_CTL03 with context %}
+{% from 'virtual-mcp-pike-dvr/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
+{% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', '') %}
+
+# Install OpenStack control services
+
+{%- if OVERRIDE_POLICY != '' %}
+- description: Upload policy override
+  upload:
+    local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
+    local_filename: overrides-policy.yml
+    remote_path: /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/
+  node_name: {{ HOSTNAME_CFG01 }}
+
+- description: Create custom cluster control class
+  cmd: echo -e "classes:\n- cluster.{{ LAB_CONFIG_NAME }}.openstack.control_orig\n$(cat /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml)" > /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+
+- description: Rename control classes
+  cmd: mv /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control_orig.yml &&
+    ln -s /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+{%- endif %}
+
+- description: Install glance on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@glance:server' state.sls glance -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install keystone service (note that different fernet keys are created on different nodes)
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' state.sls keystone.server -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 15}
+  skip_fail: false
+
+- description: Restart apache due to PROD-10477
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl restart apache2"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Check apache status to PROD-10477
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl status apache2"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Mount glusterfs.client volumes (resuires created 'keystone' and 'glusterfs' system users)
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glance:server' state.sls glusterfs.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update fernet keys for keystone server on the mounted glusterfs volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' state.sls keystone.server -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Populate keystone services/tenants/admins
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:client' state.sls keystone.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Check keystone service-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack service list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check glance image-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; glance image-list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+- description: Install nova on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nova:controller' state.sls nova -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Check nova service-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; nova --debug service-list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+
+- description: Install cinder
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:controller' state.sls cinder -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check cinder list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; cinder list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+- description: Install neutron service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@neutron:server' state.sls neutron -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install neutron on gtw node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@neutron:gateway' state.sls neutron
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# isntall designate
+- description: Install powerdns
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@powerdns:server' state.sls powerdns.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install designate
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@designate:server' state.sls designate -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
+- description: Check neutron agent-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; neutron agent-list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install heat service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@heat:server' state.sls heat -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check heat service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack orchestration resource type list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
+
+- description: Deploy horizon dashboard
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@horizon:server' state.sls horizon
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Deploy nginx proxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls nginx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+
+# Install compute node
+
+- description: Apply formulas for compute node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Re-apply(as in doc) formulas for compute node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check IP on computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
+    'ip a'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
+
+
+  # Upload cirros image
+
+- description: Upload cirros image on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Register image in glance
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create net04_external
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create subnet_external
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create net04
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron net-create net04'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create subnet_net04
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron subnet-create net04 {{ IPV4_NET_TENANT_PREFIX }}.0/24 --name net04__subnet --allocation-pool start={{ IPV4_NET_TENANT_PREFIX }}.120,end={{ IPV4_NET_TENANT_PREFIX }}.240'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create router
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-create net04_router01'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Set geteway
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Add interface
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+#- description:  Allow all tcp
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+#    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description:  Allow all icmp
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+#    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+# Configure cinder-volume salt-call PROD-13167
+- description: Set disks 01
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Set disks 02
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Set disks 03
+  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+  node_name: {{ HOSTNAME_CTL03 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create partitions 01
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create partitions 02
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create partitions 03
+  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+  node_name: {{ HOSTNAME_CTL03 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: create volume_group
+  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Install cinder-volume
+  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Install crudini
+  cmd: salt "ctl*" cmd.run 'apt-get install crudini -y'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Temporary WR set enabled backends value 01
+  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Temporary WR set enabled backends value 02
+  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+  node_name: {{ HOSTNAME_CTL02 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Temporary WR set enabled backends value 03
+  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+  node_name: {{ HOSTNAME_CTL03 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Install docker.io on gtw
+  cmd: salt-call cmd.run 'apt-get install docker.io -y'
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Restart cinder volume
+  cmd: |
+    salt -C 'I@cinder:controller' service.restart cinder-volume;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: create rc file on cfg
+  cmd: scp ctl01:/root/keystonercv3 /root
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Copy rc file
+  cmd: scp /root/keystonercv3 gtw01:/root
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
