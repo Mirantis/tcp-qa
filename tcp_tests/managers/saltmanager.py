@@ -19,8 +19,8 @@ from collections import defaultdict
 from datetime import datetime
 from pepper import libpepper
 from tcp_tests.helpers import utils
-from tcp_tests import settings
 from tcp_tests import logger
+from tcp_tests import settings
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 
 LOG = logger.logger
@@ -224,7 +224,7 @@ class SaltManager(ExecuteCommandsMixin):
         self.__api = None
         self.run_state(
             tgt,
-            'cmd.run', 'service ntp stop; ntpd -gq; service ntp start')
+            'cmd.run', 'service ntp stop; if [ -x /usr/sbin/ntpdate ]; then ntpdate -s ntp.ubuntu.com; else ntpd -gq ; fi; service ntp start')  # noqa
         new_time_res = self.run_state(tgt, 'cmd.run', 'date')
         for node_name, time in sorted(new_time_res[0]['return'][0].items()):
             LOG.info("{0}: {1}".format(node_name, time))

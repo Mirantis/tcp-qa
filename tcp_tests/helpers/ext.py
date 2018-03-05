@@ -53,6 +53,8 @@ SNAPSHOT = enum(
     'k8s_deployed',
     'decapod_deployed',
     'ceph_deployed',
+    'day1_underlay',
+    'cfg_configured',
 )
 
 
