@@ -1,0 +1,106 @@
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-baremetal-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "fluentd"') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/gateway.yml;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+- description: "Workaround for PROD-14060"
+  cmd: |
+    set -e;
+    # Add tenant and single addresses for computes
+    salt-call reclass.cluster_meta_set tenant_address 10.167.12.105 /srv/salt/reclass/nodes/_generated/cmp01.cookied-bm-mcp-ovs-dpdk.local.yml
+    salt-call reclass.cluster_meta_set tenant_address 10.167.12.106 /srv/salt/reclass/nodes/_generated/cmp02.cookied-bm-mcp-ovs-dpdk.local.yml
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+########################################
+# Spin up Control Plane VMs on KVM nodes
+########################################
+
+- description: Execute 'libvirt' states to create necessary libvirt networks
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+#- description: Reboot kvm
+#  cmd: salt --timeout=600  "kvm*" system.reboot
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: true
+
+- description: Create VMs for control plane
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls salt.control
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: '*Workaround* for waiting the control-plane VMs in the salt-key (instead of sleep)'
+  cmd: |
+    salt-key -l acc| sort > /tmp/current_keys.txt &&
+    salt 'kvm*' cmd.run 'virsh list --name' | grep -v 'kvm'|sort|xargs -I {} fgrep {} /tmp/current_keys.txt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 20, delay: 30}
+  skip_fail: false
+
+#########################################
+# Configure all running salt minion nodes
+#########################################
+
+- description: Refresh pillars on all minions
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show  reclass-salt --top for generated nodes
+  cmd: reclass-salt --top -u /srv/salt/reclass/nodes/_generated/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+#- description: Enable hugepages on cmp nodes
+#  cmd: salt 'cmp*' cmd.run "apt-get install -y hugepages; echo 2048 > /proc/sys/vm/nr_hugepages";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
