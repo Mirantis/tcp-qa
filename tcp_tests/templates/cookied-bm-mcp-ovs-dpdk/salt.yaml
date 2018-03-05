@@ -1,0 +1,167 @@
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-bm-mcp-ovs-dpdk/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-baremetal-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "fluentd"') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+- description: "WR for changing image to proposed"
+  cmd: |
+    set -e;
+    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    . /root/venv-reclass-tools/bin/activate;
+    pip install git+https://github.com/dis-xcom/reclass-tools;
+    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ovs-dpdk/infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ovs-dpdk/infra/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+- description: "Workaround for PROD-14060"
+  cmd: |
+    set -e;
+    # Add tenant and single addresses for computes
+    salt-call reclass.cluster_meta_set tenant_address 10.167.12.105 /srv/salt/reclass/nodes/_generated/cmp01.cookied-bm-mcp-ovs-dpdk.local.yml
+    salt-call reclass.cluster_meta_set tenant_address 10.167.12.106 /srv/salt/reclass/nodes/_generated/cmp02.cookied-bm-mcp-ovs-dpdk.local.yml
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Temporary workaround for removing cinder-volume from CTL nodes
+  cmd: |
+    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
+    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: WR for mounting 1G hugepages before linux.state
+  cmd: |
+    salt 'cmp*' state.sls linux.system.hugepages;
+    salt 'cmp*' cmd.run "mount -o mode=775,pagesize=1G -t hugetlbfs Hugetlbfs-kvm /mnt/hugepages_1G";
+    salt 'cmp*' cmd.run "echo 16 | sudo  tee  /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+- description: Temporary WR for PROD-###
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'cmp*' cmd.run "update-alternatives --remove ovs-vswitchd /usr/lib/openvswitch-switch/ovs-vswitchd";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'cmp*' cmd.run "service openvswitch-switch restart"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+########################################
+# Spin up Control Plane VMs on KVM nodes
+########################################
+
+- description: Execute 'libvirt' states to create necessary libvirt networks
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/gateway.yml;
+    salt '*' saltutil.refresh_pillar;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Create VMs for control plane
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls salt.control
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: '*Workaround* for waiting the control-plane VMs in the salt-key (instead of sleep)'
+  cmd: |
+    salt-key -l acc| sort > /tmp/current_keys.txt &&
+    salt 'kvm*' cmd.run 'virsh list --name' | grep -v 'kvm'|sort|xargs -I {} fgrep {} /tmp/current_keys.txt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 20, delay: 30}
+  skip_fail: false
+
+#########################################
+# Configure all running salt minion nodes
+#########################################
+
+- description: Refresh pillars on all minions
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show  reclass-salt --top for generated nodes
+  cmd: reclass-salt --top -u /srv/salt/reclass/nodes/_generated/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+- description: Add cpm nodes to /etc/hosts
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo '10.167.11.105 cmp01.cookied-bm-mcp-ovs-dpdk.local cmp01' >> /etc/hosts";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo '10.167.11.106 cmp02.cookied-bm-mcp-ovs-dpdk.local cmp02' >> /etc/hosts";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Temporary WR for PROD-###
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'cmp*' cmd.run "echo 7 > /sys/class/net/enp5s0f1/device/sriov_numvfs"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Magic/ Fix it and Delete
+  upload:
+    local_path: /home/jenkins/workspace/workspace/cookied-bm-mcp-ovs-dpdk/tcp_tests
+    local_filename: id_rsa
+    remote_path: /root/.ssh
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: "Control network access from cfg01 node using sshuttle via kvm01"
+  cmd: |
+    set -e;
+    set -x;
+    KVM01_DEPLOY_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address);
+    apt-get install -y sshuttle;
+    sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D >/dev/null;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: True
