@@ -2,29 +2,6 @@
 
 # Install OSS: Operational Support System Tools
 
-# Keepalived
-#-----------
-- description: Install keepalived
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster:enabled:True' state.sls keepalived
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Install haproxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@haproxy:proxy:enabled:True' state.sls haproxy
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Check the CICD VIP
-  cmd: |
-    CICD_CONTROL_ADDRESS=`salt --out=newline_values_only -C 'I@haproxy:proxy and I@jenkins:client' pillar.get _param:cluster_vip_address`;
-    echo "_param:cluster_vip_address (vip): ${CICD_CONTROL_ADDRESS}";
-    salt --hard-crash --state-output=mixed --state-verbose=False -C "I@keepalived:cluster:instance:*:address:${CICD_CONTROL_ADDRESS}" cmd.run "ip a | grep ${CICD_CONTROL_ADDRESS}" | grep -B1 ${CICD_CONTROL_ADDRESS}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 # Glusterfs
 #-----------
 
@@ -106,6 +83,29 @@
 
 - description: Show Docker Swarm nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' cmd.run 'docker node ls'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# Keepalived
+#-----------
+- description: Install keepalived
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster:enabled:True' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install haproxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@haproxy:proxy:enabled:True' state.sls haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Check the CICD VIP
+  cmd: |
+    CICD_CONTROL_ADDRESS=`salt --out=newline_values_only -C 'I@haproxy:proxy and I@jenkins:client' pillar.get _param:cluster_vip_address`;
+    echo "_param:cluster_vip_address (vip): ${CICD_CONTROL_ADDRESS}";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C "I@keepalived:cluster:instance:*:address:${CICD_CONTROL_ADDRESS}" cmd.run "ip a | grep ${CICD_CONTROL_ADDRESS}" | grep -B1 ${CICD_CONTROL_ADDRESS}
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false

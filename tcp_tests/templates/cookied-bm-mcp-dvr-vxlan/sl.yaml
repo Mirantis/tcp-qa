@@ -1,22 +1,6 @@
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install docker swarm.
-- description: Install keepalived on mon nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'mon*' state.sls keepalived
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Check the VIP on StackLight mon nodes
-  cmd: |
-    SL_VIP=$(salt --out=newline_values_only "mon01*" pillar.get _param:cluster_vip_address);
-    echo "_param:cluster_vip_address (vip): ${SL_VIP}";
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'mon*' cmd.run "ip a | grep ${SL_VIP}" | grep -B1 ${SL_VIP}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Configure docker service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls docker.host
   node_name: {{ HOSTNAME_CFG01 }}
@@ -63,6 +47,22 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' cmd.run 'docker node ls'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install keepalived on mon nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'mon*' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Check the VIP on StackLight mon nodes
+  cmd: |
+    SL_VIP=$(salt --out=newline_values_only "mon01*" pillar.get _param:cluster_vip_address);
+    echo "_param:cluster_vip_address (vip): ${SL_VIP}";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'mon*' cmd.run "ip a | grep ${SL_VIP}" | grep -B1 ${SL_VIP}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 # Install slv2 infra
