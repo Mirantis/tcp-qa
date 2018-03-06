@@ -77,7 +77,8 @@
    {%- endif %}
 
    # Enable SNAT to allow internet access for deploying nodes using ironic node as a gateway
-   - iptables -t nat -A POSTROUTING -s {{ os_env('IRONIC_DHCP_POOL_START', '10.0.175.100') }}/{{ os_env('IRONIC_DHCP_POOL_NETMASK_PREFIX', '24') }} ! -d {{ os_env('IRONIC_DHCP_POOL_START', '10.0.175.100') }}/{{ os_env('IRONIC_DHCP_POOL_NETMASK_PREFIX', '24') }} -j MASQUERADE
+   - iptables -t nat -I POSTROUTING -s {{ os_env('IRONIC_DHCP_POOL_START', '10.0.175.100') }}/{{ os_env('IRONIC_DHCP_POOL_NETMASK_PREFIX', '24') }} ! -d {{ os_env('IRONIC_DHCP_POOL_START', '10.0.175.100') }}/{{ os_env('IRONIC_DHCP_POOL_NETMASK_PREFIX', '24') }} -j MASQUERADE
+   - iptables -I FORWARD -j ACCEPT
 
    - echo "Building ironic agent image (stable/newton) ..."
    - apt-get install -y docker.io gzip uuid-runtime cpio findutils grep gnupg make
