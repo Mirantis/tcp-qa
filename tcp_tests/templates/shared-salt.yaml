@@ -735,9 +735,9 @@
   skip_fail: false
 
 - description: Wait for salt-minions wake up after restart
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' test.ping
+  cmd: salt --timeout=30 --hard-crash --state-output=mixed --state-verbose=False '*' test.ping
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay 20}
+  retry: {count: 25, delay: 30}
   skip_fail: false
 
 - description: Execute linux.network.host one more time after salt.minion to apply dynamically registered hosts on the cluster nodes
