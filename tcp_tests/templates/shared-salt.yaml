@@ -92,7 +92,9 @@
     # Install salt-master and reclass
     eatmydata apt-get install -y --allow-unauthenticated reclass salt-master
     # Install common packages
-    eatmydata apt-get install -y python-pip git curl at tmux byobu iputils-ping traceroute htop tree mc
+    eatmydata apt-get install -y python-pip git curl at tmux byobu iputils-ping traceroute htop tree mc atop
+    sed -i 's/INTERVAL=600/INTERVAL=30/g' /etc/default/atop;
+    service atop restart;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -521,7 +523,9 @@
     # Install salt-minion
     eatmydata apt-get install -y salt-minion;
     # Install common packages
-    eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
+    eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc atop;
+    sed -i 's/INTERVAL=600/INTERVAL=30/g' /etc/default/atop;
+    service atop restart;
 
     # Restart salt-minion if it was already installed
     service salt-minion restart
