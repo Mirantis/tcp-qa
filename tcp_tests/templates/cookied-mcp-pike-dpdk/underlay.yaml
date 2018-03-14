@@ -1,9 +1,9 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
-{% import 'virtual-mcp-pike-ovs/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
-{% import 'virtual-mcp-pike-ovs/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
-{% import 'virtual-mcp-pike-ovs/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+{% import 'cookied-mcp-pike-dpdk/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'cookied-mcp-pike-dpdk/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'cookied-mcp-pike-dpdk/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
 
 ---
 aliases:
@@ -12,12 +12,20 @@ aliases:
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
 
-{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'virtual-mcp-pike-ovs') %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-mcp-pike-dpdk') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_DBS = os_env('HOSTNAME_DBS', 'dbs.' + DOMAIN_NAME) %}
+{% set HOSTNAME_DBS01 = os_env('HOSTNAME_DBS01', 'dbs01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_DBS02 = os_env('HOSTNAME_DBS02', 'dbs02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_DBS03 = os_env('HOSTNAME_DBS03', 'dbs03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MSG = os_env('HOSTNAME_MSG', 'msg.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MSG01 = os_env('HOSTNAME_MSG01', 'msg01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MSG02 = os_env('HOSTNAME_MSG02', 'msg02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MSG03 = os_env('HOSTNAME_MSG03', 'msg03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
@@ -25,7 +33,7 @@ aliases:
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'virtual-mcp-pike-ovs_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ os_env('ENV_NAME', 'cookied-mcp-pike-dpdk_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
 
     address_pools:
       private-pool01:
@@ -38,6 +46,14 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
+            default_{{ HOSTNAME_DBS }}: +50
+            default_{{ HOSTNAME_DBS01 }}: +51
+            default_{{ HOSTNAME_DBS02 }}: +52
+            default_{{ HOSTNAME_DBS03 }}: +53
+            default_{{ HOSTNAME_MSG }}: +40
+            default_{{ HOSTNAME_MSG01 }}: +41
+            default_{{ HOSTNAME_MSG02 }}: +42
+            default_{{ HOSTNAME_MSG03 }}: +43
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
@@ -55,6 +71,14 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
+            default_{{ HOSTNAME_DBS }}: +50
+            default_{{ HOSTNAME_DBS01 }}: +51
+            default_{{ HOSTNAME_DBS02 }}: +52
+            default_{{ HOSTNAME_DBS03 }}: +53
+            default_{{ HOSTNAME_MSG }}: +40
+            default_{{ HOSTNAME_MSG01 }}: +41
+            default_{{ HOSTNAME_MSG02 }}: +42
+            default_{{ HOSTNAME_MSG03 }}: +43
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
@@ -72,6 +96,14 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
+            default_{{ HOSTNAME_DBS }}: +50
+            default_{{ HOSTNAME_DBS01 }}: +51
+            default_{{ HOSTNAME_DBS02 }}: +52
+            default_{{ HOSTNAME_DBS03 }}: +53
+            default_{{ HOSTNAME_MSG }}: +40
+            default_{{ HOSTNAME_MSG01 }}: +41
+            default_{{ HOSTNAME_MSG02 }}: +42
+            default_{{ HOSTNAME_MSG03 }}: +43
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
@@ -89,6 +121,14 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
+            default_{{ HOSTNAME_DBS }}: +50
+            default_{{ HOSTNAME_DBS01 }}: +51
+            default_{{ HOSTNAME_DBS02 }}: +52
+            default_{{ HOSTNAME_DBS03 }}: +53
+            default_{{ HOSTNAME_MSG }}: +40
+            default_{{ HOSTNAME_MSG01 }}: +41
+            default_{{ HOSTNAME_MSG02 }}: +42
+            default_{{ HOSTNAME_MSG03 }}: +43
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
@@ -105,7 +145,8 @@ template:
             connection_string: !os_env CONNECTION_STRING, qemu:///system
             storage_pool_name: !os_env STORAGE_POOL_NAME, default
             stp: False
-            hpet: False
+            hpet: True
+            use_hugepages: True
             enable_acpi: true
             use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
             use_hugepages: !os_env DRIVER_USE_HUGEPAGES, false
@@ -144,11 +185,9 @@ template:
          - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
            source_image: !os_env IMAGE_PATH1604  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
            format: qcow2
+
          - name: cfg01_day01_image               # Pre-configured day01 image
            source_image: {{ os_env('IMAGE_PATH_CFG01_DAY01', os_env('IMAGE_PATH1604')) }} # http://images.mirantis.com/cfg01-day01.qcow2 or fallback to IMAGE_PATH1604
-           format: qcow2
-         - name: mcp_ubuntu_1604_image           # Pre-configured image for control plane
-           source_image: !os_env MCP_IMAGE_PATH1604
            format: qcow2
 
         nodes:
@@ -202,7 +241,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: mcp_ubuntu_1604_image
+                  backing_store: cloudimage1604
                   format: qcow2
                 - name: cinder
                   capacity: 50
@@ -243,7 +282,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: mcp_ubuntu_1604_image
+                  backing_store: cloudimage1604
                   format: qcow2
                 - name: cinder
                   capacity: 50
@@ -272,10 +311,166 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: mcp_ubuntu_1604_image
+                  backing_store: cloudimage1604
                   format: qcow2
                 - name: cinder
                   capacity: 50
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_DBS01 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_DBS02 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_DBS03 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_MSG01 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_MSG02 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_MSG03 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
@@ -293,7 +488,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -301,7 +496,7 @@ template:
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: mcp_ubuntu_1604_image
+                  backing_store: cloudimage1604
                   format: qcow2
                 - name: cinder
                   capacity: 50
@@ -318,11 +513,17 @@ template:
               interfaces: *interfaces
               network_config: *network_config
 
+
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 3
-              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              vcpu: !os_env SLAVE_NODE_CPU, 12
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              numa:
+              - cpus: 0,1,2,3,4,5
+                memory: 4096
+              - cpus: 6,7,8,9,10,11
+                memory: 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -372,8 +573,13 @@ template:
           - name: {{ HOSTNAME_CMP02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 3
-              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              vcpu: !os_env SLAVE_NODE_CPU, 12
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              numa:
+              - cpus: 0,1,2,3,4,5
+                memory: 4096
+              - cpus: 6,7,8,9,10,11
+                memory: 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
