@@ -49,7 +49,7 @@ class TestMcpInstallOvsPike(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.pike_ovs
+    @pytest.mark.pike_ovs_sl
     def test_mcp_pike_ovs_sl_install(self, underlay, config,
                                      openstack_deployed,
                                      sl_deployed):
@@ -107,7 +107,7 @@ class TestMcpInstallOvsPike(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.pike_ovs_dvr
+    @pytest.mark.pike_ovs_dvr_sl
     def test_mcp_pike_dvr_sl_install(self, underlay, config,
                                      openstack_deployed,
                                      sl_deployed):
@@ -160,3 +160,73 @@ class TestMcpInstallOvsPike(object):
             openstack_actions.run_tempest(pattern=settings.PATTERN)
             openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
+
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    @pytest.mark.pike_cookied_ovs_sl
+    def test_mcp_pike_cookied_ovs_install(self, underlay,
+                                          openstack_deployed,
+                                          openstack_actions,
+                                          sl_deployed):
+        """Test for deploying an mcp environment and check it
+        Scenario:
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
+        4. Run tempest
+
+        """
+        openstack_actions._salt.local(
+                tgt='*', fun='cmd.run',
+                args='service ntp stop; ntpd -gq; service ntp start')
+
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.download_tempest_report()
+        LOG.info("*************** DONE **************")
+
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    @pytest.mark.pike_cookied_ovs_dvr_sl
+    def test_mcp_pike_cookied_dvr_install(self,
+                                          underlay,
+                                          openstack_deployed,
+                                          openstack_actions,
+                                          sl_deployed):
+        """Test for deploying an mcp environment and check it
+        Scenario:
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
+
+        """
+        openstack_actions._salt.local(
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
+
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.download_tempest_report()
+        LOG.info("*************** DONE **************")
+
+
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    def test_mcp_pike_cookied_dpdk_install(self, underlay, openstack_deployed,
+                                           show_step, openstack_actions):
+        """Test for deploying an mcp dpdk environment and check it
+        Scenario:
+        1. Prepare salt on hosts
+        2. Setup controller nodes
+        3. Setup compute nodes
+        """
+        LOG.info("*************** DONE **************")
+        openstack_actions._salt.local(
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
+
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.download_tempest_report()
+        LOG.info("*************** DONE **************")
+
