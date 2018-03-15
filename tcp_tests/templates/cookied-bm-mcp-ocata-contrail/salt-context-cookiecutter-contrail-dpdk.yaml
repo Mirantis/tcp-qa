@@ -112,10 +112,10 @@ default_context:
   openstack_proxy_node02_hostname: prx02
   openstack_version: ocata
   oss_enabled: 'False'
-  oss_notification_app_id: '24'
-  oss_notification_sender_password: password
-  oss_notification_smtp_port: '587'
-  oss_notification_webhook_login_id: '13'
+  oss_webhook_app_id: '24'
+  oss_pushkin_email_sender_password: password
+  oss_pushkin_smtp_port: '587'
+  oss_webhook_login_id: '13'
   platform: openstack_enabled
   public_host: ${_param:openstack_proxy_address}
   publication_method: email

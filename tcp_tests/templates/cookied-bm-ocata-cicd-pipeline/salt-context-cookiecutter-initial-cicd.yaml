@@ -159,8 +159,8 @@ default_context:
   oss_node01_address: ${_param:stacklight_monitor_node01_address}
   oss_node02_address: ${_param:stacklight_monitor_node02_address}
   oss_node03_address: ${_param:stacklight_monitor_node03_address}
-  oss_notification_email_from: sgudz@mirantis.com
-  oss_notification_email_recipients: sgudz@mirantis.com
+  oss_webhook_from: sgudz@mirantis.com
+  oss_webhook_recipients: sgudz@mirantis.com
   oss_openstack_auth_url: http://172.17.16.190:5000/v3
   oss_openstack_cert: '      -----BEGIN CERTIFICATE----- MIIE0DCCA7igAwIBAgIBBzANBgkqhkiG9w0BAQsFADCBgzELMAkGA1UEBhMCVVMx
     EDAOBgNVBAgTB0FyaXpvbmExEzARBgNVBAcTClNjb3R0c2RhbGUxGjAYBgNVBAoT AAGjggEaMIIBFjAPBgNVHRMBAf8EBTADAQH/MA4GA1UdDwEB/wQEAwIBBjAdBgNV

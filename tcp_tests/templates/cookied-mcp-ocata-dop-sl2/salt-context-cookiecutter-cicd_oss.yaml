@@ -261,15 +261,14 @@ default_context:
   oss_runbook_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGBE7Iz5GcmIOFL+p9drLENsaYyogZaxY+dzVF0xwn3GUEzhpuPiI0HvCaPX2gxEFcq+u8yxueE4nVnW1YfWPCbetnvOImUNSjUyz/AA9dXrv5rK4sJKnokZPNrGj/hhN/NS++cIm88q4h/4GPETr9HN3OunpvgVi685+TE3+krgd+utHAmPJAIJ5casNyre8q8Fpn/X0w3km2usJHHgvjZQXLWQCQ0IJGKv5iwr62IMzdN+iv3k81d0zJ4rMwRzznwP1fEr5TI0WMas7aFmbp+ZGOBYy42doadWi2ZPXPWkH3V3fmrufrR3dDspGfqn7FK2vAHusH34myLcvqr5UR
 
   # Experimental notification parameters
-  oss_notification_email_recipients: 'ddmitriev@mirantis.com'
-  oss_notification_saleforce_username: 'sfdc-devops-portal-test-customer-user@mirantis.com'
-  oss_notification_smtp_host: '127.0.0.1'
-  oss_notification_smtp_port: '25'
-  oss_notification_email_from: 'integration-ci@mirantis.com'
-  oss_notification_sender_password: 'integration-password'
+  oss_pushkin_smtp_host: '127.0.0.1'
+  oss_pushkin_smtp_port: '25'
+  oss_pushkin_email_sender_password: 'integration-password'
+  oss_webhook_from: 'integration-ci@mirantis.com'
+  oss_webhook_recipients: 'ddmitriev@mirantis.com'
+  oss_webhook_app_id: '24'
+  oss_webhook_login_id: '13'
 
-  oss_notification_webhook_login_id: '13'
-  oss_notification_webhook_app_id: '24'
   oss_cis_enabled: 'True'
   oss_cis_jobs_repository: https://github.com/Mirantis/rundeck-cis-jobs.git
   oss_cis_jobs_repository_branch: master
