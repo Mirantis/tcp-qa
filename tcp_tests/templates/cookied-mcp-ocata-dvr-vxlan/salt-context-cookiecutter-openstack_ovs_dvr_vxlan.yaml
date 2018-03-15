@@ -20,8 +20,8 @@ default_context:
   control_vlan: '10'
   deploy_network_gateway: ''
   deploy_network_netmask: 255.255.255.0
-  dns_server01: 8.8.8.8
-  dns_server02: 8.8.4.4
+  dns_server01: 172.18.176.6
+  dns_server02: 172.18.208.44
   gateway_primary_first_nic: eth1
   gateway_primary_second_nic: eth2
   infra_deploy_nic: eth0

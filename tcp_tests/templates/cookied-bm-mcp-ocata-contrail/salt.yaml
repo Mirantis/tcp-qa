@@ -168,7 +168,6 @@
 - description: Hack resolv.conf on VCP nodes for internal services access
   cmd: |
     salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
-    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf;"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false

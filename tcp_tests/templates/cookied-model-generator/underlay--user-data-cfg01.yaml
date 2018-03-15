@@ -50,7 +50,6 @@
    - echo "Preparing base OS"
 
    - echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
-   - echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
 
    - apt-get clean
    - apt-get update

@@ -151,7 +151,50 @@
   retry: {count: 5, delay: 10}
   skip_fail: false
 
+# Install Telemetry services (mdb nodes)
+- description: Install redis service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@redis:cluster:role:master' state.sls redis &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@redis:server' state.sls redis
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
+- description: Install gnocchi server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:server and *01*' state.sls gnocchi.server &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:server' state.sls gnocchi.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install gnocchi statsd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:statsd and *01*' state.sls gnocchi.statsd &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:statsd' state.sls gnocchi.statsd
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install panko server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server and *01*' state.sls panko &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server' state.sls panko
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install ceilometer server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server and *01*' state.sls ceilometer &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server' state.sls ceilometer
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install aodh server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aodh:server and *01*' state.sls aodh &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aodh:server' state.sls aodh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# Install OpenStack dashboard and proxy services
 - description: Deploy horizon dashboard
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@horizon:server' state.sls horizon
