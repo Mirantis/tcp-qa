@@ -114,20 +114,20 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# isntall designate
-#- description: Install bind
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@bind:server' state.sls bind
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-#
-#- description: Install designate
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@designate:server' state.sls designate -b 1
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 5, delay: 10}
-#  skip_fail: false
+# install designate
+- description: Install bind
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@bind:server' state.sls bind
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install designate
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@designate:server' state.sls designate -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
 
 - description: Check neutron agent-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
