@@ -182,7 +182,7 @@
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
        while true; do curl -sf ldap://${CICD_CONTROL_ADDRESS} && break; sleep 2; done'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 6, delay: 20}
+  retry: {count: 10, delay: 30}
   skip_fail: false
 
 - description: "Setup OpenLDAP"
@@ -200,7 +200,7 @@
       'export CICD_CONTROL_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:cluster_vip_address);
        while true; do curl -sf http://${CICD_CONTROL_ADDRESS}:8080/config/server/version && break; sleep 2; done'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 10}
+  retry: {count: 10, delay: 30}
   skip_fail: false
 
 - description: "Setup Gerrit"
@@ -222,7 +222,7 @@
          sleep 2;
        done'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 10}
+  retry: {count: 10, delay: 30}
   skip_fail: false
 
 - description: "Setup Jenkins"

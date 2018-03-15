@@ -478,7 +478,7 @@ class UnderlaySSHManager(object):
         with self.remote(host=master_host) as master:
             # dump files
             LOG.info("Archive artifacts on all nodes")
-            master.check_call("salt '*' cmd.run '{0}'".format(dump_commands),
+            master.check_call('salt "*" cmd.run "{0}"'.format(dump_commands),
                               raise_on_err=False)
 
             # create target dir for archives
