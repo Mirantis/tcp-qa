@@ -740,6 +740,12 @@
   retry: {count: 25, delay: 30}
   skip_fail: false
 
+- description: Update minion information
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' mine.update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Execute linux.network.host one more time after salt.minion to apply dynamically registered hosts on the cluster nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.network.host
   node_name: {{ HOSTNAME_CFG01 }}
