@@ -426,6 +426,11 @@ class UnderlaySSHManager(object):
             "ps auxwwf > /root/$(hostname -f)/dump_ps.txt;"
             "docker images > /root/$(hostname -f)/dump_docker_images.txt;"
             "docker ps > /root/$(hostname -f)/dump_docker_ps.txt;"
+            "docker service ls > \
+                    /root/$(hostname -f)/dump_docker_services_ls.txt;"
+            "docker service ls | grep ' 0' | awk '{print $2}' | \
+                    xargs -I {} docker service logs 2>&1 {} > \
+                    dump_{}_docker_service.txt;"
             "vgdisplay > /root/$(hostname -f)/dump_vgdisplay.txt;"
             "lvdisplay > /root/$(hostname -f)/dump_lvdisplay.txt;"
             "ip a > /root/$(hostname -f)/dump_ip_a.txt;"
