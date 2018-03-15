@@ -43,9 +43,9 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_MDB01 }}: +121
-            default_{{ HOSTNAME_MDB02 }}: +122
-            default_{{ HOSTNAME_MDB03 }}: +123
+            default_{{ HOSTNAME_MDB01 }}: +45
+            default_{{ HOSTNAME_MDB02 }}: +46
+            default_{{ HOSTNAME_MDB03 }}: +47
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
@@ -63,9 +63,9 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_MDB01 }}: +121
-            default_{{ HOSTNAME_MDB02 }}: +122
-            default_{{ HOSTNAME_MDB03 }}: +123
+            default_{{ HOSTNAME_MDB01 }}: +45
+            default_{{ HOSTNAME_MDB02 }}: +46
+            default_{{ HOSTNAME_MDB03 }}: +47
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
@@ -83,9 +83,9 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_MDB01 }}: +121
-            default_{{ HOSTNAME_MDB02 }}: +122
-            default_{{ HOSTNAME_MDB03 }}: +123
+            default_{{ HOSTNAME_MDB01 }}: +45
+            default_{{ HOSTNAME_MDB02 }}: +46
+            default_{{ HOSTNAME_MDB03 }}: +47
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
@@ -103,9 +103,9 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_MDB01 }}: +121
-            default_{{ HOSTNAME_MDB02 }}: +122
-            default_{{ HOSTNAME_MDB03 }}: +123
+            default_{{ HOSTNAME_MDB01 }}: +45
+            default_{{ HOSTNAME_MDB02 }}: +46
+            default_{{ HOSTNAME_MDB03 }}: +47
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:

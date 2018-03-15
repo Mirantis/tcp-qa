@@ -63,6 +63,7 @@
     echo "{{ UBUNTU_UPDATES_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_updates.list
     echo "{{ UBUNTU_SECURITY_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_security.list
     eatmydata apt-get clean && apt-get update;
+    sync;
   node_name: {{ NODE_NAME }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -93,6 +94,7 @@
     eatmydata apt-get install -y --allow-unauthenticated reclass salt-master
     # Install common packages
     eatmydata apt-get install -y python-pip git curl at tmux byobu iputils-ping traceroute htop tree mc
+    sync;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -444,7 +446,7 @@
     [ ! -d /srv/salt/reclass/classes/service ] && mkdir -p /srv/salt/reclass/classes/service;
     declare -a formula_services=({{ FORMULA_SERVICES }});
     echo -e "\nInstalling all required salt formulas\n";
-    eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
+    apt-get install -y "${formula_services[@]/#/salt-formula-}";
     for formula_service in "${formula_services[@]}"; do
       echo -e "\nLink service metadata for formula ${formula_service} ...\n";
       [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
@@ -522,7 +524,7 @@
     eatmydata apt-get install -y salt-minion;
     # Install common packages
     eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
-
+    sync
     # Restart salt-minion if it was already installed
     service salt-minion restart
   node_name: {{ ssh['node_name'] }}
