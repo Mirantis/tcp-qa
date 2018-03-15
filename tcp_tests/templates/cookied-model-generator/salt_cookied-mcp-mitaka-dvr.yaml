@@ -1,0 +1,53 @@
+{% from 'cookied-model-generator/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-model-generator/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% set LAB_CONFIG_NAME = 'virtual-mcp-mitaka-dvr' %}
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = '_context-cookiecutter-mcp-mitaka-dvr.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['_context-environment.yaml'] %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+- description: "Workaround for combined roles: remove unnecessary classes"
+  cmd: |
+    set -e;
+    sed -i '/system.reclass.storage.system.physical_control_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    sed -i '/system.reclass.storage.system.openstack_database_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    sed -i '/system.reclass.storage.system.openstack_message_queue_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    sed -i '/system.reclass.storage.system.stacklight_telemetry_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    sed -i '/system.reclass.storage.system.stacklight_log_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+
+    # Start compute node addresses from .105 , as in static models
+    sed -i 's/start: 101/start: 105/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_database_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_database_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_database_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.stacklight_log_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+
+    salt-call reclass.cluster_meta_set name='openstack_dns_node01_address' value='{{ SHARED.IPV4_NET_CONTROL_PREFIX }}.111' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    salt-call reclass.cluster_meta_set name='openstack_dns_node02_address' value='{{ SHARED.IPV4_NET_CONTROL_PREFIX }}.112' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    # Workaround of missing reclass.system for dns role
+    salt-call reclass.cluster_meta_set name='salt_master_host' value='${_param:infra_config_deploy_address}' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
