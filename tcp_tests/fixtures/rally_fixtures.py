@@ -18,7 +18,7 @@ from tcp_tests.managers import rallymanager
 
 
 @pytest.fixture(scope='function')
-def rally(request, config, underlay):
+def rally(request, config, underlay, common_services_deployed):
     """Fixture that provides various actions for TCP
 
     :param request: fixture provides pytest data
