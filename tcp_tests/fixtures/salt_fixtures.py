@@ -76,7 +76,6 @@ def salt_deployed(revert_snapshot, request, config,
             [node for node in salt_nodes
              if not any(node['node_name'] == n['node_name']
                         for n in config.underlay.ssh)]
-
         hardware.create_snapshot(ext.SNAPSHOT.salt_deployed)
         salt_actions.sync_time()
 

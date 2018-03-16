@@ -197,7 +197,6 @@ class SaltManager(ExecuteCommandsMixin):
                 'login': settings.SSH_NODE_CREDENTIALS['login'],
                 'password': settings.SSH_NODE_CREDENTIALS['password']
             }
-
         return [
             host(k, next(i for i in v['ipv4'] if i in pool_net))
             for k, v in hosts.items()
