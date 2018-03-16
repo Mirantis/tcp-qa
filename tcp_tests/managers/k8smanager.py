@@ -531,27 +531,58 @@ class K8SManager(ExecuteCommandsMixin):
             LOG.info("Test results stderr: {}".format(stderr))
         return result
 
-    def extract_file_to_node(self, container='virtlet',
-                             file_path='report.xml'):
-        """
-        Download file from docker container to node
+    def start_k8s_cncf_verification(self, timeout=60 * 90):
+        cncf_cmd = ("curl -L https://raw.githubusercontent.com/cncf/"
+                    "k8s-conformance/master/sonobuoy-conformance.yaml"
+                    " | kubectl apply -f -")
+        with self.__underlay.remote(
+                node_name=self.ctl_host) as remote:
+            remote.check_call(cncf_cmd, timeout=60)
+            self.wait_pod_phase('sonobuoy', 'Running',
+                                namespace='sonobuoy', timeout=120)
+            wait_cmd = ('kubectl logs -n sonobuoy sonobuoy | '
+                        'grep "sonobuoy is now blocking"')
 
+            expected = [0, 1]
+            helpers.wait(
+                lambda: remote.check_call(
+                    wait_cmd, expected=expected).exit_code == 0,
+                interval=30, timeout=timeout,
+                timeout_msg="Timeout for CNCF reached."
+            )
+
+    def extract_file_to_node(self, system='docker',
+                             container='virtlet',
+                             file_path='report.xml', **kwargs):
+        """
+        Download file from docker or k8s container to node
+
+        :param system: docker or k8s
         :param container: Full name of part of name
         :param file_path: File path in container
+        :param kwargs: Used to control pod and namespace
         :return:
         """
         with self.__underlay.remote(
                 node_name=self.ctl_host) as remote:
-            cmd = ("docker ps --all | grep {0} |"
-                   " awk '{{print $1}}'".format(container))
-            result = remote.check_call(cmd)
-            container_id = result['stdout'][0].strip()
-            cmd = "docker start {}".format(container_id)
-            remote.check_call(cmd)
-            cmd = "docker cp {0}:/{1} .".format(container_id, file_path)
-            remote.check_call(cmd)
+            if system is 'docker':
+                cmd = ("docker ps --all | grep {0} |"
+                       " awk '{{print $1}}'".format(container))
+                result = remote.check_call(cmd)
+                container_id = result['stdout'][0].strip()
+                cmd = "docker start {}".format(container_id)
+                remote.check_call(cmd)
+                cmd = "docker cp {0}:/{1} .".format(container_id, file_path)
+                remote.check_call(cmd)
+            else:
+                # system is k8s
+                pod_name = kwargs.get('pod_name')
+                pod_namespace = kwargs.get('pod_namespace')
+                cmd = 'kubectl cp {0}/{1}:/{2} .'.format(
+                    pod_namespace, pod_name, file_path)
+                remote.check_call(cmd)
 
-    def download_virtlet_conformance_log(self, files):
+    def download_k8s_logs(self, files):
         """
         Download JUnit report and conformance logs from cluster
         :param files:
@@ -565,3 +596,35 @@ class K8SManager(ExecuteCommandsMixin):
                 r.check_call(cmd, raise_on_err=False)
                 LOG.info("Downloading the artifact {0}".format(log_file))
                 r.download(destination=log_file, target=os.getcwd())
+
+    def manage_cncf_archive(self):
+        """
+        Function to untar archive, move files, that we are needs to the
+        home folder, prepare it to downloading and clean the trash.
+        Will generate files: e2e.log, junit_01.xml, cncf_results.tar.gz
+        and version.txt
+        :return:
+        """
+
+        # Namespace and pod name may be hardcoded since this function is
+        # very specific for cncf and cncf is not going to change
+        # those launch pod name and namespace.
+        get_tar_name_cmd = ("kubectl logs -n sonobuoy sonobuoy | "
+                            "grep 'Results available' | "
+                            "sed 's/.*\///' | tr -d '\"'")
+
+        with self.__underlay.remote(
+                node_name=self.ctl_host) as remote:
+            tar_name = remote.check_call(get_tar_name_cmd)['stdout'][0].strip()
+            untar = "mkdir result && tar -C result -xzf {0}".format(tar_name)
+            remote.check_call(untar)
+            manage_results = ("mv result/plugins/e2e/results/e2e.log . && "
+                              "mv result/plugins/e2e/results/junit_01.xml . ;"
+                              "kubectl version > version.txt")
+            remote.check_call(manage_results, raise_on_err=False)
+            cleanup_host = "rm -rf result"
+            remote.check_call(cleanup_host)
+            # This one needed to use download fixture, since I don't know
+            # how possible apply fixture arg dynamically from test.
+            rename_tar = "mv {0} cncf_results.tar.gz".format(tar_name)
+            remote.check_call(rename_tar)
