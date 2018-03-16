@@ -29,8 +29,8 @@ def rally(request, config, underlay):
     For use in tests or fixtures to deploy a custom TCP
     """
     with_rally = request.keywords.get('with_rally', None)
-    rally_node = "gtw01."
+    rally_node = "ctl01."
     if with_rally:
-        rally_node = with_rally.kwargs.get("rally_node", "gtw01.")
+        rally_node = with_rally.kwargs.get("rally_node", "ctl01.")
 
     return rallymanager.RallyManager(underlay, rally_node)
