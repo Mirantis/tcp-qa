@@ -147,7 +147,7 @@
   cmd: |
     FLUENTD_SERVICE=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@fluentd:agent' test.ping 1>/dev/null 2>&1 && echo true`;
     echo "Fluentd service presence: ${FLUENTD_SERVICE}";
-    if [[ "$INFLUXDB_SERVICE" == "true" ]]; then
+    if [[ "$FLUENTD_SERVICE" == "true" ]]; then
         salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@fluentd:agent' state.sls fluentd
     else
         salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:log_collector' state.sls heka.log_collector
@@ -161,7 +161,7 @@
   cmd: |
     CEILO=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:ceilometer_collector:enabled' test.ping 1>/dev/null 2>&1 && echo true`;
     echo "Ceilometer service presence: ${CEILO}";
-    if [[ "$INFLUXDB_SERVICE" == "true" ]]; then
+    if [[ "$CEILO" == "true" ]]; then
         salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:ceilometer_collector:enabled' state.sls heka.ceilometer_collector;
         salt --hard-crash --state-output=mixed --state-verbose=False -C '@heka:ceilometer_collector:enabled' service.restart ceilometer_collector
     fi
