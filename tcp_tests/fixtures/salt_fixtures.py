@@ -13,6 +13,7 @@
 #    under the License.
 
 import pytest
+import rpdb
 
 from tcp_tests import logger
 from tcp_tests.helpers import ext
@@ -72,11 +73,16 @@ def salt_deployed(revert_snapshot, request, config,
         salt_actions.install(commands)
 
         salt_nodes = salt_actions.get_ssh_data()
+        LOG.info("config.underlay.ssh BEFORE adding additional nodes: {}".format(config.underlay.ssh))
+        nodes_for_adding = [node for node in salt_nodes
+                            if not any(node['node_name'] == n['node_name']
+                                       for n in config.underlay.ssh)]
+        LOG.info("Nodes which will be ADDED to config.underlay.ssh: {}".format(nodes_for_adding))
         config.underlay.ssh = config.underlay.ssh + \
             [node for node in salt_nodes
              if not any(node['node_name'] == n['node_name']
                         for n in config.underlay.ssh)]
-
+        LOG.info("config.underlay.ssh AFTER adding additional nodes: {}".format(config.underlay.ssh))
         hardware.create_snapshot(ext.SNAPSHOT.salt_deployed)
         salt_actions.sync_time()
 
