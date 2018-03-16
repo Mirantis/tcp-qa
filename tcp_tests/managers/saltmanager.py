@@ -177,7 +177,13 @@ class SaltManager(ExecuteCommandsMixin):
         pool_name = self.__config.underlay.net_mgmt
         pool_net = netaddr.IPNetwork(self.__config.underlay.address_pools[
             self.__config.underlay.net_mgmt])
+        LOG.info("Pool name from get_ssh_data {}".format(pool_name))
+        LOG.info("Pool net from get_ssh_data {}".format(pool_net))
+
         hosts = self.local('*', 'grains.item', ['host', 'ipv4'])
+        LOG.info("HOSTS from get_ssh_data in saltmanager: {}".format(hosts))
+        pinged_hosts = self.local('*', 'test.ping')
+        LOG.info("Available hosts (via Ping) : {}".format(pinged_hosts))
 
         if len(hosts.get('return', [])) == 0:
             raise LookupError("Hosts is empty or absent")
@@ -197,7 +203,11 @@ class SaltManager(ExecuteCommandsMixin):
                 'login': settings.SSH_NODE_CREDENTIALS['login'],
                 'password': settings.SSH_NODE_CREDENTIALS['password']
             }
-
+        result_hosts = [
+            host(k, next(i for i in v['ipv4'] if i in pool_net))
+            for k, v in hosts.items()
+            if next(i for i in v['ipv4'] if i in pool_net)]
+        LOG.info("Returned hosts from get_ssh_data {}".format(result_hosts))
         return [
             host(k, next(i for i in v['ipv4'] if i in pool_net))
             for k, v in hosts.items()
