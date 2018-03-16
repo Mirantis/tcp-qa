@@ -150,7 +150,7 @@ class SLManager(ExecuteCommandsMixin):
         """
         for node in nodes:
             services_status = self.get_service_info_from_node(node)
-            assert len(services_status) == len(expected_services), \
+            assert set(services_status) >= set(expected_services), \
                 'Some services are missed on node {0}. ' \
                 'Current service list: {1}\nExpected service list: {2}' \
                 .format(node, services_status, expected_services)
