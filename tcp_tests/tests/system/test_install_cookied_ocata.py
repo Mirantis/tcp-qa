@@ -79,8 +79,7 @@ class Test_Mcp11_install(object):
             openstack_deployed.run_tempest(pattern=settings.PATTERN)
             openstack_deployed.download_tempest_report()
 
-        expected_service_list = ['monitoring_remote_storage_adapter',
-                                 'monitoring_server',
+        expected_service_list = ['monitoring_server',
                                  'monitoring_remote_agent',
                                  'dashboard_grafana',
                                  'monitoring_alertmanager',
@@ -91,6 +90,13 @@ class Test_Mcp11_install(object):
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
         show_step(7)
+        prometheus_relay_enabled = salt.get_pillar(
+            tgt=mon_nodes[0],
+            pillar="prometheus:relay:enabled")[0]
+        if not prometheus_relay_enabled:
+            # InfluxDB is used instead of prometheus relay service
+            expected_service_list.append('monitoring_remote_storage_adapter')
+
         sl_deployed.check_docker_services(mon_nodes, expected_service_list)
 
         show_step(8)
