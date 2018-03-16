@@ -15,9 +15,9 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp2s0f0:
+        enp9s0f0:
           role: single_mgm
-        enp2s0f1:
+        enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
     kvm02.cookied-bm-mcp-ocata-contrail.local:
@@ -26,9 +26,9 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp2s0f0:
+        enp9s0f0:
           role: single_mgm
-        enp2s0f1:
+        enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
     kvm03.cookied-bm-mcp-ocata-contrail.local:
@@ -37,9 +37,9 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp2s0f0:
+        enp9s0f0:
           role: single_mgm
-        enp2s0f1:
+        enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
     cmp001.cookied-bm-mcp-ocata-contrail.local:
