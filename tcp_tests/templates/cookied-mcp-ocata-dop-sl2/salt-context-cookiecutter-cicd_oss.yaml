@@ -186,6 +186,7 @@ default_context:
   stacklight_telemetry_node02_hostname: ${_param:stacklight_monitor_node02_hostname}
   stacklight_telemetry_node03_address: ${_param:stacklight_monitor_node03_address}
   stacklight_telemetry_node03_hostname: ${_param:stacklight_monitor_node03_hostname}
+  stacklight_long_term_storage_type: influxdb
   tenant_network_gateway: ''
   tenant_network_netmask: 255.255.255.0
   tenant_vlan: '20'

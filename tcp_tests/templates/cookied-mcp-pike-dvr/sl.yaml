@@ -129,6 +129,18 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+# Install Prometheus LTS(optional if set in model)
+- description: Prometheus LTS(optional if set in model)
+  cmd: |
+    PROMETHEUS_SERVICE=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:relay' test.ping 1>/dev/null 2>&1 && echo true`;
+    echo "PROMETHEUS rely service presence: ${PROMETHEUS_SERVICE}";
+    if [[ "$PROMETHEUS_SERVICE" == "true" ]]; then
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:relay' state.sls prometheus
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 # Install service for the log collection
 - description: Configure fluentd
   cmd: |

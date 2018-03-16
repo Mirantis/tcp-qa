@@ -146,6 +146,7 @@ default_context:
   salt_master_hostname: cfg01
   salt_master_management_address: 192.168.10.90
   shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
+  fluentd_enabled: 'True'
   stacklight_enabled: 'True'
   stacklight_log_address: 172.16.10.70
   stacklight_log_hostname: mon
@@ -174,6 +175,7 @@ default_context:
   stacklight_telemetry_node03_address: 172.16.10.109
   stacklight_telemetry_node03_hostname: mon03
   stacklight_version: '2'
+  stacklight_long_term_storage_type: influxdb
   static_ips_on_deploy_network_enabled: 'False'
   tenant_network_gateway: 10.1.0.1
   tenant_network_netmask: 255.255.255.0
