@@ -37,6 +37,7 @@ class RallyManager(object):
     def __init__(self, underlay, rally_node='gtw01.'):
         super(RallyManager, self).__init__()
         self._underlay = underlay
+        LOG.info("Rally node is {}".format(rally_node))
         self._node_name = self.get_target_node(target=rally_node)
 
     @property
@@ -64,6 +65,7 @@ class RallyManager(object):
 
     # Move method to underlay
     def get_target_node(self, target='gtw01.'):
+        LOG.info("underlay.node_names: {}".format(self._underlay.node_names()))
         return [node_name for node_name
                 in self._underlay.node_names()
                 if node_name.startswith(target)][0]
