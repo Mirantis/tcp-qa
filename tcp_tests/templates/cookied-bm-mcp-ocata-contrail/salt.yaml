@@ -19,34 +19,6 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM02 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM03 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
@@ -64,15 +36,6 @@
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
-
-- description: (REMOVE asap) Hack CFG of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
@@ -135,6 +98,14 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+  
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 ########################################
