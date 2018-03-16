@@ -103,7 +103,7 @@ default_context:
   openstack_message_queue_node03_address: 10.167.8.43
   openstack_message_queue_node03_hostname: msg03
   openstack_network_engine: opencontrail
-  openstack_nfv_dpdk_enabled: 'True'
+  openstack_nfv_dpdk_enabled: 'False'
   openstack_nfv_sriov_enabled: 'False'
   openstack_nova_compute_nfv_req_enabled: 'False'
   openstack_proxy_address: 10.167.8.80
