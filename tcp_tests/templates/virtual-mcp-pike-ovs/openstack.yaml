@@ -166,12 +166,12 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install gnocchi statsd
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:statsd and *01*' state.sls gnocchi.statsd &&
-       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:statsd' state.sls gnocchi.statsd
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+#- description: Install gnocchi statsd (optional)
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:statsd and *01*' state.sls gnocchi.statsd &&
+#       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:statsd' state.sls gnocchi.statsd
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
 - description: Install panko server
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server and *01*' state.sls panko &&
