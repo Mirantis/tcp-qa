@@ -3,34 +3,6 @@
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_KVM02 with context %}
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
-
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM02 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM03 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
 - description: Install glusterfs
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server' state.sls glusterfs.server.service
