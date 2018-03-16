@@ -11,41 +11,13 @@
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','physical-cookied-bm-mcp-ocata-contrail') %}
 # Path to the context files used to render Cluster and Environment models
-{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-contrail-dpdk.yaml' %}
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-contrail.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-physical-inventory.yaml'] %}
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2422') %}
 {%- set TENANT_VLAN = os_env('TENANT_VLAN', '2423') %}
 
 
 {% import 'shared-salt.yaml' as SHARED with context %}
-
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM02 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: (REMOVE asap) Hack KVMs of Hash sum mismatch
-  cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
-    apt-get update;
-  node_name: {{ HOSTNAME_KVM03 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
 
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
@@ -63,16 +35,20 @@
 
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd"') }}
 
-{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
-
-- description: (REMOVE asap) Hack CFG of Hash sum mismatch
+- description: "Workaround for latest cassandra and zookeeper formula"
   cmd: |
-    rm -rf /var/lib/apt/lists/*;
-    apt-get clean;
+    set -e;
+    sed -i 's/testing/nightly/g' /etc/apt/sources.list.d/mcp_salt.list;
+    apt-get update;
+    apt-get install salt-formula-zookeeper;
+    apt-get install salt-formula-cassandra;
+    sed -i 's/nightly/testing/g' /etc/apt/sources.list.d/mcp_salt.list;
     apt-get update;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
@@ -86,12 +62,27 @@
     reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
     # Add openstack_compute_node definition from system
     reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge;
-    # Set ipaddresses
-#    salt-call reclass.cluster_meta_set openstack_compute_node01_single_address 10.167.8.101 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
-#    salt-call reclass.cluster_meta_set openstack_compute_node02_single_address 10.167.8.102 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
-#    salt-call reclass.cluster_meta_set openstack_compute_node01_deploy_address 172.16.49.72 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
-#    salt-call reclass.cluster_meta_set openstack_compute_node02_deploy_address 172.16.49.74 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
+- description: "Workaround for wrong message queue address"
+  cmd: |
+    set -e;
+    # Add message_queu host for opencontrail
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters.opencontrail.config.message_queue.host '${_param:openstack_message_queue_address}' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/opencontrail/control.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "WR for changing image to proposed"
+  cmd: |
+    set -e;
+    # Add message_queu host for opencontrail
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -126,17 +117,26 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-- description: Temporary WR (Remove ASAP) for downgrade packages
+- description: Temporary WR for correct bridge name according to envoronment templates
   cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.system.repo;
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get update"
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get install -y --allow-downgrades vlan";
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
-  skip_fail: true
-
+  skip_fail: false
+  
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
+- description: "Lab03 workaround: Control network access from cfg01 node using sshuttle via kvm01"
+  cmd: |
+    set -e;
+    set -x;
+    KVM01_DEPLOY_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address);
+    apt-get install -y sshuttle;
+    sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D >/dev/null;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 ########################################
 # Spin up Control Plane VMs on KVM nodes
 ########################################
@@ -190,20 +190,4 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Temporary WR (Remove ASAP) for downgrade packages
-  cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.system.repo;
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get update"
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' cmd.run "apt-get install -y --allow-downgrades vlan";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
-
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
-
-- description: (REMOVE asap) Hack VCPs of Hash sum mismatch
-  cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "rm -rf /var/lib/apt/lists/*; apt-get clean; apt-get update -y;"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true

@@ -113,58 +113,73 @@
   skip_fail: true
 
 # install contrail
-- description: Install contrail db
+- description: Install Opencontrail db on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database and *01*' state.sls opencontrail.database
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 20}
+  skip_fail: false
+
+- description: Install Opencontrail db on all nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:database' state.sls opencontrail.database
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 20}
   skip_fail: false
 
-- description: Install contrail on 1st node and skip client part
+- description: Install Opencontrail control on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:control and *01*' state.sls opencontrail exclude=opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
-  skip_fail: false
-
-- description: Configure contrail
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:collector' state.sls opencontrail.collector
-  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install contrail on all nodes still skipping client
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=Falsa
+- description: Install Opencontrail control on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Check contrail status
-  cmd: sleep 30; salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:control' cmd.run contrail-status
+- description: Install Opencontrail on collector
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:collector' state.sls opencontrail exclude=opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install contrail and do client part as well (count and delay for waiting for collector connection)
+- description: Workaround for https://mirantis.jira.com/browse/PROD-12798
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:control' state.sls opencontrail
+    -C 'I@opencontrail:control' service.restart 'keepalived'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 60}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Configure contrail
+# OpenContrail vrouters
+- description: Install Opencontrail client
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:database:id:1' state.sls opencontrail.client
+    -C 'I@opencontrail:database:id:1' state.sls 'opencontrail.client'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Opencontrail client on computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls 'opencontrail.client'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-- description: Check contrail status
-  cmd: sleep 30; salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:control' cmd.run contrail-status
+- description: Install Opencontrail on computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls 'opencontrail'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Test Opencontrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' cmd.run 'contrail-status'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -237,100 +252,12 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-#- description: Create net04_external
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-#- description: Create subnet_external
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-- description: Create net04
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create subnet_net04
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04 {{ IPV4_NET_TENANT_PREFIX }}.0/24 --name net04__subnet --allocation-pool start={{ IPV4_NET_TENANT_PREFIX }}.120,end={{ IPV4_NET_TENANT_PREFIX }}.240'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create router
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-create net04_router01'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description: Set geteway
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-- description:  Add interface
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description:  Allow all tcp
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description:  Allow all icmp
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: sync time
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
     'service ntp stop; ntpd -gq;  service ntp start'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
-
-#- description: Install lvm2 packages
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
-#    'apt-get install python-pymysql lvm2 -y'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-#- description: Install crudini
-#  cmd: salt -C "cmp*" cmd.run 'apt-get install crudini -y'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: true
-
-#- description: Temporary WR set enabled backends value
-#  cmd: salt "cmp*" cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-#- description: Start cinder-volume service
-#  cmd: salt "cmp*" cmd.run '/etc/init.d/cinder-volume stop; /etc/init.d/cinder-volume start;'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: true
 
 - description: Install docker.io on ctl
   cmd: salt "ctl01*" cmd.run 'apt-get install docker.io -y'
@@ -343,17 +270,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
-#- description: create rc file on cfg
-#  cmd: scp ctl01:/root/keystonercv3 /root
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-#- description: Copy rc file
-#  cmd: scp /root/keystonercv3 gtw01:/root
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
 
 - description: Hack resolv.conf on VCP nodes for internal services access
   cmd: |
