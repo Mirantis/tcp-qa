@@ -61,3 +61,19 @@ class TestMCPK8sActions(object):
         show_step(5)
         dns_host = k8s_deployed.get_svc_ip('coredns')
         k8s_deployed.nslookup(hostname, dns_host)
+
+    @pytest.mark.grab_versions
+    @pytest.mark.cncf_publisher(name=['e2e.log', 'junit_01.xml', 'version.txt'
+                                      'cncf_results.tar.gz'])
+    @pytest.mark.fail_snapshot
+    def test_k8s_cncf_certification(self, show_step, config, k8s_deployed,
+                                    cncf_log_helper):
+        """Run cncf e2e suite and provide files needed for pull request
+        to the CNCF repo
+
+        Scenario:
+        1. Run cncf from https://github.com/cncf/k8s-conformance
+        """
+
+        show_step(1)
+        k8s_deployed.start_k8s_cncf_verification()
