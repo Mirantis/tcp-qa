@@ -91,10 +91,33 @@ def virtlet_logs(request, func_name, underlay, k8s_deployed):
 
     def test_fin():
         if hasattr(request.node, 'rep_call') and \
-                (request.node.rep_call.passed or request.node.rep_call.failed)\
+                (request.node.rep_call.passed or request.node.rep_call.failed) \
                 and grab_virtlet_result:
             files = utils.extract_name_from_mark(grab_virtlet_result) \
-                            or "{}".format(func_name)
+                    or "{}".format(func_name)
             k8s_deployed.extract_file_to_node()
-            k8s_deployed.download_virtlet_conformance_log(files)
+            k8s_deployed.download_k8s_logs(files)
+
+    request.addfinalizer(test_fin)
+
+
+@pytest.fixture(scope='function')
+def cncf_log_helper(request, func_name, underlay, k8s_deployed):
+    """Finalizer to prepare cncf tar.gz and save results from archive"""
+
+    cncf_publisher = request.keywords.get('cncf_publisher', None)
+
+    def test_fin():
+        if hasattr(request.node, 'rep_call') and \
+                (request.node.rep_call.passed or request.node.rep_call.failed) \
+                and cncf_publisher:
+            files = utils.extract_name_from_mark(cncf_publisher) \
+                    or "{}".format(func_name)
+            k8s_deployed.extract_file_to_node(
+                system='k8s', file_path='tmp/sonobuoy',
+                pod_name='sonobuoy', pod_namespace='sonobuoy'
+            )
+            k8s_deployed.manage_cncf_archive()
+            k8s_deployed.download_k8s_logs(files)
+
     request.addfinalizer(test_fin)
