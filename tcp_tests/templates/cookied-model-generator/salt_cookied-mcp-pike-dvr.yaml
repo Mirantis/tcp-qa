@@ -10,9 +10,26 @@
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = '_context-cookiecutter-mcp-pike-dvr.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['_context-environment.yaml'] %}
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME} ' + REPOSITORY_SUITE + ' salt extra') %}
+{% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') %}
+{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/2016.3 " + REPOSITORY_SUITE + " main") %}
+{% set SALT_GPG = os_env('SALT_GPG', 'http://apt.mirantis.com/public.gpg') %}
+{% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME} main restricted universe") %}
+{% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-updates main restricted universe") %}
+{% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-security main restricted universe") %}
+
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
+- description: Re-install all the fromulas
+  cmd: |
+    set -e;
+    apt-get install -y salt-formula-*
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
