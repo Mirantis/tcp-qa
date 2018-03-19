@@ -126,7 +126,6 @@
   cmd: |
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring,glance;
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' service.restart glance-api;
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' service.restart glance-glare;
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' service.restart glance-registry;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
