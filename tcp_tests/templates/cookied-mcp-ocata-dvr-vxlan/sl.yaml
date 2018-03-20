@@ -162,7 +162,7 @@
     echo "Ceilometer service presence: ${CEILO}";
     if [[ "$CEILO" == "true" ]]; then
         salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:ceilometer_collector:enabled' state.sls heka.ceilometer_collector;
-        salt --hard-crash --state-output=mixed --state-verbose=False -C '@heka:ceilometer_collector:enabled' service.restart ceilometer_collector
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:ceilometer_collector:enabled' service.restart ceilometer_collector
     fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
