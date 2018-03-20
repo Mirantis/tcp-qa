@@ -146,6 +146,11 @@ nodes:
       roles:
       - features_designate_pool_manager_dns
       - linux_system_codename_xenial
+      classes:
+      - system.linux.system.repo.mcp.extra
+      - system.linux.system.repo.mcp.apt_mirantis.openstack
+      - system.linux.system.repo.mcp.apt_mirantis.ubuntu
+      - system.linux.system.repo.mcp.apt_mirantis.saltstack_2016_3
       interfaces:
         ens3:
           role: single_dhcp
@@ -158,6 +163,11 @@ nodes:
       roles:
       - features_designate_pool_manager_dns
       - linux_system_codename_xenial
+      classes:
+      - system.linux.system.repo.mcp.extra
+      - system.linux.system.repo.mcp.apt_mirantis.openstack
+      - system.linux.system.repo.mcp.apt_mirantis.ubuntu
+      - system.linux.system.repo.mcp.apt_mirantis.saltstack_2016_3
       interfaces:
         ens3:
           role: single_dhcp
