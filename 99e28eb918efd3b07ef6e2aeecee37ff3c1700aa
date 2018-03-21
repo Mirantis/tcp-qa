@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4bf5e14_b237f1f5",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 11
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-03-21T10:02:58Z",
+      "side": 1,
+      "message": "What the problem is workarounded here?",
+      "range": {
+        "startLine": 65,
+        "startChar": 4,
+        "endLine": 65,
+        "endChar": 44
+      },
+      "revId": "99e28eb918efd3b07ef6e2aeecee37ff3c1700aa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
