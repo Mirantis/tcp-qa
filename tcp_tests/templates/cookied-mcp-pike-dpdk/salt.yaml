@@ -22,6 +22,8 @@
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
 - description: Enable hugepages on cmp nodes
   cmd: salt 'cmp*' cmd.run "apt-get install -y hugepages; echo 2048 > /proc/sys/vm/nr_hugepages";
   node_name: {{ HOSTNAME_CFG01 }}
