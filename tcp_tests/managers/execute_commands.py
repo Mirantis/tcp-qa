@@ -93,8 +93,11 @@ class ExecuteCommandsMixin(object):
             for x in range(retry_count, 0, -1):
                 time.sleep(3)
 
-                retry_msg = ' (try {0} of {1}, skip_fail={2})'.format(
-                    retry_count - x + 1, retry_count, skip_fail)
+                retry_msg = (' (try {0} of {1}, skip_fail={2}, node_name={3})'
+                             .format(retry_count - x + 1,
+                                     retry_count,
+                                     skip_fail,
+                                     node_name))
                 LOG.info("\n\n{0}\n{1}".format(
                     msg + retry_msg, '=' * len(msg + retry_msg)))
 
@@ -148,8 +151,11 @@ class ExecuteCommandsMixin(object):
         for x in range(retry_count, 0, -1):
             time.sleep(3)
 
-            retry_msg = ' (try {0} of {1}, skip_fail={2})'.format(
-                retry_count - x + 1, retry_count, skip_fail)
+            retry_msg = (' (try {0} of {1}, skip_fail={2}, target={3})'
+                         .format(retry_count - x + 1,
+                                 retry_count,
+                                 skip_fail,
+                                 target))
             LOG.info("\n\n{0}\n{1}".format(
                 msg + retry_msg, '=' * len(msg + retry_msg)))
 
