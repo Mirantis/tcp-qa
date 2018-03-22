@@ -420,3 +420,60 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+- description: Install manila-api on first node
+  cmd: |
+    salt -C 'I@manila:api and *01*' state.sls manila.api;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install manila-api on other nodes
+  cmd: |
+    salt -C 'I@manila:api and not *01*' state.sls manila.api;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install manila-scheduler
+  cmd: |
+    salt -C 'I@manila:scheduler' state.sls manila.scheduler;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install manila-share
+  cmd: |
+    salt -C 'I@manila:share' state.sls manila.share;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Temporary WR for CIFS type. (Fixed in this patch https://gerrit.mcp.mirantis.net/#/c/17727/)
+  cmd: |
+    salt -C 'I@manila:share' cmd.run 'apt-get install samba -y';
+    salt -C 'I@manila:share' cmd.run 'service manila-share restart';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Check manila-services
+  cmd: |
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; manila service-list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Create manila type
+  cmd: |
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; manila type-create default False --is_public True'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Create CIFS share and check it status
+  cmd: |
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; manila create CIFS 1 --share-type=default; sleep 5; manila list';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
