@@ -1,7 +1,7 @@
 {% from 'cookied-model-generator/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-model-generator/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-model-generator/underlay.yaml' import DOMAIN_NAME with context %}
 
+{% set LAB_CONFIG_NAME = 'cookied-mcp-pike-dpdk' %}
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
 # Path to the context files used to render Cluster and Environment models
@@ -30,6 +30,19 @@
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.stacklight_log_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
 
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Workaround for combined roles: remove unnecessary classes"
+  cmd: |
+    cat << 'EOF' >> /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/dpdk.yml
+    parameters:
+      neutron:
+        compute:
+          bridge_mappings:
+            physnet2: br-prv
+    EOF
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
