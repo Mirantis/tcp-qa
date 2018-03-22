@@ -180,11 +180,16 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install ceilometer server
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server and *01*' state.sls ceilometer &&
-       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server' state.sls ceilometer
+- description: Install ceilometer server on first node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server and *01*' state.sls ceilometer
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install ceilometer server on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server' state.sls ceilometer
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Install aodh server
