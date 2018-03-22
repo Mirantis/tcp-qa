@@ -190,7 +190,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server' state.sls ceilometer
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
-  skip_fail: false
+  skip_fail: true
 
 - description: Install aodh server
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aodh:server and *01*' state.sls aodh &&
@@ -328,43 +328,43 @@
   cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
   node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
+  skip_fail: true
 
 - description: Set disks 02
   cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
   node_name: {{ HOSTNAME_CTL02 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
+  skip_fail: true
 
 - description: Set disks 03
   cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
   node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
+  skip_fail: true
 
 - description: Create partitions 01
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
   node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
+  skip_fail: true
 
 - description: Create partitions 02
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
   node_name: {{ HOSTNAME_CTL02 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
+  skip_fail: true
 
 - description: Create partitions 03
   cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
   node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
+  skip_fail: true
 
 - description: create volume_group
   cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
+  skip_fail: true
 
 - description: Install cinder-volume
   cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
@@ -420,3 +420,68 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+- description: Install manila-api
+  cmd: |
+    salt -C 'I@manila:api' state.sls manila.api;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install manila-scheduler
+  cmd: |
+    salt -C 'I@manila:scheduler' state.sls manila.scheduler;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install manila-share
+  cmd: |
+    salt -C 'I@manila:share' state.sls manila.share;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Check manila-services
+  cmd: |
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; manila service-list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false  
+
+- description: Create manila type
+  cmd: |
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; manila type-create default False --is_public True'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Adding manila type as default in manila.conf
+  cmd: |
+    sed -i 's/\[DEFAULT\]/\[DEFAULT\]\ndefault_share_type = default/g' /etc/manila/manila.conf;
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install samba (Neede for CIFS type for manila)
+  cmd: |
+    salt -C 'I@manila:share' cmd.run 'apt-get install samba -y';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false  
+
+- description: Restarting services
+  cmd: |
+    salt -C 'I@apache:server' cmd.run 'service apache2 restart';
+    salt -C 'I@manila:api' cmd.run 'service manila-api restart; service manila-scheduler restart';
+    salt -C 'I@manila:share' cmd.run 'service manila-share restart';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Create CIFS share and check it status
+  cmd: |
+    salt -C 'I@manila:api' cmd.run '. /root/keystonercv3; manila create CIFS 1; sleep 5; manila list';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: true
