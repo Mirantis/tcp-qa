@@ -103,10 +103,10 @@ default_context:
   openstack_version: pike
   oss_enabled: 'False'
   oss_node03_address: ${_param:stacklight_monitor_node03_address}
-  oss_notification_app_id: '24'
-  oss_notification_sender_password: password
-  oss_notification_smtp_port: '587'
-  oss_notification_webhook_login_id: '13'
+  oss_webhook_app_id: '24'
+  oss_pushkin_email_sender_password: password
+  oss_pushkin_smtp_port: '587'
+  oss_webhook_login_id: '13'
   platform: openstack_enabled
   public_host: ${_param:openstack_proxy_address}
   publication_method: email
@@ -148,32 +148,30 @@ default_context:
   shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
   stacklight_enabled: 'True'
   fluentd_enabled: 'True'
-  stacklight_log_address: 172.16.10.70
-  stacklight_log_hostname: mon
-  stacklight_log_node01_address: 172.16.10.107
-  stacklight_log_node01_hostname: mon01
-  stacklight_log_node02_address: 172.16.10.108
-  stacklight_log_node02_hostname: mon02
-  stacklight_log_node03_address: 172.16.10.109
-  stacklight_log_node03_hostname: mon03
+  stacklight_log_address: 172.16.10.60
+  stacklight_log_hostname: log
+  stacklight_log_node01_address: 172.16.10.61
+  stacklight_log_node01_hostname: log01
+  stacklight_log_node02_address: 172.16.10.62
+  stacklight_log_node02_hostname: log02
+  stacklight_log_node03_address: 172.16.10.63
+  stacklight_log_node03_hostname: log03
   stacklight_monitor_address: 172.16.10.70
   stacklight_monitor_hostname: mon
-  stacklight_monitor_node01_address: 172.16.10.107
+  stacklight_monitor_node01_address: 172.16.10.71
   stacklight_monitor_node01_hostname: mon01
-  stacklight_monitor_node02_address: 172.16.10.108
+  stacklight_monitor_node02_address: 172.16.10.72
   stacklight_monitor_node02_hostname: mon02
-  stacklight_monitor_node03_address: 172.16.10.109
+  stacklight_monitor_node03_address: 172.16.10.73
   stacklight_monitor_node03_hostname: mon03
-  stacklight_notification_address: alerts@localhost
-  stacklight_notification_smtp_host: 127.0.0.1
-  stacklight_telemetry_address: 172.16.10.70
-  stacklight_telemetry_hostname: mon
-  stacklight_telemetry_node01_address: 172.16.10.107
-  stacklight_telemetry_node01_hostname: mon01
-  stacklight_telemetry_node02_address: 172.16.10.108
-  stacklight_telemetry_node02_hostname: mon02
-  stacklight_telemetry_node03_address: 172.16.10.109
-  stacklight_telemetry_node03_hostname: mon03
+  stacklight_telemetry_address: 172.16.10.85
+  stacklight_telemetry_hostname: mtr
+  stacklight_telemetry_node01_address: 172.16.10.86
+  stacklight_telemetry_node01_hostname: mtr01
+  stacklight_telemetry_node02_address: 172.16.10.87
+  stacklight_telemetry_node02_hostname: mtr02
+  stacklight_telemetry_node03_address: 172.16.10.88
+  stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   stacklight_long_term_storage_type: prometheus
   static_ips_on_deploy_network_enabled: 'False'
