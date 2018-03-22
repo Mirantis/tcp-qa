@@ -122,7 +122,7 @@ template:
         l2_network_devices:
           private:
             address_pool: private-pool01
-            dhcp: true
+            dhcp: false
             forward:
               mode: route
 
@@ -134,7 +134,7 @@ template:
 
           tenant:
             address_pool: tenant-pool01
-            dhcp: true
+            dhcp: false
 
           external:
             address_pool: external-pool01
