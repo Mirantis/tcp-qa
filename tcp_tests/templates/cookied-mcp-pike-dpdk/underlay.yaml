@@ -554,6 +554,9 @@ template:
                   l2_network_device: tenant
                   interface_model: *interface_model
                 - label: ens6
+                  l2_network_device: tenant
+                  interface_model: *interface_model
+                - label: ens7
                   l2_network_device: external
                   interface_model: *interface_model
               network_config: &all_network_config
@@ -567,6 +570,9 @@ template:
                   networks:
                     - tenant
                 ens6:
+                  networks:
+                    - tenant
+                ens7:
                   networks:
                     - external
 
