@@ -552,10 +552,10 @@ template:
                   interface_model: *interface_model
                 - label: ens5
                   l2_network_device: tenant
-                  interface_model: *interface_model
+                  interface_model: e1000
                 - label: ens6
                   l2_network_device: tenant
-                  interface_model: *interface_model
+                  interface_model: e1000
                 - label: ens7
                   l2_network_device: external
                   interface_model: *interface_model
