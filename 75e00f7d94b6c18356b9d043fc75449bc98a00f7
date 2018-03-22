@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "637c0380_3ec19ed9",
+        "filename": "tcp_tests/fixtures/rally_fixtures.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-03-22T17:24:22Z",
+      "side": 1,
+      "message": "Its better to set this param in test, then change defaults",
+      "range": {
+        "startLine": 32,
+        "startChar": 23,
+        "endLine": 32,
+        "endChar": 25
+      },
+      "revId": "75e00f7d94b6c18356b9d043fc75449bc98a00f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
