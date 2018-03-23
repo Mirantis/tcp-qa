@@ -224,7 +224,7 @@ class SaltManager(ExecuteCommandsMixin):
         self.__api = None
         self.run_state(
             tgt,
-            'cmd.run', 'service ntp stop; ntpd -gq; service ntp start')
+            'cmd.run', 'systemctl ntp stop; ntpd -gq; service ntp start')
         new_time_res = self.run_state(tgt, 'cmd.run', 'date')
         for node_name, time in sorted(new_time_res[0]['return'][0].items()):
             LOG.info("{0}: {1}".format(node_name, time))

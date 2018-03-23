@@ -338,6 +338,11 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
+- description: Enable forward policy
+  cmd: salt "ctl01*" cmd.run 'iptables --policy FORWARD ACCEPT'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 #- description: create rc file on cfg
 #  cmd: scp ctl01:/root/keystonercv3 /root
 #  node_name: {{ HOSTNAME_CFG01 }}
