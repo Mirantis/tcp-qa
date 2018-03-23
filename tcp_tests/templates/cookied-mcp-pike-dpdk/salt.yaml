@@ -30,6 +30,22 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: "Workaround for PROD-18834: Pre-install linux-headers package"
+  cmd: salt 'cmp*' cmd.run "apt-get install -y linux-headers-$(uname -r)";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Workaround for PROD-18833: Pre-install ovs packages and update alternatives to DPDK"
+  cmd: |
+    set -ex;
+    salt 'cmp*' cmd.run "apt-get install -y openvswitch-switch openvswitch-switch-dpdk";
+    salt 'cmp*' cmd.run "update-alternatives --set ovs-vswitchd /usr/lib/openvswitch-switch-dpdk/ovs-vswitchd-dpdk";
+    salt 'cmp*' cmd.run "service openvswitch-switch restart"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 - description: Hack gtw node
