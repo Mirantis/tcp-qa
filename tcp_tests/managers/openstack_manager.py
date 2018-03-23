@@ -105,6 +105,10 @@ class OpenstackManager(ExecuteCommandsMixin):
         with self.__underlay.remote(node_name=target_name[0]) as node_remote:
             result = node_remote.execute(cmd, verbose=True)
 
+        cmd_iptables = "iptables --policy FORWARD ACCEPT"
+        with self.__underlay.remote(node_name=target_name[0]) as node_remote:
+            result = node_remote.execute(cmd_iptables, verbose=True)
+
         with self.__underlay.remote(
                 host=self.__config.salt.salt_master_host) as node_remote:
             result = node_remote.execute(

@@ -96,6 +96,9 @@ class RallyManager(object):
                                                        version=version))
         self._underlay.check_call(cmd, node_name=self._node_name)
 
+        cmd_iptables = "iptables --policy FORWARD ACCEPT"
+        self._underlay.check_call(cmd_iptables, node_name=self._node_name)
+
         LOG.info("Create rally workdir")
         cmd = 'mkdir -p /root/rally; chown 65500 /root/rally'
         self._underlay.check_call(cmd, node_name=self._node_name)
