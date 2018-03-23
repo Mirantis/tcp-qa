@@ -1,0 +1,81 @@
+
+{%- macro MACRO_CONFIGURE_VSWITCH(NODE_NAME, IP) %}
+{#################################################}
+
+- description: 'Install openvswitch-vtep package and configure it'
+  cmd: |
+    ip addr add {{ IP }}/24 dev ens4
+    ifconfig ens4 up
+
+    apt-get update
+    apt-get -y install openvswitch-switch
+    service openvswitch-switch stop
+    apt-get -y install openvswitch-vtep bridge-utils
+
+    ovsdb-tool create /etc/openvswitch/vtep.db /usr/share/openvswitch/vtep.ovsschema
+    ovsdb-tool create /etc/openvswitch/vswitch.db /usr/share/openvswitch/vswitch.ovsschema
+    ovsdb-server --pidfile --detach --log-file --remote ptcp:6632:{{ IP }} --remote punix:/var/run/openvswitch/db.sock --remote=db:hardware_vtep,Global,managers /etc/openvswitch/vswitch.db /etc/openvswitch/vtep.db
+    ovs-vswitchd --log-file --detach --pidfile unix:/var/run/openvswitch/db.sock
+    ovs-vsctl add-br v-switch
+    vtep-ctl add-ps v-switch
+    vtep-ctl set Physical_Switch v-switch tunnel_ips={{ IP }}
+    ovs-vsctl add-port v-switch port0 -- set interface port0 type=internal
+    vtep-ctl add-port v-switch port0
+    /usr/share/openvswitch/scripts/ovs-vtep --log-file=/var/log/openvswitch/ovs-vtep.log --pidfile=/var/run/openvswitch/ovs-vtep.pid --detach v-switch
+  node_name: {{ NODE_NAME }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro MACRO_CHECK_BGPVPN_ENABLED_BY_DEFAULT() %}
+{#####################################################}
+
+- description: 'Check BGPVPN extension is enabled by default'
+  cmd: salt 'cmp*' pillar.get neutron:compute:bgp_vpn:enabled
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro MACRO_ENABLE_L2GW(CLUSTER_NAME, VSWITCH_IP) %}
+{#####################################################}
+
+- description: 'Check L2GW is disabled by default'
+  cmd: salt 'gtw01*' pillar.get neutron:gateway:l2gw:enabled
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: 'Enable L2GW'
+  cmd: |
+    set -e;
+    set -x;
+    {%- set CLUSTER_PATH = '/srv/salt/reclass/classes/cluster/' + CLUSTER_NAME %}
+
+    echo "Setting 'enable: true' for L2gw feature to gateway.yml file"
+    L2GW_LINE=$(sed -n '/l2gw/=' {{ CLUSTER_PATH }}/openstack/gateway.yml)
+    L2GW_ENABLE_LINE=$((L2GW_LINE + 1))
+    sed -i "${L2GW_ENABLE_LINE}s/enabled: false/enabled: true/1" {{ CLUSTER_PATH }}/openstack/gateway.yml
+
+    echo "Setting 'ovsdb_hosts' ips for L2gw feature to gateway.yml file"
+    sed -i "s/ovsdbx: 127.0.0.1:6632/ovsdbx: {{VSWITCH_IP}}:6632/1" {{ CLUSTER_PATH }}/openstack/gateway.yml
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: 'Refresh pillar data after L2GW enablement'
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: 'Check L2GW is enabled'
+  cmd: salt 'gtw01*' pillar.get neutron:gateway:l2gw:enabled
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
