@@ -21,6 +21,12 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+- description: Reboot cfg node (Workaround for PROD-17904, PROD-18736)
+  cmd: reboot
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: true
+
 {{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
 - description: Re-install all the fromulas
   cmd: |
