@@ -134,12 +134,12 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl
-        ens5:
+        dpdkport0:
           role: bond2_dpdk_prv
-          dpdk_pci: "00:05.0"
-        ens6:
+          dpdk_pci: "0000:00:05.0"
+        dpdkport1:
           role: bond2_dpdk_prv
-          dpdk_pci: "00:06.0"
+          dpdk_pci: "0000:00:06.0"
         ens7:
           role: bond1_ab_ovs_floating
 
