@@ -68,6 +68,11 @@
    - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    ########################################################
 
+   - echo "Purge the unattended-upgrades package (Workaround for PROD-17904, PROD-18736)"
+   - echo "APT::Periodic::Unattended-Upgrade 0;" > /etc/apt/apt.conf.d/99disable_unattended_upgrade-salt
+   - apt-get -y purge unattended-upgrades
+   - reboot
+
   write_files:
    - path: /etc/default/grub.d/97-enable-grub-menu.cfg
      content: |
