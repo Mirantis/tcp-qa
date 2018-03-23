@@ -497,7 +497,8 @@
 
 {%- macro MACRO_INSTALL_SALT_MINIONS() %}
 {#######################################}
-{% for ssh in config.underlay.ssh %}
+{%- for ssh in config.underlay.ssh %}
+  {%- if [role for role in ssh['roles'] if role in config.salt_deploy.salt_roles] %}
 - description: Configure salt-minion on {{ ssh['node_name'] }}
   cmd: |
     [ ! -d /etc/salt/minion.d ] && mkdir -p /etc/salt/minion.d;
@@ -530,8 +531,8 @@
   node_name: {{ ssh['node_name'] }}
   retry: {count: 1, delay: 1}
   skip_fail: false
-{% endfor %}
-
+  {%- endif %}
+{%- endfor %}
 
 - description: Accept salt keys from all the nodes
   cmd: salt-key -A -y

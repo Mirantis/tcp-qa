@@ -129,6 +129,11 @@ salt_deploy_opts = [
     ct.Cfg('templates_dir', ct.String(),
            help="Path to directory with templates",
            default=_default_templates_dir),
+    ct.Cfg('salt_roles', ct.JSONList(),
+           help="Node roles to install salt-minions and manage by salt",
+           default=[ext.UNDERLAY_NODE_ROLES.salt_master,
+                    ext.UNDERLAY_NODE_ROLES.salt_minion,
+                    ext.UNDERLAY_NODE_ROLES.k8s_controller]),
 ]
 salt_opts = [
     ct.Cfg('salt_master_host', ct.IPAddress(),
