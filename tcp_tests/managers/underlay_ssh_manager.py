@@ -419,6 +419,8 @@ class UnderlaySSHManager(object):
             "rsync -aruv /var/log/ /root/$(hostname -f)/;"
             "dpkg -l > /root/$(hostname -f)/dump_dpkg_l.txt;"
             "df -h > /root/$(hostname -f)/dump_df.txt;"
+            "dpkg-query -W -f='\${Package}=\${Version}\n\' > "
+            "/root/$(hostname -f)/dump_dpkg_qery.txt;"
             "mount > /root/$(hostname -f)/dump_mount.txt;"
             "blkid -o list > /root/$(hostname -f)/dump_blkid_o_list.txt;"
             "iptables -t nat -S > /root/$(hostname -f)/dump_iptables_nat.txt;"
