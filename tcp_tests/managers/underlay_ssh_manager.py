@@ -428,11 +428,11 @@ class UnderlaySSHManager(object):
             "docker ps > /root/$(hostname -f)/dump_docker_ps.txt;"
             "docker service ls > "
             "  /root/$(hostname -f)/dump_docker_services_ls.txt;"
-            "for SERVICE in $(docker service ls | awk '{ print $2 }'); "
+            "for SERVICE in $(docker service ls | awk \'{ print $2 }\'); "
             "  do docker service ps --no-trunc 2>&1 $SERVICE >> "
             "    /root/$(hostname -f)/dump_docker_service_ps.txt;"
             "  done;"
-            "for SERVICE in $(docker service ls | awk '{ print $2 }'); "
+            "for SERVICE in $(docker service ls | awk \'{ print $2 }\'); "
             "  do docker service logs 2>&1 $SERVICE > "
             "    /root/$(hostname -f)/dump_docker_service_${SERVICE}_logs;"
             "  done;"
@@ -478,7 +478,7 @@ class UnderlaySSHManager(object):
         with self.remote(host=master_host) as master:
             # dump files
             LOG.info("Archive artifacts on all nodes")
-            master.check_call('salt "*" cmd.run "{0}"'.format(dump_commands),
+            master.check_call("salt '*' cmd.run '{0}'".format(dump_commands),
                               raise_on_err=False)
 
             # create target dir for archives
