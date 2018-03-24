@@ -375,7 +375,7 @@
 
 - description: Enable forward policy
   cmd: iptables --policy FORWARD ACCEPT
-  node_name: {{ HOSTNAME_GTW0101 }}
+  node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
