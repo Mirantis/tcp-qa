@@ -62,8 +62,7 @@
     echo "{{ UBUNTU_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu.list
     echo "{{ UBUNTU_UPDATES_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_updates.list
     echo "{{ UBUNTU_SECURITY_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_security.list
-    eatmydata apt-get clean;
-    apt-get update;
+    eatmydata apt-get clean && apt-get update;
     sync;
   node_name: {{ NODE_NAME }}
   retry: {count: 1, delay: 5}
