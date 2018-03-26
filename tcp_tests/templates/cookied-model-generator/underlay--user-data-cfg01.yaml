@@ -20,6 +20,12 @@
   bootcmd:
    # Block access to SSH while node is preparing
    - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   - sudo ifdown ens3
+   # Purge the unattended-upgrades package (Workaround for PROD-17904, PROD-18736)"
+   - echo "APT::Periodic::Update-Package-Lists 0;" > /etc/apt/apt.conf.d/99dont_update_package_list-salt
+   - echo "APT::Periodic::Download-Upgradeable-Packages 0;" > /etc/apt/apt.conf.d/99dont_update_download_upg_packages-salt
+   - echo "APT::Periodic::Unattended-Upgrade 0;" > /etc/apt/apt.conf.d/99disable_unattended_upgrade-salt
+   - apt-get -y purge unattended-upgrades
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
    - service sshd restart
@@ -30,7 +36,7 @@
   runcmd:
    # Prepare network connection
    - sudo ifdown ens3
-   #- sudo ifup ens3
+   - sudo ifup ens3
    #- sudo route add default gw {gateway} {interface_name}
 
    # Configure dhclient
@@ -68,13 +74,6 @@
    - echo "Allow SSH access ..."
    - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    ########################################################
-
-   # Purge the unattended-upgrades package (Workaround for PROD-17904, PROD-18736)"
-   - echo "APT::Periodic::Update-Package-Lists 0;" > /etc/apt/apt.conf.d/99dont_update_package_list-salt
-   - echo "APT::Periodic::Download-Upgradeable-Packages 0;" > /etc/apt/apt.conf.d/99dont_update_download_upg_packages-salt
-   - echo "APT::Periodic::Unattended-Upgrade 0;" > /etc/apt/apt.conf.d/99disable_unattended_upgrade-salt
-   - apt-get -y purge unattended-upgrades
-   - reboot
 
   write_files:
    - path: /etc/default/grub.d/97-enable-grub-menu.cfg
