@@ -13,6 +13,15 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
+- description: Re-install all the fromulas
+  cmd: |
+    set -e;
+    apt-get install -y salt-formula-*
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
