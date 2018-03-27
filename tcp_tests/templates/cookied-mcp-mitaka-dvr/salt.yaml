@@ -1,9 +1,9 @@
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CMP01 with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CMP02 with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_GTW01 with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import DOMAIN_NAME with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
