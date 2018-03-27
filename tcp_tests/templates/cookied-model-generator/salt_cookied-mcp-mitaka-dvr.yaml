@@ -4,7 +4,7 @@
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 
-{% set LAB_CONFIG_NAME = 'virtual-mcp-mitaka-dvr' %}
+{% set LAB_CONFIG_NAME = 'cookied-mcp-mitaka-dvr' %}
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
 # Path to the context files used to render Cluster and Environment models

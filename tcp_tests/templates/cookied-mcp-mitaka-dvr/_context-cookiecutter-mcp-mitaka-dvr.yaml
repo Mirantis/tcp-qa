@@ -2,8 +2,8 @@ default_context:
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   cicd_enabled: 'False'
-  cluster_domain: virtual-mcp-mitaka-dvr.local
-  cluster_name: virtual-mcp-mitaka-dvr
+  cluster_domain: cookied-mcp-mitaka-dvr.local
+  cluster_name: cookied-mcp-mitaka-dvr
   compute_bond_mode: active-backup
   compute_primary_first_nic: eth1
   compute_primary_second_nic: eth2
