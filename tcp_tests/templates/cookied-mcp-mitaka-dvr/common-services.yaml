@@ -1,4 +1,4 @@
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install support services
 - description: Install keepalived on ctl01
