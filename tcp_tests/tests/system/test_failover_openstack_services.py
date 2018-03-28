@@ -95,7 +95,7 @@ class TestFailoverOpenStackServices(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
     def test_restart_keepalived(self, func_name, underlay, config,
-                                openstack_deployed,  sl_os_deployed,
+                                openstack_deployed,
                                 common_services_actions,
                                 salt_actions, openstack_actions,
                                 rally, show_step):
@@ -164,7 +164,7 @@ class TestFailoverOpenStackServices(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
     def test_stop_keepalived(self, func_name, underlay, config,
-                             openstack_deployed,  sl_os_deployed,
+                             openstack_deployed,
                              common_services_actions,
                              salt_actions, openstack_actions,
                              rally, show_step):
@@ -251,7 +251,7 @@ class TestFailoverOpenStackServices(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
     def test_kill_keepalived(self, func_name, underlay, config,
-                             openstack_deployed,  sl_os_deployed,
+                             openstack_deployed,
                              common_services_actions,
                              salt_actions, openstack_actions,
                              rally, show_step):
@@ -430,7 +430,7 @@ class TestFailoverOpenStackServices(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
     def test_kill_rabbit_galera(self, func_name, underlay, config,
-                                openstack_deployed, sl_os_deployed,
+                                openstack_deployed,
                                 common_services_actions,
                                 salt_actions, openstack_actions,
                                 rally, show_step):
