@@ -40,8 +40,11 @@
   cmd: |
     set -ex;
     salt 'cmp*' cmd.run "apt-get install -y openvswitch-switch openvswitch-switch-dpdk";
+    salt 'cmp*' cmd.run "service openvswitch-switch stop"
+    salt 'cmp*' cmd.run "rm -f /var/lib/openvswitch/*"
     salt 'cmp*' cmd.run "update-alternatives --set ovs-vswitchd /usr/lib/openvswitch-switch-dpdk/ovs-vswitchd-dpdk";
-    salt 'cmp*' cmd.run "service openvswitch-switch restart"
+    salt 'cmp*' cmd.run "service openvswitch-switch start"
+    salt 'cmp*' cmd.run "ovs-vsctl --no-wait set Open_vSwitch . other_config:dpdk-init=true"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false

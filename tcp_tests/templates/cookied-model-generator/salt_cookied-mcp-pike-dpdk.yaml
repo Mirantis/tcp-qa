@@ -39,6 +39,10 @@
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.stacklight_log_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
 
+    # set wider cpu mask for DPDK
+    salt-call reclass.cluster_meta_set name='compute_ovs_pmd_cpu_mask' value='0xF' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    salt-call reclass.cluster_meta_set name='compute_ovs_dpdk_lcore_mask' value='0xF' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
