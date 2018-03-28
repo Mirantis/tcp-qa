@@ -494,7 +494,8 @@ class UnderlaySSHManager(object):
                          .format(node['node_name']))
                 master.check_call("rsync -aruv {0}:/root/*.tar.gz "
                                   "/root/dump/".format(node['node_name']),
-                                  raise_on_err=False)
+                                  raise_on_err=False,
+                                  timeout=120)
 
             destination_name = '/root/{0}_dump.tar.gz'.format(artifact_name)
             # Archive the artifacts from all nodes
