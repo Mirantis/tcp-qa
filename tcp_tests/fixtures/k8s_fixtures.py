@@ -84,18 +84,31 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
 
 
 @pytest.fixture(scope='function')
-def virtlet_logs(request, func_name, underlay, k8s_deployed):
-    """Finalizer to extract virtlet conformance logs"""
+def k8s_logs(request, func_name, underlay, k8s_deployed):
+    """Finalizer to extract conformance logs"""
 
-    grab_virtlet_result = request.keywords.get('grab_virtlet_results', None)
+    grab_k8s_result = request.keywords.get('grab_k8s_results', None)
+    extract = request.keywords.get('extract', None)
 
     def test_fin():
         if hasattr(request.node, 'rep_call') and \
                 (request.node.rep_call.passed or request.node.rep_call.failed)\
-                and grab_virtlet_result:
-            files = utils.extract_name_from_mark(grab_virtlet_result) \
+                and grab_k8s_result:
+            files = utils.extract_name_from_mark(grab_k8s_result) \
                     or "{}".format(func_name)
-            k8s_deployed.extract_file_to_node()
+            if extract:
+                container_system = utils.extract_name_from_mark(
+                    extract, 'container_system')
+                extract_from = utils.extract_name_from_mark(
+                    extract, 'extract_from')
+                files_to_extract = utils.extract_name_from_mark(
+                    extract, 'files_to_extract')
+                for path in files_to_extract:
+                    k8s_deployed.extract_file_to_node(
+                        system=container_system, container=extract_from,
+                        file_path=path)
+            else:
+                k8s_deployed.extract_file_to_node()
             k8s_deployed.download_k8s_logs(files)
 
     request.addfinalizer(test_fin)

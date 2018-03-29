@@ -373,17 +373,18 @@ def render_template(file_path, options=None, log_env_vars=True):
     return template
 
 
-def extract_name_from_mark(mark):
+def extract_name_from_mark(mark, info='name'):
     """Simple function to extract name from pytest mark
 
     :param mark: pytest.mark.MarkInfo
+    :param info: Kwarg with information
     :rtype: string or None
     """
     if mark:
         if len(mark.args) > 0:
             return mark.args[0]
-        elif 'name' in mark.kwargs:
-            return mark.kwargs['name']
+        elif info in mark.kwargs:
+            return mark.kwargs[info]
     return None
 
 

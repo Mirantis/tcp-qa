@@ -90,11 +90,11 @@ class TestVirtletActions(object):
         k8s_deployed.delete_vm(target_yaml)
 
     @pytest.mark.grab_versions
-    @pytest.mark.grab_virtlet_results(name=['virtlet_conformance.log',
-                                            'report.xml'])
+    @pytest.mark.grab_k8s_results(name=['virtlet_conformance.log',
+                                        'report.xml'])
     @pytest.mark.fail_snapshot
     def test_virtlet_conformance(self, show_step, config, k8s_deployed,
-                                 virtlet_logs):
+                                 k8s_logs):
         """Test run of virtlet conformance tests
 
         Scenario:

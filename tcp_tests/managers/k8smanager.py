@@ -346,8 +346,8 @@ class K8SManager(ExecuteCommandsMixin):
         with self.__underlay.remote(
                 node_name=self.ctl_host) as remote:
             result = remote.check_call(
-                "docker run --rm --net=host -e API_SERVER="
-                "'http://127.0.0.1:8080' {}".format(
+                "set -o pipefail; docker run --net=host -e API_SERVER="
+                "'http://127.0.0.1:8080' {} | tee k8s_conformance.log".format(
                     self.__config.k8s.k8s_conformance_image),
                 timeout=timeout)['stdout']
             return result
