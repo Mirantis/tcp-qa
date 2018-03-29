@@ -184,10 +184,17 @@ class Testk8sInstall(object):
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")
 
+    @pytest.mark.extract(container_system='docker', extract_from='conformance',
+                         files_to_extract=['report'])
+    @pytest.mark.merge_xunit(path='/root/report',
+                             output='/root/conformance_result.xml')
+    @pytest.mark.grab_k8s_results(name=['k8s_conformance.log',
+                                        'conformance_result.xml'])
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8116
-    def test_only_k8s_install(self, config, k8s_deployed, k8s_actions):
+    def test_only_k8s_install(self, config, show_step,
+                              k8s_deployed, k8s_actions, k8s_logs):
         """Test for deploying MCP environment with k8s and check it
 
         Scenario:
@@ -199,5 +206,6 @@ class Testk8sInstall(object):
 
         """
         if config.k8s.k8s_conformance_run:
+            show_step(5)
             k8s_actions.run_conformance()
         LOG.info("*************** DONE **************")

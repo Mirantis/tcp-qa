@@ -346,8 +346,8 @@ class K8SManager(ExecuteCommandsMixin):
         with self.__underlay.remote(
                 node_name=self.ctl_host) as remote:
             result = remote.check_call(
-                "docker run --rm --net=host -e API_SERVER="
-                "'http://127.0.0.1:8080' {}".format(
+                "set -o pipefail; docker run --net=host -e API_SERVER="
+                "'http://127.0.0.1:8080' {} | tee k8s_conformance.log".format(
                     self.__config.k8s.k8s_conformance_image),
                 timeout=timeout)['stdout']
             return result
@@ -591,11 +591,31 @@ class K8SManager(ExecuteCommandsMixin):
         master_host = self.__config.salt.salt_master_host
         with self.__underlay.remote(host=master_host) as r:
             for log_file in files:
-                cmd = "rsync {0}:/root/{1} /root/".format(self.ctl_host,
-                                                          log_file)
+                cmd = "rsync -r {0}:/root/{1} /root/".format(self.ctl_host,
+                                                             log_file)
                 r.check_call(cmd, raise_on_err=False)
                 LOG.info("Downloading the artifact {0}".format(log_file))
                 r.download(destination=log_file, target=os.getcwd())
+
+    def combine_xunit(self, path, output):
+        """
+        Function to combine multiple xmls with test results to
+        one.
+
+        :param path: Path where xmls to combine located
+        :param output: Path to xml file where output will stored
+        :return:
+        """
+        with self.__underlay.remote(node_name=self.ctl_host) as r:
+            cmd = "pip install xunitmerge"
+            LOG.debug('Installing xunitmerge')
+            r.check_call(cmd)
+            LOG.debug('Merging xunit')
+            cmd = ("cd {0}; arg = ''; "
+                   "for i in $(ls | grep xml); "
+                   "do arg=\"$arg $i\"; done && "
+                   "xunitmerge $arg {1}".format(path, output))
+            r.check_call(cmd)
 
     def manage_cncf_archive(self):
         """

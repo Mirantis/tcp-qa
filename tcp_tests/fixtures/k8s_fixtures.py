@@ -84,18 +84,64 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
 
 
 @pytest.fixture(scope='function')
-def virtlet_logs(request, func_name, underlay, k8s_deployed):
-    """Finalizer to extract virtlet conformance logs"""
+def k8s_logs(request, func_name, underlay, k8s_deployed):
+    """Finalizer to extract conformance logs
 
-    grab_virtlet_result = request.keywords.get('grab_virtlet_results', None)
+    Usage:
+    @pytest.mark.grab_k8s_result(name=['file1', 'file2'])
+    ^^^^^
+    This mark says tcp-qa to download files that counted in array as
+    parameter 'name'. Files should be located at ctl01. Files will be
+    downloaded to the host, where your test runs.
+
+    @pytest.mark.extract(container_system='docker', extract_from='conformance',
+                         files_to_extract=['report'])
+    ^^^^^
+    This mark says tcp-qa to copy files from container. Docker or k8s system
+    supported.
+    container_system param says function what strategy should be
+    used.
+    extract_from param says what container should be used to copy. Note
+    that we are using grep to determine container ID, so if you have multiple
+    container with same substring to copy you may encounter unexpected issues.
+    files_to_extract param - this is array with paths of files/dirs to copy.
+
+    @pytest.mark.merge_xunit(path='/root/report',
+                             output='/root/conformance_result.xml')
+    ^^^^^
+    This mark will help you to merge xunit results in case if you have
+    multiple reports because of multiple threads.
+    path param says where xml results stored
+    output param says where result will be saved
+    """
+
+    grab_k8s_result = request.keywords.get('grab_k8s_results', None)
+    extract = request.keywords.get('extract', None)
+    merge_xunit = request.keywords.get('merge_xunit', None)
 
     def test_fin():
         if hasattr(request.node, 'rep_call') and \
                 (request.node.rep_call.passed or request.node.rep_call.failed)\
-                and grab_virtlet_result:
-            files = utils.extract_name_from_mark(grab_virtlet_result) \
+                and grab_k8s_result:
+            files = utils.extract_name_from_mark(grab_k8s_result) \
                     or "{}".format(func_name)
-            k8s_deployed.extract_file_to_node()
+            if extract:
+                container_system = utils.extract_name_from_mark(
+                    extract, 'container_system')
+                extract_from = utils.extract_name_from_mark(
+                    extract, 'extract_from')
+                files_to_extract = utils.extract_name_from_mark(
+                    extract, 'files_to_extract')
+                for path in files_to_extract:
+                    k8s_deployed.extract_file_to_node(
+                        system=container_system, container=extract_from,
+                        file_path=path)
+            else:
+                k8s_deployed.extract_file_to_node()
+            if merge_xunit:
+                path = utils.extract_name_from_mark(merge_xunit, 'path')
+                output = utils.extract_name_from_mark(merge_xunit, 'output')
+                k8s_deployed.combine_xunit(path, output)
             k8s_deployed.download_k8s_logs(files)
 
     request.addfinalizer(test_fin)
