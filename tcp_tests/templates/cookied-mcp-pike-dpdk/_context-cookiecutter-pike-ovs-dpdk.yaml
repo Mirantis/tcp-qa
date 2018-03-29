@@ -90,7 +90,7 @@ default_context:
   openstack_neutron_vlan_aware_vms: 'False'
   openstack_nfv_dpdk_enabled: 'True'
   openstack_nfv_sriov_enabled: 'False'
-  openstack_nova_compute_hugepages_count: '600'
+  openstack_nova_compute_hugepages_count: '2048'
   openstack_nova_compute_nfv_req_enabled: 'False'
   openstack_nova_cpu_pinning: '3'
   openstack_ovs_dvr_enabled: 'False'
