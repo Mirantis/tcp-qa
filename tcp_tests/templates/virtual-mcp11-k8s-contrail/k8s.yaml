@@ -166,13 +166,6 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
-- description: Setup etcd server on primary controller
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master and *01*' state.sls etcd.server.setup
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Workaround for https://mirantis.jira.com/browse/PROD-12798
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@kubernetes:master' service.restart 'keepalived'
