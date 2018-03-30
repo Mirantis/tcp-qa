@@ -228,3 +228,35 @@ class TestMcpInstallOvsPike(object):
             openstack_actions.run_tempest(pattern=settings.PATTERN)
             openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
+
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    @pytest.mark.pike_ovs_l2gw_bgpvpn
+    def test_mcp_pike_ovs_l2gw_bgpvpn_install(self, underlay,
+                                              openstack_deployed,
+                                              openstack_actions):
+        """Test for deploying an mcp environment with L2 gateway and BGP VPN
+        Neutron extensions enabled and check it
+        Scenario:
+        1. Prepare VM which emulate VSwitch for L2 GW tests
+        2. Prepare salt on hosts
+        3. Setup controller nodes
+        4. Setup compute nodes
+        5. Run tempest
+
+        """
+        openstack_actions._salt.local(
+                tgt='*', fun='cmd.run',
+                args='service ntp stop; ntpd -gq; service ntp start')
+
+        registry = 'docker-dev-local.docker.mirantis.net/mirantis/networking'
+        name = 'rally-tempest-net-features:latest'
+
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(
+                pattern=settings.PATTERN,
+                conf_name='net_features.conf',
+                registry='{0}/{1}'.format(registry, name)
+            )
+            openstack_actions.download_tempest_report()
+        LOG.info("*************** DONE **************")
