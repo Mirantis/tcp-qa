@@ -1,8 +1,8 @@
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CTL01 with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CTL02 with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CTL03 with context %}
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CTL03 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}

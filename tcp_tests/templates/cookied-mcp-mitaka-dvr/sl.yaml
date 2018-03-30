@@ -1,4 +1,4 @@
-{% from 'virtual-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-mitaka-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% import 'shared-sl-tests.yaml' as SHARED_SL_TESTS with context %}
 # Install docker swarm
 - description: Configure docker service
