@@ -101,7 +101,7 @@ class ExecuteCommandsMixin(object):
                 LOG.info("\n\n{0}\n{1}".format(
                     msg + retry_msg, '=' * len(msg + retry_msg)))
 
-                result = remote.execute('set -ex; ' + cmd, verbose=True)
+                result = remote.execute(cmd, verbose=True)
 
                 # Workaround of exit code 0 from salt in case of failures
                 failed = 0
