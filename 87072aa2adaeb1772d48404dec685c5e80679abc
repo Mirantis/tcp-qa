@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "62002802_dd2c7990",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-dvr-ssl-barbican/openstack.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-03-30T14:17:17Z",
+      "side": 1,
+      "message": "Why we do this?",
+      "range": {
+        "startLine": 22,
+        "startChar": 16,
+        "endLine": 22,
+        "endChar": 23
+      },
+      "revId": "87072aa2adaeb1772d48404dec685c5e80679abc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "41b9b34d_e152bea8",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-dvr-ssl-barbican/openstack.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-03-30T14:17:17Z",
+      "side": 1,
+      "message": "you do not need test policy",
+      "range": {
+        "startLine": 28,
+        "startChar": 11,
+        "endLine": 28,
+        "endChar": 15
+      },
+      "revId": "87072aa2adaeb1772d48404dec685c5e80679abc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ac3eb009_f579568c",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-dvr-ssl-barbican/overrides-policy.yml",
+        "patchSetId": 2
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-03-30T14:17:17Z",
+      "side": 1,
+      "message": "You do not need this file, we do not test ssl with policy, so just remove it",
+      "range": {
+        "startLine": 8,
+        "startChar": 8,
+        "endLine": 8,
+        "endChar": 9
+      },
+      "revId": "87072aa2adaeb1772d48404dec685c5e80679abc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "048bd47f_9736a6d5",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-dvr-ssl-barbican/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-03-30T14:17:17Z",
+      "side": 1,
+      "message": "Shouldn\u0027t dogtag formula be pre-installed?",
+      "range": {
+        "startLine": 17,
+        "startChar": 253,
+        "endLine": 17,
+        "endChar": 260
+      },
+      "revId": "87072aa2adaeb1772d48404dec685c5e80679abc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
