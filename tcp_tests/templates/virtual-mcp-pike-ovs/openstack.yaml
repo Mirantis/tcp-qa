@@ -464,14 +464,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Temporary WR for CIFS type. (Fixed in this patch https://gerrit.mcp.mirantis.net/#/c/17727/)
-  cmd: |
-    salt -C 'I@manila:share' cmd.run 'apt-get install samba -y';
-    salt -C 'I@manila:share' cmd.run 'service manila-share restart';
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
 - description: Check manila-services
   cmd: |
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila service-list'
