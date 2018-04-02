@@ -81,7 +81,7 @@
   skip_fail: false
 
 - description: Configure collector
-  cmd: salt -C 'I@heka:log_collector' state.sls heka.log_collector
+  cmd: salt -C 'I@fluentd:agent' state.sls fluentd
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
