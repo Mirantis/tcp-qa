@@ -9,45 +9,6 @@ nodes:
           role: single_dhcp
     # Physical nodes
 
-    cid01.ocata-cicd.local:
-      reclass_storage_name: cicd_control_node01
-      roles:
-      - cicd_control_leader
-      - linux_system_codename_xenial
-      interfaces:
-        enp2s0f0:
-          role: single_mgm
-          deploy_address: 172.16.49.70
-        enp2s0f1:
-          role: single_vlan_ctl
-          single_address: 10.167.8.91
-
-    cid02.ocata-cicd.local:
-      reclass_storage_name: cicd_control_node02
-      roles:
-      - cicd_control_manager
-      - linux_system_codename_xenial
-      interfaces:
-        enp2s0f0:
-          role: single_mgm
-          deploy_address: 172.16.49.71
-        enp2s0f1:
-          role: single_vlan_ctl
-          single_address: 10.167.8.92
-
-    cid03.ocata-cicd.local:
-      reclass_storage_name: cicd_control_node03
-      roles:
-      - cicd_control_manager
-      - linux_system_codename_xenial
-      interfaces:
-        enp2s0f0:
-          role: single_mgm
-          deploy_address: 172.16.49.72
-        enp2s0f1:
-          role: single_vlan_ctl
-          single_address: 10.167.8.93
-
     kvm01.ocata-cicd.local:
       reclass_storage_name: infra_kvm_node01
       roles:

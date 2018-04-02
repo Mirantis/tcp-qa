@@ -1,6 +1,33 @@
 nodes:
     # Virtual Control Plane nodes
 
+    cid01.ocata-cicd.local:
+      reclass_storage_name: cicd_control_node01
+      roles:
+      - cicd_control_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    cid02.ocata-cicd.local:
+      reclass_storage_name: cicd_control_node02
+      roles:
+      - cicd_control_manager
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    cid03.ocata-cicd.local:
+      reclass_storage_name: cicd_control_node03
+      roles:
+      - cicd_control_manager
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
     ctl01.ocata-cicd.local:
       reclass_storage_name: openstack_control_node01
       roles:
