@@ -165,14 +165,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Check heat service
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack orchestration resource type list'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 10}
-  skip_fail: false
-
-
 - description: Deploy horizon dashboard
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@horizon:server' state.sls horizon
@@ -187,6 +179,12 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+- description: Check heat service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack orchestration resource type list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
 
 # Install compute node
 
