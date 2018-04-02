@@ -455,15 +455,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Adding manila type as default in manila.conf (fixed in https://gerrit.mcp.mirantis.net/#/c/17893)
-  cmd: |
-    salt -C 'ctl* or share*' cmd.run "sed -i 's/\[DEFAULT\]/\[DEFAULT\]\ndefault_share_type = default/g' /etc/manila/manila.conf";
-    salt -C 'I@apache:server' cmd.run "service apache2 restart";
-    salt -C 'I@manila:scheduler' cmd.run "service manila-scheduler restart";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Check manila-services
   cmd: |
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila service-list'
