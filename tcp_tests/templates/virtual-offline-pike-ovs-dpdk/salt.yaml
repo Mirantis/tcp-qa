@@ -1,0 +1,98 @@
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_APT01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CTL03 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_PRX01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_VS with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.local.test/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_CONTROL_PREFIX with context %}
+{% import 'virtual-offline-pike-ovs-dpdk/vswitch-config.yaml' as VSWITCH with context %}
+{% set VSWITCH_IP = SHARED.IPV4_NET_CONTROL_PREFIX+'.178' %}
+
+
+
+#- description: 'Generate nginx cert'
+#  cmd: |
+#    openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
+#    -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.gerrit.com" \
+#    -keyout ssl-nginx.key  -out ssl-nginx.crt;
+#  node_name: {{ HOSTNAME_APT01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
+
+- description: Check nginx APT node is ready
+  cmd: systemctl status nginx;
+  node_name: {{ HOSTNAME_APT01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Check dnsmasq on APT node is ready
+  cmd: systemctl status dnsmasq;
+  node_name: {{ HOSTNAME_APT01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_VS) }}
+{{ VSWITCH.MACRO_CONFIGURE_VSWITCH(HOSTNAME_VS, VSWITCH_IP) }}
+
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CTL01) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CTL02) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CTL03) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CMP01) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CMP02) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_GTW01) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_PRX01) }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
+
+- description: 'Workaround of local_repo_url - set to offline image repository structure'
+  cmd: |
+    find /srv/salt/reclass/classes/cluster -type f -exec sed -i 's/local_repo_url: .*/local_repo_url: mirror.mcp.mirantis.local.test/g' {} +
+    find /srv/salt/reclass/classes/cluster -type f -exec sed -i 's/aptly_server_address: .*/aptly_server_address: {{ os_env('HOST_APT') }}/g' {} +
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "backupninja" "watchdog"') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+{{ VSWITCH.MACRO_CHECK_BGPVPN_ENABLED_BY_DEFAULT() }}
+
+{{ VSWITCH.MACRO_ENABLE_L2GW(SHARED.CLUSTER_NAME, VSWITCH_IP) }}
+- description: Hack gtw node
+  cmd: salt 'gtw*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Hack cmp01 node
+  cmd: salt 'cmp01*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Hack cmp02 node
+  cmd: salt 'cmp02*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
