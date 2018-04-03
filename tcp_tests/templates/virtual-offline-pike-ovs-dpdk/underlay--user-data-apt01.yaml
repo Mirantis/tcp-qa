@@ -1,0 +1,115 @@
+| # All the data below will be stored as a string object
+  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
+
+  disable_root: false
+  chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+  bootcmd:
+   # Block access to SSH while node is preparing
+   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+  output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+  runcmd:
+   # Prepare network connection
+   - sudo ifup ens3
+   #- sudo route add default gw {gateway} {interface_name}
+   - sudo ifup ens4
+   - sudo ifup ens5
+   - sudo ifup ens6
+
+   - rm /etc/resolv.conf
+   - touch /etc/resolv.conf
+   - export LOCAL_DNS_IP=$(ifconfig ens3 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1)
+   - echo "nameserver $LOCAL_DNS_IP" >> /etc/resolv.conf;
+   - echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
+   - echo "supersede domain-name-servers $LOCAL_DNS_IP, 172.18.208.44" >> /etc/dhcp/dhclient.conf
+   - export TERM=linux
+   - export LANG=C
+
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
+
+
+   ############## Cloud repo01 node ##################
+   - which wget >/dev/null || (apt-get update; apt-get install -y wget);
+   - echo "deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+   - wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
+   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+   - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+
+   - eatmydata apt-get clean && apt-get update
+
+   # Install common packages
+   - eatmydata apt-get install -y salt-minion python-pip git curl tmux byobu iputils-ping traceroute htop tree ntp;
+   - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=gerrit.mcp.mirantis.local.test" -keyout /root/ssl-nginx.key  -out /root/ssl-nginx.crt;
+   - cd /tmp;
+   - git clone https://github.com/TatyankaLeontovich/salt-formula-nginx;
+   - git clone https://github.com/TatyankaLeontovich/salt-dnsmasq;
+   - git clone https://github.com/TatyankaLeontovich/underpillar;
+   - mkdir -p /srv/pillar/;
+   - mkdir -p /srv/salt;
+   - cd /srv/salt;
+   - ln -s /tmp/salt-formula-nginx/nginx;
+   - ln -s /tmp/salt-dnsmasq/dnsmasq;
+   - cp /tmp/underpillar/pillar/*.sls /srv/pillar/;
+   - cp /tmp/underpillar/states/*.sls /srv/salt/;
+   - cp /srv/pillar/top_localdns.sls /srv/pillar/top.sls;
+   - cp /srv/salt/top_localdns.sls /srv/salt/top.sls;
+   - find /srv/pillar/ -type f -exec sed -i "s/==LOCAL_DNS_IP==/${LOCAL_DNS_IP}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_APT==/{{ os_env('HOST_APT', 'apt.mirantis.com') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_SALTSTACK==/{{ os_env('HOST_SALTSTACK', 'repo.saltstack.com') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_ARCHIVE_UBUNTU==/{{ os_env('HOST_ARCHIVE_UBUNTU', 'archive.ubuntu.com') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_MIRROR_MCP_MIRANTIS==/{{ os_env('HOST_MIRROR_MCP_MIRANTIS', 'mirror.mcp.mirantis.net') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_MIRROR_FUEL_INFRA==/{{ os_env('HOST_MIRROR_FUEL_INFRA', 'mirror.fuel-infra.org') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_PPA_LAUNCHPAD==/{{ os_env('HOST_PPA_LAUNCHPAD', 'ppa.launchpad.net') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_GERRIT_MCP_MIRANTIS==/{{ os_env('HOST_GERRIT_MCP_MIRANTIS', 'gerrit.mcp.mirantis.net') }}/g" {} +
+   - salt-call --local  --state-output=mixed state.sls dnsmasq;
+   - salt-call --local  --state-output=mixed state.sls nginx;
+   ########################################################
+   # Node is ready, allow SSH access
+   - echo "Allow SSH access ..."
+   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ########################################################
+
+  write_files:
+   - path: /etc/network/interfaces
+     content: |
+          auto ens3
+          iface ens3 inet dhcp
+          auto ens4
+          iface ens4 inet dhcp
+          auto ens5
+          iface ens5 inet dhcp
+          auto ens6
+          iface ens6 inet dhcp
+
+   - path: /root/.ssh/config
+     owner: root:root
+     permissions: '0600'
+     content: |
+          Host *
+            ServerAliveInterval 300
+            ServerAliveCountMax 10
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
