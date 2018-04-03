@@ -230,23 +230,6 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
-
-  # Upload cirros image
-
-- description: Upload cirros image on ctl01
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
-  skip_fail: false
-
-- description: Register image in glance
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
@@ -292,27 +275,6 @@
 - description:  Add interface
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description:  Allow all tcp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description:  Allow all icmp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-- description: sync time
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-    'service ntp stop; ntpd -gq;  service ntp start'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -476,6 +438,120 @@
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila create NFS 1 --share-type=default';
     sleep 5;
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila list';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: run runtest
+  cmd: |
+    -C 'I@salt:master' state.sls runtest
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: run runtest
+  cmd: |
+    -C 'I@salt:master' state.sls runtest
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: create_flavor
+  cmd: |
+    -C 'I@salt:master' state.sls nova.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: create net
+  cmd: |
+    -C 'I@salt:master' state.sls neutron.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+#- description: upload image
+#  cmd: |
+#    -C 'I@salt:master' state.sls glance.client
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
+
+- description: generate config
+  cmd: |
+    salt 'cfg0*' runtest.generate_tempest_config /tmp/tempest.conf
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+### Magic with image
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'openssl genrsa -out private_key.pem 1024'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'openssl req -new -key private_key.pem -out cert_request.csr  -subj "/C=GB/ST=London/L=London/O=Global Security/OU=IT Department/CN=example.com"'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'openssl x509 -req -days 14 -in cert_request.csr -signkey private_key.pem -out new_cert.crt'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'openstack secret store --name test --algorithm RSA --secret-type certificate --payload-content-type "application/octet-stream" --payload-content-encoding base64 --payload "$(base64 new_cert.crt)"'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'cert_uuid=92ed303e-f1fd-4562-a2d5-78fa17a69d85'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'wget http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'openssl dgst -sha256 -sign private_key.pem -sigopt rsa_padding_mode:pss -out myimage.signature /root/cirros-0.3.5-x86_64-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'image_signature=$(base64 -w 0 myimage.signature > myimage.signature.b64'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'image_signature=$(cat myimage.signature.b64)'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Magic
+  cmd: |
+    salt 'ctl01*' cmd.run 'wget http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
