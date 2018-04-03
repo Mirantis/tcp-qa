@@ -430,7 +430,7 @@
 
 - description: WR https://mirantis.jira.com/browse/PROD-19012
   cmd: |
-    salt 'ctl*' cmd.run 'systemctl reload apache2'
+    salt 'ctl*' cmd.run 'systemctl restart apache2'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -439,7 +439,7 @@
   cmd: |
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila service-list'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 15}
   skip_fail: false
 
 - description: Create manila type
