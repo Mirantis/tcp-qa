@@ -6,6 +6,7 @@
 {% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
 {# Pin to a specified commit in salt-models/reclass-system #}
 {% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/reclass-system') %}
+{% set SALT_MODELS_SYSTEM_REPOSITORY_COMMIT = os_env('SALT_MODELS_SYSTEM_REPOSITORY_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
@@ -166,6 +167,9 @@
     pushd /srv/salt/reclass;
     git config submodule."classes/system".url "{{ SALT_MODELS_SYSTEM_REPOSITORY }}";
     git submodule update --init --recursive;
+    {%- if SALT_MODELS_SYSTEM_REPOSITORY_COMMIT != '' %}
+    git submodule foreach 'git checkout {{ SALT_MODELS_SYSTEM_REPOSITORY_COMMIT }}';
+    {%- endif %}
     {%- if SALT_MODELS_REF_CHANGE != '' %}
     {%- for item in SALT_MODELS_REF_CHANGE.split(" ") %}
     git fetch {{ SALT_MODELS_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD;
