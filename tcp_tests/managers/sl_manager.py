@@ -45,6 +45,7 @@ class SLManager(ExecuteCommandsMixin):
     def get_sl_vip(self):
         tgt = 'I@prometheus:server:enabled:True'
         pillar = 'keepalived:cluster:instance:prometheus_server_vip:address'
+        pill = 'keepalived:cluster:instance:stacklight_monitor_vip:address'
         sl_vip_address_pillars = self._salt.get_pillar(tgt=tgt,
                                                        pillar=pillar)
         sl_vip_ip = set([ip
@@ -57,15 +58,13 @@ class SLManager(ExecuteCommandsMixin):
             sl_vip_ip = set([ip
                              for item in sl_vip_address_pillars
                              for node, ip in item.items() if ip])
-        if not sl_vip_ip:
-
-            pillar = ('keepalived:cluster:instance'
-                      ':stacklight_monitor_vip:address')
+        if len(sl_vip_ip) != 1:
             sl_vip_address_pillars = self._salt.get_pillar(tgt=tgt,
-                                                           pillar=pillar)
+                                                           pillar=pill)
             sl_vip_ip = set([ip
                              for item in sl_vip_address_pillars
                              for node, ip in item.items() if ip])
+            LOG.info("Current response is {}".format(sl_vip_address_pillars))
         assert len(sl_vip_ip) == 1, (
             "SL VIP not found or found more than one SL VIP in pillars:{0}, "
             "expected one!").format(sl_vip_ip)
