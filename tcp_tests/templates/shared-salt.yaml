@@ -160,6 +160,9 @@
     pushd /srv/salt/reclass;
     git config submodule."classes/system".url "{{ SALT_MODELS_SYSTEM_REPOSITORY }}";
     git submodule update --init --recursive;
+    {%- if SALT_MODELS_SYSTEM_REPOSITORY_COMMIT != '' %}
+    git submodule foreach 'git checkout {{ SALT_MODELS_SYSTEM_REPOSITORY_COMMIT }}';
+    {%- endif %}
     {%- if SALT_MODELS_REF_CHANGE != '' %}
     {%- for item in SALT_MODELS_REF_CHANGE.split(" ") %}
     git fetch {{ SALT_MODELS_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD;
