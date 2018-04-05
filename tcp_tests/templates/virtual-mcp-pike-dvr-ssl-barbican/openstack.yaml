@@ -3,9 +3,12 @@
 {% from 'virtual-mcp-pike-dvr-ssl-barbican/underlay.yaml' import HOSTNAME_CTL02 with context %}
 {% from 'virtual-mcp-pike-dvr-ssl-barbican/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'virtual-mcp-pike-dvr-ssl-barbican/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'virtual-mcp-pike-dvr-ssl-barbican/underlay.yaml' import LAB_CONFIG_NAME with context %}
+
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
-{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
+{% import 'shared-salt.yaml' as SHARED with context %}
+
 # Install OpenStack control services
 
 - description: Nginx
@@ -230,23 +233,6 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
-
-  # Upload cirros image
-
-- description: Upload cirros image on ctl01
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
-  skip_fail: false
-
-- description: Register image in glance
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
@@ -295,20 +281,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
-
-#- description:  Allow all tcp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description:  Allow all icmp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
 
 - description: sync time
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
@@ -396,12 +368,6 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Enable forward policy
-  cmd: iptables --policy FORWARD ACCEPT
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Restart cinder volume
   cmd: |
     salt -C 'I@cinder:controller' service.restart cinder-volume;
@@ -479,3 +445,5 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+{{ SHARED.RUN_NEW_TEMPEST() }}
