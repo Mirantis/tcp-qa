@@ -48,7 +48,7 @@ class TestMcpInstallStacklightOpenstack(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_mcp_sl_os_install(self, underlay, config, openstack_deployed,
-                               sl_deployed):
+                               sl_deployed, openstack_actions):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -76,4 +76,13 @@ class TestMcpInstallStacklightOpenstack(object):
         sl_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
+        LOG.info("*************** DONE **************")
+
+        openstack_actions._salt.local(
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
+
+        if settings.RUN_TEMPEST:
+            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
