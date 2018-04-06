@@ -465,7 +465,7 @@
 
 - description: Create manila type
   cmd: |
-    salt 'ctl01*' cmd.run '. /root/keystonercv3; manila type-create default False --is_public True'
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; manila type-create default false --create_share_from_snapshot_support true --revert_to_snapshot_support true --mount_snapshot_support true --snapshot_support true --is_public true'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
