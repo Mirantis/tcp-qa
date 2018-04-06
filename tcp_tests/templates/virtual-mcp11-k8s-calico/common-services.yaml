@@ -98,3 +98,10 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+- description: Restart rsyslog for haproxy logs
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.restart rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
