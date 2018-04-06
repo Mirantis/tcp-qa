@@ -1,7 +1,7 @@
 {# Collection of sl tests macroses shared across different deployments #}
 
 {% set SL_TEST_BRANCH = os_env('SL_TEST_BRANCH','master') %}
-{% set SL_TEST_REPO = os_env('SL_TEST_REPO','https://github.com/dkalashnik/stacklight-pytest') %}
+{% set SL_TEST_REPO = os_env('SL_TEST_REPO','https://github.com/Mirantis/stacklight-pytest') %}
 {% set SL_TEST_TO_RUN = os_env('set SL_TEST_TO_RUN','stacklight_tests/tests/prometheus/test_smoke.py') %}
 
 {%- macro MACRO_CLONE_SL_TESTS() %}
