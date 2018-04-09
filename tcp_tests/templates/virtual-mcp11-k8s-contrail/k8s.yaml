@@ -16,41 +16,7 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Install keepalived on primary controller
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster and *01*' state.sls keepalived
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
-
-- description: Install keepalived on all controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster' state.sls keepalived
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
-
-- description: Install nginx
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 # Opencontrail Control Plane
-- description: Install RabbitMQ
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@rabbitmq:server' state.sls rabbitmq
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 10}
-  skip_fail: false
-
-- description: Check RabbitMQ
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@rabbitmq:server' cmd.run "rabbitmqctl cluster_status"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
 
 - description: Install Opencontrail db on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -124,19 +90,6 @@
   skip_fail: false
 
 # Kubernetes
-- description: Install docker
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@docker:host' state.sls docker.host
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check docker
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@docker:host' cmd.run 'docker ps'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
 
 - description: Install etcd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
