@@ -8,7 +8,10 @@
 
 ---
 aliases:
- - &interface_model {{ os_env('INTERFACE_MODEL', 'e1000') }}
+# e1000 is not able to serve with multicasts, so keepalived is not
+# working correctly. in any contrail model virtio model
+# should be used.
+ - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}

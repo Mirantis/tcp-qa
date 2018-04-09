@@ -1,29 +1,7 @@
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% import 'shared-sl-tests.yaml' as SHARED_SL_TESTS with context %}
+{% from 'virtual-mcp11-k8s-contrail/salt.yaml' import ENVIRONMENT_MODEL_INVENTORY_NAME with context %}
 
 # Install docker swarm
-- description: sync time
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-    'service ntp stop; ntpd -gq;  service ntp start'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Restart keepalived service
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'mon*' cmd.run "systemctl restart keepalived"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Check the VIP
-  cmd: |
-    SL_MONITOR_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:stacklight_monitor_address`;
-    echo "_param:stacklight_monitor_address (vip): ${SL_MONITOR_ADDRESS}";
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'mon*' cmd.run "ip a | grep ${SL_MONITOR_ADDRESS}" | grep -B1 ${SL_MONITOR_ADDRESS}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Configure docker service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls docker.host
   node_name: {{ HOSTNAME_CFG01 }}
@@ -72,7 +50,36 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: Install keepalived on mon nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'mon*' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Check the VIP on mon nodes
+  cmd: |
+    SL_VIP=`salt-call --out=newline_values_only pillar.get _param:stacklight_monitor_address`;
+    echo "_param:stacklight_monitor_address (vip): ${SL_VIP}";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'mon*' cmd.run "ip a | grep ${SL_VIP}" | grep -B1 ${SL_VIP}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 # Install slv2 infra
+#Launch containers
+- description: launch prometheus containers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and I@prometheus:server' state.sls docker.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+- description: Check docker ps
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' cmd.run "docker ps"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
 - description: Install telegraf
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@telegraf:agent or I@telegraf:remote_agent' state.sls telegraf
   node_name: {{ HOSTNAME_CFG01 }}
@@ -84,12 +91,6 @@
     if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:exporters' match.pillar 'prometheus:exporters' ; then
       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:exporters' state.sls prometheus
     fi
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Configure collector
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:log_collector' state.sls heka.log_collector
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -129,6 +130,45 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+# Install Prometheus LTS(optional if set in model)
+- description: Prometheus LTS(optional if set in model)
+  cmd: |
+    PROMETHEUS_SERVICE=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:relay' test.ping 1>/dev/null 2>&1 && echo true`;
+    echo "PROMETHEUS rely service presence: ${PROMETHEUS_SERVICE}";
+    if [[ "$PROMETHEUS_SERVICE" == "true" ]]; then
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:relay' state.sls prometheus
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+# Install service for the log collection
+- description: Configure fluentd
+  cmd: |
+    FLUENTD_SERVICE=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@fluentd:agent' test.ping 1>/dev/null 2>&1 && echo true`;
+    echo "Fluentd service presence: ${FLUENTD_SERVICE}";
+    if [[ "$FLUENTD_SERVICE" == "true" ]]; then
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@fluentd:agent' state.sls fluentd
+    else
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:log_collector' state.sls heka.log_collector
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+#Install heka ceilometer collector
+- description: Install heka ceilometer if they exists
+  cmd: |
+    CEILO=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:ceilometer_collector:enabled' test.ping 1>/dev/null 2>&1 && echo true`;
+    echo "Ceilometer service presence: ${CEILO}";
+    if [[ "$CEILO" == "true" ]]; then
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:ceilometer_collector:enabled' state.sls heka.ceilometer_collector;
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:ceilometer_collector:enabled' service.restart ceilometer_collector
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 # Collect grains needed to configure the services
 
 - description: Get grains
@@ -146,30 +186,49 @@
 - description: Update mine
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:minion' mine.update; sleep 5;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 10}
+  retry: {count: 5, delay: 15}
   skip_fail: false
 
 # Configure the services running in Docker Swarm
-- description: Install prometheus alertmanager
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
+- description: Configure prometheus in docker swarm
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' state.sls prometheus
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: run docker state
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker
+- description: Configure Remote Collector in Docker Swarm for Openstack deployments
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' state.sls heka.remote_collector
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: docker ps
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' dockerng.ps
+- description: Install sphinx
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@sphinx:server' state.sls sphinx
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+
+
+#- description: Install prometheus alertmanager
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+
+#- description: run docker state
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+#
+#- description: docker ps
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' dockerng.ps
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
 
 - description: Configure Grafana dashboards and datasources
-  cmd: sleep 60;  salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@grafana:client' state.sls grafana.client
+  cmd: sleep 30;  salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 10}
   skip_fail: false
@@ -180,5 +239,3 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-{{  SHARED_SL_TESTS.MACRO_CLONE_SL_TESTS() }}
-{{  SHARED_SL_TESTS.MACRO_CONFIGURE_TESTS() }}
