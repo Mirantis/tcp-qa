@@ -245,6 +245,7 @@ sl_deploy_opts = [
     ct.Cfg('docker_image_grafana', ct.String(),
            default='{0}/mirantis/external/grafana:{1}'.format(
                settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
+    ct.Cfg('grafana_admin_password', ct.String(), default='workshop'),
     # SalesForce connection options for pushkin
     ct.Cfg('sfdc_sandbox_enabled', ct.String(), default='False'),
     ct.Cfg('sfdc_auth_url', ct.String(), default=''),
