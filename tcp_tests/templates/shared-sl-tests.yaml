@@ -10,7 +10,7 @@
   cmd: |
     set -e;
     apt-get -y install python-virtualenv;
-    virtualenv venv-stacklight-pytest;
+    virtualenv --system-site-packages venv-stacklight-pytest;
     . venv-stacklight-pytest/bin/activate;
     git clone -b {{ SL_TEST_BRANCH }} {{ SL_TEST_REPO }} /root/stacklight-pytest;
     pip install /root/stacklight-pytest;
