@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45e5d07b_318ef4f4",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-04-12T10:02:17Z",
+      "side": 1,
+      "message": "delete this",
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
