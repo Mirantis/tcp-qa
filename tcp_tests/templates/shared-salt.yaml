@@ -1029,3 +1029,80 @@
   skip_fail: false
 
 {%- endmacro %}
+
+{%- macro RUN_NEW_TEMPEST() %}
+{###################################}
+
+- description: "Workaround for latest runtest formula"
+  cmd: |
+    set -e;
+    sed -i 's/proposed/nightly/g' /etc/apt/sources.list.d/mcp_salt.list;
+    apt-get update;
+    apt-get install salt-formula-runtest;
+    sed -i 's/nightly/proposed/g' /etc/apt/sources.list.d/mcp_salt.list;
+    apt-get update;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Upload tempest template
+  upload:
+    local_path: {{ config.salt_deploy.templates_dir }}/
+    local_filename: runtest.yml
+    remote_path: /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: Include class with tempest template into cfg node
+  cmd: |
+    sed -i 's/classes\:/classes\:\n- cluster.{{ CLUSTER_NAME }}.infra.runtest/g' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml;
+    salt 'cfg01*' saltutil.refresh_pillar;
+    salt 'cfg01*' saltutil.sync_all;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Create flavors for tests
+  cmd: |
+    salt 'cfg01*' state.sls nova.client;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Create networks for tests
+  cmd: |
+    salt 'cfg01*' state.sls neutron.client;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Upload cirros image
+  cmd: |
+    salt 'cfg01*' state.sls glance.client;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Generate tempest config
+  cmd: |
+    salt 'cfg01*' state.sls runtest;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Run tempest from new docker image
+  cmd: |
+    docker run -e ARGS="-w 2" -v /root/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /root/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm -it docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest /bin/bash -c "run-tempest";
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Download xml results
+  download:
+    remote_path: /root/test/
+    remote_filename: "report_*.xml"
+    local_path: {{ os_env('PWD') }}
+  node_name: {{ HOSTNAME_GTW01 }}
+  skip_fail: true
+
+{%- endmacro %}
