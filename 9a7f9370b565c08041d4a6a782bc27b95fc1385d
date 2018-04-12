@@ -180,6 +180,30 @@
     },
     {
       "key": {
+        "uuid": "64b95d04_9c65024b",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-04-12T11:39:09Z",
+      "side": 1,
+      "message": "Yes. It is strange. It was just to check that all of our steps will work. We don\u0027t need such workarounds at all",
+      "parentUuid": "d54a868b_f9af5876",
+      "range": {
+        "startLine": 26,
+        "startChar": 22,
+        "endLine": 26,
+        "endChar": 30
+      },
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "4dedbdbb_16970782",
         "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/salt.yaml",
         "patchSetId": 4
