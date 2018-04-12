@@ -1,0 +1,41 @@
+classes:
+- service.runtest.tempest
+parameters:
+  _param:
+    runtest_tempest_cfg_dir: /root/test/
+    runtest_tempest_cfg_name: tempest.conf
+    runtest_tempest_public_net: net04_ext
+    tempest_test_target: gtw01*
+  neutron:
+    client:
+      enabled: true
+  runtest:
+    enabled: True
+    keystonerc_node: ctl01*
+    tempest:
+      enabled: True
+      cfg_dir: ${_param:runtest_tempest_cfg_dir}
+      cfg_name: ${_param:runtest_tempest_cfg_name}
+      convert_to_uuid:
+        network:
+          public_network_id: ${_param:runtest_tempest_public_net}
+      DEFAULT:
+        log_file: tempest.log
+      compute:
+        build_timeout: 600
+        min_microversion: 2.1
+        max_microversion: 2.42
+      orchestration:
+        max_template_size: 5440000
+        max_resources_per_stack: 20000
+      dns_feature_enabled:
+        # Switch this to designate_admin_api_enabled once [1] is promoted to stable packages
+        # [1] https://gerrit.mcp.mirantis.net/gitweb?p=salt-formulas/designate.git;a=commit;h=96a3f43f6cf1149559e54a00b5548bdf46333749
+        api_admin: false
+        api_v1: false
+        api_v2: true
+        api_v2_quotas: true
+        api_v2_root_recordsets: true
+        bug_1573141_fixed: true
+      volume-feature-enabled:
+        backup: false
