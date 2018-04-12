@@ -2,6 +2,144 @@
   "comments": [
     {
       "key": {
+        "uuid": "ff32666a_47044133",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/openstack.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 492,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-12T10:34:55Z",
+      "side": 1,
+      "message": "I would prefer to see this part in shared_runtest.yaml, where we also add pillars to _generated.cfg node, so that it can be re-used bu everyone even on bm deploy",
+      "range": {
+        "startLine": 492,
+        "startChar": 36,
+        "endLine": 492,
+        "endChar": 42
+      },
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a8e068e7_8488891e",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/openstack.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 514,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-12T10:34:55Z",
+      "side": 1,
+      "message": "hm in my case it was done bu run test formula, so need to recheck",
+      "range": {
+        "startLine": 514,
+        "startChar": 15,
+        "endLine": 514,
+        "endChar": 21
+      },
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ace73ec9_150ae7e5",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/openstack.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 527,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-12T10:34:55Z",
+      "side": 1,
+      "message": "run tests",
+      "range": {
+        "startLine": 527,
+        "startChar": 28,
+        "endLine": 527,
+        "endChar": 29
+      },
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6c127672_5a0dc61b",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/runtest.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-12T10:34:55Z",
+      "side": 1,
+      "message": "do you plan to store data into artifactory?",
+      "range": {
+        "startLine": 7,
+        "startChar": 4,
+        "endLine": 7,
+        "endChar": 20
+      },
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dfbaab1f_e77a6a63",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/runtest.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-12T10:34:55Z",
+      "side": 1,
+      "message": "the same here",
+      "range": {
+        "startLine": 8,
+        "startChar": 4,
+        "endLine": 8,
+        "endChar": 24
+      },
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e284e16_99ff9550",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/runtest.yml",
+        "patchSetId": 4
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-12T10:34:55Z",
+      "side": 1,
+      "message": "not sure that we need this. If we plan ti use ans store artifacts from tempest run on our ci, thank we nned create separate space in artifactory and do not spam oscore folks with our logs, so lets for now disable artifact collector",
+      "range": {
+        "startLine": 66,
+        "startChar": 4,
+        "endLine": 66,
+        "endChar": 22
+      },
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "45e5d07b_318ef4f4",
         "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/salt.yaml",
         "patchSetId": 4
@@ -13,6 +151,52 @@
       "writtenOn": "2018-04-12T10:02:17Z",
       "side": 1,
       "message": "delete this",
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d54a868b_f9af5876",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-12T10:34:55Z",
+      "side": 1,
+      "message": "hm its strange that we need such WR, may be you just need to set set FORMULA_REPOSITORY \u003d os_env(\u0027FORMULA_REPOSITORY\u0027, \u0027deb [arch\u003damd64] http://apt.mirantis.com/${DISTRIB_CODENAME} \u0027 + REPOSITORY_SUITE + \u0027 salt extra\u0027) %} ?",
+      "range": {
+        "startLine": 26,
+        "startChar": 22,
+        "endLine": 26,
+        "endChar": 30
+      },
+      "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4dedbdbb_16970782",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-ovs/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-12T10:34:55Z",
+      "side": 1,
+      "message": "Also would be nice to see it in shared_runtest, so it can be re-used by everyones",
+      "range": {
+        "startLine": 43,
+        "startChar": 16,
+        "endLine": 43,
+        "endChar": 30
+      },
       "revId": "9a7f9370b565c08041d4a6a782bc27b95fc1385d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
