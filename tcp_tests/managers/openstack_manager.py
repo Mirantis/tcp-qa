@@ -145,19 +145,86 @@ class OpenstackManager(ExecuteCommandsMixin):
             LOG.debug("Test execution result is {}".format(result))
         return result
 
-    def download_tempest_report(self, file_fromat='xml', stored_node='gtw01'):
+    def run_tempest_with_plugin(
+            self,
+            target='gtw01', pattern=None,
+            conf_name='/root/tempest.conf',
+            registry=None):
+        if not registry:
+            registry = ('docker-prod-virtual.docker.mirantis.net/'
+                        'mirantis/cicd/ci-tempest:latest')
+        target_name = [node_name for node_name
+                       in self.__underlay.node_names() if target in node_name]
+
+        cmd = ("apt-get -y install docker.io")
+        with self.__underlay.remote(node_name=target_name[0]) as node_remote:
+            node_remote.execute(cmd, verbose=True)
+
+        cmd_iptables = "iptables --policy FORWARD ACCEPT"
+        with self.__underlay.remote(node_name=target_name[0]) as node_remote:
+            node_remote.execute(cmd_iptables, verbose=True)
+
+        with self.__underlay.remote(
+                host=self.__config.salt.salt_master_host) as node_remote:
+            node_remote.execute(
+                ("scp ctl01:/root/keystonercv3 /root;"
+                 "scp /root/keystonercv3 gtw01:/root;"),
+                verbose=True)
+
+        if pattern:
+            cmd = ("docker run "
+                   "-e PATTERN='{0} -w 2' "
+                   "-v {1}:/etc/tempest/tempest.conf "
+                   "-v /tmp/:/tmp/ "
+                   "-v /root/:/root/tempest "
+                   "-v /etc/ssl/certs/:/etc/ssl/certs/ "
+                   "--rm -it {2}   /bin/bash -c 'run-tempest' "
+                   .format(pattern, conf_name, registry))
+        else:
+            cmd = ("docker run "
+                   "-e PATTERN='tempest -w 2' "
+                   "-v {0}:/etc/tempest/tempest.conf "
+                   "-v /tmp/:/tmp/ "
+                   "-v /root/:/root/tempest "
+                   "-v /etc/ssl/certs/:/etc/ssl/certs/ "
+                   "--rm -it {1}   /bin/bash -c 'run-tempest' "
+                   .format(conf_name, registry))
+        LOG.info("Running tempest testing on node {0} using the following "
+                 "command:\n{1}".format(target_name[0], cmd))
+
+        with self.__underlay.remote(node_name=target_name[0]) as node_remote:
+            result = node_remote.execute(cmd, verbose=True)
+            LOG.debug("Test execution result is {}".format(result))
+        return result
+
+    def download_tempest_report(self, file_fromat='xml', stored_node='gtw01',
+                                res_path=None):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if stored_node in node_name]
-        with self.__underlay.remote(node_name=target_node_name[0]) as r:
-            result = r.execute('find /var/log/ -name "report_*.{}"'.format(
-                file_fromat))
-            LOG.debug("Find result {0}".format(result))
-            assert len(result['stdout']) > 0, ('No report found, please check'
-                                               ' if test run was successful.')
-            file_name = result['stdout'][0].rstrip()
-            LOG.debug("Found files {0}".format(file_name))
-            r.download(destination=file_name, target=os.getcwd())
+        if not res_path:
+            with self.__underlay.remote(node_name=target_node_name[0]) as r:
+                result = r.execute(
+                    'find /var/log/ -name "report_*.{}"'.format(file_fromat))
+                LOG.debug("Find result {0}".format(result))
+                assert len(result['stdout']) > 0, (
+                    'No report found, please check if '
+                    'test run was successful.')
+                file_name = result['stdout'][0].rstrip()
+                LOG.debug("Found files {0}".format(file_name))
+                r.download(destination=file_name, target=os.getcwd())
+        else:
+            with self.__underlay.remote(node_name=target_node_name[0]) as r:
+                result = r.execute(
+                    'find {0} -name "report_*.{1}"'.format(
+                        res_path, file_fromat))
+                LOG.debug("Find result {0}".format(result))
+                assert len(result['stdout']) > 0, (
+                    'No report found, please check if '
+                    'test run was successful.')
+                file_name = result['stdout'][0].rstrip()
+                LOG.debug("Found files {0}".format(file_name))
+                r.download(destination=file_name, target=os.getcwd())
 
     def get_node_name_by_subname(self, node_sub_name):
         return [node_name for node_name

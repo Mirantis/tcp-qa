@@ -4,6 +4,7 @@
 {% from 'cookied-mcp-pike-dvr/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'cookied-mcp-pike-dvr/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-mcp-pike-dvr/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-mcp-pike-dvr/underlay.yaml' import CLUSTER_NAME with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
@@ -14,7 +15,7 @@
 
 {{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
 
-{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd"') }}
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "runtest"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
@@ -23,6 +24,22 @@
 {{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/cluster/' + SHARED.CLUSTER_NAME + '/stacklight/server.yml') }}
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+- description: Upload tempest template
+  upload:
+    local_path: {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
+    local_filename: runtest.yml
+    remote_path: /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: Include class with tempest template into cfg node
+  cmd: |
+    sed -i 's/classes\:/classes\:\n- cluster.{{ SHARED.CLUSTER_NAME }}.infra.runtest/g' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml;
+    salt 'cfg01*' saltutil.refresh_pillar;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
 

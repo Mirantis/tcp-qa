@@ -399,3 +399,42 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+- description: Generate tempest config
+  cmd: |
+    salt 'cfg01*' state.sls nova.client;
+    salt 'cfg01*' state.sls neutron.client;
+    salt 'cfg01*' state.sls glance.client;
+    salt 'cfg01*' state.sls runtest;
+    salt cfg01'*' runtest.generate_tempest_config /root/tempest.conf;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install crudini
+  cmd: salt "cfg*" cmd.run 'apt-get install crudini -y'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Temporary WR set enabled backends value 01
+  cmd: |
+    salt-call cmd.run 'crudini --verbose --set /root/tempest.conf scenario img_dir /tmp'
+    salt-call cmd.run 'crudini --verbose --set /root/tempest.conf scenario img_file cirros-0.3.5-x86_64-disk.img'
+    salt-call cmd.run 'crudini --verbose --set /root/tempest.conf scenario aki_img_file cirros-0.3.5-x86_64-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: copy tempest.conf on gtw
+  cmd: scp /root/tempest.conf gtw01:/root/tempest.conf
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Upload cirros image on gtw01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'gtw01*' cmd.run
+    'wget -O /tmp/cirros-0.3.5-x86_64-disk.img  http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false

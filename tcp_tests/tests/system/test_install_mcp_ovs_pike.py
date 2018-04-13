@@ -110,6 +110,7 @@ class TestMcpInstallOvsPike(object):
     @pytest.mark.pike_ovs_dvr_sl
     def test_mcp_pike_dvr_sl_install(self, underlay, config,
                                      openstack_deployed,
+                                     openstack_actions,
                                      sl_deployed):
         """Test for deploying an mcp environment and check it
         Scenario:
@@ -122,6 +123,9 @@ class TestMcpInstallOvsPike(object):
         7. Run SL component tests
         8. Download SL component tests report
         """
+        openstack_actions._salt.local(
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
 
         mon_nodes = sl_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
@@ -139,6 +143,10 @@ class TestMcpInstallOvsPike(object):
         sl_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
+
+        if settings.RUN_TEMPEST:
+            openstack_actions.un_tempest_with_plugin(pattern='telemetry')
+            openstack_actions.download_tempest_report(res_path='/root/')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.grab_versions
