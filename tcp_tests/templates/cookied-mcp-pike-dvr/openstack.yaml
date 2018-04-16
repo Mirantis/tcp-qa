@@ -275,6 +275,12 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
+- description: WR Set floating ip address on br-floating
+  cmd: ifconfig br-floating {{ IPV4_NET_EXTERNAL_PREFIX }}.110/24
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
 #- description:  Allow all tcp
 #  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
 #    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
