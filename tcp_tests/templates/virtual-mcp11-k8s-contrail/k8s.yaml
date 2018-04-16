@@ -1,56 +1,20 @@
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
-- description: Sync time on nodes
-  cmd: salt '*' cmd.run "service ntp stop; ntpd -gq ;
-    service ntp start; ntp-wait || exit 1"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 1}
-  skip_fail: true
-
-# TODO Remove workaround when linklocal on kube-api VIP on ens3 works fine
-- description: Replace kube-api VIP with IP of one controller
-  cmd: |
-    find /srv/salt/reclass/classes/ -type f -exec sed -i 's/ipf_addresses:\ \${_param:kubernetes_control_address}/ipf_addresses:\ \${_param:kubernetes_control_node01_address}/g' {} +
-    find /srv/salt/reclass/classes/ -type f -exec sed -i 's/ipf_port:\ 443/ipf_port:\ 6443/g' {} +
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
-- description: Install keepalived on primary controller
+- description: Install etcd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster and *01*' state.sls keepalived
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
-
-- description: Install keepalived on all controllers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster' state.sls keepalived
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
-
-- description: Install nginx
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
+    -C 'I@etcd:server' state.sls etcd.server.service
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# Opencontrail Control Plane
-- description: Install RabbitMQ
+- description: Check the etcd health
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@rabbitmq:server' state.sls rabbitmq
+     -C 'I@etcd:server' cmd.run '. /var/lib/etcd/configenv && etcdctl cluster-health'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 10}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Check RabbitMQ
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@rabbitmq:server' cmd.run "rabbitmqctl cluster_status"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
+  # Opencontrail Control Plane
 
 - description: Install Opencontrail db on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -87,71 +51,50 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Workaround for https://mirantis.jira.com/browse/PROD-12798
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:control' service.restart 'keepalived'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 # OpenContrail vrouters
 - description: Install Opencontrail client
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:database:id:1' state.sls 'opencontrail.client'
+    -C 'I@opencontrail:database:id:1' state.sls opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Install Opencontrail client on computes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:compute' state.sls 'opencontrail.client'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Install Opencontrail on computes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:compute' state.sls 'opencontrail'
+    -C 'I@opencontrail:compute' state.sls opencontrail exclude=opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-- description: Test Opencontrail
+- description: Wake up vhost0
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:control' cmd.run 'contrail-status'
+    -C 'I@nova:compute' cmd.run 'exec 0>&-; exec 1>&-; exec 2>&-;
+    nohup bash -c "ip link | grep vhost && echo no_reboot || sleep 5 && reboot & "' && sleep 30
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Wait for salt-minions wake up after restart
+  cmd: salt --timeout=15 --hard-crash --state-output=mixed --state-verbose=False '*' test.ping
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 25, delay: 30}
+  skip_fail: false
+
+- description: Install Opencontrail client on computes
+  cmd: sleep 15 && salt --timeout=60 --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls 'opencontrail.client'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Opencontrail on computes #2
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls opencontrail
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 # Kubernetes
-- description: Install docker
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@docker:host' state.sls docker.host
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check docker
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@docker:host' cmd.run 'docker ps'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Install etcd
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@etcd:server' state.sls etcd.server.service
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check the etcd health
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@etcd:server' cmd.run '. /var/lib/etcd/configenv && etcdctl cluster-health'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Install Kubernetes Addons
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
@@ -163,21 +106,14 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@kubernetes:pool' state.sls kubernetes.pool
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
-  skip_fail: false
-
-- description: Workaround for https://mirantis.jira.com/browse/PROD-12798
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:master' service.restart 'keepalived'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 5, delay: 60}
   skip_fail: false
 
 - description: Run Kubernetes master without setup
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: true
 
 - description: Run Kubernetes master setup
@@ -194,9 +130,8 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-- description: Reboot Opencontrail compute nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:compute' system.reboot
+- description: Renew hosts file on a whole cluster
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '*' state.sls linux.network.host;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
