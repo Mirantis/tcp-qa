@@ -103,12 +103,13 @@
   retry: {count: 5, delay: 60}
   skip_fail: false
 
-- description: Setup etcd server on primary controller
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master and *01*' state.sls etcd.server.setup
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+# NOTE(vryzhenkin): There is nothing to setup at this model
+#- description: Setup etcd server on primary controller
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@kubernetes:master and *01*' state.sls etcd.server.setup
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
 - description: Run Kubernetes master without setup
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
