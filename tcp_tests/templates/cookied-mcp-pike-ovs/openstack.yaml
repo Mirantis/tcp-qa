@@ -188,6 +188,11 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
+- description: WR Set floating ip address on br-floating
+  cmd: ifconfig br-floating {{ IPV4_NET_EXTERNAL_PREFIX }}.110/24
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 
   # Upload cirros image
 
