@@ -582,7 +582,7 @@
   cmd: salt-key -d cfg01.mcp-day01.local  -y
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
-  skip_fail: false
+  skip_fail: true
 
 - description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
