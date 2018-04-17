@@ -252,6 +252,7 @@
 - description: Create cluster model from cookiecutter templates
   cmd: |
     set -e;
+    sudo apt-get install python-setuptools -y 
     pip install cookiecutter
     export GIT_SSL_NO_VERIFY=true; git clone  https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates /tmp/cookiecutter-templates
 
