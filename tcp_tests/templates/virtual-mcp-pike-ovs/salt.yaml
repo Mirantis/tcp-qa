@@ -10,6 +10,8 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+{{ SHARED.MACRO_APPLY_MCP_COMMON_SALT_MASTER() }}
+
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
 {{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
