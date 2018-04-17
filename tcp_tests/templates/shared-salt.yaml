@@ -578,6 +578,12 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
+- description: '*Workaround* of harcoded host from day01 grains'
+  cmd: salt-key -d cfg01.mcp-day01.local  -y
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 - description: '*Workaround* of the bug https://mirantis.jira.com/browse/PROD-7962'
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     '*' cmd.run "echo '    StrictHostKeyChecking no' >> /root/.ssh/config"
