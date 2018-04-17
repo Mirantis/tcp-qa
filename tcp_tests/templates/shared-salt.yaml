@@ -20,7 +20,10 @@
 {% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME} main restricted universe") %}
 {% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-updates main restricted universe") %}
 {% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-security main restricted universe") %}
-
+{% set MCP_SALT_URL = os_env('MCP_SALT_URL', 'http://apt.mirantis.com/xenial' %}
+{% set MCP_SALT_REPO_KEY = os_env('MCP_SALT_REPO_KEY', 'http://apt.mirantis.com/public.gpg' %}
+{% set MCP_SALT_REPO = os_env('MCP_SALT_REPO_KEY', 'deb [arch=amd64] ${MCP_SALT_URL} ${REPOSITORY_SUITE} salt' %}
+{% set MCP_FORMULAS = os_env('MCP_FORMULAS', "salt-formula-*" %}
 {# Address pools for reclass cluster model are taken in the following order:
  # 1. environment variables,
  # 2. config.underlay.address_pools based on fuel-devops address pools
@@ -67,6 +70,53 @@
     sync;
   node_name: {{ NODE_NAME }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro MACRO_APPLY_MCP_COMMON_SALT_MASTER() %}
+{######################################}
+
+- description: Delete default minion
+  cmd: salt-key -d cfg01.mcp-day01.local -y
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: true
+
+- description: Install formulas
+  cmd: |
+    echo "Acquire::CompressionTypes::Order gz;" >/etc/apt/apt.conf.d/99compression-workaround-salt
+    echo "Acquire::EnableSrvRecords false;" >/etc/apt/apt.conf.d/99enablesrvrecords-false
+    echo "Acquire::http::Pipeline-Depth 0;" > /etc/apt/apt.conf.d/99aws-s3-mirrors-workaround-salt
+    echo "APT::Install-Recommends false;" > /etc/apt/apt.conf.d/99dont_install_recommends-salt
+    echo "APT::Install-Suggests false;" > /etc/apt/apt.conf.d/99dont_install_suggests-salt
+    echo "Acquire::Languages none;" > /etc/apt/apt.conf.d/99dont_acquire_all_languages-salt
+    echo "APT::Periodic::Update-Package-Lists 0;" > /etc/apt/apt.conf.d/99dont_update_package_list-salt
+    echo "APT::Periodic::Download-Upgradeable-Packages 0;" > /etc/apt/apt.conf.d/99dont_update_download_upg_packages-salt
+    echo "APT::Periodic::Unattended-Upgrade 0;" > /etc/apt/apt.conf.d/99disable_unattended_upgrade-salt
+    echo "INFO: cleaning sources lists"
+    rm -rv /etc/apt/sources.list.d/* || true
+    echo > /etc/apt/sources.list  || true
+    curl -s {{ MCP_SALT_REPO_KEY }} | sudo apt-key add -
+    echo {{ MCP_SALT_REPO }} > /etc/apt/sources.list.d/mcp_salt.list
+    apt-get update
+    apt-get install -y {{ FORMULAS }}
+    rm -rf /srv/salt/reclass/classes/service/*
+    cd /srv/salt/reclass/classes/service/;ls /usr/share/salt-formulas/reclass/service/ -1 | xargs -I{} ln -s /usr/share/salt-formulas/reclass/service/{};cd /root
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Refresh pillars
+  cmd:  salt-call saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: sync all
+  cmd:  salt-call saltutil.sync_all
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
   skip_fail: false
 
 {%- endmacro %}
