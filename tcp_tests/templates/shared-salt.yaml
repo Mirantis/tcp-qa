@@ -41,6 +41,7 @@
  # export SALT_FORMULAS_REFS='apache:refs/changes/xxxx kubernetes:refs/changes/xxxx' #}
 
 {% set SALT_FORMULAS_REFS = os_env('SALT_FORMULAS_REFS', '') %}
+{% set TEMPEST_PATTERN = os_env('TEMPEST_PATTERN', 'tempest') %}
 {% set SALT_FORMULAS_REPO = os_env('SALT_FORMULAS_REPO', 'https://gerrit.mcp.mirantis.net/salt-formulas') %}
 
 # Needed for using different models in different templates
@@ -1087,7 +1088,7 @@
 
 - description: Run tempest from new docker image
   cmd: |
-    docker run -e ARGS="-w 4" -v /root/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /root/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest /bin/bash -c "run-tempest"
+    docker run -e ARGS="-r {{TEMPEST_PATTERN }} -w 4" -v /root/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /root/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest /bin/bash -c "run-tempest"
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: true
