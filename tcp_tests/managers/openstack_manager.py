@@ -45,11 +45,12 @@ class OpenstackManager(ExecuteCommandsMixin):
         self.__config.openstack.horizon_port = h_data['horizon_port']
         self.__config.openstack.horizon_user = h_data['horizon_user']
         self.__config.openstack.horizon_password = h_data['horizon_password']
-        self.auth_in_horizon(
-            h_data['horizon_host'],
-            h_data['horizon_port'],
-            h_data['horizon_user'],
-            h_data['horizon_password'])
+        if self.__config.openstack.horizon_check:
+            self.auth_in_horizon(
+                h_data['horizon_host'],
+                h_data['horizon_port'],
+                h_data['horizon_user'],
+                h_data['horizon_password'])
 
     def get_horizon_data(self):
         horizon_data = {}
