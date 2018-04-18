@@ -144,7 +144,7 @@ class TestMcpInstallOvsPike(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_mcp_pike_dpdk_install(self, underlay, openstack_deployed,
-                                   show_step, openstack_actions):
+                                   config, show_step, openstack_actions):
         """Test for deploying an mcp dpdk environment and check it
         Scenario:
         1. Prepare salt on hosts
