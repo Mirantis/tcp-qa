@@ -202,6 +202,8 @@ openstack_deploy_opts = [
            help="", default='admin'),
     ct.Cfg('horizon_password', ct.String(),
            help="", default='workshop'),
+    ct.Cfg('horizon_check', ct.Boolean(),
+           help="", default=True),
 ]
 openstack_opts = [
     ct.Cfg('openstack_installed', ct.Boolean(),
