@@ -1,0 +1,127 @@
+{% from 'cookied-bm-mcp-ocata-contrail-nfv/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-ocata-contrail-nfv/underlay.yaml' import HOSTNAME_KVM01 with context %}
+{% from 'cookied-bm-mcp-ocata-contrail-nfv/underlay.yaml' import HOSTNAME_KVM02 with context %}
+{% from 'cookied-bm-mcp-ocata-contrail-nfv/underlay.yaml' import HOSTNAME_KVM03 with context %}
+
+- description: Install glusterfs
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' state.sls glusterfs.server.service
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup glusterfs on primary controller
+  cmd: sleep 30; salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' state.sls glusterfs.server.setup -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Check the gluster status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' cmd.run 'gluster peer status; gluster volume status' -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# Install support services
+- description: Install keepalived on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster and *01*' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Install keepalived
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Check the OpenStack control VIP
+  cmd: |
+    OPENSTACK_CONTROL_ADDRESS=$(salt --out=newline_values_only "ctl01*" pillar.get _param:cluster_vip_address);
+    echo "_param:cluster_vip_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster' cmd.run "ip a | grep ${OPENSTACK_CONTROL_ADDRESS}" | grep -B1 ${OPENSTACK_CONTROL_ADDRESS}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install RabbitMQ on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@rabbitmq:server and *01*' state.sls rabbitmq
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install RabbitMQ
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@rabbitmq:server' state.sls rabbitmq
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check the rabbitmq status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@rabbitmq:server' cmd.run 'rabbitmqctl cluster_status'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Galera on first server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@galera:master' state.sls galera
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Galera on other servers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@galera:slave' state.sls galera -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check mysql status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@galera:*' mysql.status | grep -A1 -e "wsrep_incoming_addresses\|wsrep_cluster_size"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+
+- description: Install haproxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' state.sls haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check haproxy status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.status haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install nginx on prx nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls nginx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Restart rsyslog
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' service.restart rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install memcached on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@memcached:server' state.sls memcached
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
