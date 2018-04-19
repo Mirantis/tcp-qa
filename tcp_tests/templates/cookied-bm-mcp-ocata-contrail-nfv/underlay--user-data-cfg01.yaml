@@ -1,0 +1,108 @@
+| # All the data below will be stored as a string object
+  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
+
+  disable_root: false
+  chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+  bootcmd:
+   #   # Block access to SSH while node is preparing
+   #   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+  output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+  runcmd:
+   # Configure dhclient
+   - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
+   - sudo resolvconf -u
+
+   # Enable grub menu using updated config below
+   - update-grub
+
+   # Prepare network connection
+   - sudo ifdown ens3
+   - sudo ip r d default || true  # remove existing default route to get it from dhcp
+   - sudo ifup ens3
+   #- sudo route add default gw {gateway} {interface_name}
+
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
+   ############## TCP Cloud cfg01 node ##################
+   #- sleep 120
+   #   - echo "Preparing base OS"
+
+   - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
+   #   - which wget >/dev/null || (apt-get update; apt-get install -y wget);
+
+   # Configure Ubuntu mirrors
+   #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial main restricted universe" > /etc/apt/sources.list
+   #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list
+   #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list
+
+   #   - echo "deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+   #   - wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
+   #   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+   #   - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+
+   #   - apt-get clean
+   #   - apt-get update
+
+   # Install common packages
+   #   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
+
+   # Install salt-minion and stop it until it is configured
+   #   - eatmydata apt-get install -y salt-minion && service salt-minion stop
+
+   ########################################################
+   # Node is ready, allow SSH access
+   #   - echo "Allow SSH access ..."
+   #   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ########################################################
+
+   # Install common packages
+   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree sshuttle
+
+   # Use sshuttle to allow SSH access to the model-related control network 10.167.4.0/24 on baremetal/VM nodes from cfg01
+   - sshuttle -r {{ ETH0_IP_ADDRESS_KVM01 }} 10.167.8.0/24 -D
+
+  write_files:
+   - path: /etc/default/grub.d/97-enable-grub-menu.cfg
+     content: |
+         GRUB_RECORDFAIL_TIMEOUT=30
+         GRUB_TIMEOUT=3
+         GRUB_TIMEOUT_STYLE=menu
+
+   - path: /etc/network/interfaces
+     content: |
+          auto ens3
+          iface ens3 inet dhcp
+
+   - path: /root/.ssh/config
+     owner: root:root
+     permissions: '0600'
+     content: |
+          Host *
+            ServerAliveInterval 300
+            ServerAliveCountMax 10
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
