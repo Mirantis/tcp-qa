@@ -147,13 +147,13 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
-- description: Magic/ Fix it and Delete
+- description: "Magic! Fix it and Delete"
   upload:
-    local_path: /home/jenkins/workspace/workspace/cookied-bm-mcp-ovs-dpdk/tcp_tests
+    local_path: /home/jenkins/workspace/workspace/cookied-bm-mcp-ovs-dpdk/tcp_tests/
     local_filename: id_rsa
-    remote_path: /root/.ssh
+    remote_path: /root/.ssh/id_rsa
   node_name: {{ HOSTNAME_CFG01 }}
-  skip_fail: False
+  skip_fail: True
 
 - description: "Control network access from cfg01 node using sshuttle via kvm01"
   cmd: |
