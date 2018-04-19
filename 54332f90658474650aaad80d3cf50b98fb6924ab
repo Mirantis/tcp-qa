@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "4f6fdaa5_40e7234c",
+        "filename": "tcp_tests/templates/virtual-mcp-pike-dvr-ssl-barbican/openstack.yaml",
+        "patchSetId": 18
+      },
+      "lineNbr": 401,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-04-19T11:45:09Z",
+      "side": 0,
+      "message": "Why do you delete this?",
+      "range": {
+        "startLine": 401,
+        "startChar": 31,
+        "endLine": 401,
+        "endChar": 33
+      },
+      "revId": "54332f90658474650aaad80d3cf50b98fb6924ab",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
