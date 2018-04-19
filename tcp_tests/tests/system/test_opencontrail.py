@@ -45,6 +45,22 @@ class TestOpenContrail(object):
             openstack_deployed.run_tempest(target='ctl01',
                                            pattern=settings.PATTERN)
             openstack_deployed.download_tempest_report(stored_node='ctl01')
+        mon_nodes = sl_deployed.get_monitoring_nodes()
+        LOG.debug('Mon nodes list {0}'.format(mon_nodes))
+
+        sl_deployed.check_prometheus_targets(mon_nodes)
+
+        # Run SL component tetsts
+        sl_deployed.run_sl_functional_tests(
+            'ctl01',
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus',
+            'test_alerts.py')
+
+        # Download report
+        sl_deployed.download_sl_test_report(
+            'ctl01',
+            '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
         # opencontrail.prepare_tests(
