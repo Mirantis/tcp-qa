@@ -607,7 +607,8 @@ class K8SManager(ExecuteCommandsMixin):
         :return:
         """
         with self.__underlay.remote(node_name=self.ctl_host) as r:
-            cmd = "pip install xunitmerge"
+            cmd = ("apt-get install python-setuptools -y; "
+                   "pip install xunitmerge")
             LOG.debug('Installing xunitmerge')
             r.check_call(cmd)
             LOG.debug('Merging xunit')
