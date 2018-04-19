@@ -147,9 +147,9 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
-- description: Magic/ Fix it and Delete
+- description: "Magic! Fix it and Delete"
   upload:
-    local_path: /home/jenkins/workspace/workspace/cookied-bm-mcp-ovs-dpdk/tcp_tests
+    local_path: /home/jenkins/workspace/workspace/cookied-bm-mcp-ovs-dpdk/tcp_tests/
     local_filename: id_rsa
     remote_path: /root/.ssh
   node_name: {{ HOSTNAME_CFG01 }}
