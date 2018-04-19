@@ -45,6 +45,22 @@ class TestOpenContrail(object):
             openstack_deployed.run_tempest(target='ctl01',
                                            pattern=settings.PATTERN)
             openstack_deployed.download_tempest_report(stored_node='ctl01')
+        mon_nodes = sl_deployed.get_monitoring_nodes()
+        LOG.debug('Mon nodes list {0}'.format(mon_nodes))
+
+        sl_deployed.check_prometheus_targets(mon_nodes)
+
+        # Run SL component tetsts
+        sl_deployed.run_sl_functional_tests(
+            'ctl01',
+            '/root/stacklight-pytest/stacklight_tests/',
+            'tests/prometheus',
+            'test_alerts.py')
+
+        # Download report
+        sl_deployed.download_sl_test_report(
+            'ctl01',
+            '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
         # opencontrail.prepare_tests(
@@ -53,3 +69,56 @@ class TestOpenContrail(object):
         # opencontrail.run_tests(
         #     tags=config.opencontrail.opencontrail_tags,
         #     features=config.opencontrail.opencontrail_features)
+
+    @pytest.mark.fail_snapshot
+    @pytest.mark.with_rally(rally_node="ctl01.")
+    def test_opencontrail_pipeline(self, show_step, underlay,
+                      common_services_deployed, salt_deployed):
+        """Runner for Juniper contrail-tests
+
+        Scenario:
+            1. Prepare salt on hosts.
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Deploy openstack via pipelines
+            5. Deploy CICD via pipelines
+        """
+        nodes = underlay.node_names()
+        LOG.info("Nodes - {}".format(nodes))
+        cfg_node = 'cfg01.cookied-bm-mcp-ocata-contrail-nfv.local'
+        salt_api = salt_deployed.get_pillar(
+            cfg_node, '_param:jenkins_salt_api_url')
+        salt_api = salt_api[0].get(cfg_node)
+        jenkins = JenkinsClient(
+            host='http://172.16.49.66:8081',
+            username='admin',
+            password='r00tme')
+
+        # Creating param list for openstack deploy
+        params = jenkins.make_defults_params('deploy_openstack')
+        params['SALT_MASTER_URL'] = salt_api
+        params['STACK_INSTALL'] = 'core,kvm,openstack,contrail'
+        show_step(4)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy openstack was failed"
+
+        # Changing param for cicd deploy
+        show_step(5)
+        params['STACK_INSTALL'] = 'cicd'
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 2)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy CICD was failed"
+
+        LOG.info("*************** DONE **************")
+
