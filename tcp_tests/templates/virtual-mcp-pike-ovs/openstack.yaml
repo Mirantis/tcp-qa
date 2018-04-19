@@ -3,11 +3,10 @@
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_CTL02 with context %}
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_GTW01 with context %}
-{% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
-{% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import DOMAIN_NAME with context %}
-
+{% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 # Install OpenStack control services
 
