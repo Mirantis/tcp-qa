@@ -22,6 +22,30 @@
       "revId": "ddca73201d91666a795011d1662c9bd1a268fd17",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5e176277_3a3843d7",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-ocata-contrail/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-04-20T13:20:17Z",
+      "side": 1,
+      "message": "But there is no difference in case of this file. Because tcp-qa overrides it with our exported value",
+      "parentUuid": "ff60d1c0_af590a08",
+      "range": {
+        "startLine": 73,
+        "startChar": 21,
+        "endLine": 73,
+        "endChar": 22
+      },
+      "revId": "ddca73201d91666a795011d1662c9bd1a268fd17",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
