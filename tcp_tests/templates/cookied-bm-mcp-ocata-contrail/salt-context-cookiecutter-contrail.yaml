@@ -168,7 +168,7 @@ default_context:
   stacklight_log_node02_hostname: log02
   stacklight_log_node03_address: 10.167.8.63
   stacklight_log_node03_hostname: log03
-  stacklight_long_term_storage_type: prometheus
+  stacklight_long_term_storage_type: influxdb
   stacklight_monitor_address: 10.167.8.70
   stacklight_monitor_hostname: mon
   stacklight_monitor_node01_address: 10.167.8.71
