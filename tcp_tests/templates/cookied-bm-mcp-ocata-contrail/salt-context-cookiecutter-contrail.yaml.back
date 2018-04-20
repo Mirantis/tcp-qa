@@ -60,6 +60,7 @@ default_context:
   opencontrail_router01_hostname: rtr01
   opencontrail_router02_address: 10.167.8.101
   opencontrail_router02_hostname: rtr02
+
   openstack_benchmark_node01_address: 10.167.8.95
   openstack_benchmark_node01_hostname: bmk01
   openstack_compute_count: '1'
@@ -102,6 +103,7 @@ default_context:
   openstack_message_queue_node03_address: 10.167.8.43
   openstack_message_queue_node03_hostname: msg03
   openstack_network_engine: opencontrail
+  openstack_nfv_dpdk_enabled: 'False'
   openstack_nfv_sriov_enabled: 'False'
   openstack_nova_compute_nfv_req_enabled: 'False'
   openstack_proxy_address: 10.167.8.80
@@ -186,6 +188,4 @@ default_context:
   tenant_network_subnet: 192.168.0.0/24
   tenant_vlan: '2423'
   upstream_proxy_enabled: 'False'
-  openstack_nfv_dpdk_enabled: 'True'
   openstack_nova_compute_hugepages_count: 40
-  opencontrail_compute_iface: 'enp5s0f0'
