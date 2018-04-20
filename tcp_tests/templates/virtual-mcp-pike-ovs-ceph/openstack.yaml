@@ -3,12 +3,8 @@
 {% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import HOSTNAME_CTL02 with context %}
 {% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import HOSTNAME_GTW01 with context %}
-{% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import DOMAIN_NAME with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
-{% import 'shared-salt.yaml' as SHARED with context %}
-
 
 # Install OpenStack control services
 
@@ -180,13 +176,6 @@
 
   # Upload cirros image
 
-- description: Upload cirros image on ctl01
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
-  skip_fail: false
-
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
@@ -280,5 +269,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
-
-{{ SHARED.RUN_NEW_TEMPEST() }}

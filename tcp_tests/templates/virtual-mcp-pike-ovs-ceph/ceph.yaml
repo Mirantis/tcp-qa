@@ -1,5 +1,7 @@
 {% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import HOSTNAME_CFG01 with context %}
-
+{% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'virtual-mcp-pike-ovs-ceph/underlay.yaml' import DOMAIN_NAME with context %}
+{% import 'shared-salt.yaml' as SHARED with context %}
 
 # Install ceph mons
 - description: Update grains
@@ -164,16 +166,4 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-- description: conver cirros image
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    'qemu-img convert cirros-0.3.4-i386-disk.img cirros.raw'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
-  skip_fail: false
-
-- description: Register image in glance
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; glance --timeout 120 image-create --name "cirros" --disk-format raw --container-format bare --visibility public --file cirros.raw'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+{{ SHARED.RUN_NEW_TEMPEST() }}
