@@ -1086,6 +1086,16 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Temp WR for PROD-19442
+  cmd: |
+    apt-get install crudini -y;
+    crudini --verbose --set /root/test/tempest.conf connect_method floating;
+    crudini --verbose --set /root/test/tempest.conf run_validation  True;
+    crudini --verbose --set /root/test/tempest.conf image_ssh_user cirros;
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
 - description: Run tempest from new docker image
   cmd: |
     docker run -e ARGS="-r {{TEMPEST_PATTERN }} -w 4" -v /root/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /root/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest /bin/bash -c "run-tempest"
