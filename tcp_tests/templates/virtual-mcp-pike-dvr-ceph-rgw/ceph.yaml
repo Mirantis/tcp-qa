@@ -1,4 +1,5 @@
 {% from 'virtual-mcp-pike-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp-pike-dvr-ceph-rgw/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'virtual-mcp-pike-dvr-ceph-rgw/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'virtual-mcp-pike-dvr-ceph-rgw/underlay.yaml' import DOMAIN_NAME with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
