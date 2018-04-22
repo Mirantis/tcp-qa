@@ -1089,9 +1089,9 @@
 - description: Temp WR for PROD-19442
   cmd: |
     apt-get install crudini -y;
-    crudini --verbose --set /root/test/tempest.conf connect_method floating;
-    crudini --verbose --set /root/test/tempest.conf run_validation  True;
-    crudini --verbose --set /root/test/tempest.conf image_ssh_user cirros;
+    crudini --verbose --set /root/test/tempest.conf validation connect_method floating;
+    crudini --verbose --set /root/test/tempest.conf validation run_validation  True;
+    crudini --verbose --set /root/test/tempest.conf validation image_ssh_user cirros;
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: true
