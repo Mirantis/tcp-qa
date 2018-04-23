@@ -23,6 +23,8 @@ parameters:
           floating_network_name: ${_param:runtest_tempest_public_net}
       DEFAULT:
         log_file: tempest.log
+      heat_plugin:
+        floating_network_name: ${_param:runtest_tempest_public_net}
       compute:
         build_timeout: 600
         min_microversion: 2.1
