@@ -42,6 +42,7 @@
 
 {% set SALT_FORMULAS_REFS = os_env('SALT_FORMULAS_REFS', '') %}
 {% set TEMPEST_PATTERN = os_env('TEMPEST_PATTERN', 'tempest') %}
+{% set EXCLUDE_TEST_ARGS = os_env('EXCLUDE_TEST_ARGS', '') %}
 {% set SALT_FORMULAS_REPO = os_env('SALT_FORMULAS_REPO', 'https://gerrit.mcp.mirantis.net/salt-formulas') %}
 
 # Needed for using different models in different templates
@@ -202,7 +203,7 @@
 
     find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
-    {%- if IS_CONTRAIL_LAB %}
+    {%- if IS_CONTRAIL_LAB %}EXCLUDE_TEST_ARGS
     # vSRX IPs for tcp-qa images have 172.16.10.90 hardcoded
     find ${REPLACE_DIRS} -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: 172.16.10.90/g' {} +
     find ${REPLACE_DIRS} -type f -exec sed -i 's/infra_config_deploy_address: 1.*/infra_config_deploy_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {} +
@@ -1098,7 +1099,7 @@
 
 - description: Run tempest from new docker image
   cmd: |
-    docker run -e ARGS="-r {{TEMPEST_PATTERN }} -w 4" -v /root/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /root/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest /bin/bash -c "run-tempest"
+    docker run -e ARGS="-r {{TEMPEST_PATTERN }} -w 4 {{ EXCLUDE_TEST_ARGS }}" -v /root/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /root/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest /bin/bash -c "run-tempest"
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: true

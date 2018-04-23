@@ -209,7 +209,7 @@ openstack_opts = [
     ct.Cfg('openstack_keystone_endpoint', ct.String(),
            help="", default=''),
     ct.Cfg('horizon_check', ct.Boolean(),
-           help="", default=True),
+           help="", default=False),
 ]
 
 opencontrail_opts = [
