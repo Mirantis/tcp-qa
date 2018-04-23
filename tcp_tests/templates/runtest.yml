@@ -23,13 +23,14 @@ parameters:
           floating_network_name: ${_param:runtest_tempest_public_net}
       DEFAULT:
         log_file: tempest.log
+      heat_plugin:
+        floating_network_name: ${_param:runtest_tempest_public_net}
       compute:
         build_timeout: 600
         min_microversion: 2.1
         max_microversion: 2.53
         min_compute_nodes: 2
         volume_device_name: 'vdc'
-      orchestration:
         max_template_size: 5440000
         max_resources_per_stack: 20000
       dns_feature_enabled:
