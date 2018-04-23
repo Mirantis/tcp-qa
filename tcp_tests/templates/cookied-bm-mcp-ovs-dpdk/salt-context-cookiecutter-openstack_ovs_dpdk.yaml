@@ -184,7 +184,7 @@ default_context:
   reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
   salt_api_password: HlcaUHzUnsWsg62uhF8ua5KEbqRbzijz
   salt_api_password_hash: $6$qdIFillN$XnzP7oIXRcbroVch7nlthyrSekjKlWND8q2MtoMF3Wz2ymepjAOjyqpyR55nmbH9OQzS8EcQJ6sfr5hWKDesV1
-  salt_master_address: 10.167.11.2
+  salt_master_address: 172.16.49.2
   salt_master_hostname: cfg01
   salt_master_management_address: 172.16.49.2
   shared_reclass_branch: master
