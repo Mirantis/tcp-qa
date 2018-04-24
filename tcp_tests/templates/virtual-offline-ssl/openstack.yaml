@@ -6,8 +6,8 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
-{% from 'virtual-mcp-pike-dvr-ssl-barbican/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'virtual-mcp-pike-dvr-ssl-barbican/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'virtual-offline-ssl/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'virtual-offline-ssl/underlay.yaml' import DOMAIN_NAME with context %}
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'proposed') %}
 {% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker/ ' + REPOSITORY_SUITE + ' stable') %}
