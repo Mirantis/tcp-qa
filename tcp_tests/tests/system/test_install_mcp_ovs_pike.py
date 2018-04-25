@@ -260,3 +260,13 @@ class TestMcpInstallOvsPike(object):
             )
             openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
+    def test_bm_deploy(self, config, openstack_deployed, show_step):
+        """bla bla
+        bla
+        """
+        openstack_deployed._salt.local(
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start'))
+        LOG.info("*************** DONE **************")
