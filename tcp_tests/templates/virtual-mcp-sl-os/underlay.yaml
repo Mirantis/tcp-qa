@@ -1,5 +1,15 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set LINUX_CODENAME = os_env('LINUX_CODENAME', 'trusty') %}
+{%- if LINUX_CODENAME == 'trusty' %}
+{%- set UBUNTU_VERSION = '14.04' %}
+{%- set IFACE_NAMING = 'eth' %}
+{%- set IFACE_NUM_ADMIN = 0 %}
+{% else %}
+{%- set UBUNTU_VERSION = '16.04' %}
+{%- set IFACE_NAMING = 'ens' %}
+{%- set IFACE_NUM_ADMIN = 3 %}
+{%- endif %}
 
 {% import 'virtual-mcp-sl-os/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'virtual-mcp-sl-os/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
