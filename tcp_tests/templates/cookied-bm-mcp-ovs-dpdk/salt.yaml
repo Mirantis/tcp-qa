@@ -146,3 +146,14 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
+
+- description: Temporary WR for having access to control net from cfg node and for ssh to all nodes with key.
+  cmd: |
+    ssh-keygen -y -f /root/.ssh/id_rsa > /root/.ssh/id_rsa.pub;
+    pub_key=`cat /root/.ssh/id_rsa.pub`;
+    salt '*' cmd.run "echo $pub_key >> /root/.ssh/authorized_keys";
+    salt '*' cmd.run "service sshd restart";
+    sshuttle -r 172.16.49.11 10.167.11.0/24 -D
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
