@@ -20,6 +20,7 @@
 {% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME} main restricted universe") %}
 {% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-updates main restricted universe") %}
 {% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-security main restricted universe") %}
+{% set LINUX_CODENAME = os_env('LINUX_CODENAME', 'trusty') %}
 
 {# Address pools for reclass cluster model are taken in the following order:
  # 1. environment variables,
@@ -221,7 +222,7 @@
     - cluster.{{ CLUSTER_NAME }}.infra.config
     parameters:
       _param:
-        linux_system_codename: xenial
+        linux_system_codename: {{ LINUX_CODENAME }}
         reclass_data_revision: master
       linux:
         system:
@@ -492,7 +493,7 @@
   skip_fail: false
 
 - description: Restart salt-master service
-  cmd: systemctl restart salt-master;
+  cmd: service salt-master restart;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
