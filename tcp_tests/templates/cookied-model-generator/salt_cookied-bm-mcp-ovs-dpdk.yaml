@@ -11,7 +11,8 @@
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-environment.yaml'] %}
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2416') %}
 {%- set TENANT_VLAN = os_env('TENANT_VLAN', '2417') %}
-
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-2016.3/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}

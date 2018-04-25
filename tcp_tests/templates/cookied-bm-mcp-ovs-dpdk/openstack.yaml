@@ -245,16 +245,10 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-#- description:  Allow all tcp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-#- description:  Allow all icmp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
+- description: Temporary WR
+  cmd: |
+    rc=`salt "ctl01*" cmd.run 'cat /root/keystonercv3' | grep export`;
+    salt 'gtw01*' cmd.run "echo $rc > /root/keystonercv3";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
