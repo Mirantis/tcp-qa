@@ -23,13 +23,13 @@
   skip_fail: false
 
 - description: Restart apache due to PROD-10477
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl restart apache2"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "service apache2 restart"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 15}
   skip_fail: false
 
 - description: Check apache status to PROD-10477
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl status apache2"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "service apache2 status"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 15}
   skip_fail: false
