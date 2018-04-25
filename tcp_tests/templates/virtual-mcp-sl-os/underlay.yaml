@@ -1,16 +1,23 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set IMAGE_PATH = os_env('IMAGE_PATH') %}
+{% set IMAGE_PATH_CFG01_DAY01 = os_env('IMAGE_PATH_CFG01_DAY01', os_env('IMAGE_PATH')) %}
 
 {% import 'virtual-mcp-sl-os/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'virtual-mcp-sl-os/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
-{% import 'virtual-mcp-sl-os/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+{% set IMAGE_LINUX_CODENAME = os_env('IMAGE_LINUX_CODENAME', 'trusty') %}
+{%- if IMAGE_LINUX_CODENAME == 'trusty' %}
+{% import 'virtual-mcp-sl-os/underlay--user-data1404.yaml' as CLOUDINIT_USER_DATA with context %}
+{% else %}
+{% import 'virtual-mcp-sl-os/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA with context %}
+{%- endif %}
 
 ---
 aliases:
  - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
- - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
+ - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA }}
 
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'virtual-mcp-sl-os') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
@@ -157,10 +164,10 @@ template:
 
         group_volumes:
          - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
-           source_image: !os_env IMAGE_PATH1604  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+           source_image: {{ IMAGE_PATH }}  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
            format: qcow2
          - name: cfg01_day01_image               # Pre-configured day01 image
-           source_image: {{ os_env('IMAGE_PATH_CFG01_DAY01', os_env('IMAGE_PATH1604')) }} # http://images.mirantis.com/cfg01-day01.qcow2 or fallback to IMAGE_PATH1604
+           source_image: {{ IMAGE_PATH_CFG01_DAY01 }} # http://images.mirantis.com/cfg01-day01.qcow2 or fallback to IMAGE_PATH1604
            format: qcow2
 
         nodes:

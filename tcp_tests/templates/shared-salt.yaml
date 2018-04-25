@@ -496,7 +496,7 @@
   skip_fail: false
 
 - description: Restart salt-master service
-  cmd: systemctl restart salt-master;
+  cmd: service salt-master restart;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
