@@ -1,5 +1,6 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set LINUX_CODENAME = os_env('LINUX_CODENAME', 'trusty') %}
 
 {% import 'virtual-mcp-sl-os/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'virtual-mcp-sl-os/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
@@ -25,6 +26,12 @@ aliases:
 {% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
+
+{%- if LINUX_CODENAME == 'trusty' %}
+{%- set IFACE_NAMING = 'eth' %}
+{% else %}
+{%- set IFACE_NAMING = 'ens' %}
+{%- endif %}
 
 template:
   devops_settings:
@@ -172,7 +179,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -188,17 +195,17 @@ template:
                   cloudinit_user_data: *cloudinit_user_data_cfg01
 
               interfaces:
-                - label: ens3
+                - label: {{ IFACE_NAMING }}3
                   l2_network_device: admin
                   interface_model: *interface_model
-                - label: ens4
+                - label: {{ IFACE_NAMING }}4
                   l2_network_device: private
                   interface_model: *interface_model
               network_config:
-                ens3:
+                {{ IFACE_NAMING }}3:
                   networks:
                     - admin
-                ens4:
+                {{ IFACE_NAMING }}4:
                   networks:
                     - private
 
@@ -210,7 +217,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -229,17 +236,17 @@ template:
                   cloudinit_user_data: *cloudinit_user_data_1604
 
               interfaces: &interfaces
-                - label: ens3
+                - label: {{ IFACE_NAMING }}3
                   l2_network_device: admin
                   interface_model: *interface_model
-                - label: ens4
+                - label: {{ IFACE_NAMING }}4
                   l2_network_device: private
                   interface_model: *interface_model
               network_config: &network_config
-                ens3:
+                {{ IFACE_NAMING }}3:
                   networks:
                     - admin
-                ens4:
+                {{ IFACE_NAMING }}4:
                   networks:
                     - private
 
@@ -251,7 +258,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -280,7 +287,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -309,7 +316,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -335,7 +342,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -361,7 +368,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -387,7 +394,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -416,7 +423,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -433,29 +440,29 @@ template:
 
 
               interfaces: &all_interfaces
-                - label: ens3
+                - label: {{ IFACE_NAMING }}3
                   l2_network_device: admin
                   interface_model: *interface_model
-                - label: ens4
+                - label: {{ IFACE_NAMING }}4
                   l2_network_device: private
                   interface_model: *interface_model
-                - label: ens5
+                - label: {{ IFACE_NAMING }}5
                   l2_network_device: tenant
                   interface_model: *interface_model
-                - label: ens6
+                - label: {{ IFACE_NAMING }}6
                   l2_network_device: external
                   interface_model: *interface_model
               network_config: &all_network_config
-                ens3:
+                {{ IFACE_NAMING }}3:
                   networks:
                     - admin
-                ens4:
+                {{ IFACE_NAMING }}4:
                   networks:
                     - private
-                ens5:
+                {{ IFACE_NAMING }}5:
                   networks:
                     - tenant
-                ens6:
+                {{ IFACE_NAMING }}6:
                   networks:
                     - external
 
@@ -467,7 +474,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
@@ -493,7 +500,7 @@ template:
               boot:
                 - hd
               cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              cloud_init_iface_up: {{ IFACE_NAMING }}3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150

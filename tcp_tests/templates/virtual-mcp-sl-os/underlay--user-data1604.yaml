@@ -34,7 +34,7 @@
    - sudo resolvconf -u
 
    # Prepare network connection
-   - sudo ifup ens3
+   - sudo ifup {{ IFACE_NAMING }}3
    #- sudo route add default gw {gateway} {interface_name}
 
    # Create swap
@@ -51,13 +51,13 @@
    - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
    # Configure Ubuntu mirrors
-   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial main restricted universe" > /etc/apt/sources.list
-   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list
-   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ {{ LINUX_CODENAME }} main restricted universe" > /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ {{ LINUX_CODENAME }}-updates main restricted universe" >> /etc/apt/sources.list
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ {{ LINUX_CODENAME }}-security main restricted universe" >> /etc/apt/sources.list
 
-   - echo "deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
+   - echo "deb [arch=amd64] http://apt.mirantis.com/{{ LINUX_CODENAME }} {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
    - wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
-   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
+   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 {{ LINUX_CODENAME }} main" > /etc/apt/sources.list.d/saltstack.list;
    - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
 
    - apt-get clean
@@ -75,6 +75,6 @@
   write_files:
    - path: /etc/network/interfaces
      content: |
-          auto ens3
-          iface ens3 inet dhcp
+          auto {{ IFACE_NAMING }}3
+          iface {{ IFACE_NAMING }}3 inet dhcp
 
