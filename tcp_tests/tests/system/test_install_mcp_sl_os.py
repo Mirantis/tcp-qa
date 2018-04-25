@@ -41,7 +41,8 @@ class TestMcpInstallStacklightOpenstack(object):
                 args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN)
+            openstack_actions.run_tempest(pattern=settings.PATTERN,
+                                          target='cfg01')
             openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
 

@@ -1,8 +1,8 @@
-{% from 'virtual-mcp-sl-os/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'virtual-mcp-sl-os/underlay.yaml' import HOSTNAME_CTL01 with context %}
-{% from 'virtual-mcp-sl-os/underlay.yaml' import HOSTNAME_CTL02 with context %}
-{% from 'virtual-mcp-sl-os/underlay.yaml' import HOSTNAME_CTL03 with context %}
-{% from 'virtual-mcp-sl-os/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'virtual-mcp-trusty/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp-trusty/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'virtual-mcp-trusty/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'virtual-mcp-trusty/underlay.yaml' import HOSTNAME_CTL03 with context %}
+{% from 'virtual-mcp-trusty/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
@@ -12,7 +12,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@glance:server' state.sls glance -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 15}
   skip_fail: false
 
 - description: Install keystone service (note that different fernet keys are created on different nodes)
@@ -120,14 +120,14 @@
     -C 'I@bind:server' state.sls bind
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: true
 
 - description: Install designate
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@designate:server' state.sls designate -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 5, delay: 10}
-  skip_fail: false
+  skip_fail: true
 
 - description: Check neutron agent-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -277,7 +277,7 @@
 
 - description: Install docker.io on gtw
   cmd: salt-call cmd.run 'apt-get install docker.io -y'
-  node_name: {{ HOSTNAME_GTW01 }}
+  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
