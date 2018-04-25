@@ -1,6 +1,6 @@
-{% from 'virtual-mcp-sl-os/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'virtual-mcp-sl-os/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'virtual-mcp-sl-os/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'virtual-mcp-mitaka-dvr-trusty/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'virtual-mcp-mitaka-dvr-trusty/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'virtual-mcp-mitaka-dvr-trusty/underlay.yaml' import DOMAIN_NAME with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
@@ -40,3 +40,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
+
+- description: Install linux-image-extra package on controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@cinder:controller' cmd.run 'apt -y install linux-image-extra-$(uname -r)'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
