@@ -203,7 +203,7 @@
 
     find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
 
-    {%- if IS_CONTRAIL_LAB %}EXCLUDE_TEST_ARGS
+    {%- if IS_CONTRAIL_LAB %}
     # vSRX IPs for tcp-qa images have 172.16.10.90 hardcoded
     find ${REPLACE_DIRS} -type f -exec sed -i 's/opencontrail_router01_address:.*/opencontrail_router01_address: 172.16.10.90/g' {} +
     find ${REPLACE_DIRS} -type f -exec sed -i 's/infra_config_deploy_address: 1.*/infra_config_deploy_address: {{ IPV4_NET_ADMIN_PREFIX }}.15/g' {} +
