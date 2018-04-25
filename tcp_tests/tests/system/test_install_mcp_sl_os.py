@@ -41,8 +41,9 @@ class TestMcpInstallStacklightOpenstack(object):
                 args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN)
-            openstack_actions.download_tempest_report()
+            openstack_actions.run_tempest(pattern=settings.PATTERN,
+                                          target='cfg01')
+            openstack_actions.download_tempest_report(stored_node='cfg01')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.grab_versions
