@@ -40,3 +40,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
+
+- description: Install linux-image-extra package on controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@cinder:controller' cmd.run 'apt -y install linux-image-extra-$(uname -r)'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
