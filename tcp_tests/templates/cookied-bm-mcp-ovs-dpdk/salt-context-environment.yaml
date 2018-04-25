@@ -55,9 +55,9 @@ nodes:
           deploy_address: 172.16.49.3
         enp3s0f1:
           role: single_vlan_ctl
-          tenant_address: 10.167.12.105
           single_address: 10.167.11.105
         enp5s0f0:
+          tenant_address: 10.167.12.105
           role: single_ovs_dpdk_prv
           dpdk_pci: "0000:05:00.0"
 
@@ -75,9 +75,9 @@ nodes:
           deploy_address: 172.16.49.31
         enp3s0f1:
           role: single_vlan_ctl
-          tenant_address: 10.167.12.106
           single_address: 10.167.11.106
         enp5s0f0:
+          tenant_address: 10.167.12.106
           role: single_ovs_dpdk_prv
           dpdk_pci: "0000:05:00.0"
 
