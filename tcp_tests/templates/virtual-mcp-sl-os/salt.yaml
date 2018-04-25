@@ -4,6 +4,7 @@
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
+{% set OVERRIDES = os_env('OVERRIDES', 'linux_system_codename: trusty') %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
@@ -14,6 +15,18 @@
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "fluentd" "docker" "kibana"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{%- if OVERRIDES != '' %}
+  {%- for s in OVERRIDES.splitlines() %}
+  - description: Override cluster parameters
+    cmd: |
+      salt-call reclass.cluster_meta_set name='{{ s }}' value='{{ s }}' file_name=/srv/salt/reclass/classes/cluster/overrides.yml
+      salt '*' saltutil.refresh_pillar
+    node_name: {{ HOSTNAME_CFG01 }}
+    retry: {count: 1, delay: 1}
+    skip_fail: false
+  {%- endfor %}
+{%- endif %}
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
