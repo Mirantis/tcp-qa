@@ -15,11 +15,14 @@
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 {% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME} ' + REPOSITORY_SUITE + ' salt extra') %}
 {% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') %}
-{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/2016.3 " + REPOSITORY_SUITE + " main") %}
+#{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/2016.3 " + REPOSITORY_SUITE + " main") %}
+{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/${REPOSITORY_SUITE}/saltstack-2016.3/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
 {% set SALT_GPG = os_env('SALT_GPG', 'http://apt.mirantis.com/public.gpg') %}
 {% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME} main restricted universe") %}
 {% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-updates main restricted universe") %}
 {% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-security main restricted universe") %}
+{% set UBUNTU_KEY_SERVER = os_env('REPOSITORY_SUITE', 'keyserver.ubuntu') %}
+{% set UBUNTU_KEY_ID = os_env('UBUNTU_KEY_ID', '0E08A149DE57BFBE') %}
 
 {# Address pools for reclass cluster model are taken in the following order:
  # 1. environment variables,
@@ -60,7 +63,7 @@
     echo "{{ FORMULA_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - "{{ FORMULA_GPG }}" | apt-key add -;
     echo "{{ SALT_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_saltstack.list;
-    wget -O - "{{ SALT_GPG }}" | apt-key add -;
+    apt-key adv --keyserver "{{UBUNTU_KEY_SERVER}}" --recv-keys "{{ UBUNTU_KEY_ID}}"
     echo "{{ UBUNTU_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu.list
     echo "{{ UBUNTU_UPDATES_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_updates.list
     echo "{{ UBUNTU_SECURITY_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_security.list
@@ -88,7 +91,8 @@
     echo "{{ FORMULA_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - {{ FORMULA_GPG }} | apt-key add -;
     echo "{{ SALT_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_saltstack.list;
-    wget -O - {{ SALT_GPG }} | apt-key add -;
+    apt-key adv --keyserver "{{UBUNTU_KEY_SERVER}}" --recv-keys "{{ UBUNTU_KEY_ID}}"
+
 
     apt-get clean
     apt-get update
@@ -527,7 +531,8 @@
     echo "{{ UBUNTU_SECURITY_REPOSITORY }}" >> /etc/apt/sources.list
 
     echo "{{ SALT_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_saltstack.list;
-    wget -O - {{ SALT_GPG }} | apt-key add -;
+    apt-key adv --keyserver "{{UBUNTU_KEY_SERVER}}" --recv-keys "{{ UBUNTU_KEY_ID}}"
+
 
     apt-get clean
     apt-get update
