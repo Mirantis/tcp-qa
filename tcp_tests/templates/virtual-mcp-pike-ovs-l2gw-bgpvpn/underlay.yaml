@@ -158,7 +158,7 @@ template:
             address_pool: external-pool01
             dhcp: true
             forward:
-              mode: nat
+              mode: route
 
 
         group_volumes:

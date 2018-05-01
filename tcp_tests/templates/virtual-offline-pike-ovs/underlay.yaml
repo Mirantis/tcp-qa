@@ -140,7 +140,7 @@ template:
             address_pool: external-pool01
             dhcp: true
             forward:
-              mode: nat
+              mode: route
 
         group_volumes:
          - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
