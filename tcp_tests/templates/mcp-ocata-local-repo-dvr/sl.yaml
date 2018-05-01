@@ -102,7 +102,7 @@
 - description: Install elasticsearch client
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 30}
   skip_fail: false
 
 - description: Install kibana client
