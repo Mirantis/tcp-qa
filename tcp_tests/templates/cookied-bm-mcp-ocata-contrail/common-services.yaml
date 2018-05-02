@@ -25,19 +25,19 @@
   skip_fail: false
 
 # Install support services
-- description: Install keepalived on ctl01
+- description: 'Install keepalived on *01* nodes' 
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keepalived:cluster and *01*' state.sls keepalived
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
-  skip_fail: true
+  skip_fail: false
 
 - description: Install keepalived
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keepalived:cluster' state.sls keepalived
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
+  retry: {count: 2, delay: 10}
+  skip_fail: false
 
 - description: Install RabbitMQ on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
