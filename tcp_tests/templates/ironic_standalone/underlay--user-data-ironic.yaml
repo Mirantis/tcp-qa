@@ -83,7 +83,7 @@
    - apt-get install -y docker.io gzip uuid-runtime cpio findutils grep gnupg make
    - service docker start
    - git clone https://git.openstack.org/openstack/ironic-python-agent /tmp/ironic-python-agent
-   - cd /tmp/ironic-python-agent/imagebuild/coreos; git checkout stable/newton; make
+   - cd /tmp/ironic-python-agent/imagebuild/coreos; git checkout newton-eol; make
    - cp /tmp/ironic-python-agent/imagebuild/coreos/UPLOAD/coreos_production_pxe_image-oem.cpio.gz /httpboot/
    - cp /tmp/ironic-python-agent/imagebuild/coreos/UPLOAD/coreos_production_pxe.vmlinuz /httpboot/
    - chmod a+r /httpboot/coreos_production_pxe*
