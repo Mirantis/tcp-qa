@@ -1,4 +1,5 @@
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% import 'shared-sl-tests.yaml' as SHARED_SL_TESTS with context %}
 
 # Install docker swarm
 - description: Configure docker service
@@ -237,3 +238,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+
+{{  SHARED_SL_TESTS.MACRO_CLONE_SL_TESTS() }}
+{{  SHARED_SL_TESTS.MACRO_CONFIGURE_TESTS() }}

@@ -4,6 +4,7 @@
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_KVM01 with context %}
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_KVM02 with context %}
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_KVM03 with context %}
+{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import REPOSITORY_SUITE with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
@@ -31,8 +32,6 @@
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
-{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml') }}
-
 - description: "Workaround for rack01 compute generator"
   cmd: |
     set -e;
@@ -45,13 +44,12 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: "WR for changing image to proposed"
+- description: "Add possibility to use proposed image for VCP (it placed only in ci.mcp.mirantis.net)"
   cmd: |
     set -e;
-    # Add message_queu host for opencontrail
     . /root/venv-reclass-tools/bin/activate;
-    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/init.yml;
-    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcp{{ REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster//{{ LAB_CONFIG_NAME }}infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcp{{ REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster//{{ LAB_CONFIG_NAME }}infra/init.yml;    
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -59,24 +57,6 @@
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
-
-
-- description: "Workaround for PROD-14060"
-  cmd: |
-    set -e;
-    # Add tenant and single addresses for computes
-    salt-call reclass.cluster_meta_set deploy_address 172.16.49.73 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
-    salt-call reclass.cluster_meta_set tenant_address 192.168.0.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
-    salt-call reclass.cluster_meta_set single_address 10.167.8.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
-
-    salt-call reclass.cluster_meta_set deploy_address 172.16.49.74 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
-    salt-call reclass.cluster_meta_set tenant_address 192.168.0.102 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
-    salt-call reclass.cluster_meta_set single_address 10.167.8.102 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
-
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
 
 - description: Temporary workaround for removing cinder-volume from CTL nodes
   cmd: |
@@ -150,3 +130,24 @@
   skip_fail: false
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+- description: Temporary WR for ssh to all nodes with key.
+  cmd: |
+    ssh-keygen -y -f /root/.ssh/id_rsa > /root/.ssh/id_rsa.pub;
+    pub_key=`cat /root/.ssh/id_rsa.pub`;
+    salt '*' cmd.run "echo $pub_key >> /root/.ssh/authorized_keys";
+    salt '*' cmd.run "service sshd restart";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: "Lab04 workaround: Control network access from cfg01 node using sshuttle via kvm01"
+  cmd: |
+    set -e;
+    set -x;
+    KVM01_DEPLOY_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address);
+    apt-get install -y sshuttle;
+    sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D >/dev/null;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
