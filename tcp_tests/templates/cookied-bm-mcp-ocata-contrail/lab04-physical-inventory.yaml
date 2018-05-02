@@ -2,6 +2,7 @@ nodes:
     cfg01.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: infra_config_node01
       roles:
+      - infra_maas
       - infra_config
       - linux_system_codename_xenial
       interfaces:
