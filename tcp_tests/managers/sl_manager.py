@@ -99,6 +99,7 @@ class SLManager(ExecuteCommandsMixin):
     def run_sl_functional_tests(self, node_to_run, tests_path,
                                 test_to_run, skip_tests,
                                 reruns=5, reruns_delay=60):
+        LOG.info("Tests will be run on {0} node".format(node_to_run))
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
