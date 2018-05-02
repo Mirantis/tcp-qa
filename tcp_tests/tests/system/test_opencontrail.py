@@ -26,16 +26,19 @@ class TestOpenContrail(object):
 
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="ctl01.")
-    def test_opencontrail(self, config, openstack_deployed,
-                          show_step, sl_deployed):
+    def test_opencontrail(self, config, underlay, salt_actions,
+                          openstack_deployed, show_step, sl_deployed):
         """Runner for Juniper contrail-tests
 
         Scenario:
             1. Prepare salt on hosts
             2. Setup controller nodes
             3. Setup compute nodes
-            4. Prepare contrail-tests on ctl01 node
-            5. Run contrail-tests
+            4. Run tempest
+            5. Exporting results
+            6. Check docker services
+            7. Run SL tests
+            8. Download sl tests report
         """
         openstack_deployed._salt.local(
             tgt='*', fun='cmd.run',
@@ -45,11 +48,35 @@ class TestOpenContrail(object):
             openstack_deployed.run_tempest(target='ctl01',
                                            pattern=settings.PATTERN)
             openstack_deployed.download_tempest_report(stored_node='ctl01')
+
+        expected_service_list = ['monitoring_server',
+                                 'monitoring_remote_agent',
+                                 'dashboard_grafana',
+                                 'monitoring_alertmanager',
+                                 'monitoring_remote_collector',
+                                 'monitoring_pushgateway']
+        mon_nodes = sl_deployed.get_monitoring_nodes()
+        LOG.debug('Mon nodes list {0}'.format(mon_nodes))
+
+        prometheus_relay_enabled = salt_actions.get_pillar(
+            tgt=mon_nodes[0],
+            pillar="prometheus:relay:enabled")[0]
+        if not prometheus_relay_enabled:
+            # InfluxDB is used if prometheus relay service is not installed
+            expected_service_list.append('monitoring_remote_storage_adapter')
+        show_step(6)
+        sl_deployed.check_docker_services(mon_nodes, expected_service_list)
+        show_step(7)
+        # Run SL component tetsts
+        if settings.RUN_SL_TESTS:
+            sl_deployed.run_sl_functional_tests(
+                'cfg01',
+                '/root/stacklight-pytest/stacklight_tests/',
+                'tests/prometheus',
+                'test_alerts.py')
+            show_step(8)
+            # Download report
+            sl_deployed.download_sl_test_report(
+                'cfg01',
+                '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
-
-        # opencontrail.prepare_tests(
-        #     config.opencontrail.opencontrail_prepare_tests_steps_path)
-
-        # opencontrail.run_tests(
-        #     tags=config.opencontrail.opencontrail_tags,
-        #     features=config.opencontrail.opencontrail_features)
