@@ -59,3 +59,4 @@ DOCKER_IMAGES_SL_TAG = os.environ.get('DOCKER_IMAGES_SL_TAG', 'latest')
 
 PATTERN = os.environ.get('PATTERN', None)
 RUN_TEMPEST = get_var_as_bool('RUN_TEMPEST', False)
+RUN_SL_TESTS = get_var_as_bool('RUN_SL_TESTS', False)
