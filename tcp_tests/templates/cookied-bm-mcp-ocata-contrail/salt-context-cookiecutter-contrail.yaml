@@ -70,7 +70,7 @@ default_context:
   maas_deploy_address: 172.16.49.66
   maas_hostname: cfg01
   mcp_common_scripts_branch: ''
-  mcp_version: 2018.3.1
+  mcp_version: 2018.4.0
   offline_deployment: 'False'
   opencontrail_analytics_address: 10.167.8.30
   opencontrail_analytics_hostname: nal
