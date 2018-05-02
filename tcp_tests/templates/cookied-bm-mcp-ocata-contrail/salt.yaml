@@ -31,8 +31,6 @@
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
-{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml') }}
-
 - description: "Workaround for rack01 compute generator"
   cmd: |
     set -e;
@@ -45,16 +43,16 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: "WR for changing image to proposed"
-  cmd: |
-    set -e;
-    # Add message_queu host for opencontrail
-    . /root/venv-reclass-tools/bin/activate;
-    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/init.yml;
-    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/init.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
+#- description: "WR for changing image to proposed"
+#  cmd: |
+#    set -e;
+#    # Add message_queu host for opencontrail
+#    . /root/venv-reclass-tools/bin/activate;
+#    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/init.yml;
+#    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/init.yml;
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
@@ -150,3 +148,34 @@
   skip_fail: false
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+- description: Temporary WR for ssh to all nodes with key.
+  cmd: |
+    ssh-keygen -y -f /root/.ssh/id_rsa > /root/.ssh/id_rsa.pub;
+    pub_key=`cat /root/.ssh/id_rsa.pub`;
+    salt '*' cmd.run "echo $pub_key >> /root/.ssh/authorized_keys";
+    salt '*' cmd.run "service sshd restart";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: "Lab03 workaround: Control network access from cfg01 node using sshuttle via kvm01"
+  cmd: |
+    set -e;
+    set -x;
+    KVM01_DEPLOY_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address);
+    apt-get install -y sshuttle;
+    sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D >/dev/null;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Prepare basic maas config
+  cmd: |
+    salt-call state.apply maas.cluster,maas.region;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.maas_db_password 'r00tme' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ocata-contrail/infra/secrets.yml;
+    salt-call state.apply maas.cluster,maas.region;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
