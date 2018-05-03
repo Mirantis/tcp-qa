@@ -97,17 +97,25 @@ class SLManager(ExecuteCommandsMixin):
         return service_stat_dict
 
     def run_sl_functional_tests(self, node_to_run, tests_path,
-                                test_to_run, skip_tests):
+                                test_to_run, skip_tests,
+                                reruns=5, reruns_delay=60):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
         cmd = (". venv-stacklight-pytest/bin/activate;"
-               "cd {0}; "
+               "cd {tests_path}; "
                "export VOLUME_STATUS='available';"
-               "pytest -k {1} {2}".format(
-                   tests_path,
-                   "'not " + skip_tests + "'" if skip_tests else '',
-                   test_to_run))
+               "pytest {reruns} {reruns_delay} "
+               "-k {skip_tests} {test_to_run}".format(**{
+                   "tests_path": tests_path,
+                   "skip_tests": ("'not " + skip_tests + "'"
+                                  if skip_tests else ''),
+                   "test_to_run": test_to_run,
+                   "reruns": ("--reruns {}".format(reruns)
+                              if reruns > 1 else ""),
+                   "reruns_delay": ("--reruns-delay {}".format(reruns_delay)
+                                    if reruns_delay > 0 else ""),
+                   }))
 
         with self.__underlay.remote(node_name=target_node_name[0]) \
                 as node_remote:
@@ -118,18 +126,25 @@ class SLManager(ExecuteCommandsMixin):
         return result
 
     def run_sl_tests_json(self, node_to_run, tests_path,
-                          test_to_run, skip_tests):
+                          test_to_run, skip_tests, reruns=5, reruns_delay=60):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
         cmd = (". venv-stacklight-pytest/bin/activate;"
-               "cd {0}; "
+               "cd {tests_path}; "
                "export VOLUME_STATUS='available';"
                "pip install pytest-json;"
-               "pytest --json=report.json -k {1} {2}".format(
-                   tests_path,
-                   "'not " + skip_tests + "'" if skip_tests else '',
-                   test_to_run))
+               "pytest --json=report.json {reruns} {reruns_delay}"
+               "-k {skip_tests} {test_to_run}".format(**{
+                   "tests_path": tests_path,
+                   "skip_tests": ("'not " + skip_tests + "'"
+                                  if skip_tests else ''),
+                   "test_to_run": test_to_run,
+                   "reruns": ("--reruns {}".format(reruns)
+                              if reruns > 1 else ""),
+                   "reruns_delay": ("--reruns-delay {}".format(reruns_delay)
+                                    if reruns_delay > 0 else ""),
+                   }))
 
         with self.__underlay.remote(node_name=target_node_name[0]) \
                 as node_remote:
