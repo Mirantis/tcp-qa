@@ -1,0 +1,112 @@
+# Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
+{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'standalone') + '.local' %}
+{% set HOSTNAME_MAAS = os_env('HOSTNAME_MAAS', 'mas01') %}
+{% set MAAS_ENV_NAME = os_env('MAAS_ENV_NAME', 'maas_' + DOMAIN_NAME + '_' + os_env('BUILD_NUMBER', '')) %}
+
+{% import 'maas_standalone/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'maas_standalone/underlay--user-data-maas.yaml' as CLOUDINIT_USER_DATA_MAAS with context %}
+
+---
+aliases:
+ - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
+ - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
+ - &cloudinit_user_data_maas {{ CLOUDINIT_USER_DATA_MAAS }}
+
+
+template:
+  devops_settings:
+    env_name: {{ MAAS_ENV_NAME }}
+
+    address_pools:
+
+      admin-pool01:
+        net: {{ os_env('MAAS_ADMIN_ADDRESS_POOL01', '10.51.0.0/16:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_MAAS }}: +2
+          ip_ranges:
+            dhcp: [+90, -10]
+
+      provisioning-pool01:
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.70.0.0/16:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_MAAS }}: +2
+
+    groups:
+      - name: default
+        driver:
+          name: devops.driver.libvirt
+          params:
+            connection_string: !os_env CONNECTION_STRING, qemu:///system
+            storage_pool_name: !os_env STORAGE_POOL_NAME, default
+            stp: False
+            hpet: False
+            enable_acpi: true
+            use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
+            use_hugepages: !os_env DRIVER_USE_HUGEPAGES, false
+
+        network_pools:
+          admin: admin-pool01
+          provisioning: provisioning-pool01
+
+        l2_network_devices:
+          # MaaS management interface
+          admin:
+            address_pool: admin-pool01
+            dhcp: true
+            forward:
+              mode: nat
+
+          # PXE / Salt-master admin network
+          provisioning:
+            address_pool: provisioning-pool01
+            dhcp: false
+            forward:
+              mode: !os_env MAAS_LAB_PXE_IFACE_MODE, bridge
+            parent_iface:
+              phys_dev: !os_env MAAS_LAB_PXE_IFACE
+
+        nodes:
+          - name: {{ HOSTNAME_MAAS }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 1
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  source_image: {{ os_env('MAAS_IMAGE_PATH1604', os_env('IMAGE_PATH1604')) }}
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_maas
+
+              interfaces:
+                - label: ens3
+                  l2_network_device: admin
+                  interface_model: *interface_model
+                - label: ens4
+                  l2_network_device: provisioning
+                  interface_model: *interface_model
+
+              network_config:
+                ens3:
+                  networks:
+                    - admin
+                ens4:
+                  networks:
+                    - provisioning
