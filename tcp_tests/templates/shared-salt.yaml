@@ -21,7 +21,7 @@
 {% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME} main restricted universe") %}
 {% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-updates main restricted universe") %}
 {% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-security main restricted universe") %}
-{% set UBUNTU_KEY_SERVER = os_env('REPOSITORY_SUITE', 'keyserver.ubuntu') %}
+{% set UBUNTU_KEY_SERVER = os_env('UBUNTU_KEY_SERVER', 'keyserver.ubuntu.com') %}
 {% set UBUNTU_KEY_ID = os_env('UBUNTU_KEY_ID', '0E08A149DE57BFBE') %}
 
 {# Address pools for reclass cluster model are taken in the following order:
