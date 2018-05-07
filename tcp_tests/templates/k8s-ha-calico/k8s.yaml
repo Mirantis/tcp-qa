@@ -65,7 +65,7 @@
 
 - description: Get kubeconfig
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:pool and *01*' cmd.run 'cat /etc/kubernetes/admin-kube-config && echo "Salt command execution success"'
+    -C 'I@kubernetes:control and *01*' cmd.run 'cat /etc/kubernetes/admin-kube-config && echo "Salt command execution success"'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
