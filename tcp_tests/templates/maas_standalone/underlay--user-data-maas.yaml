@@ -1,0 +1,114 @@
+| # All the data below will be stored as a string object
+  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
+
+  disable_root: false
+  chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+  bootcmd:
+   # Block access to SSH while node is preparing
+   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+  output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+  runcmd:
+   # Configure dhclient
+   - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
+   - sudo resolvconf -u
+
+   # Prepare network connection
+   - sudo ifup ens3
+   #- sudo route add default gw {gateway} {interface_name}
+   - sudo ifup ens4
+
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
+   ############## TCP Cloud cfg01 node ##################
+   #- sleep 120
+   - echo "Preparing base OS"
+
+   - echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
+   - apt-get update
+   - which wget >/dev/null || (apt-get update; apt-get install -y wget);
+   - apt-get install -y ntp
+
+   #Installing mysql before running formula for correct mysql status
+   - DEBIAN_FRONTEND=noninteractive apt-get install -y mysql-server-5.7 python-mysqldb debconf-utils
+
+   - export MAAS_PXE_MANAGER=dnsmasq
+   - export MAAS_PXE_INTERFACE_NAME=ens4
+   - export MAAS_PXE_INTERFACE_ADDRESS={{ os_env('MAAS_PXE_INTERFACE_ADDRESS', '10.0.175.2') }}
+   - export MAAS_DHCP_POOL_NETMASK={{ os_env('MAAS_DHCP_POOL_NETMASK', '255.255.255.0') }}
+   - export MAAS_DHCP_POOL_NETMASK_PREFIX={{ os_env('MAAS_DHCP_POOL_NETMASK_PREFIX', '24') }}
+   - export MAAS_DHCP_POOL_START={{ os_env('MAAS_DHCP_POOL_START', '10.0.175.100') }}
+   - export MAAS_DHCP_POOL_END={{ os_env('MAAS_DHCP_POOL_END', '10.0.175.200') }}
+   - export DNSMASQ_USE_EXTERNAL_DNS=true
+   - ip a a $MAAS_PXE_INTERFACE_ADDRESS/$MAAS_DHCP_POOL_NETMASK_PREFIX dev $MAAS_PXE_INTERFACE_NAME
+   - curl https://raw.githubusercontent.com/obutenko/temp/master/bootstrap.sh -o ./bootstrap.sh && bash ./bootstrap.sh
+
+   # Disable dnsmasq in favour to external DHCP provider
+   #- systemctl disable dnsmasq
+   # - service dnsmasq stop
+
+   {%- if os_env('MAAS_DNSMASQ_HOSTFILE', '') %}
+   - echo "dhcp-hostsfile=/var/lib/libvirt/dnsmasq/{{ MAAS_ENV_NAME }}.hostsfile" >> /etc/dnsmasq.conf
+   - service dnsmasq restart
+   {%- endif %}
+
+   # Enable SNAT to allow internet access for deploying nodes using ironic node as a gateway
+   - iptables -t nat -I POSTROUTING -s {{ os_env('MAAS_DHCP_POOL_START', '10.0.175.100') }}/{{ os_env('MAAS_DHCP_POOL_NETMASK_PREFIX', '24') }} ! -d {{ os_env('MAAS_DHCP_POOL_START', '10.0.175.100') }}/{{ os_env('MAAS_DHCP_POOL_NETMASK_PREFIX', '24') }} -j MASQUERADE
+   - iptables -I FORWARD -j ACCEPT
+
+
+   ########################################################
+   # Node is ready, allow SSH access
+   - echo "Allow SSH access ..."
+   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
+   ########################################################
+
+  write_files:
+   - path: /etc/network/interfaces
+     content: |
+          auto ens3
+          iface ens3 inet dhcp
+          auto ens4
+          iface ens4 inet manual
+
+   - path: /root/.ssh/config
+     owner: root:root
+     permissions: '0600'
+     content: |
+          Host *
+            ServerAliveInterval 300
+            ServerAliveCountMax 10
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+
+   {%- if os_env('MAAS_DNSMASQ_HOSTFILE', '') %}
+   - path: /var/lib/libvirt/dnsmasq/{{ MAAS_ENV_NAME }}.hostsfile
+     permissions: '0644'
+     content: |
+     {%- for host in os_env('MAAS_DNSMASQ_HOSTFILE').splitlines() %}
+       {{ host }}
+     {%- endfor %}
+   {%- endif %}
