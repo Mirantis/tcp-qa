@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ecf358d5_f9c28911",
+        "filename": "index.html",
+        "patchSetId": 17
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-07T19:47:10Z",
+      "side": 1,
+      "message": "Please delete the apache default page from the project",
+      "revId": "596a3858bc4dff2e816ed22e45e211d09c233214",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "eaaed987_f266a562",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-bm-mcp-ovs-dpdk.yaml",
+        "patchSetId": 17
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-07T19:47:10Z",
+      "side": 1,
+      "message": "please rebase the patch , there is a fix for this line in the master",
+      "range": {
+        "startLine": 16,
+        "startChar": 0,
+        "endLine": 16,
+        "endChar": 76
+      },
+      "revId": "596a3858bc4dff2e816ed22e45e211d09c233214",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
