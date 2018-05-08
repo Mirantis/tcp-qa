@@ -177,6 +177,7 @@ class CommonServicesManager(ExecuteCommandsMixin):
                             'keepalived:cluster:instance',
                             message)
 
+                    # keepalived 'priority' can be the same on multiple nodes
                     if any([priority == prio
                             for node, prio in vips[address]['nodes'].items()]):
                         message = (
@@ -188,10 +189,7 @@ class CommonServicesManager(ExecuteCommandsMixin):
                                                address,
                                                vips[address]['nodes'].keys())
                         )
-                        raise exceptions.SaltPillarError(
-                            minion_id,
-                            'keepalived:cluster:instance',
-                            message)
+                        LOG.warning("On {0}, {1}".format(minion_id, message))
 
                     # Add data to the vips
                     vips[address]['nodes'][minion_id] = priority
