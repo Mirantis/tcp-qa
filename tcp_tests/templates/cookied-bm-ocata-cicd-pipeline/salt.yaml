@@ -57,14 +57,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Remove cicd nodes from VCP, because we have baremetal cicd nodes
-  cmd: |
-    sed -i 's/\-\ system\.salt\.control\.cluster\.cicd\_control\_cluster//g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/kvm.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-
 - description: "Workaround for PROD-16973"
   cmd: |
     set -e;
