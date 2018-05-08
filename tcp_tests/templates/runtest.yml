@@ -30,6 +30,7 @@ parameters:
         min_microversion: 2.1
         max_microversion: 2.53
         min_compute_nodes: 2
+        volume_device_name: 'vdc'
       dns_feature_enabled:
         # Switch this to designate_admin_api_enabled once [1] is promoted to stable packages
         # [1] https://gerrit.mcp.mirantis.net/gitweb?p=salt-formulas/designate.git;a=commit;h=96a3f43f6cf1149559e54a00b5548bdf46333749
