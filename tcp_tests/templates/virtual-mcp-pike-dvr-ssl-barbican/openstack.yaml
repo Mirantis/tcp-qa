@@ -440,7 +440,7 @@
   cmd: |
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila type-create default false --create_share_from_snapshot_support true --revert_to_snapshot_support true --mount_snapshot_support true --snapshot_support true --is_public true'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Create CIFS and NFS share and check it status
@@ -450,7 +450,7 @@
     sleep 5;
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila list';
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 {{ SHARED.RUN_NEW_TEMPEST() }}
