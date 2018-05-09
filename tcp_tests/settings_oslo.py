@@ -295,7 +295,7 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_calico_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/node:latest'.format(
                settings.DOCKER_REGISTRY)),
-    ct.Cfg('kubernetes_calicoctl_image', ct.String(),
+    ct.Cfg('kubernetes_calico_calicoctl_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/ctl:latest'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_cni_image', ct.String(),
