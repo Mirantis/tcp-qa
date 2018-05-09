@@ -88,12 +88,15 @@ def get_runs(t_client, plan_name, run_name):
     LOG.info("Get runs from plan - {}".format(plan_name))
     ret = []
     plan = t_client.plan(plan_name)
-    for e in plan.entries:
-        for r in e.runs:
-            LOG.info("Run {} #{}".format(r.name, r.id))
-            if run_name is not None and r.name != run_name:
-                continue
-            ret.append(r)
+    if plan:
+        for e in plan.entries:
+            for r in e.runs:
+                LOG.info("Run {} #{}".format(r.name, r.id))
+                if run_name is not None and r.name != run_name:
+                    continue
+                ret.append(r)
+    else:
+        LOG.warning("Plan {} is empty".format(plan_name))
     return ret
 
 
