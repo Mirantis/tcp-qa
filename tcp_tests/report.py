@@ -113,14 +113,11 @@ def fetch_test(api, test_id, run_id):
 
 
 def get_results(t_client, run):
-    _statuses = ('product_failed', 'failed',
-                 'prodfailed', 'blocked')
     LOG.info("Get results for run - {}".format(run.name))
     results = t_client.results(run)
     ret = [(run.id, r) for r in results
            if r.raw_data()['status_id'] is not None and
-           r.raw_data()['defects'] is not None and
-           r.status.name.lower() in _statuses]
+           r.raw_data()['defects'] is not None]
     for r in ret:
         run_id, result = r
         test = fetch_test(result.api, result.raw_data()['test_id'], run_id)
@@ -324,14 +321,15 @@ def push_report(t_client, plan_name, table):
                date=datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
                table=get_md_table(table))
     plan = t_client.plan(plan_name)
-    plan.description = text
-    plan.api._post(
-        'update_plan/{}'.format(plan.id),
-        {
-            'name': plan.name,
-            'description': plan.description,
-            'milestone_id': plan.milestone.id
-        })
+    if plan:
+        plan.description = text
+        plan.api._post(
+            'update_plan/{}'.format(plan.id),
+            {
+                'name': plan.name,
+                'description': plan.description,
+                'milestone_id': plan.milestone.id
+            })
 
 
 def create_report(**kwargs):
