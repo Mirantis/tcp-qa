@@ -744,10 +744,31 @@
   retry: {count: 5, delay: 10}
   skip_fail: false
 
+- description: Setup proxies
+  cmd: |
+    salt '*' state.sls linux.network.proxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup linux system on all nodes
+  cmd: |
+    salt '*' state.sls linux.system
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup network interfaces
+  cmd: |
+    salt -C 'I@linux:network:interface' state.sls linux.network.interface
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Configure linux on other nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 10}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Configure openssh on all nodes
@@ -759,11 +780,17 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Configure ntp and rsyslog on nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls ntp,rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Configure salt.minion on other nodes
   cmd: salt --timeout=120 --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls salt.minion &&
     sleep 30
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 15}
+  retry: {count: 2, delay: 15}
   skip_fail: false
 
 - description: Wait for salt-minions wake up after restart
@@ -798,11 +825,6 @@
   retry: {count: 3, delay: 15}
   skip_fail: false
 
-- description: Configure ntp and rsyslog on nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls ntp,rsyslog
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
 {%- endmacro %}
 
 
