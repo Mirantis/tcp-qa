@@ -1,0 +1,245 @@
+nodes:
+    # Virtual Control Plane nodes
+
+    ctl01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_control_node01
+      roles:
+      - openstack_control_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    ctl02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_control_node02
+      roles:
+      - openstack_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    ctl03.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_control_node03
+      roles:
+      - openstack_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_database_node01
+      roles:
+      - openstack_database_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_database_node02
+      roles:
+      - openstack_database
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    dbs03.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_database_node03
+      roles:
+      - openstack_database
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_message_queue_node01
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_message_queue_node02
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    msg03.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_message_queue_node03
+      roles:
+      - openstack_message_queue
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    prx01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_proxy_node01
+      roles:
+      - openstack_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    prx02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: openstack_proxy_node02
+      roles:
+      - openstack_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    mon01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_server_node01
+      roles:
+      - stacklightv2_server_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    mon02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_server_node02
+      roles:
+      - stacklightv2_server
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    mon03.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_server_node03
+      roles:
+      - stacklightv2_server
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    nal01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: opencontrail_analytics_node01
+      roles:
+      - opencontrail_analytics
+      - linux_system_codename_trusty
+      interfaces:
+        eth1:
+          role: single_ctl
+
+    nal02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: opencontrail_analytics_node02
+      roles:
+      - opencontrail_analytics
+      - linux_system_codename_trusty
+      interfaces:
+        eth1:
+          role: single_ctl
+
+    nal03.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: opencontrail_analytics_node03
+      roles:
+      - opencontrail_analytics
+      - linux_system_codename_trusty
+      interfaces:
+        eth1:
+          role: single_ctl
+
+    ntw01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: opencontrail_control_node01
+      roles:
+      - opencontrail_control
+      - linux_system_codename_trusty
+      interfaces:
+        eth1:
+          role: single_ctl
+
+    ntw02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: opencontrail_control_node02
+      roles:
+      - opencontrail_control
+      - linux_system_codename_trusty
+      interfaces:
+        eth1:
+          role: single_ctl
+
+    ntw03.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: opencontrail_control_node03
+      roles:
+      - opencontrail_control
+      - linux_system_codename_trusty
+      interfaces:
+        eth1:
+          role: single_ctl
+
+    mtr01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_telemetry_node01
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    mtr02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_telemetry_node02
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    mtr03.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_telemetry_node03
+      roles:
+      - stacklight_telemetry
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    log01.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_log_node01
+      roles:
+      - stacklight_log_leader_v2
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    log02.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_log_node02
+      roles:
+      - stacklight_log
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+    log03.cookied-bm-mcp-ocata-contrail.local:
+      reclass_storage_name: stacklight_log_node03
+      roles:
+      - stacklight_log
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_ctl
+
+#    bmk01.cookied-bm-mcp-ocata-contrail.local:
+#      reclass_storage_name: openstack_benchmark_node01
+#      roles:
+#      - openstack_benchmark
+#      - linux_system_codename_xenial
+#      interfaces:
+#        ens3:
+#          role: single_ctl
