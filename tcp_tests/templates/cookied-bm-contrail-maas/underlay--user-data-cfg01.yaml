@@ -1,0 +1,69 @@
+| # All the data below will be stored as a string object
+  #cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+  ssh_pwauth: True
+  users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+     ssh_authorized_keys:
+     {% for key in config.underlay.ssh_keys %}
+      - ssh-rsa {{ key['public'] }}
+     {% endfor %}
+
+  disable_root: false
+  chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+  bootcmd:
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+  output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+  runcmd:
+   # Configure dhclient
+   - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
+   - sudo resolvconf -u
+
+   # Prepare network connection
+   - sudo ifdown ens3
+   - sudo ip r d default || true  # remove existing default route to get it from dhcp
+   - sudo ifup ens3
+   - sudo route add default gw {gateway} ens3
+
+   # Create swap
+   - fallocate -l 4G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
+   - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
+
+   - export MAAS_PXE_INTERFACE_NAME=ens4
+   - export MAAS_PXE_INTERFACE_ADDRESS={{ os_env('IRONIC_PXE_INTERFACE_ADDRESS', '172.16.49.66') }}
+   - export MAAS_DHCP_POOL_NETMASK={{ os_env('IRONIC_DHCP_POOL_NETMASK', '255.255.255.192') }}
+   - export MAAS_DHCP_POOL_NETMASK_PREFIX={{ os_env('IRONIC_DHCP_POOL_NETMASK_PREFIX', '26') }}
+   - export MAAS_DHCP_POOL_START={{ os_env('IRONIC_DHCP_POOL_START', '172.16.49.77') }}
+   - export MAAS_DHCP_POOL_END={{ os_env('IRONIC_DHCP_POOL_END', '172.16.49.119') }}
+   - ip a a $IRONIC_PXE_INTERFACE_ADDRESS/$IRONIC_DHCP_POOL_NETMASK_PREFIX dev $IRONIC_PXE_INTERFACE_NAME
+
+  write_files:
+   - path: /etc/network/interfaces
+     content: |
+          auto ens3
+          iface ens3 inet dhcp
+
+   - path: /root/.ssh/config
+     owner: root:root
+     permissions: '0600'
+     content: |
+          Host *
+            ServerAliveInterval 300
+            ServerAliveCountMax 10
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
