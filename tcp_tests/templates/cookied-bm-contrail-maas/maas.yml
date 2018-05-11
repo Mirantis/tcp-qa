@@ -1,0 +1,111 @@
+classes:
+- system.linux.system.repo.mcp.apt_mirantis.maas
+- system.maas.region.single
+parameters:
+  _param:
+    maas_region_port: 5240
+    maas_cluster_region_port: ${_param:maas_region_port}
+    power_user: mcp-qa
+    power_password: password
+  maas:
+    cluster:
+      region:
+        host: ${_param:deploy_address}:${_param:maas_cluster_region_port}
+    region:
+      bind:
+        host: ${_param:deploy_address}:${_param:maas_region_port}
+      subnets:
+        172.16.49.64/26:
+          cidr: 172.16.49.64/26
+          fabric: fabric-51
+          gateway_ip: 172.16.49.65
+          iprange:
+            end: 172.16.49.119
+            start: 172.16.49.77
+      fabrics:
+        fabric-51:
+          description: Fabric for deploy
+      #commissioning_scripts:
+      #  00-maas-05-simplify-network-interfaces: /etc/maas/files/commisioning_scripts/00-maas-05-simplify-network-interfaces
+      machines:
+        kvm01: # cz7341-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          # pxe_interface_mac:
+          pxe_interface_mac: "0c:c4:7a:33:1f:e4"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:33:1f:e4"
+              mode: "static"
+              ip: ${_param:infra_kvm_node01_deploy_address}
+              subnet: "10.10.0.0/16" # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+          power_parameters:
+            power_address: "185.8.59.161"
+            power_password: ${_param:power_password}
+            power_type: ipmi
+            power_user: ${_param:power_user}
+        kvm02: # #cz7342-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:33:20:fc"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:33:20:fc"
+              mode: "static"
+              ip: ${_param:infra_kvm_node02_deploy_address}
+              subnet: "10.10.0.0/16" # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+          power_parameters:
+            power_address: "185.8.59.162"
+            power_password: ${_param:power_password}
+            power_type: ipmi
+            power_user: ${_param:power_user}
+        kvm03: # #cz7343-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:31:fb:b6"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:31:fb:b6"
+              mode: "static"
+              ip: ${_param:infra_kvm_node03_deploy_address}
+              subnet: "10.10.0.0/16" # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+          power_parameters:
+            power_address: "185.8.59.163"
+            power_password: ${_param:power_password}
+            power_type: ipmi
+            power_user: ${_param:power_user}
+        cmp001: # #cz7345-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:31:f0:12"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:31:f0:12"
+              mode: "static"
+              ip: ${_param:infra_kvm_node04_deploy_address}
+              subnet: "10.10.0.0/16" # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+          power_parameters:
+            power_address: "185.8.59.17"
+            power_password: ${_param:power_password}
+            power_type: ipmi
+            power_user: ${_param:power_user}
+        cmp002: # cz7346-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:31:ef:bc"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:31:ef:bc"
+              mode: "static"
+              ip: ${_param:infra_kvm_node05_deploy_address}
+              subnet: "10.10.0.0/16" # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+          power_parameters:
+            power_address: "185.8.59.18"
+            power_password: ${_param:power_password}
+            power_type: ipmi
+            power_user: ${_param:power_user}
