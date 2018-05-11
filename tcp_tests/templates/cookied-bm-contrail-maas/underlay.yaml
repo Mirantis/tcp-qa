@@ -1,0 +1,155 @@
+# Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+
+{% import 'cookied-bm-contrail-maas/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'cookied-bm-contrail-maas/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'cookied-bm-contrail-maas/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-bm-contrail-maas') %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
+{% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
+
+{% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.49.66') %}
+
+{% set MAAS_PROFILE_NAME = os_env('MAAS_PROFILE_NAME', 'mirantis') %}
+{% set MAAS_URL = os_env('MAAS_URL', ETH1_IP_ADDRESS_CFG01 + '/:5240/MAAS') %}
+{% set MAAS_API_KEY_FILE = os_env('MAAS_API_KEY_FILE', '/root/API_KEY_FILE') %}
+{% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.49.66') %}
+
+---
+aliases:
+ - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
+ - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
+ - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
+ - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
+
+template:
+  devops_settings:
+    env_name: {{ os_env('ENV_NAME', 'cookied-bm-contrail-maas_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+
+    address_pools:
+      admin-pool01:
+        net: {{ os_env('MAAS_ADMIN_ADDRESS_POOL01', '10.50.0.0/16:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_CFG01 }}: +2
+          ip_ranges:
+            dhcp: [+90, -10]
+
+      private-pool01:
+        net: {{ os_env('PRIVATE_ADDRESS_POOL01', '10.167.8.0/24:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+
+      tenant-pool01:
+        net: {{ os_env('TENANT_ADDRESS_POOL01', '10.167.10.0/24:24') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+
+      external-pool01:
+        net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '172.17.42.192/26:26') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: -2
+
+      provisioning-pool01:
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '172.16.49.64/26:26') }}
+        params:
+          ip_reserved:
+            gateway: +61
+            l2_network_device: +61
+            default_{{ HOSTNAME_CFG01 }}: +2
+            virtual_{{ HOSTNAME_CFG01 }}: +2
+          ip_ranges:
+            dhcp: [+12, +55]
+
+    groups:
+      - name: default
+        driver:
+          name: devops.driver.libvirt
+          params:
+            connection_string: !os_env CONNECTION_STRING, qemu:///system
+            storage_pool_name: !os_env STORAGE_POOL_NAME, default
+            stp: False
+            hpet: False
+            enable_acpi: true
+            use_host_cpu: !os_env DRIVER_USE_HOST_CPU, true
+            use_hugepages: !os_env DRIVER_USE_HUGEPAGES, false
+
+        network_pools:
+          admin: admin-pool01
+          provisioning: provisioning-pool01
+
+        l2_network_devices:
+          # Ironic management interface
+          admin:
+            address_pool: admin-pool01
+            dhcp: true
+            forward:
+              mode: nat
+
+          provisioning:
+            address_pool: provisioning-pool01
+            dhcp: false
+            forward:
+              mode: !os_env MAAS_PXE_IFACE_MODE, bridge
+            parent_iface:
+              phys_dev: !os_env MAAS_PXE_IFACE
+
+        group_volumes:
+         - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
+           source_image: !os_env IMAGE_PATH1604  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+           format: qcow2
+         - name: cfg01_day01_image               # Pre-configured day01 image
+           source_image: {{ os_env('IMAGE_PATH_CFG01_DAY01', os_env('IMAGE_PATH1604')) }} # http://images.mirantis.com/cfg01-day01.qcow2 or fallback to IMAGE_PATH1604
+           format: qcow2
+         - name: mcp_ubuntu_1604_image           # Pre-configured image for control plane
+           source_image: !os_env MCP_IMAGE_PATH1604
+           format: qcow2
+
+        nodes:
+          - name: {{ HOSTNAME_CFG01 }}
+            role: salt_master
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cfg01_day01_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_cfg01
+              interfaces:
+                - label: ens3
+                  l2_network_device: admin
+                  interface_model: *interface_model
+                  mac_address: !os_env ETH1_MAC_ADDRESS_CFG01
+                - label: ens4
+                  l2_network_device: provisioning
+                  interface_model: *interface_model
+
+              network_config:
+                ens3:
+                  networks:
+                    - admin
+                ens4:
+                  networks:
+                    - provisioning
