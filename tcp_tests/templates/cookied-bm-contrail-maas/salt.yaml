@@ -1,0 +1,224 @@
+{% from 'cookied-bm-contrail-maas/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-contrail-maas/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-bm-contrail-maas/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-bm-contrail-maas/underlay.yaml' import REPOSITORY_SUITE with context %}
+{% from 'cookied-bm-contrail-maas/underlay.yaml' import ETH1_IP_ADDRESS_CFG01 with context %}
+{% from 'cookied-bm-contrail-maas/underlay.yaml' import MAAS_DHCP_POOL_START with context %}
+{% from 'cookied-bm-contrail-maas/underlay.yaml' import MAAS_DHCP_POOL_END with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','physical-cookied-bm-mcp-ocata-contrail') %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-contrail.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-physical-inventory.yaml'] %}
+{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2422') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2423') %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd"') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+- description: Upload maas template
+  upload:
+    local_path: {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
+    local_filename: maas.yml
+    remote_path: /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: "Workaround for rack01 compute generator"
+  cmd: |
+    set -e;
+    # Remove rack01 key
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    # Add openstack_compute_node definition from system
+    reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "WR for changing image to proposed"
+  cmd: |
+    set -e;
+    # Add message_queu host for opencontrail
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcp{{ REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster//{{ LAB_CONFIG_NAME }}infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcp{{ REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster//{{ LAB_CONFIG_NAME }}infra/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+- description: Temporary workaround for removing cinder-volume from CTL nodes
+  cmd: |
+    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
+    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Update minion information
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_grains &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' mine.update &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar && sleep 10
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Rerun openssh after env model is generated
+  cmd: |
+    salt-call state.sls openssh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Execute linux.network.host one more time after salt.minion to apply dynamically registered hosts on the cluster nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Configure rsyslog on nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Configure maas.cluster
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' state.sls maas.cluster
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Configure maas.region
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' state.sls maas.region
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: Configure dhcp for fabric
+  cmd: |
+    touch /root/API_KEY_FILE;
+    export PROFILE=mirantis;
+    export API_KEY_FILE=/root/API_KEY_FILE;
+    export MAAS_URL=http://{{ ETH1_IP_ADDRESS_CFG01 }}:5240/MAAS;
+    maas-region apikey --username=$PROFILE > $API_KEY_FILE;
+    maas login $PROFILE $MAAS_URL - < $API_KEY_FILE;
+    maas $PROFILE ipranges create type=dynamic start_ip={{ MAAS_DHCP_POOL_START }} end_ip={{ MAAS_DHCP_POOL_END }} comment='Reserved dynamic range for HW and VCP nodes'
+    maas $PROFILE ipranges create type=reserved  start_ip={{ ETH1_IP_ADDRESS_CFG01 }} end_ip={{ ETH1_IP_ADDRESS_CFG01 }} comment='This is a reserved IP for cfg with maas node';
+    maas $PROFILE vlan update 51 0 dhcp_on=True primary_rack=cfg01;
+    maas $PROFILE nodes read |grep status -A 1 -B 1;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Comissioning nodes
+  cmd: |
+    salt-call state.apply maas.machines;
+    salt-call state.apply maas.machines.wait_for_ready;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Assign IPs
+  cmd: |
+    salt-call state.sls maas.machines.assign_ip;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Deploying BM nodes
+  cmd: |
+    salt-call maas.deploy_machines || true
+    salt-call state.apply maas.machines.wait_for_deployed;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Configure ntp on all nodes
+  cmd: |
+    salt '*' state.sls ntp;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+########################################
+# Spin up Control Plane VMs on KVM nodes
+########################################
+
+- description: Execute 'libvirt' states to create necessary libvirt networks
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+- description: Create VMs for control plane
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls salt.control
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
+- description: '*Workaround* for waiting the control-plane VMs in the salt-key (instead of sleep)'
+  cmd: |
+    salt-key -l acc| sort > /tmp/current_keys.txt &&
+    salt 'kvm*' cmd.run 'virsh list --name' | grep -v 'kvm'|sort|xargs -I {} fgrep {} /tmp/current_keys.txt
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 20, delay: 30}
+  skip_fail: false
+
+#########################################
+# Configure all running salt minion nodes
+#########################################
+
+- description: Hack resolv.conf on VCP nodes for internal services access
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf;"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Refresh pillars on all minions
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show  reclass-salt --top for generated nodes
+  cmd: reclass-salt --top -u /srv/salt/reclass/nodes/_generated/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
