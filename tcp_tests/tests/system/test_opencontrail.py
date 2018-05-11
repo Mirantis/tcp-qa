@@ -53,3 +53,29 @@ class TestOpenContrail(object):
         # opencontrail.run_tests(
         #     tags=config.opencontrail.opencontrail_tags,
         #     features=config.opencontrail.opencontrail_features)
+
+    @pytest.mark.fail_snapshot
+    @pytest.mark.with_rally(rally_node="ctl01.")
+    def test_opencontrail_maas(self, config, underlay, salt_deployed):
+        """Runner for Juniper contrail-tests
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Prepare contrail-tests on ctl01 node
+            5. Run contrail-tests
+        """
+
+        if settings.RUN_TEMPEST:
+            openstack_deployed.run_tempest(target='ctl01',
+                                           pattern=settings.PATTERN)
+            openstack_deployed.download_tempest_report(stored_node='ctl01')
+        LOG.info("*************** DONE **************")
+
+        # opencontrail.prepare_tests(
+        #     config.opencontrail.opencontrail_prepare_tests_steps_path)
+
+        # opencontrail.run_tests(
+        #     tags=config.opencontrail.opencontrail_tags,
+        #     features=config.opencontrail.opencontrail_features)
