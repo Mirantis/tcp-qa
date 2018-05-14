@@ -293,24 +293,25 @@ k8s_deploy_opts = [
            default='{}/mirantis/kubernetes/hyperkube-amd64:v1.8.11-9'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/node:latest'.format(
+           default='{}/mirantis/projectcalico/calico/node:v2.6.9'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_calicoctl_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/ctl:latest'.format(
+           default='{}/mirantis/projectcalico/calico/ctl:v1.6.4'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_cni_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/cni:latest'.format(
+           default='{}/mirantis/projectcalico/calico/cni:v1.11.5'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_netchecker_enabled', ct.Boolean(),
            help="", default=True),
     ct.Cfg('kubernetes_netchecker_agent_image', ct.String(),
-           default='mirantis/k8s-netchecker-agent:latest'),
+           default='mirantis/k8s-netchecker-agent:v1.2.2'),
     ct.Cfg('kubernetes_netchecker_server_image', ct.String(),
-           default='mirantis/k8s-netchecker-server:latest'),
+           default='mirantis/k8s-netchecker-server:v1.2.2'),
     ct.Cfg('kubernetes_calico_policy_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_calico_policy_image', ct.String(),
-           default='calico/kube-policy-controller:v0.5.4'),
+           default='{}/mirantis/projectcalico/calico/kube-controllers:'
+                   'v1.0.4'.format(settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_helm_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_virtlet_enabled', ct.Boolean(),
