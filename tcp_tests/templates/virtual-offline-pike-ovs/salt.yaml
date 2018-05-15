@@ -59,7 +59,7 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "backupninja" "watchdog"') }}
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "backupninja" "watchdog" "logrotate"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 

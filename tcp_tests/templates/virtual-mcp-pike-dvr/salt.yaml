@@ -14,7 +14,7 @@
 
 {{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
 
-{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "backupninja" "runtest" "neutron" ') }}
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "backupninja" "runtest" "neutron" "logrotate"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
