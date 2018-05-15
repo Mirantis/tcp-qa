@@ -1,0 +1,47 @@
+nodes:
+    cfg01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: infra_config_node01
+      roles:
+      - infra_config
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_vlan_ctl
+
+    cid01.mcp11-ovs-dpdk.local:
+      reclass_storage_name: cicd_control_node01
+      roles:
+      - infra_kvm
+      - cicd_control_leader
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_vlan_ctl
+
+    cid02.mcp11-ovs-dpdk.local:
+      reclass_storage_name: cicd_control_node02
+      roles:
+      - infra_kvm
+      - cicd_control_manager
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_vlan_ctl
+
+    cid03.mcp11-ovs-dpdk.local:
+      reclass_storage_name: cicd_control_node03
+      roles:
+      - infra_kvm
+      - cicd_control_manager
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_vlan_ctl
