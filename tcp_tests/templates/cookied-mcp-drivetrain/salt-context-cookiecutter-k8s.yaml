@@ -1,0 +1,160 @@
+default_context:
+  backup_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEA3ufjR+Eh/CJp84JZPKosMNL7ydXidfe9qdAnQIGGOsS/TBnc
+    RyY+hy4Mg5Or//VBpY53frcrEEnm1CzEeIfGALiQtsMWOwEEiEHIDzbxN7xyYK1u
+    9fpcRHZy16VJx2gQOxbeAIyct9jrQeQuSbN0k7Tr+bfWLVPoGL4SZiBC+dxRjrmT
+    2pMIdqa8kAcd5cakuyENXT31ZI/ffVscl7TJBat7tUbgD+48GK4LqMBL/eC6v2bQ
+    ohmo6ZqWLh9uT+/l/rRdIiBhI+kmPpUDRLnjkd/gH4GQh/r/PPlxu11JNwPgY4Kx
+    IAk5hq9uPRn3pqBKPg+WHgWmQvpHqVVDDnf7XQIDAQABAoIBAQDCEtuL5bQVNlFR
+    NphDfVZkXA3lOVempkB37Ud/nkYkPNDhjVKAkAe44pr6pEQI4px5bIUVypyv3egf
+    q6qT1oLKdedpeImObeBoUf3BYXC7ulNLYTVO7OAQq6BpqPuHpk8bY1l+2O5KE48h
+    G25BtQE26TrbfPf5FyjpAfQ6/rPRniURu1ZMFK1Do18wf7lGxa6RN4jPbfGfEvlf
+    q6GWGtsOB2kLXnUDjuDeUrgS8HgxBSMH+lwxrkdX0Qb4VN+cBOp8TC30rHXdLAmn
+    mWUDQhaao+zZpZsAAxGbM2BAFUQAicd/OS6FJn6xkH0KN6+Rp1Iiy3Sa97wMsMti
+    aHAyVwkBAoGBAPf1gcRmKTHaUVb7XgS3acytBm7LM2GCQfgPDvQIp8rf8bmnAko6
+    MzxPdq2WXzWY75JiNxQSsmemcJyBRJm1sscp0txAnZS5SSycWlHy0zP5LJDtU7jW
+    Z7dXtRYzdDL0sH6KVQCOmfDmGowLs3eO0F7MyCbDIwdkIQ4LCs+TWcYxAoGBAOYi
+    ZUR7vXFbmXQQUEHxeft3sF6v8epFhnMuvwHgmHIzSCDDKoIMoLlqDOV8KynggyqQ
+    /YpvzqfCuP4aDpriU1glTZB0R9WdkKwk+GW13U9LfDw86u/XfGkMtT2QP6PmIQaI
+    1MJlX2b0rihnUy6zqRFH+mU4+9I66Gg1s8O9s4DtAoGAbiUol82pzvNj3neatA2l
+    eb4CdYTeNhpeo4pM4ipWHtCL2CRP6BkiWVATL9j0QiLFiQkH3mrPxSsyKtNhXcZQ
+    vBfgCubJGR+VWbO6i1yKZTPykA5cemcDe3YCgvIoU9pN7GgWikDOMSyF7l/kQN+3
+    v+THpDBahxX7ePl+u+aAooECgYBOoigJ+2HirtLDJqPVtGXit6XK5MF7M+BZ0Pow
+    8QYF12Ho1+bZYuk0EXlwnDm/aFhJHhuTxtpM1isRn+Onpnel4bEcD69P3TPGric1
+    0atZ4cgEaSg5ZV68Ijx3Wad1IDfenLhd5/duHWK4qX1xsq+tGPQEzDC3R6uLl/Xh
+    hxsjjQKBgQC53W+e4N6pOK8oCA2tlDw8Nu733FRrxNP4emdTzYyKJbNxBP2LI/ts
+    K/fgcD9aWeo0zt3Y/0UzzijqrWMCG2NdAlHwEShcXUt1525O4H64mH50MeylTGcj
+    t6ZFlhArriIXlejxuU9Jxe/HEKMh/1iBdlnD0rCOfhJaY/HO9dWtRw==
+    -----END RSA PRIVATE KEY-----
+  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDe5+NH4SH8Imnzglk8qiww0vvJ1eJ1972p0CdAgYY6xL9MGdxHJj6HLgyDk6v/9UGljnd+tysQSebULMR4h8YAuJC2wxY7AQSIQcgPNvE3vHJgrW71+lxEdnLXpUnHaBA7Ft4AjJy32OtB5C5Js3STtOv5t9YtU+gYvhJmIEL53FGOuZPakwh2pryQBx3lxqS7IQ1dPfVkj999WxyXtMkFq3u1RuAP7jwYrguowEv94Lq/ZtCiGajpmpYuH25P7+X+tF0iIGEj6SY+lQNEueOR3+AfgZCH+v88+XG7XUk3A+BjgrEgCTmGr249GfemoEo+D5YeBaZC+kepVUMOd/td
+  bmk_enabled: 'False'
+  ceph_enabled: 'False'
+  cicd_control_node01_address: 10.167.4.91
+  cicd_control_node01_hostname: cid01
+  cicd_control_node02_address: 10.167.4.92
+  cicd_control_node02_hostname: cid02
+  cicd_control_node03_address: 10.167.4.93
+  cicd_control_node03_hostname: cid03
+  cicd_control_vip_address: 10.167.4.90
+  cicd_control_vip_hostname: cid
+  cicd_enabled: 'True'
+  cicd_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEA0vs3yV4GVrnMDT1i1rc3DKVCU4kQ6D7OCDhJ10kiA4VZ/9Td
+    CIKGxL3+kzNHBqEB3HcjsGJ7zTud3S97Zd21HzTeF0iia7kQXZs3zw3GnU4IWCzd
+    zeyJenD1twrDILc1Q80SPIw8klbgK3T8Wcs0sACyfAORTKnM4Alrq3PSyn2G/L7s
+    wL+4OYWw8+V1Bo6f/1zsVdJWFelZ1HNd1fuGP9Egx+PSHznmBQniewM2AktZVHkd
+    e2j+sIMnimRr55ic6tEiPKb1sp+mdqfxUbkxU1q3r80Bnq5lbYNexJZLZFbY8pBF
+    w5qtVoXsrUra0xT66yDs9z9kgTXZt8MppSPEywIDAQABAoIBAD60d3IbxdqEwga1
+    Vejm7y+M9leJh0LfV7DNufSIQdm2CnektkTPNmrG5SCuvs9TjxANQMgtnQn0TAjv
+    EcfGywwJVHCrH8rQZ/LKLR4WxA8AoC5Et296e6muZPkP88qHaQdLrb3dGCuOMnX4
+    AQBXCsO8kU+WZ9rXJJL5ecytUdroRZnmChUN9sZFoCrrFmCJyKzSdmbtyHwvmc6t
+    K9YHx5HcQppdnbaUT/PcRNjNgOdQsGrYG/4tGpZE9GYqBRrtEZAFKnRDDlaq9mvc
+    FJ451YhomyUNtM7hor+VpSi9WtgiXh9fWUfJUIH4Ven9y29I7SNAxftfs0Xxdz2O
+    aEYnhPECgYEA9YKsXtslfSsjyG3Z6NTy9peAjBlUSA7jkbsfOIcN1qLAxSlOMIVG
+    P9knWa5rgp1nOssHxpbCJaiZv1r2C0sHZ+B/ZCNV1lCdz+pN+Y0AQHz2/VrQEtkR
+    cvClpWXjACT0igJ5mrmehzV166CI3t7+nCrkRd9aYTuVpNP4o9aEuGcCgYEA2/7f
+    2UVcq8SKJYAJD0mNc4mfnNwmyvIfwJqQfechPPwXG3kmd2jgFdUV3JyCwS771TRz
+    9QAHBLoBgKSVKLBORsTjYy7TSIYvnTUgrymMwc75nevVIy258hPSYpF6cVEIRnNr
+    sek5heYQxJZr9RraxihvoaZytmPRm918sR6B4f0CgYEAlizQc1VpoR76TGelm55m
+    4B/cKdZ0j39MBKCJgHJcLKZxdCjIAzYCupuCToE6kjLmKjh3ESq2p4JySXLCfjXu
+    2cOhKQfUQbweTEfuWm+9b7UBAAjErkLJQZ2iNYIVUMlKLAFHkTVpmxtAflk8X9fX
+    tn8mEveEuWVRK/ndZZqapJECgYA3IQSpZsdVR/gyc4ZRrWXkCR3VahnSi6BHXLRO
+    yKe8p5OGz/JCxCY7cl17HkFp9cMn53ATekFH/vC3cwbp3lyPQXGV/jr2FqJB6/lX
+    y7q5KovE9j9ABIpvTmZPSxN66AqB1RSszbwbgM685NEC6Arg02s9//8JE7SIMZW4
+    sONtZQKBgQDZoa9yAM9YRRFUpgiyKdmp4Yzq3xc17xhlrv3HgAKXzCwlRXm+TxKP
+    kmwFI2nn3sPN9jSegCGyOtfzoh4Q7DtBowrjLPUisWk1gLZH4HpCP7mkndR9ODI3
+    So+yjY6Y787NTuAtS97T1AfOPQR8VOm9vuGT1IRWNno3ckThokPcCg==
+    -----END RSA PRIVATE KEY-----
+  cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS+zfJXgZWucwNPWLWtzcMpUJTiRDoPs4IOEnXSSIDhVn/1N0IgobEvf6TM0cGoQHcdyOwYnvNO53dL3tl3bUfNN4XSKJruRBdmzfPDcadTghYLN3N7Il6cPW3CsMgtzVDzRI8jDySVuArdPxZyzSwALJ8A5FMqczgCWurc9LKfYb8vuzAv7g5hbDz5XUGjp//XOxV0lYV6VnUc13V+4Y/0SDH49IfOeYFCeJ7AzYCS1lUeR17aP6wgyeKZGvnmJzq0SI8pvWyn6Z2p/FRuTFTWrevzQGermVtg17ElktkVtjykEXDmq1WheytStrTFPrrIOz3P2SBNdm3wymlI8TL
+  cluster_domain: cookied-mcp-k8s-calico.local
+  cluster_name: cookied-mcp-k8s-calico
+  context_seed: 6RD8HFGk0xksGje6RcIiGRkHIIkdvHUDgBuUsCTYDv5Tw4DmVMbRlRVnatzGHYJd
+  control_network_netmask: 255.255.255.0
+  control_network_subnet: 10.167.4.0/24
+  control_vlan: '10'
+  cookiecutter_template_branch: ''
+  cookiecutter_template_credentials: gerrit
+  cookiecutter_template_url: https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates.git
+  deploy_network_gateway: 10.167.5.1
+  deploy_network_netmask: 255.255.255.0
+  deploy_network_subnet: 10.167.5.0/24
+  deployment_type: physical
+  dns_server01: 8.8.8.8
+  dns_server02: 8.8.4.4
+  email_address: ddmitriev@mirantis.com
+  etcd_ssl: 'True'
+  hyperkube_image: docker-prod-local.artifactory.mirantis.com/mirantis/kubernetes/hyperkube-amd64:v1.8.5-4
+  infra_bond_mode: active-backup
+  infra_deploy_nic: eth0
+  infra_kvm01_control_address: 10.167.4.91
+  infra_kvm01_deploy_address: 10.167.5.91
+  infra_kvm01_hostname: cid01
+  infra_kvm02_control_address: 10.167.4.92
+  infra_kvm02_deploy_address: 10.167.5.92
+  infra_kvm02_hostname: cid02
+  infra_kvm03_control_address: 10.167.4.93
+  infra_kvm03_deploy_address: 10.167.5.93
+  infra_kvm03_hostname: cid03
+  infra_kvm_vip_address: 10.167.4.90
+  infra_primary_first_nic: eth1
+  infra_primary_second_nic: eth2
+  internal_proxy_enabled: 'False'
+  kqueen_custom_mail_enabled: 'False'
+  kqueen_enabled: 'False'
+  kubernetes_compute_node01_address: 10.167.4.101
+  kubernetes_compute_node01_deploy_address: 10.167.5.101
+  kubernetes_compute_node01_hostname: cmp01
+  kubernetes_compute_node02_address: 10.167.4.102
+  kubernetes_compute_node02_deploy_address: 10.167.5.102
+  kubernetes_compute_node02_hostname: cmp02
+  kubernetes_control_address: 10.167.4.10
+  kubernetes_control_node01_address: 10.167.4.11
+  kubernetes_control_node01_deploy_address: 10.167.5.11
+  kubernetes_control_node01_hostname: ctl01
+  kubernetes_control_node02_address: 10.167.4.12
+  kubernetes_control_node02_deploy_address: 10.167.5.12
+  kubernetes_control_node02_hostname: ctl02
+  kubernetes_control_node03_address: 10.167.4.13
+  kubernetes_control_node03_deploy_address: 10.167.5.13
+  kubernetes_control_node03_hostname: ctl03
+  kubernetes_enabled: 'True'
+  kubernetes_externaldns_enabled: 'False'
+  kubernetes_keepalived_vip_interface: ens4
+  kubernetes_network_calico_enabled: 'False'
+  kubernetes_virtlet_enabled: 'False'
+  local_repositories: 'False'
+  maas_deploy_address: 10.167.5.15
+  maas_hostname: cfg01
+  mcp_common_scripts_branch: ''
+  mcp_version: proposed
+  offline_deployment: 'False'
+  opencontrail_enabled: 'False'
+  openldap_domain: ${_param:cluster_name}.local
+  openldap_enabled: 'True'
+  openldap_organisation: ${_param:cluster_name}
+  openssh_groups: cicd
+  openstack_enabled: 'False'
+  oss_enabled: 'False'
+  oss_node03_address: ${_param:stacklight_monitor_node03_address}
+  platform: kubernetes_enabled
+  public_host: ${_param:infra_config_address}
+  publication_method: email
+  reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
+  salt_api_password: GItjqF2mBE9JpA6WjnqD4pKNJMWJK72g
+  salt_api_password_hash: $6$XxwWWczf$tFbAgdW1PeVJWTn0Jw/xfwJlss/RgOf9fGWqx2XE7vZ5O/ZGR1AuIgl/HH7Qm3.ZxvutaWmfWszxWcPFZepzv.
+  salt_master_address: 10.167.4.15
+  salt_master_hostname: cfg01
+  salt_master_management_address: 10.167.5.15
+  shared_reclass_branch: ''
+  shared_reclass_url: https://gerrit.mcp.mirantis.net/salt-models/reclass-system.git
+  stacklight_enabled: 'False'
+  stacklight_version: '2'
+  static_ips_on_deploy_network_enabled: 'False'
+  tenant_network_gateway: 10.167.6.1
+  tenant_network_netmask: 255.255.255.0
+  tenant_network_subnet: 10.167.6.0/24
+  tenant_vlan: '20'
+  upstream_proxy_enabled: 'False'
+  use_default_network_scheme: 'False'
