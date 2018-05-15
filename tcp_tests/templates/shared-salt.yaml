@@ -296,15 +296,16 @@
     # 192.168.10 -> 10.16.0 (generated network for admin)
     # 10.16.0 -> <external network>
     # So let's replace constant networks to the keywords, and then keywords to the desired networks.
-    sed -i 's/10\.167\.5/==IPV4_NET_ADMIN_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/10\.167\.4/==IPV4_NET_CONTROL_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/172\.17\.16/==IPV4_NET_EXTERNAL_PREFIX==/g' {{ CLUSTER_CONTEXT_PATH }}
+    export REPLACE_DIRS="{{ CLUSTER_CONTEXT_PATH }} /tmp/cookiecutter-templates"
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.167\.5/==IPV4_NET_ADMIN_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.167\.4/==IPV4_NET_CONTROL_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/172\.17\.16/==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
 
-    sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
-    sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}/g' {} +
 
     {% set items = CLUSTER_PRODUCT_MODELS or '$(ls /tmp/cookiecutter-templates/cluster_product/)' %}
     for item in {{ items }}; do
