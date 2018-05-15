@@ -307,6 +307,8 @@ class EnvironmentManager(object):
             raise exceptions.EnvironmentIsNotSet()
         self.__env.start()
         LOG.info('Environment "{0}" started'.format(self.__env.name))
+        check_cloudinit_started = '[ -f /is_cloud_init_started ]'
+        check_cloudinit_finished = '[ -f /is_cloud_init_finished ]'
         for node in self.__env.get_nodes(role__in=underlay_node_roles):
             LOG.info("Waiting for SSH on node '{0}' / {1} ...".format(
                 node.name, self.node_ip(node)))
@@ -329,6 +331,12 @@ class EnvironmentManager(object):
                 except Exception:
                     return False
 
+                # If '/is_cloud_init_started' exists, then wait for
+                # the flag /is_cloud_init_finished
+                if ssh.execute(check_cloudinit_started)['exit_code'] == 0:
+                    return ssh.execute(
+                        check_cloudinit_finished)['exit_code'] == 0
+                # Else, just wait for SSH
                 return ssh.execute('echo ok')['exit_code'] == 0
 
             helpers.wait(
