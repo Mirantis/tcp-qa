@@ -1,0 +1,16 @@
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+- description: Workaround, configure ntp and rsyslog on salt master node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' state.sls ntp,rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
