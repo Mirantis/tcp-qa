@@ -168,13 +168,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-#- description: Install gnocchi statsd (optional)
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:statsd and *01*' state.sls gnocchi.statsd &&
-#       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:statsd' state.sls gnocchi.statsd
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
 - description: Install panko server
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server and *01*' state.sls panko &&
        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server' state.sls panko
@@ -215,7 +208,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
-
 
 # Install compute node
 
@@ -287,106 +279,12 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-#- description:  Allow all tcp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; openstack security group rule create --proto tcp --dst-port 22 default'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description:  Allow all icmp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; openstack security group rule create --proto icmp default'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
 - description: sync time
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
     'service ntp stop; ntpd -gq;  service ntp start'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
-
-# Configure cinder-volume salt-call
-#- description: Set disks 01
-#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-#  node_name: {{ HOSTNAME_CTL01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Set disks 02
-#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-#  node_name: {{ HOSTNAME_CTL02 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Set disks 03
-#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Create partitions 01
-#  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-#  node_name: {{ HOSTNAME_CTL01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Create partitions 02
-#  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-#  node_name: {{ HOSTNAME_CTL02 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Create partitions 03
-#  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: create volume_group
-#  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Install cinder-volume
-#  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-- description: Install crudini
-  cmd: salt "ctl*" cmd.run 'apt-get install crudini -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description: Temporary WR set enabled backends value 01
-#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-#  node_name: {{ HOSTNAME_CTL01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Temporary WR set enabled backends value 02
-#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-#  node_name: {{ HOSTNAME_CTL02 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Temporary WR set enabled backends value 03
-#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-#  node_name: {{ HOSTNAME_CTL03 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description: Restart cinder volume
-#  cmd: |
-#    salt -C 'I@cinder:controller' service.restart cinder-volume;
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 2, delay: 5}
-#  skip_fail: false
 
 - description: Install docker.io on gtw
   cmd: salt-call cmd.run 'apt-get install docker.io -y'
@@ -397,18 +295,6 @@
 - description: Enable forward policy
   cmd: iptables --policy FORWARD ACCEPT
   node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create rc file on cfg
-  cmd: scp ctl01:/root/keystonercv3 /root
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Copy rc file
-  cmd: scp /root/keystonercv3 gtw01:/root
-  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
