@@ -16,6 +16,23 @@
       "revId": "74e17f78e6e6c70371d86222187e22d5b3950fab",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "16230a6f_526ce2be",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 57
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-16T15:41:33Z",
+      "side": 1,
+      "message": "Why don\u0027t use execute_commands for this steps sequence?\n\ntest_cmds \u003d [\n{\n                \u0027description\u0027: \"Wait salt master\",\n                \u0027node_name\u0027: cfg_node,\n                \u0027cmd\u0027: \"\"\"timeout 300s /bin/bash -c \"\"\"\n                       \"\"\"\u0027while ! salt-call test.ping; do \"\"\"\n                       \"\"\"echo \"salt master still isnt running\"; sleep 10; done\u0027\"\"\"\n},\n{\n                \u0027description\u0027: \"Addition config of MaaS\",\n                \u0027node_name\u0027: cfg_node,\n                \u0027cmd\u0027: \u0027salt-call saltutil.sync_all\u0027\n},\n...\n\n]\n\nsalt_deployed.execute_commands(commands\u003dtest_cmds,\n                               label\u003d\"Test for deploying an mcp from day01 images\")",
+      "revId": "74e17f78e6e6c70371d86222187e22d5b3950fab",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
