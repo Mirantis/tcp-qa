@@ -221,20 +221,6 @@
 
   # Upload cirros image
 
-- description: Upload cirros image on ctl01
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
-  skip_fail: false
-
-- description: Register image in glance
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
@@ -305,73 +291,6 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-# Configure cinder-volume salt-call PROD-13167
-- description: Set disks 01
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 03
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 01
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create volume_group
-  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install cinder-volume
-  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install crudini
-  cmd: salt "ctl*" cmd.run 'apt-get install crudini -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 01
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 02
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Temporary WR set enabled backends value 03
   cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
   node_name: {{ HOSTNAME_CTL03 }}
@@ -388,13 +307,6 @@
   cmd: iptables --policy FORWARD ACCEPT
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Restart cinder volume
-  cmd: |
-    salt -C 'I@cinder:controller' service.restart cinder-volume;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: create rc file on cfg
