@@ -134,7 +134,7 @@ class SLManager(ExecuteCommandsMixin):
                "cd {tests_path}; "
                "export VOLUME_STATUS='available';"
                "pip install pytest-json;"
-               "pytest --json=report.json {reruns} {reruns_delay}"
+               "pytest --json=report.json {reruns} {reruns_delay} "
                "-k {skip_tests} {test_to_run}".format(**{
                    "tests_path": tests_path,
                    "skip_tests": ("'not " + skip_tests + "'"
