@@ -1,6 +1,6 @@
 # git+git://github.com/openstack/fuel-devops.git@887368d#egg=project[postgre]   # Use this requirement for PostgreSQL
 libvirt-python>=3.5.0,<4.1.0  # LGPLv2+
-git+git://github.com/openstack/fuel-devops.git@b8c6fe45a12b091619ba43cc14ab6cf05f0cd8f0   # Use this requirement for Sqlite3, or if requirements for PostgreSQL are already installed
+git+git://github.com/openstack/fuel-devops.git@25d4cc67315132b1b27131977b2e07029b3ffbe1   # Use this requirement for Sqlite3, or if requirements for PostgreSQL are already installed
 git+git://github.com/dis-xcom/fuel-devops-driver-ironic
 paramiko
 six
