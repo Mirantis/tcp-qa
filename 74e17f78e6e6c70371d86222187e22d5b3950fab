@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "3a6ac640_af0ce5fa",
+        "filename": "tcp_tests/templates/physical-mcp-ocata-offline-ovs/underlay--user-data-cfg01.yaml",
+        "patchSetId": 57
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-17T10:13:00Z",
+      "side": 1,
+      "message": "the script /root/config-drive/user-data which is run at L44, contains the command \u0027reboot\u0027 at the end of the script.\n\nSo, this line with \u0027sed\u0027 cannot be reached, and the node contains sshd:ALL in the /etc/hosts.deny forever. How did you solve this issue?",
+      "range": {
+        "startLine": 52,
+        "startChar": 5,
+        "endLine": 52,
+        "endChar": 46
+      },
+      "revId": "74e17f78e6e6c70371d86222187e22d5b3950fab",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "16230a6f_526ce2be",
         "filename": "tcp_tests/tests/system/test_offline.py",
         "patchSetId": 57
