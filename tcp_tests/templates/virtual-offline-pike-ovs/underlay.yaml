@@ -26,6 +26,10 @@ aliases:
 {% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CID01 = os_env('HOSTNAME_CID01', 'cid01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CID02 = os_env('HOSTNAME_CID02', 'cid02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CID03 = os_env('HOSTNAME_CID03', 'cid03.' + DOMAIN_NAME) %}
+
 
 template:
   devops_settings:
@@ -46,6 +50,10 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_CID }}: +90
+            default_{{ HOSTNAME_CID01 }}: +91
+            default_{{ HOSTNAME_CID02 }}: +92
+            default_{{ HOSTNAME_CID03 }}: +93
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -64,6 +72,10 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_CID }}: +90
+            default_{{ HOSTNAME_CID01 }}: +91
+            default_{{ HOSTNAME_CID02 }}: +92
+            default_{{ HOSTNAME_CID03 }}: +93
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -81,6 +93,10 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_CID }}: +90
+            default_{{ HOSTNAME_CID01 }}: +91
+            default_{{ HOSTNAME_CID02 }}: +92
+            default_{{ HOSTNAME_CID03 }}: +93
           ip_ranges:
             dhcp: [+10, -10]
       external-pool01:
@@ -97,6 +113,10 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_CID }}: +90
+            default_{{ HOSTNAME_CID01 }}: +91
+            default_{{ HOSTNAME_CID02 }}: +92
+            default_{{ HOSTNAME_CID03 }}: +93
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -331,6 +351,84 @@ template:
                   format: qcow2
                 - name: cinder
                   capacity: 50
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_CID01 }}
+            role: salt_minion
+            params:
+              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 6144) }}
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: {{ os_env('CID_NODE_VOLUME_SIZE', 150) }}
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+              
+          - name: {{ HOSTNAME_CID02 }}
+            role: salt_minion
+            params:
+              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 6144) }}
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: {{ os_env('CID_NODE_VOLUME_SIZE', 150) }}
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_CID03 }}
+            role: salt_minion
+            params:
+              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 6144) }}
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: {{ os_env('CID_NODE_VOLUME_SIZE', 150) }}
+                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.
