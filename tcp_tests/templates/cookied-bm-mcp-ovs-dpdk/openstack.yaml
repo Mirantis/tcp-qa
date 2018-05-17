@@ -252,3 +252,12 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
+
+- description: Temporary WR
+  cmd: |
+    salt "cmp*" cmd.run "sed -i '/br-prv/d' /etc/network/interfaces";
+    salt "cmp*" cmd.run "echo 'source /etc/network/interfaces.d/ifcfg-br-prv' >> /etc/network/interfaces";
+    salt "cmp*" cmd.run "service networking restart"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
