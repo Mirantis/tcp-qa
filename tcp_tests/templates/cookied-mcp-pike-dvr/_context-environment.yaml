@@ -21,6 +21,8 @@ nodes:
       - features_designate_pool_manager
       - features_designate_pool_manager_keystone
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp
@@ -37,6 +39,8 @@ nodes:
       - features_designate_pool_manager_database
       - features_designate_pool_manager
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp
@@ -53,6 +57,8 @@ nodes:
       - features_designate_pool_manager_database
       - features_designate_pool_manager
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp

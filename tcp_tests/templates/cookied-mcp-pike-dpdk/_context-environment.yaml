@@ -16,6 +16,8 @@ nodes:
       - infra_kvm
       - openstack_control_leader
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp
@@ -28,6 +30,8 @@ nodes:
       - infra_kvm
       - openstack_control
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp
@@ -40,6 +44,8 @@ nodes:
       - infra_kvm
       - openstack_control
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp

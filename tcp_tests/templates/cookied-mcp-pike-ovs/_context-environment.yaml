@@ -22,6 +22,8 @@ nodes:
       - features_designate_bind9
       - features_designate_bind9_keystone
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp
@@ -39,6 +41,8 @@ nodes:
       - features_designate_bind9_dns
       - features_designate_bind9
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp
@@ -55,6 +59,8 @@ nodes:
       - features_designate_bind9_database
       - features_designate_bind9
       - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
       interfaces:
         ens3:
           role: single_dhcp
