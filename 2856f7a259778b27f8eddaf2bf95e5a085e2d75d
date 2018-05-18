@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1786e2fe_9dba3550",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/common-services.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-18T23:30:16Z",
+      "side": 1,
+      "message": "*01* - copypaste from previous step, please remove",
+      "range": {
+        "startLine": 34,
+        "startChar": 28,
+        "endLine": 34,
+        "endChar": 37
+      },
+      "revId": "2856f7a259778b27f8eddaf2bf95e5a085e2d75d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
