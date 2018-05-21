@@ -22,6 +22,30 @@
       "revId": "2856f7a259778b27f8eddaf2bf95e5a085e2d75d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "324cfb46_0f5c69c4",
+        "filename": "tcp_tests/templates/virtual-mcp11-k8s-calico/common-services.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2018-05-21T14:55:25Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "1786e2fe_9dba3550",
+      "range": {
+        "startLine": 34,
+        "startChar": 28,
+        "endLine": 34,
+        "endChar": 37
+      },
+      "revId": "2856f7a259778b27f8eddaf2bf95e5a085e2d75d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
