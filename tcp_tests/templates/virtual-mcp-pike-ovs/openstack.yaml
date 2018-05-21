@@ -357,4 +357,3 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-{{ SHARED.RUN_NEW_TEMPEST() }}

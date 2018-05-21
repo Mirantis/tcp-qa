@@ -14,6 +14,8 @@
 
 import pytest
 
+from tcp_tests.managers.runtestmanager import RuntestManager
+
 from tcp_tests import logger
 from tcp_tests import settings
 
@@ -29,7 +31,9 @@ class TestMcpInstallOvsPike(object):
     @pytest.mark.pike_ovs
     def test_mcp_pike_ovs_install(self, underlay,
                                   openstack_deployed,
-                                  openstack_actions):
+                                  openstack_actions,
+                                  salt_actions,
+                                  config):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -39,12 +43,30 @@ class TestMcpInstallOvsPike(object):
 
         """
         openstack_actions._salt.local(
-                tgt='*', fun='cmd.run',
-                args='service ntp stop; ntpd -gq; service ntp start')
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN)
-            openstack_actions.download_tempest_report()
+            tempest_threads = 2
+            tempest_exclude_test_args = ''
+            tempest_pattern = settings.TEMPEST_PATTERN
+            cluster_name = settings.LAB_CONFIG_NAME
+            tempest_timeout = settings.TEMPEST_TIMEOUT
+            domain_name = "{}.local".format(cluster_name)
+            target = 'gtw01'
+            runtest = RuntestManager(
+                underlay, salt_actions,
+                cluster_name=cluster_name,
+                domain_name=domain_name,
+                tempest_threads=tempest_threads,
+                tempest_exclude_test_args=tempest_exclude_test_args,
+                tempest_pattern=tempest_pattern,
+                target=target)
+            runtest.prepare()
+            test_res = runtest.run_tempest(tempest_timeout)
+            runtest.fetch_arficats(username='root')
+            runtest.save_runtime_logs(**test_res)
+
         LOG.info("*************** DONE **************")
 
     @pytest.mark.grab_versions
@@ -177,8 +199,8 @@ class TestMcpInstallOvsPike(object):
 
         """
         openstack_actions._salt.local(
-                tgt='*', fun='cmd.run',
-                args='service ntp stop; ntpd -gq; service ntp start')
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
             openstack_actions.run_tempest(pattern=settings.PATTERN)
@@ -246,8 +268,8 @@ class TestMcpInstallOvsPike(object):
 
         """
         openstack_actions._salt.local(
-                tgt='*', fun='cmd.run',
-                args='service ntp stop; ntpd -gq; service ntp start')
+            tgt='*', fun='cmd.run',
+            args='service ntp stop; ntpd -gq; service ntp start')
 
         registry = 'docker-dev-local.docker.mirantis.net/mirantis/networking'
         name = 'rally-tempest-net-features:latest'
