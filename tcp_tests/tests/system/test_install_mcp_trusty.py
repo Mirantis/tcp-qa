@@ -21,12 +21,12 @@ LOG = logger.logger
 
 
 @pytest.mark.deploy
-class TestMcpInstallStacklightOpenstack(object):
+class TestMcpInstallStacklightOpenstackTrusty(object):
     """Test class for testing mcp11 vxlan deploy"""
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_mcp_os_install(self, underlay, openstack_deployed,
+    def test_mcp_trusty_os_install(self, underlay, openstack_deployed,
                             openstack_actions):
         """Test for deploying an mcp environment and check it
         Scenario:
@@ -41,14 +41,16 @@ class TestMcpInstallStacklightOpenstack(object):
                 args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN)
-            openstack_actions.download_tempest_report()
+            openstack_actions.run_tempest(pattern=settings.PATTERN,
+                                          target='cfg01')
+            openstack_actions.download_tempest_report(stored_node='cfg01')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_mcp_sl_os_install(self, underlay, config, openstack_deployed,
-                               sl_deployed, openstack_actions):
+    def test_mcp_trusty_sl_os_install(self, underlay, config,
+                                      openstack_deployed, sl_deployed,
+                                      openstack_actions):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -83,6 +85,7 @@ class TestMcpInstallStacklightOpenstack(object):
             args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN)
-            openstack_actions.download_tempest_report()
+            openstack_actions.run_tempest(pattern=settings.PATTERN,
+                                          target='cfg01')
+            openstack_actions.download_tempest_report(stored_node='cfg01')
         LOG.info("*************** DONE **************")
