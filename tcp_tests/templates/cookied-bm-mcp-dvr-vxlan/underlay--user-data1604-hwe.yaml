@@ -52,9 +52,10 @@
    #- sleep 120
    #   - echo "Preparing base OS"
    - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
+   #   - echo "nameserver 8.8.8.8" >> /etc/resolv.conf;
    #   - which wget >/dev/null || (apt-get update; apt-get install -y wget)
 
-   #   # Configure Ubuntu mirrors
+   # Configure Ubuntu mirrors
    #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial main restricted universe" > /etc/apt/sources.list
    #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list
    #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list
@@ -67,13 +68,13 @@
    #   - apt-get clean
    #   - eatmydata apt-get update && apt-get -y upgrade
 
-   #   # Install common packages
+   # Install common packages
    #   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
 
-   #   # Install salt-minion and stop it until it is configured
+   # Install salt-minion and stop it until it is configured
    #   - eatmydata apt-get install -y salt-minion && service salt-minion stop
 
-   #   # Install latest kernel
+   # Install latest kernel
    #   - eatmydata apt-get install -y {{ os_env('LINUX_KERNEL_HWE_PACKAGE_NAME', 'linux-image-extra-4.10.0-42-generic') }}
 
    ########################################################

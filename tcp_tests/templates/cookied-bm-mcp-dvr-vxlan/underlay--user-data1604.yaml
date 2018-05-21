@@ -18,8 +18,6 @@
    expire: False
 
   bootcmd:
-   #   # Block access to SSH while node is preparing
-   #   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
    - service sshd restart
@@ -38,7 +36,6 @@
 
    # Prepare network connection
    - sudo ifup {interface_name}
-   #- sudo route add default gw {gateway} {interface_name}
 
    # Create swap
    - fallocate -l 4G /swapfile
@@ -46,38 +43,7 @@
    - mkswap /swapfile
    - swapon /swapfile
    - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
-
-
-   ############## TCP Cloud cfg01 node ##################
-   #- sleep 120
-   #   - echo "Preparing base OS"
    - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
-   #   - which wget >/dev/null || (apt-get update; apt-get install -y wget)
-
-   #   # Configure Ubuntu mirrors
-   #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial main restricted universe" > /etc/apt/sources.list
-   #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-updates main restricted universe" >> /etc/apt/sources.list
-   #   - echo "deb [arch=amd64] http://mirror.mirantis.com/{{ REPOSITORY_SUITE }}/ubuntu/ xenial-security main restricted universe" >> /etc/apt/sources.list
-
-   #   - echo "deb [arch=amd64] http://apt.mirantis.com/xenial {{ REPOSITORY_SUITE }} salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
-   #   - wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
-   #   - echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
-   #   - wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
-
-   #   - apt-get clean
-   #   - eatmydata apt-get update && apt-get -y upgrade
-
-   #   # Install common packages
-   #   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
-
-   #   # Install salt-minion and stop it until it is configured
-   #   - eatmydata apt-get install -y salt-minion && service salt-minion stop
-
-   ########################################################
-   # Node is ready, allow SSH access
-   #   - echo "Allow SSH access ..."
-   #   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-   ########################################################
 
   write_files:
    - path: /etc/default/grub.d/97-enable-grub-menu.cfg
