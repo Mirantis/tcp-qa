@@ -3,9 +3,9 @@
 # Kubernetes
 - description: Install etcd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@etcd:server' state.sls etcd.server.service
+     -C 'I@etcd:server' state.sls etcd.server.service
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Check the etcd health
@@ -15,18 +15,23 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Install Kubernetes addons
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
 - description: Install Kubernetes and Calico
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons;
-     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' state.sls kubernetes.pool;
-     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:pool' cmd.run 'calicoctl node status';
+     -C 'I@kubernetes:pool' state.sls kubernetes.pool
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Setup NAT for Calico
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@etcd:server' --subset 1 state.sls etcd.server.setup
+    -C 'I@etcd:server and *01*' state.sls etcd.server.setup
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -38,6 +43,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+- description: Register addons
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master and *01*' state.sls kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Restart kubelet
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@kubernetes:pool' service.restart kubelet
@@ -45,9 +57,15 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Register addons
+- description: Renew hosts file on a whole cluster
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '*' state.sls linux.network.host;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Get kubeconfig
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
+    -C 'I@kubernetes:control and *01*' cmd.run 'cat /etc/kubernetes/admin-kube-config && echo "Salt command execution success"'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
