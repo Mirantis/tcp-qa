@@ -6,73 +6,38 @@
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
-# Other salt model repository parameters see in shared-salt.yaml
 
-# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-bm-mcp-dvr-vxlan') %}
-# Path to the context files used to render Cluster and Environment models
-{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs_dvr_vxlan.yaml' %}
-{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-lab03-environment.yaml'] %}
-
-{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2416') %}
-{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2417') %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
-{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
 
-- description: Temporary WR for cinder backend defined by default in reclass.system
-  cmd: |
-    sed -i 's/backend\:\ {}//g' /srv/salt/reclass/classes/system/cinder/control/cluster.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-
-{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
-
-- description: "Workaround for rack01 compute generator"
-  cmd: |
-    set -e;
-    # Remove rack01 key
-    . /root/venv-reclass-tools/bin/activate;
-    reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-
-    # Add openstack_compute_node definition from system
-    reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge;
-
-    # Set ipaddresses for our nodes
-    reclass-tools add-key parameters._param.openstack_compute_node01_control_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.3 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-    reclass-tools add-key parameters._param.openstack_compute_node02_control_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.31 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-    reclass-tools add-key parameters._param.openstack_compute_node01_tenant_address {{ SHARED.IPV4_NET_TENANT_PREFIX }}.3 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-    reclass-tools add-key parameters._param.openstack_compute_node02_tenant_address {{ SHARED.IPV4_NET_TENANT_PREFIX }}.31 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd" "runtest"') }}
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "fluentd" "runtest"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
-{{ SHARED.MACRO_GENERATE_INVENTORY() }}
-
-{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
-
-{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
-
-- description: "Lab03 workaround: Control network access from cfg01 node using sshuttle via kvm01"
+- description: "WR for changing image to proposed"
   cmd: |
     set -e;
-    set -x;
-    KVM01_DEPLOY_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address);
-    apt-get install -y sshuttle;
-    sshuttle -r ${KVM01_DEPLOY_ADDRESS} {{ SHARED.IPV4_NET_CONTROL }} -D >/dev/null;
+    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    . /root/venv-reclass-tools/bin/activate;
+    pip install git+https://github.com/dis-xcom/reclass-tools;
+    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ovs-dpdk/infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcpproposed.qcow2' /srv/salt/reclass/classes/cluster/cookied-bm-mcp-ovs-dpdk/infra/init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Temporary workaround for removing cinder-volume from CTL nodes
@@ -83,6 +48,8 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
 ########################################
 # Spin up Control Plane VMs on KVM nodes
 ########################################
@@ -91,6 +58,16 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 10}
+  skip_fail: false
+
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/gateway.yml;
+    salt '*' saltutil.refresh_pillar;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Create VMs for control plane
@@ -131,6 +108,26 @@
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
+<<<<<<< HEAD
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
+=======
+#- description: Add cpm nodes to /etc/hosts
+#  cmd: |
+#    salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo '10.167.11.105 cmp01.cookied-bm-mcp-ovs-dpdk.local cmp01' >> /etc/hosts";
+#    salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo '10.167.11.106 cmp02.cookied-bm-mcp-ovs-dpdk.local cmp02' >> /etc/hosts";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: true
+
+- description: Temporary WR
+  cmd: |
+    ssh-keygen -y -f /root/.ssh/id_rsa > /root/.ssh/id_rsa.pub;
+    pub_key=`cat /root/.ssh/id_rsa.pub`;
+    salt '*' cmd.run "echo $pub_key >> /root/.ssh/authorized_keys";
+    salt '*' cmd.run "service sshd restart";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+>>>>>>> 9797efd... test dvr-vxlan
