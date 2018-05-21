@@ -143,9 +143,9 @@ class OpenstackManager(ExecuteCommandsMixin):
                    "-v /etc/ssl/certs/:/etc/ssl/certs/ {2} >> image.output"
                    .format(conf_name, pattern, registry))
         LOG.info("Running tempest testing on node {0} using the following "
-                 "command:\n{1}".format(target_name[0], cmd))
+                 "command:\n{1}".format(target_name, cmd))
 
-        with self.__underlay.remote(node_name=target_name[0]) as node_remote:
+        with self.__underlay.remote(node_name=target_name) as node_remote:
             result = node_remote.execute(cmd, verbose=True)
             LOG.debug("Test execution result is {}".format(result))
         return result
