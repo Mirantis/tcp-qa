@@ -16,21 +16,16 @@ import os
 
 from devops import error
 from devops.helpers import helpers
-from devops.helpers.helpers import ssh_client
 from devops import models
 from django import db
 from oslo_config import cfg
 
-from paramiko.ssh_exception import (
-    AuthenticationException,
-    BadAuthenticationType)
-
-from tcp_tests.helpers import env_config
-from tcp_tests.helpers import exceptions
-from tcp_tests.helpers import ext
-from tcp_tests import logger
 from tcp_tests import settings
 from tcp_tests import settings_oslo
+from tcp_tests.helpers import env_config
+from tcp_tests.helpers import ext
+from tcp_tests.helpers import exceptions
+from tcp_tests import logger
 
 LOG = logger.logger
 
@@ -310,29 +305,8 @@ class EnvironmentManager(object):
         for node in self.__env.get_nodes(role__in=underlay_node_roles):
             LOG.info("Waiting for SSH on node '{0}' / {1} ...".format(
                 node.name, self.node_ip(node)))
-
-            def _ssh_wait(host,
-                          port,
-                          username=settings.SSH_NODE_CREDENTIALS['login'],
-                          password=settings.SSH_NODE_CREDENTIALS['password'],
-                          timeout=0):
-                try:
-                    ssh = ssh_client.SSHClient(
-                        host=host, port=port,
-                        auth=ssh_client.SSHAuth(
-                            username=username,
-                            password=password))
-                except AuthenticationException:
-                    return True
-                except BadAuthenticationType:
-                    return True
-                except Exception:
-                    return False
-
-                return ssh.execute('echo ok')['exit_code'] == 0
-
             helpers.wait(
-                lambda: _ssh_wait(self.node_ip(node), 22),
+                lambda: helpers.tcp_ping(self.node_ip(node), 22),
                 timeout=timeout,
                 timeout_msg="Node '{}' didn't open SSH in {} sec".format(
                     node.name, timeout
