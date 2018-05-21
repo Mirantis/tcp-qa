@@ -7,12 +7,17 @@
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
 # Install OpenStack control services
+- description: Sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -G 'oscodename:trusty' cmd.run "ntpdate pool.ntp.org"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 - description: Install glance on all controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@glance:server' state.sls glance -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 30}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Install keystone service (note that different fernet keys are created on different nodes)
