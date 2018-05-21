@@ -1,11 +1,9 @@
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_CTL01 with context %}
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW01 with context %}
-{# from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW02 with context #}
+{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW02 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
-{% set PATTERN = os_env('PATTERN', 'false') %}
-{% set RUN_TEMPEST = os_env('RUN_TEMPEST', 'false') %}
 
 # Install OpenStack control services
 
@@ -97,7 +95,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@cinder:volume' state.sls cinder
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Check cinder list
@@ -180,23 +178,6 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
-
-  # Upload cirros image
-
-- description: Upload cirros image on ctl01
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
-  skip_fail: false
-
-- description: Register image in glance
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
@@ -206,7 +187,7 @@
 
 - description: Create subnet_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
+    '. /root/keystonercv3; neutron subnet-create net04_ext 172.17.42.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start=172.17.42.10,end=172.17.42.60 --gateway 172.17.42.1'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -220,7 +201,7 @@
 
 - description: Create subnet_net04
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04 {{ IPV4_NET_TENANT_PREFIX }}.0/24 --name net04__subnet --allocation-pool start={{ IPV4_NET_TENANT_PREFIX }}.120,end={{ IPV4_NET_TENANT_PREFIX }}.240'
+    '. /root/keystonercv3; neutron subnet-create net04 192.168.0.0/24 --name net04__subnet --allocation-pool start=192.168.0.120,end=192.168.0.240'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -242,58 +223,6 @@
 - description:  Add interface
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-#- description:  Allow all tcp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-# skip_fail: false
-
-#- description:  Allow all icmp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-#- description: sync time
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-#    'service ntp stop; ntpd -gq;  service ntp start'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
-- description: Temp workaround of  PROD-13167
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run
-    'apt-get install python-pymysql -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install docker.io on gtw
-  cmd: salt 'gtw01*' cmd.run 'apt-get install docker.io -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Enable forward policy
-  cmd: salt "gtw01*" cmd.run 'iptables --policy FORWARD ACCEPT'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create rc file on cfg
-  cmd: scp ctl01:/root/keystonercv3 /root
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Copy rc file
-  cmd: scp /root/keystonercv3 gtw01:/root
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
