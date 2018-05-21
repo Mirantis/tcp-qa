@@ -6,19 +6,18 @@
 {% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_KVM02 = os_env('HOSTNAME_KVM02', 'kvm02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM03', 'kvm03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP001 = os_env('HOSTNAME_CMP001', 'cmp001.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP002', 'cmp002.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
-{% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.49.2') %}
-{% set ETH0_IP_ADDRESS_KVM01 = os_env('ETH0_IP_ADDRESS_KVM01', '172.16.49.11') %}
-{% set ETH0_IP_ADDRESS_KVM02 = os_env('ETH0_IP_ADDRESS_KVM02', '172.16.49.12') %}
-{% set ETH0_IP_ADDRESS_KVM03 = os_env('ETH0_IP_ADDRESS_KVM03', '172.16.49.13') %}
-{% set ETH0_IP_ADDRESS_CMP001 = os_env('ETH0_IP_ADDRESS_CMP001', '172.16.49.3') %}
-{% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '172.16.49.31') %}
-{% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '172.16.49.5') %}
-{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
+{% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.17.42.194') %}
+{% set ETH0_IP_ADDRESS_KVM01 = os_env('ETH0_IP_ADDRESS_KVM01', '172.17.42.211') %}
+{% set ETH0_IP_ADDRESS_KVM02 = os_env('ETH0_IP_ADDRESS_KVM02', '172.17.42.212') %}
+{% set ETH0_IP_ADDRESS_KVM03 = os_env('ETH0_IP_ADDRESS_KVM03', '172.17.42.213') %}
+{% set ETH0_IP_ADDRESS_CMP01 = os_env('ETH0_IP_ADDRESS_CMP01', '172.17.42.195') %}
+{% set ETH0_IP_ADDRESS_CMP02 = os_env('ETH0_IP_ADDRESS_CMP02', '172.17.42.196') %}
+{% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '172.17.42.197') %}
+{% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.17.42.198') %}
 
 {% import 'cookied-bm-mcp-dvr-vxlan/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-bm-mcp-dvr-vxlan/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
@@ -39,7 +38,7 @@ template:
 
     address_pools:
       admin-pool01:
-        net: {{ os_env('ADMIN_ADDRESS_POOL01', '172.16.49.0/26:26') }}
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '172.17.42.192/26:26') }}
         params:
           ip_reserved:
             gateway: +62
@@ -48,8 +47,8 @@ template:
             default_{{ HOSTNAME_KVM01 }}: {{ ETH0_IP_ADDRESS_KVM01 }}
             default_{{ HOSTNAME_KVM02 }}: {{ ETH0_IP_ADDRESS_KVM02 }}
             default_{{ HOSTNAME_KVM03 }}: {{ ETH0_IP_ADDRESS_KVM03 }}
-            default_{{ HOSTNAME_CMP001 }}: {{ ETH0_IP_ADDRESS_CMP001 }}
-            default_{{ HOSTNAME_CMP002 }}: {{ ETH0_IP_ADDRESS_CMP002 }}
+            default_{{ HOSTNAME_CMP01 }}: {{ ETH0_IP_ADDRESS_CMP01 }}
+            default_{{ HOSTNAME_CMP02 }}: {{ ETH0_IP_ADDRESS_CMP02 }}
             default_{{ HOSTNAME_GTW01 }}: {{ ETH0_IP_ADDRESS_GTW01 }}
             default_{{ HOSTNAME_GTW02 }}: {{ ETH0_IP_ADDRESS_GTW02 }}
           ip_ranges:
@@ -69,7 +68,7 @@ template:
             l2_network_device: +1
 
       external-pool01:
-        net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '172.17.42.128/26:26') }}
+        net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '10.167.24.0/24:24') }}
         params:
           ip_reserved:
             gateway: +1
@@ -307,13 +306,13 @@ template:
                    - enp9s0f1
 
 
-          - name: {{ HOSTNAME_CMP001 }}
+          - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
             params:
               ipmi_user: !os_env IPMI_USER
               ipmi_password: !os_env IPMI_PASSWORD
               ipmi_previlegies: OPERATOR
-              ipmi_host: !os_env IPMI_HOST_CMP001  # hostname or IP address
+              ipmi_host: !os_env IPMI_HOST_CMP01  # hostname or IP address
               ipmi_lan_interface: lanplus
               ipmi_port: 623
 
@@ -339,15 +338,15 @@ template:
               interfaces:
                 - label: enp9s0f0
                   l2_network_device: admin
-                  mac_address: !os_env ETH0_MAC_ADDRESS_CMP001
+                  mac_address: !os_env ETH0_MAC_ADDRESS_CMP01
                 - label: enp9s0f1
-                  mac_address: !os_env ETH1_MAC_ADDRESS_CMP001
+                  mac_address: !os_env ETH1_MAC_ADDRESS_CMP01
 #                - label: enp9s0f0
-#                 mac_address: !os_env ETH2_MAC_ADDRESS_CMP001
+#                 mac_address: !os_env ETH2_MAC_ADDRESS_CMP01
 #               - label: enp5s0f1
-#                 mac_address: !os_env ETH3_MAC_ADDRESS_CMP001
+#                 mac_address: !os_env ETH3_MAC_ADDRESS_CMP01
 #               - label: enp5s0f2
-#                 mac_address: !os_env ETH4_MAC_ADDRESS_CMP001
+#                 mac_address: !os_env ETH4_MAC_ADDRESS_CMP01
 
               network_config:
                 enp9s0f0:
@@ -363,13 +362,13 @@ template:
 
 
 
-          - name: {{ HOSTNAME_CMP002 }}
+          - name: {{ HOSTNAME_CMP02 }}
             role: salt_minion
             params:
               ipmi_user: !os_env IPMI_USER
               ipmi_password: !os_env IPMI_PASSWORD
               ipmi_previlegies: OPERATOR
-              ipmi_host: !os_env IPMI_HOST_CMP002  # hostname or IP address
+              ipmi_host: !os_env IPMI_HOST_CMP02  # hostname or IP address
               ipmi_lan_interface: lanplus
               ipmi_port: 623
 
@@ -395,15 +394,15 @@ template:
               interfaces:
                 - label: enp9s0f0
                   l2_network_device: admin
-                  mac_address: !os_env ETH0_MAC_ADDRESS_CMP002
+                  mac_address: !os_env ETH0_MAC_ADDRESS_CMP02
                 - label: enp9s0f1
-                  mac_address: !os_env ETH1_MAC_ADDRESS_CMP002
+                  mac_address: !os_env ETH1_MAC_ADDRESS_CMP02
 #               - label: eth3
-#                 mac_address: !os_env ETH2_MAC_ADDRESS_CMP002
+#                 mac_address: !os_env ETH2_MAC_ADDRESS_CMP02
 #               - label: eth2
-#                 mac_address: !os_env ETH3_MAC_ADDRESS_CMP002
+#                 mac_address: !os_env ETH3_MAC_ADDRESS_CMP02
 #               - label: eth4
-#                 mac_address: !os_env ETH4_MAC_ADDRESS_CMP002
+#                 mac_address: !os_env ETH4_MAC_ADDRESS_CMP02
               network_config:
                 enp9s0f0:
                   networks:
