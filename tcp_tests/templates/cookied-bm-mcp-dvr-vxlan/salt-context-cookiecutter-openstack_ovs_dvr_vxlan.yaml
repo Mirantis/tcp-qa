@@ -1,7 +1,7 @@
 default_context:
-  mcp_version: testing
+  mcp_version: proposed
   ceph_enabled: 'False'
-  cicd_enabled: 'False'
+  cicd_enabled: 'True'
   cluster_domain: cookied-bm-mcp-dvr-vxlan.local
   cluster_name: cookied-bm-mcp-dvr-vxlan
   compute_bond_mode: active-backup
@@ -10,13 +10,13 @@ default_context:
   context_seed: Psupdi5ne1kCk31iDWV7fhbHnBALIr3SWhce7Z01jCaMwlAhGKxeLPFPQ9CgYzJD
   control_network_netmask: 255.255.255.0
   control_network_subnet: 10.167.4.0/24
-  control_vlan: '2416'
+  control_vlan: '2406'
   cookiecutter_template_branch: master
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/mk/cookiecutter-templates.git
-  deploy_network_gateway: 172.16.49.1
+  deploy_network_gateway: 172.16.164.1
   deploy_network_netmask: 255.255.255.192
-  deploy_network_subnet: 172.16.49.0/26
+  deploy_network_subnet: 172.16.164.0/26
   deployment_type: physical
   dns_server01: 172.18.176.6
   dns_server02: 172.18.208.44
@@ -26,20 +26,20 @@ default_context:
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
   infra_kvm01_control_address: 10.167.4.241
-  infra_kvm01_deploy_address: 172.16.49.11
+  infra_kvm01_deploy_address: 172.16.164.11
   infra_kvm01_hostname: kvm01
   infra_kvm02_control_address: 10.167.4.242
-  infra_kvm02_deploy_address: 172.16.49.12
+  infra_kvm02_deploy_address: 172.16.164.12
   infra_kvm02_hostname: kvm02
   infra_kvm03_control_address: 10.167.4.243
-  infra_kvm03_deploy_address: 172.16.49.13
+  infra_kvm03_deploy_address: 172.16.164.13
   infra_kvm03_hostname: kvm03
   infra_kvm_vip_address: 10.167.4.240
   infra_primary_first_nic: eth1
   infra_primary_second_nic: eth2
   kubernetes_enabled: 'False'
   local_repositories: 'False'
-  maas_deploy_address: 172.16.49.15
+  maas_deploy_address: 172.16.164.14
   maas_hostname: cfg01
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
@@ -49,14 +49,14 @@ default_context:
   openstack_compute_rack01_hostname: cmp
   openstack_compute_rack01_single_subnet: 10.167.4
   openstack_compute_rack01_tenant_subnet: 10.167.6
-  openstack_compute_node01_hostname: cmp001
-  openstack_compute_node02_hostname: cmp002
+  openstack_compute_node01_hostname: cmp01
+  openstack_compute_node02_hostname: cmp02
   openstack_compute_node01_address: 10.167.4.3
   openstack_compute_node02_address: 10.167.4.31
   openstack_compute_node01_single_address: 10.167.4.3
   openstack_compute_node02_single_address: 10.167.4.31
-  openstack_compute_node01_deploy_address: 172.16.49.3
-  openstack_compute_node02_deploy_address: 172.16.49.31
+  openstack_compute_node01_deploy_address: 172.16.164.3
+  openstack_compute_node02_deploy_address: 172.16.164.31
   openstack_control_address: 10.167.4.10
   openstack_control_hostname: ctl
   openstack_control_node01_address: 10.167.4.11
@@ -140,39 +140,40 @@ default_context:
   backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvr+tWAJ62wROllpSZeaSPxxnVY3R65sfUW8wM6L8tr1knJOTQLoBikmcjISb3ekyPlwubTypGoxb7al06FiNwfr3KDkytflKRGTyMKYgchighuFCfBuePd13cjf1l19TYU7u7a+VuCVWi7pmhDGUkMi24s23OroQb7D14XX17v46wLrqJQi2nrXzN/DWXcn/ycq8IZ7ZFgN/uYlbpfAKX8PCvImbDDO8+BgndAy4MPz8cWOWsnfGMVNePhvhazVcijLvx8Vu2Iuvg7CoJiSGjTe7YTms44/WpnFkHreyK8cwsw4wzls4BApu6UU2jIAsAMZh9zux/Rtni71dcNfF
   salt_master_address: 10.167.4.2
   salt_master_hostname: cfg01
-  salt_master_management_address: 172.16.49.2
+  salt_master_management_address: 172.16.164.2
   shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
   stacklight_enabled: 'True'
-  stacklight_log_address: 10.167.8.60
+  stacklight_log_address: 10.167.4.60
   stacklight_log_hostname: log
-  stacklight_log_node01_address: 10.167.8.61
+  stacklight_log_node01_address: 10.167.4.61
   stacklight_log_node01_hostname: log01
-  stacklight_log_node02_address: 10.167.8.62
+  stacklight_log_node02_address: 10.167.4.62
   stacklight_log_node02_hostname: log02
-  stacklight_log_node03_address: 10.167.8.63
+  stacklight_log_node03_address: 10.167.4.63
   stacklight_log_node03_hostname: log03
-  stacklight_monitor_address: 10.167.8.70
+  stacklight_monitor_address: 10.167.4.70
   stacklight_monitor_hostname: mon
-  stacklight_monitor_node01_address: 10.167.8.71
+  stacklight_monitor_node01_address: 10.167.4.71
   stacklight_monitor_node01_hostname: mon01
-  stacklight_monitor_node02_address: 10.167.8.72
+  stacklight_monitor_node02_address: 10.167.4.72
   stacklight_monitor_node02_hostname: mon02
-  stacklight_monitor_node03_address: 10.167.8.73
+  stacklight_monitor_node03_address: 10.167.4.73
   stacklight_monitor_node03_hostname: mon03
   stacklight_notification_address: alerts@localhost
   stacklight_notification_smtp_host: 127.0.0.1
-  stacklight_telemetry_address: 10.167.8.85
+  stacklight_telemetry_address: 10.167.4.85
   stacklight_telemetry_hostname: mtr
-  stacklight_telemetry_node01_address: 10.167.8.86
+  stacklight_telemetry_node01_address: 10.167.4.86
   stacklight_telemetry_node01_hostname: mtr01
-  stacklight_telemetry_node02_address: 10.167.8.87
+  stacklight_telemetry_node02_address: 10.167.4.87
   stacklight_telemetry_node02_hostname: mtr02
-  stacklight_telemetry_node03_address: 10.167.8.88
+  stacklight_telemetry_node03_address: 10.167.4.88
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   fluentd_enabled: 'True'
   tenant_network_gateway: 10.167.6.1
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: 10.167.6.0/24
-  tenant_vlan: '2417'
+  tenant_vlan: '2403'
   upstream_proxy_enabled: 'False'
+  stacklight_long_term_storage_type: influxdb
