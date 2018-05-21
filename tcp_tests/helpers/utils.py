@@ -281,8 +281,13 @@ class YamlEditor(object):
                 return {node.tag: loader.construct_scalar(node)}
 
         yaml.add_multi_constructor("!", multi_constructor)
-        with self.__get_file() as file_obj:
-            self.__documents = [x for x in yaml.load_all(file_obj)]
+        with self.__get_file(mode="a+") as file_obj:
+            file_obj.seek(0)
+            self.__documents = [x for x in yaml.load_all(file_obj)] or [{}, ]
+            # try:
+            #     self.__documents = [x for x in yaml.load_all(file_obj)]
+            # except IOError:
+            #     self.__documents[self.__document_id] = {}
             return self.__documents[self.__document_id]
 
     def write_content(self, content=None):
