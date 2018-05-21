@@ -60,3 +60,10 @@ DOCKER_IMAGES_SL_TAG = os.environ.get('DOCKER_IMAGES_SL_TAG', 'latest')
 PATTERN = os.environ.get('PATTERN', None)
 RUN_TEMPEST = get_var_as_bool('RUN_TEMPEST', False)
 RUN_SL_TESTS = get_var_as_bool('RUN_SL_TESTS', False)
+
+TEMPEST_IMAGE = os.environ.get(
+    'TEMPEST_IMAGE',
+    'docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest')  # noqa
+TEMPEST_IMAGE_VERSION = os.environ.get('TEMPEST_IMAGE_VERSION', 'latest')
+TEMPEST_PATTERN = os.environ.get('TEMPEST_PATTERN', 'tempest')
+TEMPEST_TIMEOUT = int(os.environ.get('TEMPEST_TIMEOUT', 1800))
