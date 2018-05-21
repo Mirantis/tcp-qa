@@ -1,5 +1,20 @@
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
+# Install support services
+- description: Install keepalived on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster and *01*' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: Install keepalived
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
 - description: Install glusterfs
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server' state.sls glusterfs.server.service
@@ -20,21 +35,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
-
-# Install support services
-- description: Install keepalived on ctl01
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster and *01*' state.sls keepalived
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
-
-- description: Install keepalived
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keepalived:cluster' state.sls keepalived
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: true
 
 - description: Install RabbitMQ on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -93,13 +93,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install nginx on prx nodes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Restart rsyslog
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@haproxy:proxy' service.restart rsyslog
@@ -114,10 +107,10 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Check the OpenStack control VIP
+- description: Check the VIP
   cmd: |
-    OPENSTACK_CONTROL_ADDRESS=$(salt --out=newline_values_only "ctl01*" pillar.get _param:cluster_vip_address);
-    echo "_param:cluster_vip_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
+    OPENSTACK_CONTROL_ADDRESS=`salt-call --out=newline_values_only pillar.get _param:openstack_control_address`;
+    echo "_param:openstack_control_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster' cmd.run "ip a | grep ${OPENSTACK_CONTROL_ADDRESS}" | grep -B1 ${OPENSTACK_CONTROL_ADDRESS}
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
