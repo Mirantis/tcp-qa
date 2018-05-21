@@ -42,7 +42,7 @@ nodes:
         enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
-    cmp001.cookied-bm-mcp-dvr-vxlan.local:
+    cmp01.cookied-bm-mcp-dvr-vxlan.local:
       reclass_storage_name: openstack_compute_node01
       roles:
       - openstack_compute
@@ -57,7 +57,7 @@ nodes:
           tenant_address: ${_param:openstack_compute_node01_tenant_address}
 
 
-    cmp002.cookied-bm-mcp-dvr-vxlan.local:
+    cmp02.cookied-bm-mcp-dvr-vxlan.local:
       reclass_storage_name: openstack_compute_node02
       roles:
       - openstack_compute
