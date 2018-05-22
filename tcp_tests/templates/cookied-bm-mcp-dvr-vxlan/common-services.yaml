@@ -36,15 +36,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
-- description: Check the OpenStack control VIP
-  cmd: |
-    OPENSTACK_CONTROL_ADDRESS=$(salt --out=newline_values_only "ctl01*" pillar.get _param:cluster_vip_address);
-    echo "_param:cluster_vip_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster' cmd.run "ip a | grep ${OPENSTACK_CONTROL_ADDRESS}" | grep -B1 ${OPENSTACK_CONTROL_ADDRESS}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Install RabbitMQ on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@rabbitmq:server and *01*' state.sls rabbitmq
@@ -121,4 +112,13 @@
     -C 'I@memcached:server' state.sls memcached
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check the OpenStack control VIP
+  cmd: |
+    OPENSTACK_CONTROL_ADDRESS=$(salt --out=newline_values_only "ctl01*" pillar.get _param:cluster_vip_address);
+    echo "_param:cluster_vip_address (vip): ${OPENSTACK_CONTROL_ADDRESS}";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keepalived:cluster' cmd.run "ip a | grep ${OPENSTACK_CONTROL_ADDRESS}" | grep -B1 ${OPENSTACK_CONTROL_ADDRESS}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
   skip_fail: false
