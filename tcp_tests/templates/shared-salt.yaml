@@ -1058,8 +1058,6 @@
 - description: Include class with tempest template into cfg node
   cmd: |
     sed -i 's/classes\:/classes\:\n- cluster.{{ CLUSTER_NAME }}.infra.runtest/g' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml;
-    git clone https://gerrit.mcp.mirantis.net/salt-formulas/runtest;
-    cd /root/runtest && git checkout 2468b1f1008ba516fda31e00e588de71447b6fa7 && make install;
     salt 'cfg01*' saltutil.refresh_pillar;
     salt 'cfg01*' saltutil.sync_all;
   node_name: {{ HOSTNAME_CFG01 }}
