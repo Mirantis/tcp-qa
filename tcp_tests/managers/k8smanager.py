@@ -568,19 +568,23 @@ class K8SManager(ExecuteCommandsMixin):
             if system is 'docker':
                 cmd = ("docker ps --all | grep {0} |"
                        " awk '{{print $1}}'".format(container))
-                result = remote.check_call(cmd)
-                container_id = result['stdout'][0].strip()
+                result = remote.check_call(cmd, raise_on_err=False)
+                if result['stdout']:
+                    container_id = result['stdout'][0].strip()
+                else:
+                    LOG.info('No container found, skipping extraction...')
+                    return
                 cmd = "docker start {}".format(container_id)
-                remote.check_call(cmd)
+                remote.check_call(cmd, raise_on_err=False)
                 cmd = "docker cp {0}:/{1} .".format(container_id, file_path)
-                remote.check_call(cmd)
+                remote.check_call(cmd, raise_on_err=False)
             else:
                 # system is k8s
                 pod_name = kwargs.get('pod_name')
                 pod_namespace = kwargs.get('pod_namespace')
                 cmd = 'kubectl cp {0}/{1}:/{2} .'.format(
                     pod_namespace, pod_name, file_path)
-                remote.check_call(cmd)
+                remote.check_call(cmd, raise_on_err=False)
 
     def download_k8s_logs(self, files):
         """
@@ -610,13 +614,13 @@ class K8SManager(ExecuteCommandsMixin):
             cmd = ("apt-get install python-setuptools -y; "
                    "pip install xunitmerge")
             LOG.debug('Installing xunitmerge')
-            r.check_call(cmd)
+            r.check_call(cmd, raise_on_err=False)
             LOG.debug('Merging xunit')
             cmd = ("cd {0}; arg = ''; "
                    "for i in $(ls | grep xml); "
                    "do arg=\"$arg $i\"; done && "
                    "xunitmerge $arg {1}".format(path, output))
-            r.check_call(cmd)
+            r.check_call(cmd, raise_on_err=False)
 
     def manage_cncf_archive(self):
         """
@@ -638,14 +642,14 @@ class K8SManager(ExecuteCommandsMixin):
                 node_name=self.ctl_host) as remote:
             tar_name = remote.check_call(get_tar_name_cmd)['stdout'][0].strip()
             untar = "mkdir result && tar -C result -xzf {0}".format(tar_name)
-            remote.check_call(untar)
+            remote.check_call(untar, raise_on_err=False)
             manage_results = ("mv result/plugins/e2e/results/e2e.log . && "
                               "mv result/plugins/e2e/results/junit_01.xml . ;"
                               "kubectl version > version.txt")
             remote.check_call(manage_results, raise_on_err=False)
             cleanup_host = "rm -rf result"
-            remote.check_call(cleanup_host)
+            remote.check_call(cleanup_host, raise_on_err=False)
             # This one needed to use download fixture, since I don't know
             # how possible apply fixture arg dynamically from test.
             rename_tar = "mv {0} cncf_results.tar.gz".format(tar_name)
-            remote.check_call(rename_tar)
+            remote.check_call(rename_tar, raise_on_err=False)
