@@ -187,20 +187,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_cfg01
 
-              interfaces:
-                - label: ens3
-                  l2_network_device: admin
-                  interface_model: *interface_model
-                - label: ens4
-                  l2_network_device: private
-                  interface_model: *interface_model
-              network_config:
-                ens3:
-                  networks:
-                    - admin
-                ens4:
-                  networks:
-                    - private
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_CTL01 }}
             role: salt_minion
