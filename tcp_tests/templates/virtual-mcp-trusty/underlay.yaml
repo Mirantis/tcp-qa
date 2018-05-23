@@ -194,6 +194,12 @@ template:
                 - label: ens4
                   l2_network_device: private
                   interface_model: *interface_model
+                - label: ens5
+                  l2_network_device: tenant
+                  interface_model: *interface_model
+                - label: ens6
+                  l2_network_device: external
+                  interface_model: *interface_model
               network_config:
                 ens3:
                   networks:
@@ -201,6 +207,12 @@ template:
                 ens4:
                   networks:
                     - private
+                ens5:
+                  networks:
+                    - tenant
+                ens6:
+                  networks:
+                    - external
 
           - name: {{ HOSTNAME_CTL01 }}
             role: salt_minion
