@@ -426,40 +426,19 @@ def kubernetes_block_traffic_namespace(underlay, kube_host_ip, namespace):
     underlay.sudo_check_call(cmd=cmd, host=kube_host_ip)
 
 
-def calico_allow_netchecker_connections(underlay, kube_ssh_ip, kube_host_ip,
+def calico_allow_netchecker_connections(underlay, k8sclient, kube_host_ip,
                                         namespace):
-    calico_policy = {"kind": "policy",
-                     "spec": {
-                         "ingress": [
-                             {
-                                 "action": "allow",
-                                 "source": {
-                                     "net": "{0}/24".format(kube_host_ip)
-                                 },
-                                 "destination": {
-                                     "selector": ("calico/k8s_ns =="
-                                                  " \"{0}\"").format(namespace)
-                                 },
-                                 "protocol": "tcp"
-                             }
-                         ],
-                         "order": 500,
-                         "selector": "has(calico/k8s_ns)"
-                     },
-                     "apiVersion": "v1",
-                     "metadata": {
-                         "name": "netchecker.allow-host-connections"}
-                     }
+    netchecker_srv_pod_names = [pod.name for pod in
+                                k8sclient.pods.list(namespace=namespace)
+                                if 'netchecker-server' in pod.name]
 
-    cmd = "echo '{0}' | calicoctl apply -f -".format(
-        json.dumps(calico_policy))
-    underlay.sudo_check_call(cmd=cmd, host=kube_ssh_ip)
+    assert len(netchecker_srv_pod_names) > 0, \
+        "No netchecker-server pods found!"
 
+    netchecker_srv_pod = k8sclient.pods.get(name=netchecker_srv_pod_names[0],
+                                            namespace=namespace)
+    nc_host_ip = netchecker_srv_pod.status.host_ip
 
-def kubernetes_allow_traffic_from_agents(underlay, kube_host_ip, namespace):
-    # TODO(apanchenko): add network policies using kubernetes API
-    label_namespace_cmd = "kubectl label namespace default name=default"
-    underlay.sudo_check_call(cmd=label_namespace_cmd, host=kube_host_ip)
     kubernetes_policy = {
         "apiVersion": "extensions/v1beta1",
         "kind": "NetworkPolicy",
@@ -472,9 +451,45 @@ def kubernetes_allow_traffic_from_agents(underlay, kube_host_ip, namespace):
                 {
                     "from": [
                         {
+                            "ipBlock": {
+                                "cidr": nc_host_ip + "/24"
+                            }
+                        }
+                    ]
+                }
+            ],
+            "podSelector": {
+                "matchLabels": {
+                    "app": "netchecker-server"
+                }
+            }
+        }
+    }
+
+    cmd_add_policy = "echo '{0}' | kubectl create -f -".format(
+        json.dumps(kubernetes_policy))
+    underlay.sudo_check_call(cmd=cmd_add_policy, host=kube_host_ip)
+
+
+def kubernetes_allow_traffic_from_agents(underlay, kube_host_ip, namespace):
+    # TODO(apanchenko): add network policies using kubernetes API
+    label_namespace_cmd = "kubectl label namespace default name=default"
+    underlay.sudo_check_call(cmd=label_namespace_cmd, host=kube_host_ip)
+    kubernetes_policy = {
+        "apiVersion": "extensions/v1beta1",
+        "kind": "NetworkPolicy",
+        "metadata": {
+            "name": "access-netchecker-agent",
+            "namespace": namespace,
+        },
+        "spec": {
+            "ingress": [
+                {
+                    "from": [
+                        {
                             "namespaceSelector": {
                                 "matchLabels": {
-                                    "name": "default"
+                                    "name": namespace
                                 }
                             }
                         },
@@ -500,7 +515,7 @@ def kubernetes_allow_traffic_from_agents(underlay, kube_host_ip, namespace):
         "apiVersion": "extensions/v1beta1",
         "kind": "NetworkPolicy",
         "metadata": {
-            "name": "access-netchecker-hostnet",
+            "name": "access-netchecker-agent-hostnet",
             "namespace": namespace,
         },
         "spec": {
@@ -510,7 +525,7 @@ def kubernetes_allow_traffic_from_agents(underlay, kube_host_ip, namespace):
                         {
                             "namespaceSelector": {
                                 "matchLabels": {
-                                    "name": "default"
+                                    "name": namespace
                                 }
                             }
                         },
@@ -531,9 +546,11 @@ def kubernetes_allow_traffic_from_agents(underlay, kube_host_ip, namespace):
             }
         }
     }
+
     cmd_add_policy = "echo '{0}' | kubectl create -f -".format(
         json.dumps(kubernetes_policy))
     underlay.sudo_check_call(cmd=cmd_add_policy, host=kube_host_ip)
+
     cmd_add_policy_hostnet = "echo '{0}' | kubectl create -f -".format(
         json.dumps(kubernetes_policy_hostnet))
     underlay.sudo_check_call(cmd=cmd_add_policy_hostnet, host=kube_host_ip)
