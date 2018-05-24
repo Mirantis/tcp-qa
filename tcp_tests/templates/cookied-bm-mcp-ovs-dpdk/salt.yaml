@@ -35,14 +35,6 @@
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
-
-- description: "Workaround for PROD-14060"
-  cmd: |
-    set -e;
-    # Add tenant and single addresses for computes
-    salt-call reclass.cluster_meta_set tenant_address 10.167.12.105 /srv/salt/reclass/nodes/_generated/cmp01.cookied-bm-mcp-ovs-dpdk.local.yml
-    salt-call reclass.cluster_meta_set tenant_address 10.167.12.106 /srv/salt/reclass/nodes/_generated/cmp02.cookied-bm-mcp-ovs-dpdk.local.yml
-
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -64,15 +56,26 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
-
-- description: Temporary WR for PROD-###
-  cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'cmp*' cmd.run "update-alternatives --remove ovs-vswitchd /usr/lib/openvswitch-switch/ovs-vswitchd";
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'cmp*' cmd.run "service openvswitch-switch restart"
+- description: "Workaround for PROD-18834: Pre-install linux-headers package"
+  cmd: salt 'cmp*' cmd.run "apt-get install -y linux-headers-$(uname -r)";
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
-  skip_fail: true
+  skip_fail: false
+
+- description: "Workaround for PROD-17975: Pre-install ovs packages to update alternatives to DPDK"
+  cmd: |
+    set -ex;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.system.repo
+    salt 'cmp*' cmd.run "apt-get install -y openvswitch-switch openvswitch-switch-dpdk";
+    salt 'cmp*' cmd.run "service openvswitch-switch stop";
+    salt 'cmp*' cmd.run "rm -f /var/lib/openvswitch/*";
+    salt 'cmp*' cmd.run "update-alternatives --remove ovs-vswitchd /usr/lib/openvswitch-switch/ovs-vswitchd";
+    salt 'cmp*' cmd.run "service openvswitch-switch start";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 ########################################
 # Spin up Control Plane VMs on KVM nodes
