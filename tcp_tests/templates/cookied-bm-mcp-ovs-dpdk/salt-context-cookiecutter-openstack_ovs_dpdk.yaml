@@ -70,7 +70,7 @@ default_context:
   cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyGITa8rXUofX88c72/khxPWiXeS4Ciu/oiBb7WlpP3DikWd0fYMdDFMmxnrb1yKD4QtUAodCeQ0PZT778MzbRqLll+k7CW9350v3n8VsZvrY7PHGTEGPJz8Ftuzwtxm1LVI35qB2SNAbVK2lyRRsWmmgn2fNaCcRx1h2idDppOGB35gusA5fTizdwyUJ+UKVCXeUYWjbhB2GT9jgzmuh1+p8Pk05IoSFg/91My6euLzMHltSJ+868JZQpQ7EuOTH3mtpjzbEwdShsxiTztFws9yrynLP3r8U+iIurEzWjOdMo2IjRtbTGN/sUWN8sKNNqkpk9HPz5aS/ObOPfksuv
   cluster_domain: cookied-bm-mcp-ovs-dpdk.local
   cluster_name: cookied-bm-mcp-ovs-dpdk
-  compute_bond_mode: active-backup
+  compute_bond_mode: balance-slb
   compute_primary_first_nic: eth1
   compute_primary_second_nic: eth2
   context_seed: zEFbUBMME6LFdiL0rJWFgHMdQGgywnDSE9vFYvHgEBeYHb4QJsDl3HqpdaTgqYlF
