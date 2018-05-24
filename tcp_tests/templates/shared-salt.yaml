@@ -744,6 +744,12 @@
   retry: {count: 5, delay: 10}
   skip_fail: false
 
+- description: Sleep
+  cmd: sleep 6000;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
 - description: Configure linux on other nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
