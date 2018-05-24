@@ -290,7 +290,10 @@ k8s_deploy_opts = [
            default='sbPfel23ZigJF3Bm'),
     ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
     ct.Cfg('kubernetes_hyperkube_image', ct.String(),
-           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.8.11-9'.format(
+           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.8.13-11'.format(
+               settings.DOCKER_REGISTRY)),
+    ct.Cfg('kubernetes_pause_image', ct.String(),
+           default='{}/mirantis/kubernetes/pause-amd64:v1.8.13-11'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/node:v2.6.9'.format(
@@ -343,7 +346,7 @@ k8s_opts = [
            default=False),
     ct.Cfg('k8s_conformance_image', ct.String(),
            default='docker-prod-virtual.docker.mirantis.net/mirantis/'
-                   'kubernetes/k8s-conformance:v1.8.11-9')
+                   'kubernetes/k8s-conformance:v1.8.13-11')
 ]
 
 _group_opts = [
