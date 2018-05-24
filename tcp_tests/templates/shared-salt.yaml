@@ -63,7 +63,7 @@
     echo "{{ FORMULA_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - "{{ FORMULA_GPG }}" | apt-key add -;
     echo "{{ SALT_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_saltstack.list;
-    apt-key adv --keyserver "{{UBUNTU_KEY_SERVER}}" --recv-keys "{{ UBUNTU_KEY_ID}}"
+    wget -O - "{{ SALT_GPG }}" | apt-key add -;
     echo "{{ UBUNTU_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu.list
     echo "{{ UBUNTU_UPDATES_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_updates.list
     echo "{{ UBUNTU_SECURITY_REPOSITORY }}" > /etc/apt/sources.list.d/ubuntu_security.list
