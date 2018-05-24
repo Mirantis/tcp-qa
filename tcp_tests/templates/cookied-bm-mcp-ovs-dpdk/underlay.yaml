@@ -318,7 +318,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
+              cloud_init_iface_up: enp5s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -343,7 +343,6 @@ template:
                   mac_address: !os_env ETH1_MAC_ADDRESS_CMP01
                 - label: enp5s0f0
                   mac_address: !os_env ETH2_MAC_ADDRESS_CMP01
-                  features: ['dpdk', 'dpdk_pci: 0000:05:00.0']
                 - label: enp5s0f1
                   mac_address: !os_env ETH3_MAC_ADDRESS_CMP01
                   features: ['dpdk', 'dpdk_pci: 0000:05:00.1']
@@ -374,7 +373,7 @@ template:
 
               root_volume_name: system     # see 'volumes' below
               cloud_init_volume_name: iso  # see 'volumes' below
-              cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
+              cloud_init_iface_up: enp5s0f0  # see 'interfaces' below.
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 200
@@ -399,7 +398,6 @@ template:
                   mac_address: !os_env ETH1_MAC_ADDRESS_CMP02
                 - label: enp5s0f0
                   mac_address: !os_env ETH2_MAC_ADDRESS_CMP02
-                  features: ['dpdk', 'dpdk_pci: 0000:05:00.0']
                 - label: enp5s0f1
                   mac_address: !os_env ETH3_MAC_ADDRESS_CMP02
                   features: ['dpdk', 'dpdk_pci: 0000:05:00.1']
