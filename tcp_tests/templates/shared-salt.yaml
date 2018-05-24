@@ -1096,7 +1096,7 @@
 
 - description: Run tempest from new docker image
   cmd: |
-    docker run -e ARGS="-r {{TEMPEST_PATTERN }} -w 4 {{ EXCLUDE_TEST_ARGS }}" -v /root/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /root/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest /bin/bash -c "run-tempest"
+    docker run -e ARGS="-r {{TEMPEST_PATTERN }} -w 2 {{ EXCLUDE_TEST_ARGS }}" -v /root/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /root/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest /bin/bash -c "run-tempest"
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: true
