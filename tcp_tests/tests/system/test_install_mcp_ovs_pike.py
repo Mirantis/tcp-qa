@@ -262,16 +262,12 @@ class TestMcpInstallOvsPike(object):
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
-    def test_bm_deploy(self, config, openstack_deployed,
-                       openstack_actions):
+    def test_bm_deploy(self, config, underlay,
+                       openstack_deployed):
         """Test for deploying an mcp environment on baremetal
 
         """
-        openstack_actions._salt.local(
+        openstack_deployed._salt.local(
             tgt='*', fun='cmd.run',
             args='service ntp stop; ntpd -gq; service ntp start')
-
-        if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN)
-            openstack_actions.download_tempest_report()
         LOG.info("*************** DONE **************")
