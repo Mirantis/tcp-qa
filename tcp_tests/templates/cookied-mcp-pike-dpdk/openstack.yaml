@@ -173,6 +173,17 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
+- description: TMP step related to PROD-17975 for cmp
+  cmd: salt "cmp*" cmd.run ' systemctl restart openvswitch-switch.service'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: TMP step related to PROD-17975 for cmp
+  cmd: salt "gtw*" cmd.run ' systemctl restart openvswitch-switch.service'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 
   # Upload cirros image
 
@@ -236,42 +247,5 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-# Configure cinder-volume salt-call
-- description: Set disks 01
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 03
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 01
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
   skip_fail: false

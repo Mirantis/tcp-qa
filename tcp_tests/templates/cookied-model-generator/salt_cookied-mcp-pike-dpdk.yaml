@@ -32,6 +32,7 @@
 
     # Start compute node addresses from .105 , as in static models
     sed -i 's/start: 101/start: 105/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    sed -i '/cinder_lvm_devices/d'  /srv/salt/reclass/classes/environment/{{ SHARED.CLUSTER_NAME }}/features/lvm_backend/init.yml;
 
     . /root/venv-reclass-tools/bin/activate;
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
@@ -43,6 +44,8 @@
     salt-call reclass.cluster_meta_set name='compute_ovs_dpdk_lcore_mask' value='"0xF"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
     salt-call reclass.cluster_meta_set name='compute_hugepages_size' value='"2M"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
     salt-call reclass.cluster_meta_set name='compute_hugepages_mount' value='"/mnt/hugepages_2M"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    # set disks for compute
+    salt-call reclass.cluster_meta_set name='cinder_lvm_devices' value='"/dev/vdb"' file_name=/srv/salt/reclass/classes/environment/{{ SHARED.CLUSTER_NAME }}/features/lvm_backend/init.yml
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
