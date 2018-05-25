@@ -173,6 +173,17 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
+- description: TMP step related to PROD-17975 for cmp
+  cmd: salt "cmp*" cmd.run ' systemctl restart openvswitch-switch.service'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: TMP step related to PROD-17975 for cmp
+  cmd: salt "gtw*" cmd.run ' systemctl restart openvswitch-switch.service'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 
   # Upload cirros image
 
