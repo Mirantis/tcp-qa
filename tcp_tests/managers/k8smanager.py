@@ -342,14 +342,15 @@ class K8SManager(ExecuteCommandsMixin):
                 for pod in self.get_running_pods(pod_name, namespace)]
         return sum(pods)
 
-    def run_conformance(self, timeout=60 * 60):
+    def run_conformance(self, timeout=60 * 60, log_out='k8s_conformance.log',
+                        raise_on_err=True):
         with self.__underlay.remote(
                 node_name=self.ctl_host) as remote:
             result = remote.check_call(
                 "set -o pipefail; docker run --net=host -e API_SERVER="
-                "'http://127.0.0.1:8080' {} | tee k8s_conformance.log".format(
-                    self.__config.k8s.k8s_conformance_image),
-                timeout=timeout)['stdout']
+                "'http://127.0.0.1:8080' {0} | tee {1}".format(
+                    self.__config.k8s.k8s_conformance_image, log_out),
+                timeout=timeout, raise_on_err=raise_on_err)['stdout']
             return result
 
     def get_k8s_masters(self):
@@ -393,7 +394,7 @@ class K8SManager(ExecuteCommandsMixin):
                 node_name=self.ctl_host) as remote:
             result = remote.check_call(
                 "kubectl get svc {0} -n {1} | "
-                "awk '{{print $2}}' | tail -1".format(name, namespace)
+                "awk '{{print $3}}' | tail -1".format(name, namespace)
             )
             return result['stdout'][0].strip()
 
@@ -402,6 +403,17 @@ class K8SManager(ExecuteCommandsMixin):
         with self.__underlay.remote(
                 node_name=self.ctl_host) as remote:
             remote.check_call("nslookup {0} {1}".format(host, src))
+
+    @retry(300, exception=DevopsCalledProcessError)
+    def curl(self, url):
+        """
+        Run curl on controller and return stdout
+
+        :param url: url to curl
+        :return: response string
+        """
+        with self.__underlay.remote(node_name=self.ctl_host) as r:
+            return r.check_call("curl -s -S \"{}\"".format(url))['stdout']
 
 # ---------------------------- Virtlet methods -------------------------------
     def install_jq(self):
@@ -553,7 +565,9 @@ class K8SManager(ExecuteCommandsMixin):
 
     def extract_file_to_node(self, system='docker',
                              container='virtlet',
-                             file_path='report.xml', **kwargs):
+                             file_path='report.xml',
+                             out_dir='.',
+                             **kwargs):
         """
         Download file from docker or k8s container to node
 
@@ -561,12 +575,13 @@ class K8SManager(ExecuteCommandsMixin):
         :param container: Full name of part of name
         :param file_path: File path in container
         :param kwargs: Used to control pod and namespace
+        :param out_dir: Output directory
         :return:
         """
         with self.__underlay.remote(
                 node_name=self.ctl_host) as remote:
             if system is 'docker':
-                cmd = ("docker ps --all | grep {0} |"
+                cmd = ("docker ps --all | grep \"{0}\" |"
                        " awk '{{print $1}}'".format(container))
                 result = remote.check_call(cmd, raise_on_err=False)
                 if result['stdout']:
@@ -576,14 +591,15 @@ class K8SManager(ExecuteCommandsMixin):
                     return
                 cmd = "docker start {}".format(container_id)
                 remote.check_call(cmd, raise_on_err=False)
-                cmd = "docker cp {0}:/{1} .".format(container_id, file_path)
+                cmd = "docker cp \"{0}:/{1}\" \"{2}\"".format(
+                    container_id, file_path, out_dir)
                 remote.check_call(cmd, raise_on_err=False)
             else:
                 # system is k8s
                 pod_name = kwargs.get('pod_name')
                 pod_namespace = kwargs.get('pod_namespace')
-                cmd = 'kubectl cp {0}/{1}:/{2} .'.format(
-                    pod_namespace, pod_name, file_path)
+                cmd = 'kubectl cp \"{0}/{1}:/{2}\" \"{3}\"'.format(
+                    pod_namespace, pod_name, file_path, out_dir)
                 remote.check_call(cmd, raise_on_err=False)
 
     def download_k8s_logs(self, files):
@@ -595,8 +611,8 @@ class K8SManager(ExecuteCommandsMixin):
         master_host = self.__config.salt.salt_master_host
         with self.__underlay.remote(host=master_host) as r:
             for log_file in files:
-                cmd = "rsync -r {0}:/root/{1} /root/".format(self.ctl_host,
-                                                             log_file)
+                cmd = "rsync -r \"{0}:/root/{1}\" /root/".format(
+                    self.ctl_host, log_file)
                 r.check_call(cmd, raise_on_err=False)
                 LOG.info("Downloading the artifact {0}".format(log_file))
                 r.download(destination=log_file, target=os.getcwd())
@@ -653,3 +669,38 @@ class K8SManager(ExecuteCommandsMixin):
             # how possible apply fixture arg dynamically from test.
             rename_tar = "mv {0} cncf_results.tar.gz".format(tar_name)
             remote.check_call(rename_tar, raise_on_err=False)
+
+    def update_k8s_images(self, tag):
+        """
+        Update k8s images tag version in cluster meta and apply required
+        for update states
+
+        :param tag: New version tag of k8s images
+        :return:
+        """
+        master_host = self.__config.salt.salt_master_host
+
+        def update_image_tag_meta(config, image_name):
+            image_old = config.get(image_name)
+            image_base = image_old.split(':')[0]
+            image_new = "{}:{}".format(image_base, tag)
+            LOG.info("Changing k8s '{0}' image cluster meta to '{1}'".format(
+                image_name, image_new))
+
+            with self.__underlay.remote(host=master_host) as r:
+                cmd = "salt-call reclass.cluster_meta_set" \
+                      " name={0} value={1}".format(image_name, image_new)
+                r.check_call(cmd)
+            return image_new
+
+        cfg = self.__config
+
+        update_image_tag_meta(cfg.k8s_deploy, "kubernetes_hyperkube_image")
+        update_image_tag_meta(cfg.k8s_deploy, "kubernetes_pause_image")
+        cfg.k8s.k8s_conformance_image = update_image_tag_meta(
+            cfg.k8s, "k8s_conformance_image")
+
+        steps_path = cfg.k8s_deploy.k8s_update_steps_path
+        update_commands = self.__underlay.read_template(steps_path)
+        self.execute_commands(
+            update_commands, label="Updating kubernetes to '{}'".format(tag))
