@@ -13,6 +13,7 @@
 #    under the License.
 
 import pytest
+import time
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -77,3 +78,59 @@ class TestMCPK8sActions(object):
 
         show_step(1)
         k8s_deployed.start_k8s_cncf_verification()
+
+    @pytest.mark.grap_versions
+    @pytest.mark.fail_snapshot
+    def test_k8s_chain_update(self, show_step, underlay, config, k8s_deployed,
+                              k8s_chain_update_log_helper):
+        """Test for chain-upgrading k8s hypercube pool and checking it
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Setup Kubernetes cluster
+            5. Run and expose sample test service
+            6. Run conformance to check consistency
+            7. Update hypercube, update pool
+            8. Check that test service is available
+            9. Run conformance for updated cluster
+            10. Go to step 7 if update chain is not ended
+        """
+
+        deployment_name = 'test-dep-chain-upgrade'
+
+        show_step(5)
+        k8s_deployed.kubectl_run(
+            deployment_name, 'gcr.io/google-samples/node-hello:1.0', '8080')
+        k8s_deployed.kubectl_expose(
+            'deployment', deployment_name, '8080', 'ClusterIP')
+        sample_service_ip = k8s_deployed.get_svc_ip(deployment_name, 'default')
+
+        def check_is_test_service_available():
+            assert "Hello Kubernetes!" in k8s_deployed.curl(
+                "http://{}:{}".format(sample_service_ip, 8080))
+
+        # TODO: Remove due to PROD-xxxx bug
+        # If we don't sleep there, then service port will be unavailable
+        # on ctl01, but available on others k8s nodes"
+        time.sleep(30)
+        check_is_test_service_available()
+
+        show_step(6)
+        k8s_deployed.run_conformance(log_out="k8s_conformance.log")
+
+        chain_versions = config.k8s.k8s_update_chain.split(" ")
+        for version in chain_versions:
+            show_step(7)
+            k8s_deployed.update_k8s_images(version)
+
+            show_step(8)
+            check_is_test_service_available()
+
+            show_step(9)
+            LOG.info("Running conformance on {} version".format(version))
+            log_name = "k8s_conformance_{}.log".format(version)
+            k8s_deployed.run_conformance(log_out=log_name, raise_on_err=False)
+
+            show_step(10)
