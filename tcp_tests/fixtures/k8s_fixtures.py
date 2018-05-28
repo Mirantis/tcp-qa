@@ -167,3 +167,29 @@ def cncf_log_helper(request, func_name, underlay, k8s_deployed):
             k8s_deployed.download_k8s_logs(files)
 
     request.addfinalizer(test_fin)
+
+
+@pytest.fixture(scope='function')
+def k8s_chain_update_log_helper(request, config, k8s_deployed):
+    def test_fin():
+        if hasattr(request.node, 'rep_call') and \
+                (request.node.rep_call.passed or request.node.rep_call.failed):
+
+            chain_versions = config.k8s.k8s_update_chain
+            for version in chain_versions:
+                container_name = "k8s-conformance:{}".format(version)
+                tmp_report_dir = "/root/report_{}".format(version)
+                report_path = "/root/report_{}.xml".format(version)
+                conformance_log_path = "k8s_conformance_{}.log".format(chain_versions.index(version))
+
+                k8s_deployed.extract_file_to_node(
+                    system='docker', container=container_name,
+                    out_dir=tmp_report_dir, file_path='report'
+                )
+                k8s_deployed.combine_xunit(tmp_report_dir, report_path)
+
+                k8s_deployed.download_k8s_logs([report_path, conformance_log_path])
+
+    request.addfinalizer(test_fin)
+
+
