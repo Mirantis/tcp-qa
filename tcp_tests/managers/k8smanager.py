@@ -342,13 +342,15 @@ class K8SManager(ExecuteCommandsMixin):
                 for pod in self.get_running_pods(pod_name, namespace)]
         return sum(pods)
 
-    def run_conformance(self, timeout=60 * 60):
+    def run_conformance(self, conformance_image=None, timeout=60 * 60):
+        if conformance_image is None:
+            conformance_image = self.__config.k8s.k8s_conformance_image
         with self.__underlay.remote(
                 node_name=self.ctl_host) as remote:
             result = remote.check_call(
                 "set -o pipefail; docker run --net=host -e API_SERVER="
                 "'http://127.0.0.1:8080' {} | tee k8s_conformance.log".format(
-                    self.__config.k8s.k8s_conformance_image),
+                    conformance_image),
                 timeout=timeout)['stdout']
             return result
 
