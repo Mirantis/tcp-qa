@@ -653,3 +653,36 @@ class K8SManager(ExecuteCommandsMixin):
             # how possible apply fixture arg dynamically from test.
             rename_tar = "mv {0} cncf_results.tar.gz".format(tar_name)
             remote.check_call(rename_tar, raise_on_err=False)
+
+    def update_k8s_images(self, tag):
+        """
+        Update k8s images tag version in cluster meta and apply required
+        for update states
+
+        :param tag: New version tag of k8s images
+        :return:
+        """
+        master_host = self.__config.salt.salt_master_host
+
+        def update_image_tag_meta(cfg, image_name):
+            image_old = cfg.get(image_name)
+            image_base = image_old.split(':')[0]
+            image_new = "{}:{}".format(image_base)
+            LOG.info("Changing k8s '{0}' image cluster meta to '{1}'".format(image_name, image_new))
+
+            with self.__underlay.remote(host=master_host) as r:
+                r.check_call("salt-call reclass.cluster_meta_set "
+                             "name={0} value={1}".format(image_name, image_new))
+            return image_new
+
+        update_image_tag_meta(self.__config.k8s_deploy, "kubernetes_hyperkube_image")
+        update_image_tag_meta(self.__config.k8s_deploy, "kubernetes_pause_image")
+        self.__config.k8s_conformance_image = update_image_tag_meta(self.__config.k8s, "k8s_conformance_image")
+
+        steps_path = self.__config.k8s_deploy.k8s_update_steps_path
+        update_commands = self.__underlay.read_template(steps_path)
+        self.execute_commands(update_commands, label="Updating kubernetes to version '{}'".format(tag))
+
+
+
+

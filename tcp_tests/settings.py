@@ -59,3 +59,5 @@ DOCKER_IMAGES_SL_TAG = os.environ.get('DOCKER_IMAGES_SL_TAG', 'latest')
 
 PATTERN = os.environ.get('PATTERN', None)
 RUN_TEMPEST = get_var_as_bool('RUN_TEMPEST', False)
+
+K8S_UPDATE_TEST_CHAIN = os.environ.get('K8S_UPDATE_TEST_CHAIN', 'v1.9.8-4 v1.10.3-3')

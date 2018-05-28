@@ -1,0 +1,29 @@
+{% from 'k8s-ha-calico/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'k8s-ha-calico/underlay.yaml' import HOSTNAME_CTL01 with context %}
+
+# Kubernetes
+- description: Update hypercube image
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:pool' state.sls kubernetes.pool
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Run whole master to check consistency
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- desciption: Restart kube-apiserver
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kubernetes:control' service.restart kube-apiserver
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- desciption: Print kubernetes version
+  cmd: kubectl version
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: true
