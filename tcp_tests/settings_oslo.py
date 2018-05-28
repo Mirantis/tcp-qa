@@ -66,6 +66,9 @@ _default_ceph_prepare_tests_steps_path = pkg_resources.resource_filename(
 _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_k8s_update_steps = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/k8s_update.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 _default_net_mgm = os.environ.get("NET_MGMT", "admin-pool01")
 
 
@@ -285,6 +288,9 @@ k8s_deploy_opts = [
     ct.Cfg('k8s_steps_path', ct.String(),
            help="Path to YAML with steps to deploy Kubernetes",
            default=_default_k8s_steps),
+    ct.Cfg('k8s_update_steps_path', ct.String(),
+           help="Path to YAML with steps to update Kubernetes",
+           default=_default_k8s_update_steps),
     ct.Cfg('kubernetes_admin_user', ct.String(), default='admin'),
     ct.Cfg('kubernetes_admin_password', ct.String(),
            default='sbPfel23ZigJF3Bm'),
