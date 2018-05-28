@@ -77,3 +77,48 @@ class TestMCPK8sActions(object):
 
         show_step(1)
         k8s_deployed.start_k8s_cncf_verification()
+
+    @pytest.mark.grap_versions
+    @pytest.mark.fail_snapshot
+    def test_k8s_chain_upgrade(self, show_step, config, underlay, k8s_deployed, k8s_actions):
+        """Test for chain-upgrading k8s hypercube pool and checking it
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Setup Kubernetes cluster
+            5. Run conformance if need
+            6. Update hypercube, update pool
+            7. Run conformance for updated cluster
+            8. Go to step 6 if chain is not ended
+        """
+
+        if config.k8s.k8s_conformance_run:
+            show_step(5)
+            k8s_actions.run_conformance()
+
+        chain_versions = settings.K8S_UPDATE_TEST_CHAIN.split(" ")
+
+        LOG.info("hypercube image {}".format(config.k8s_deploy.kubernetes_hyperkube_image))
+
+        for _, version in chain_versions:
+            show_step(6)
+
+            hypercube_image_base = config.k8s_deploy.kubernetes_hyperkube_image.split(':')[0]
+            new_hypercube_image = "{}:{}".format(hypercube_image_base, version)
+
+            LOG.info("trying to apply new hypercube image {}".format(new_hypercube_image))
+
+            config.k8s_deploy.kubernetes_hyperkube_image = new_hypercube_image
+
+            steps_path = config.k8s_deploy.k8s_update_steps_path
+            commands = underlay.read_template(steps_path)
+            k8s_actions.execute_commands(commands, label='Update hypercube image')
+
+
+
+
+
+
+
