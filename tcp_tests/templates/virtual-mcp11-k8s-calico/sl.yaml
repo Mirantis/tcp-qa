@@ -67,13 +67,6 @@
   skip_fail: false
 
 # Install slv2 infra
-# Install MongoDB for alerta
-- description: Install MongoDB
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 10}
-  skip_fail: false
-
 #Launch containers
 - description: launch prometheus containers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and I@prometheus:server' state.sls docker.client
