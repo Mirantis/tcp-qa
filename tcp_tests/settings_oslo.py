@@ -229,6 +229,9 @@ sl_deploy_opts = [
     ct.Cfg('docker_image_alertmanager', ct.String(),
            default='{0}/openstack-docker/alertmanager:{1}'.format(
                settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
+    ct.Cfg('docker_image_alerta', ct.String(),
+           default='{0}/mirantis/external/alerta-web:{1}'.format(
+               settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
     ct.Cfg('docker_image_pushgateway', ct.String(),
            default='{0}/openstack-docker/pushgateway:{1}'.format(
                settings.DOCKER_REGISTRY, settings.DOCKER_IMAGES_SL_TAG)),
