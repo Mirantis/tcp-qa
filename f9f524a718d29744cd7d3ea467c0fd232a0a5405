@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7c927cca_7f125a29",
+        "filename": "tcp_tests/tests/system/test_k8s_actions.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2018-05-29T12:20:34Z",
+      "side": 1,
+      "message": "Should be forced in such test. Need to remove condition.",
+      "range": {
+        "startLine": 97,
+        "startChar": 0,
+        "endLine": 100,
+        "endChar": 41
+      },
+      "revId": "f9f524a718d29744cd7d3ea467c0fd232a0a5405",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fd1ab205_bd7c024a",
+        "filename": "tcp_tests/tests/system/test_k8s_actions.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2018-05-29T12:20:34Z",
+      "side": 1,
+      "message": "Yep, will be better to do it inside config and set defaults.",
+      "range": {
+        "startLine": 112,
+        "startChar": 8,
+        "endLine": 114,
+        "endChar": 0
+      },
+      "revId": "f9f524a718d29744cd7d3ea467c0fd232a0a5405",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "05e8a219_37855694",
+        "filename": "tcp_tests/tests/system/test_k8s_actions.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 131,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2018-05-29T12:20:34Z",
+      "side": 1,
+      "message": "Not sure that we need it in a such test. But you can do it if u want, it\u0027s up to u. So, splitting results easy - each run will be with a different conformance image, so, we can copy results to different paths. But it need to be changed in fixtures.",
+      "range": {
+        "startLine": 130,
+        "startChar": 0,
+        "endLine": 131,
+        "endChar": 64
+      },
+      "revId": "f9f524a718d29744cd7d3ea467c0fd232a0a5405",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
