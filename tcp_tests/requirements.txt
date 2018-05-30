@@ -21,3 +21,4 @@ setuptools<=36.2.0
 netaddr
 mock>=1.2
 python-jenkins
+cmd2<0.9
