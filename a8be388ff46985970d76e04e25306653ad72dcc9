@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "db6c7a06_8d59f55f",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-30T15:58:23Z",
+      "side": 1,
+      "message": "Maybe this parameters make configurable from settings.py or settings_oslo.py ?",
+      "range": {
+        "startLine": 110,
+        "startChar": 0,
+        "endLine": 112,
+        "endChar": 28
+      },
+      "revId": "a8be388ff46985970d76e04e25306653ad72dcc9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d0457230_4c4f258b",
+        "filename": "tcp_tests/tests/system/test_install_mcp_ovs_pike.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-30T15:58:23Z",
+      "side": 1,
+      "message": "F401 \u0027json\u0027 imported but unused",
+      "revId": "a8be388ff46985970d76e04e25306653ad72dcc9",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
