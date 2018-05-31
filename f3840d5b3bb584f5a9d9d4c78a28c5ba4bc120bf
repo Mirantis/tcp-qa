@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b63fdd7e_a5e99156",
+        "filename": "tcp_tests/templates/cookied-bm-contrail-maas/salt.yaml",
+        "patchSetId": 64
+      },
+      "lineNbr": 209,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-31T10:58:56Z",
+      "side": 1,
+      "message": "no need to use nameserver 8.8.8.8 , it doesn\u0027t serve the required zones for testing.",
+      "range": {
+        "startLine": 209,
+        "startChar": 87,
+        "endLine": 209,
+        "endChar": 105
+      },
+      "revId": "f3840d5b3bb584f5a9d9d4c78a28c5ba4bc120bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
