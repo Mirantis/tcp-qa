@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c22e8b56_8a0cb929",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-05-31T10:48:26Z",
+      "side": 1,
+      "message": "fix this value",
+      "revId": "41120fb344726ae8c199426a5e0d765a51196837",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "27f47570_b187a899",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 56,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-05-31T10:48:26Z",
+      "side": 1,
+      "message": "fix this value",
+      "revId": "41120fb344726ae8c199426a5e0d765a51196837",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "045dc999_3617b2c3",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-05-31T10:48:26Z",
+      "side": 1,
+      "message": "fix this value",
+      "revId": "41120fb344726ae8c199426a5e0d765a51196837",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
