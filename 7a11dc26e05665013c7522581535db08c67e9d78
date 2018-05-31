@@ -45,6 +45,29 @@
       "revId": "7a11dc26e05665013c7522581535db08c67e9d78",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5bb19dfe_7b4bd572",
+        "filename": "tcp_tests/templates/cookied-bm-contrail-nfv-maas/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 219,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-31T11:11:40Z",
+      "side": 1,
+      "message": "no need to use 8.8.8.8",
+      "range": {
+        "startLine": 219,
+        "startChar": 98,
+        "endLine": 219,
+        "endChar": 105
+      },
+      "revId": "7a11dc26e05665013c7522581535db08c67e9d78",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
