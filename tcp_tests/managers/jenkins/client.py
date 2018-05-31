@@ -1,6 +1,8 @@
+from __future__ import print_function
 import time
 
 import jenkins
+import requests
 
 from devops.helpers import helpers
 
@@ -53,10 +55,22 @@ class JenkinsClient(object):
         build_id = self.job_info(name)['lastBuild']['number']
         return name, build_id
 
-    def wait_end_of_build(self, name, build_id, timeout=600):
+    def wait_end_of_build(self, name, build_id, timeout=600,
+                          print_job_output=False):
+        start = [0]
 
         def building():
-            return not self.build_info(name, build_id)['building']
+            status = not self.build_info(name, build_id)['building']
+            if print_job_output:
+                res = self.get_progressive_build_output(name,
+                                                        build_id,
+                                                        start=start[0])
+                if 'X-Text-Size' in res.headers:
+                    text_size = int(res.headers['X-Text-Size'])
+                    if start[0] < text_size:
+                        print(res.content, end='')
+                        start[0] = text_size
+            return status
 
         helpers.wait(
             building,
@@ -66,3 +80,20 @@ class JenkinsClient(object):
 
     def get_build_output(self, name, build_id):
         return self.__client.get_build_console_output(name, build_id)
+
+    def get_progressive_build_output(self, name, build_id, start=0,
+                                     raise_on_err=False):
+        '''Get build console text.
+
+        :param name: Job name, ``str``
+        :param name: Build id, ``int``
+        :param name: Start offset, ``int``
+        :returns: requests object with headers and console output,  ``obj``
+        '''
+        folder_url, short_name = self.__client._get_job_folder(name)
+
+        PROGRESSIVE_CONSOLE_OUTPUT = (
+            '%(folder_url)sjob/%(short_name)s/%(build_id)d/'
+            'logText/progressiveHtml?start=%(start)d')
+        url = self.__client._build_url(PROGRESSIVE_CONSOLE_OUTPUT, locals())
+        return(requests.get(url))
