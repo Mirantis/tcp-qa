@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "037b671e_eec4bd58",
+        "filename": "tcp_tests/templates/cookied-bm-contrail-maas/openstack.yaml",
+        "patchSetId": 64
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-31T10:59:36Z",
+      "side": 1,
+      "message": "these are still needed?",
+      "range": {
+        "startLine": 5,
+        "startChar": 0,
+        "endLine": 6,
+        "endChar": 54
+      },
+      "revId": "f3840d5b3bb584f5a9d9d4c78a28c5ba4bc120bf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b63fdd7e_a5e99156",
         "filename": "tcp_tests/templates/cookied-bm-contrail-maas/salt.yaml",
         "patchSetId": 64
