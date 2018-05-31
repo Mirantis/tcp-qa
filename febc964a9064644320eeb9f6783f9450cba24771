@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "5ee2f41d_94713d89",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1011059
+      },
+      "writtenOn": "2018-05-31T10:41:10Z",
+      "side": 1,
+      "message": "We need an ability to add a custom deb repository to model.",
+      "parentUuid": "22a44038_b26c89d5",
+      "range": {
+        "startLine": 7,
+        "startChar": 32,
+        "endLine": 7,
+        "endChar": 43
+      },
+      "revId": "febc964a9064644320eeb9f6783f9450cba24771",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "2974f756_be9c6f93",
         "filename": "tcp_tests/templates/virtual-mcp-trusty/salt.yaml",
         "patchSetId": 4
