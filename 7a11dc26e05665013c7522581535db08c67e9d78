@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e0659954_b6e81757",
+        "filename": "tcp_tests/templates/cookied-bm-contrail-nfv-maas/openstack.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 280,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-31T11:08:03Z",
+      "side": 1,
+      "message": "do we have the PROD for this to place here in description?",
+      "range": {
+        "startLine": 280,
+        "startChar": 15,
+        "endLine": 280,
+        "endChar": 59
+      },
+      "revId": "7a11dc26e05665013c7522581535db08c67e9d78",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "61a7e45e_4d7af619",
+        "filename": "tcp_tests/templates/cookied-bm-contrail-nfv-maas/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-31T11:08:03Z",
+      "side": 1,
+      "message": "proposed? just to not change for each build-id",
+      "range": {
+        "startLine": 121,
+        "startChar": 15,
+        "endLine": 121,
+        "endChar": 23
+      },
+      "revId": "7a11dc26e05665013c7522581535db08c67e9d78",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
