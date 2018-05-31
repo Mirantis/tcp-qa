@@ -48,20 +48,33 @@ class JenkinsClient(object):
              for j in job_params])
         return def_params
 
-    def run_build(self, name, params=None):
+    def run_build(self, name, params=None, timeout=600, verbose=False):
         params = params or self.make_defults_params(name)
-        self.__client.build_job(name, params)
-        time.sleep(10)  # wait while jobs started:
-        build_id = self.job_info(name)['lastBuild']['number']
+        num = self.__client.build_job(name, params)
+
+        def is_blocked():
+            queued = self.__client.get_queue_item(num)
+            status = not queued['blocked']
+            if not status and verbose:
+                print("pending the job [{}] : {}".format(name, queued['why']))
+            return status
+
+        helpers.wait(
+            is_blocked,
+            timeout=timeout,
+            interval=30,
+            timeout_msg='Timeout waiting to run the job [{}]'.format(name))
+
+        build_id = self.__client.get_queue_item(num)['executable']['number']
         return name, build_id
 
     def wait_end_of_build(self, name, build_id, timeout=600,
-                          print_job_output=False):
+                          verbose=False):
         start = [0]
 
         def building():
             status = not self.build_info(name, build_id)['building']
-            if print_job_output:
+            if verbose:
                 res = self.get_progressive_build_output(name,
                                                         build_id,
                                                         start=start[0])
