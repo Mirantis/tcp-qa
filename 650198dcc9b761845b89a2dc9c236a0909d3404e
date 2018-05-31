@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "45f2cc15_f95a5712",
+        "filename": "tcp_tests/fixtures/day1_fixtures.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-05-31T08:28:43Z",
+      "side": 1,
+      "message": "2018",
+      "range": {
+        "startLine": 2,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 1
+      },
+      "revId": "650198dcc9b761845b89a2dc9c236a0909d3404e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9e966423_1f419393",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-05-31T08:28:43Z",
+      "side": 1,
+      "message": "seems need to remove commented line",
+      "range": {
+        "startLine": 31,
+        "startChar": 47,
+        "endLine": 31,
+        "endChar": 55
+      },
+      "revId": "650198dcc9b761845b89a2dc9c236a0909d3404e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
