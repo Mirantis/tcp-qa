@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "22a44038_b26c89d5",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-31T10:21:39Z",
+      "side": 1,
+      "message": "What exactly problem you are trying to solve using this?",
+      "range": {
+        "startLine": 7,
+        "startChar": 32,
+        "endLine": 7,
+        "endChar": 43
+      },
+      "revId": "febc964a9064644320eeb9f6783f9450cba24771",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2974f756_be9c6f93",
+        "filename": "tcp_tests/templates/virtual-mcp-trusty/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-31T10:21:39Z",
+      "side": 1,
+      "message": "why don\u0027t just \"touch {{OVERRIDES_FILENAME}}\" ?",
+      "range": {
+        "startLine": 24,
+        "startChar": 0,
+        "endLine": 24,
+        "endChar": 53
+      },
+      "revId": "febc964a9064644320eeb9f6783f9450cba24771",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1d31c8ee_9a272f4b",
+        "filename": "tcp_tests/templates/virtual-mcp-trusty/salt.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-05-31T10:21:39Z",
+      "side": 1,
+      "message": "This will be incompatible with any existing / previously created overrides.yml , if there are other parameters in the file (in additional to _param).\n\nIn additional, you will need to pass all the file lines in OVERRIDES:\n\"parameters\\n  _param\\n    parameter1: ....\\n    parameter2: ...\\n\"\n\nTaking all of this into account, there is no need in your case to use salt \u0027file\u0027 module at all:\necho -e \"{{ OVERRIDES }} \u003e {{OVERRIDES_FILENAME}}\"",
+      "range": {
+        "startLine": 31,
+        "startChar": 17,
+        "endLine": 31,
+        "endChar": 28
+      },
+      "revId": "febc964a9064644320eeb9f6783f9450cba24771",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
