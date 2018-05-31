@@ -66,6 +66,13 @@
   skip_fail: false
 
 # Install slv2 infra
+# Install MongoDB for alerta
+- description: Install MongoDB
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
 - description: Install telegraf
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@telegraf:agent or I@telegraf:remote_agent' state.sls telegraf
   node_name: {{ HOSTNAME_CFG01 }}
