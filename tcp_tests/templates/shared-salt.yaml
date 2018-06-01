@@ -211,7 +211,7 @@
 {%- endmacro %}
 
 
-{%- macro MACRO_CLONE_RECLASS_MODELS(IS_CONTRAIL_LAB=false) %}
+{%- macro MACRO_CLONE_RECLASS_MODELS(IS_CONTRAIL_LAB=false,WITH_MAAS=false) %}
 {############################################################}
 {# Creates a 'cluster' model from cookiecutter-templates and 'environment' model from uploaded template #}
 
@@ -285,8 +285,10 @@
     [ -f ${CFG01_INVENTORY_FILE} ] || cat << 'EOF' > ${CFG01_INVENTORY_FILE}
     classes:
     - cluster.{{ CLUSTER_NAME }}.infra.config
+    {%- if WITH_MAAS %}
     - cluster.{{ CLUSTER_NAME }}.infra.maas
     - cluster.{{ CLUSTER_NAME }}.infra.maas-machines
+    {%- endif %}
     parameters:
       _param:
         linux_system_codename: xenial
@@ -322,7 +324,7 @@
 - description: Create cluster model from cookiecutter templates
   cmd: |
     set -e;
-    sudo apt-get install python-setuptools -y 
+    sudo apt-get install python-setuptools -y
     pip install cookiecutter
     export GIT_SSL_NO_VERIFY=true; git clone  https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates /tmp/cookiecutter-templates
 
