@@ -88,13 +88,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Rerun openssh after env model is generated
-  cmd: |
-    salt-call state.sls openssh
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
 - description: Execute linux.network.host one more time after salt.minion to apply dynamically registered hosts on the cluster nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux
   node_name: {{ HOSTNAME_CFG01 }}
