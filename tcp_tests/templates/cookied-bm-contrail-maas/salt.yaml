@@ -20,15 +20,49 @@
 
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
+
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd"') }}
+
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
-{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
 
 - description: Upload maas template
   upload:
@@ -63,6 +97,14 @@
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
 - description: Temporary workaround for removing cinder-volume from CTL nodes
   cmd: |
     sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
@@ -84,13 +126,6 @@
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_grains &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' mine.update &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar && sleep 10
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Rerun openssh after env model is generated
-  cmd: |
-    salt-call state.sls openssh
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -167,7 +202,19 @@
 
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
 
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
 
 ########################################
 # Spin up Control Plane VMs on KVM nodes
@@ -229,3 +276,9 @@
   skip_fail: false
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+- description: TEST check permit_root_login
+  cmd: salt-call pillar.get openssh:server:permit_root_login
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
