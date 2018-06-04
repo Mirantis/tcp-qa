@@ -41,6 +41,15 @@ SSH_PASSWORD = os.environ.get('SSH_PASSWORD', 'r00tme')
 SSH_NODE_CREDENTIALS = {"login": SSH_LOGIN,
                         "password": SSH_PASSWORD}
 
+# http://docs.paramiko.org/en/2.4/api/transport.html\
+# #paramiko.transport.Transport.set_keepalive
+# If this is set, after interval seconds without sending any data over the
+# connection, a "keepalive" packet will be sent (and ignored by the remote
+# host). Similar to ServerAliveInterval for ssh_config.
+# '0' to disable keepalives.
+SSH_SERVER_ALIVE_INTERVAL = int(
+    os.environ.get('SSH_SERVER_ALIVE_INTERVAL', 60))
+
 # public_iface = IFACES[0]
 # private_iface = IFACES[1]
 IFACES = [
