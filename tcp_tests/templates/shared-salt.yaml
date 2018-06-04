@@ -8,7 +8,9 @@
 {% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/reclass-system') %}
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
+{% set SALT_MODELS_SYSTEM_TAG = os_env('SALT_MODELS_SYSTEM_TAG','') %}
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
+{% set COOKIECUTTER_TAG = os_env('COOKIECUTTER_TAG','') %}
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 
@@ -239,6 +241,11 @@
     pushd classes/system/;
     git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
     popd;
+    {%- if SALT_MODELS_SYSTEM_TAG != '' %}
+    pushd classes/system/;
+    git fetch --all --tags --prune
+    git checkout tags/{{ SALT_MODELS_SYSTEM_TAG }};
+    popd;
     {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
     pushd classes/system/ && \
     {%- for item in SALT_MODELS_SYSTEM_REF_CHANGE.split(" ") %}
@@ -337,6 +344,13 @@
     {%- if COOKIECUTTER_REF_CHANGE != '' %}
     pushd /tmp/cookiecutter-templates
     git fetch https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates {{ COOKIECUTTER_REF_CHANGE }} && git checkout FETCH_HEAD
+    popd
+    {%- endif %}
+
+    {%- if COOKIECUTTER_TAG != '' %}
+    pushd /tmp/cookiecutter-templates
+    git fetch --all --tags --prune
+    git checkout tags/{{ COOKIECUTTER_TAG }}
     popd
     {%- endif %}
 
