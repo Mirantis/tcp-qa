@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "79ecc450_119b2f26",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 248,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-06-04T20:53:52Z",
+      "side": 1,
+      "message": "please add some comment to the logging. lot of jsons in the output makes a mess without comments.",
+      "range": {
+        "startLine": 248,
+        "startChar": 0,
+        "endLine": 248,
+        "endChar": 21
+      },
+      "revId": "f06249d49c4ba0de58f17866c8d9b230caee509f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "75e5caff_3123bccd",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 279,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-06-04T20:53:52Z",
+      "side": 1,
+      "message": "There is an error message, but there is no message for \u0027success\u0027 with some results",
+      "range": {
+        "startLine": 279,
+        "startChar": 12,
+        "endLine": 279,
+        "endChar": 47
+      },
+      "revId": "f06249d49c4ba0de58f17866c8d9b230caee509f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2ab1bc51_c5183cd4",
         "filename": "tcp_tests/tests/system/test_install_mcp_ovs_pike.py",
         "patchSetId": 7
