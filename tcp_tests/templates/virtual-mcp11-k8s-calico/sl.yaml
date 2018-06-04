@@ -68,10 +68,22 @@
 
 # Install slv2 infra
 # Install MongoDB for alerta
-- description: Install MongoDB
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb
+- description: Install Mongo if target matches
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' match.pillar 'mongodb:server' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb
+    fi
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 10}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Configure Alerta if it is exists
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:alerta' match.pillar 'prometheus:alerta' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:alerta' state.sls prometheus.alerta
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 #Launch containers
