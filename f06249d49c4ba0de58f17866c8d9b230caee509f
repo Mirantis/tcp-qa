@@ -48,6 +48,29 @@
     },
     {
       "key": {
+        "uuid": "0b937966_0a28f79f",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 285,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-06-04T20:58:30Z",
+      "side": 1,
+      "message": "It would be useful to print this log to the console, completely, because it contains the list of running tests, the summary, and may contain some errors related to the tempest itself.",
+      "range": {
+        "startLine": 285,
+        "startChar": 8,
+        "endLine": 285,
+        "endChar": 12
+      },
+      "revId": "f06249d49c4ba0de58f17866c8d9b230caee509f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2ab1bc51_c5183cd4",
         "filename": "tcp_tests/tests/system/test_install_mcp_ovs_pike.py",
         "patchSetId": 7
