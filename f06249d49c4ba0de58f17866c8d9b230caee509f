@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2ab1bc51_c5183cd4",
+        "filename": "tcp_tests/tests/system/test_install_mcp_ovs_pike.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-06-04T20:49:49Z",
+      "side": 1,
+      "message": "can we initialize this object as a fixture, using parameters from something like:\n@pytest.mark.run_tempest(tempest_threads\u003d2,tempest_exclude_test_args\u003d\u0027\u0027, tempest_pattern\u003dsettings.TEMPEST_PATTERN, ...)\n\n, or set the parameters as attributes of the class which is returned by the fixture, or both.",
+      "range": {
+        "startLine": 57,
+        "startChar": 22,
+        "endLine": 57,
+        "endChar": 36
+      },
+      "revId": "f06249d49c4ba0de58f17866c8d9b230caee509f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
