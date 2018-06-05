@@ -26,7 +26,7 @@ class TestOpenContrail(object):
 
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="ctl01.")
-    def test_opencontrail(self, config, openstack_deployed,
+    def test_opencontrail3(self, config, openstack_deployed,
                           show_step, sl_deployed):
         """Runner for Juniper contrail-tests
 
@@ -49,7 +49,7 @@ class TestOpenContrail(object):
 
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="ctl01.")
-    def test_opencontrail_maas(self, config, underlay, salt_actions,
+    def test_opencontrail3_maas(self, config, underlay, salt_actions,
                                openstack_deployed, show_step, sl_deployed):
         """Runner for Juniper contrail-tests
 
