@@ -26,16 +26,16 @@ class TestOpenContrail(object):
 
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="ctl01.")
-    def test_opencontrail(self, config, openstack_deployed,
-                          show_step, sl_deployed):
+    def test_opencontrail_simple(self, config, underlay, salt_deployed,
+                                 openstack_deployed, sl_deployed, show_step):
         """Runner for Juniper contrail-tests
 
         Scenario:
             1. Prepare salt on hosts
             2. Setup controller nodes
             3. Setup compute nodes
-            4. Prepare contrail-tests on ctl01 node
-            5. Run contrail-tests
+            4. Run tempest
+            5. Run SL test
         """
         openstack_deployed._salt.local(
             tgt='*', fun='cmd.run',
@@ -45,12 +45,25 @@ class TestOpenContrail(object):
             openstack_deployed.run_tempest(target='ctl01',
                                            pattern=settings.PATTERN)
             openstack_deployed.download_tempest_report(stored_node='ctl01')
+        # Run SL component tetsts
+        if settings.RUN_SL_TESTS:
+            show_step(5)
+            sl_deployed.run_sl_functional_tests(
+                'ctl01',
+                '/root/stacklight-pytest/stacklight_tests/',
+                'tests/prometheus',
+                'test_alerts.py')
+            show_step(8)
+            # Download report
+            sl_deployed.download_sl_test_report(
+                'ctl01',
+                '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="ctl01.")
-    def test_opencontrail_maas(self, config, underlay, salt_actions,
-                               openstack_deployed, show_step, sl_deployed):
+    def test_opencontrail3_maas(self, config, underlay, salt_actions,
+                                openstack_deployed, show_step, sl_deployed):
         """Runner for Juniper contrail-tests
 
         Scenario:
@@ -94,14 +107,14 @@ class TestOpenContrail(object):
         if settings.RUN_SL_TESTS:
             show_step(7)
             sl_deployed.run_sl_functional_tests(
-                'cfg01',
+                'ctl01',
                 '/root/stacklight-pytest/stacklight_tests/',
                 'tests/prometheus',
                 'test_alerts.py')
             show_step(8)
             # Download report
             sl_deployed.download_sl_test_report(
-                'cfg01',
+                'ctl01',
                 '/root/stacklight-pytest/stacklight_tests/report.xml')
 
         LOG.info("*************** DONE **************")
