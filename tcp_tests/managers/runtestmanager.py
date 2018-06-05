@@ -79,28 +79,14 @@ CONFIG = {
                     '${_param:runtest_tempest_public_net}'
                 },
                 'share': {
-                    'backend_names': 'lvm',
-                    'capability_create_share_from_snapshot_support': True,
                     'capability_snapshot_support': True,
-                    'default_share_type_name': 'default',
-                    'enable_ip_rules_for_protocols': 'nfs',
-                    'enable_user_rules_for_protocols': 'cifs',
-                    'max_api_microversion': 2.4,
-                    'min_api_microversion': 2.0,
                     'run_driver_assisted_migration_tests': False,
-                    'run_host_assisted_migration_tests': True,
                     'run_manage_unmanage_snapshot_tests': False,
                     'run_manage_unmanage_tests': False,
                     'run_migration_with_preserve_snapshots_tests': False,
-                    'run_mount_snapshot_tests': True,
                     'run_quota_tests': True,
                     'run_replication_tests': False,
-                    'run_revert_to_snapshot_tests': True,
-                    'run_share_group_tests': False,
-                    'run_shrink_tests': False,
                     'run_snapshot_tests': True,
-                    'share_creation_retry_number': 2,
-                    'suppress_errors_in_cleanup': True
                 }}}}}
 
 
@@ -291,7 +277,8 @@ class RuntestManager(object):
                                        self.container_name)
         logs = logs_res['return'][0]
         logs = next(logs.iteritems())[1]
-        LOG.info("Tempest result - \n{}".format(logs))
+        LOG.info("Tempest result - \n{}".format(
+            logs.encode('ascii', 'ignore')))
 
         res = self.salt_api.local(tgt, 'dockerng.rm', self.container_name)
         LOG.info("Tempest container was removed".format(
