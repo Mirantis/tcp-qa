@@ -1,0 +1,110 @@
+nodes:
+    cfg01.cookied-bm-contrail40.local:
+      reclass_storage_name: infra_config_node01
+      roles:
+      - infra_config
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+    # Physical nodes
+
+    kvm01.cookied-bm-contrail40.local:
+      reclass_storage_name: infra_kvm_node01
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp9s0f0:
+          role: single_mgm
+        enp9s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    kvm02.cookied-bm-contrail40.local:
+      reclass_storage_name: infra_kvm_node02
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp9s0f0:
+          role: single_mgm
+        enp9s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    kvm03.cookied-bm-contrail40.local:
+      reclass_storage_name: infra_kvm_node03
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp9s0f0:
+          role: single_mgm
+        enp9s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    cmp001.cookied-bm-contrail40.local:
+      reclass_storage_name: openstack_compute_node01
+      roles:
+      - openstack_compute
+      - features_lvm_backend
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f1:
+          role: single_mgm
+          deploy_address: 172.16.49.73
+        enp5s0f0:
+          role: bond0_ab_contrai
+          tenant_address: 192.168.0.101
+          dpdk_pci: "'0000:05:00.0'"
+          dpdk_mac: '90:e2:ba:19:c2:18'
+        enp5s0f1:
+          role: single_vlan_ctl
+          single_address: 10.167.8.101
+
+    cmp002.cookied-bm-contrail40.local:
+      reclass_storage_name: openstack_compute_node02
+      roles:
+      - openstack_compute
+      - features_lvm_backend
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f1:
+          role: single_mgm
+          deploy_address: 172.16.49.74
+        enp5s0f0:
+          role: bond0_ab_contrai
+          tenant_address: 192.168.0.102
+          dpdk_pci: "'0000:05:00.0'"
+          dpdk_mac: '00:1b:21:87:21:98'
+        enp5s0f1:
+          role: single_vlan_ctl
+          single_address: 10.167.8.102
+
+    # Physical nodes for manual testing replacing resources
+    kvm04.cookied-bm-contrail40.local:
+      reclass_storage_name: infra_kvm_node04
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f0:
+          role: single_mgm
+        enp2s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    cmp003.cookied-bm-contrail40.local:
+      reclass_storage_name: openstack_compute_node03
+      roles:
+      - openstack_compute
+      - features_lvm_backend
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f0:
+          role: single_mgm
+          deploy_address: 172.16.49.122
+        enp2s0f1:
+          role: bond0_ab_ctl_contrail
+          tenant_address: 192.168.0.103
+          single_address: 10.167.8.103
+          dpdk_pci: "'0000:05:00.0'"
+          dpdk_mac: '00:1b:21:87:21:98'
