@@ -131,54 +131,54 @@ nodes:
       reclass_storage_name: opencontrail_analytics_node01
       roles:
       - opencontrail_analytics
-      - linux_system_codename_trusty
+      - linux_system_codename_xenial
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     nal02.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: opencontrail_analytics_node02
       roles:
       - opencontrail_analytics
-      - linux_system_codename_trusty
+      - linux_system_codename_xenial
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     nal03.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: opencontrail_analytics_node03
       roles:
       - opencontrail_analytics
-      - linux_system_codename_trusty
+      - linux_system_codename_xenial
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     ntw01.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: opencontrail_control_node01
       roles:
       - opencontrail_control
-      - linux_system_codename_trusty
+      - linux_system_codename_xenial
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     ntw02.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: opencontrail_control_node02
       roles:
       - opencontrail_control
-      - linux_system_codename_trusty
+      - linux_system_codename_xenial
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     ntw03.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: opencontrail_control_node03
       roles:
       - opencontrail_control
-      - linux_system_codename_trusty
+      - linux_system_codename_xenial
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     mtr01.cookied-bm-mcp-ocata-contrail.local:
@@ -243,29 +243,3 @@ nodes:
 #      interfaces:
 #        ens3:
 #          role: single_ctl
-    cid01.cookied-bm-mcp-ocata-contrail.local:
-      reclass_storage_name: cicd_control_node01
-      roles:
-      - cicd_control_leader
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_ctl
-
-    cid02.cookied-bm-mcp-ocata-contrail.local:
-      reclass_storage_name: cicd_control_node02
-      roles:
-      - cicd_control_manager
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_ctl
-
-    cid03.cookied-bm-mcp-ocata-contrail.local:
-      reclass_storage_name: cicd_control_node03
-      roles:
-      - cicd_control_manager
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_ctl

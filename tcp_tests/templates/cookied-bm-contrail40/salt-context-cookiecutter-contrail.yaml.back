@@ -30,7 +30,7 @@ default_context:
   backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyRnKFPJJha8aun52W/6rYtryiIzxK/Ul9CiDz5RbbyEZRsKo+dZrtvNWoQ0Rj6D6ptBiHY+9vbFRHJj37TZNYuYJjOrv6is7V4bZIO3fzhjMNzoGdCiFRsbBpIfZixP9ADwpXV+9Rb0/SBUQeYlZHwmje91HLD60RSzNiSJNiRxVz3O07l5hP1rqBKMuGX62Yle7fyN1ZNwTzMk/44aklEMmlXYQBjC/4td171ES/goIYyo2W+WL0gD7Nqt8ywDNJM+kvmiiyUHbRqQozWHmWLcsbjs6kowb2wxUUYQSjv6WpMZrNQkRQ9slT3k+ot/Ggg6NgX8yFYpTlUAsutpXD
   bmk_enabled: 'False'
   ceph_enabled: 'False'
-  cicd_enabled: 'True'
+  cicd_enabled: 'False'
   cluster_domain: cookied-bm-mcp-ocata-contrail.local
   cluster_name: cookied-bm-mcp-ocata-contrail
   compute_bond_mode: active-backup
@@ -193,6 +193,3 @@ default_context:
   tenant_vlan: '2423'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
-  openldap_domain: cookied-bm-mcp-ocata-contrail.local
-  openldap_enabled: 'True'
-  openldap_organisation: ${_param:cluster_name}
