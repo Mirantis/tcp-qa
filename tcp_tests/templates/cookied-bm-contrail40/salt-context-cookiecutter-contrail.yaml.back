@@ -193,6 +193,3 @@ default_context:
   tenant_vlan: '2423'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
-  openldap_domain: cookied-bm-mcp-ocata-contrail.local
-  openldap_enabled: 'True'
-  openldap_organisation: ${_param:cluster_name}
