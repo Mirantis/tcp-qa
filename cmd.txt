@@ -1,0 +1,27 @@
+     salt -C 'I@glance:server' state.sls glance -b 1
+    salt -C 'I@keystone:server' state.sls keystone.server -b 1
+    salt -C 'I@glance:server' state.sls glusterfs.client
+    salt -C 'I@keystone:server' state.sls keystone.server -b 1
+    salt -C 'I@keystone:client' state.sls keystone.client
+    salt -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack service list'
+    salt -C 'I@keystone:server' cmd.run '. /root/keystonerc; glance image-list'
+    salt -C 'I@nova:controller' state.sls nova -b 1
+    salt -C 'I@keystone:server' cmd.run '. /root/keystonerc; nova --debug service-list'
+    salt -C 'I@cinder:controller' state.sls cinder -b 1
+    salt -C 'I@cinder:volume' state.sls cinder
+    salt -C 'I@keystone:server' cmd.run '. /root/keystonerc; cinder list'
+    salt -C 'I@neutron:server' state.sls neutron -b 1
+    salt -C 'I@opencontrail:database and *01*' state.sls opencontrail.database
+    salt -C 'I@opencontrail:database' state.sls opencontrail.database
+    salt -C 'I@opencontrail:control and *01*' state.sls opencontrail exclude=opencontrail.client
+    salt -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
+    salt -C 'I@opencontrail:collector' state.sls opencontrail exclude=opencontrail.client
+    salt -C 'I@opencontrail:control' service.restart 'keepalived'
+    salt -C 'I@opencontrail:database:id:1' state.sls 'opencontrail.client'
+    salt -C 'I@opencontrail:compute' state.sls 'opencontrail.client'
+    salt -C 'I@opencontrail:compute' state.sls 'opencontrail'
+    salt -C 'I@opencontrail:control' cmd.run 'contrail-status'
+    salt -C 'I@heat:server' state.sls heat -b 1
+    salt -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack orchestration resource type list'
+    salt -C 'I@horizon:server' state.sls horizon
+    salt -C 'I@nginx:server' state.sls nginx

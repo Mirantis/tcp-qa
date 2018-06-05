@@ -1,0 +1,281 @@
+{% from 'cookied-bm-contrail40/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-contrail40/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
+{% set PATTERN = os_env('PATTERN', 'false') %}
+{% set RUN_TEMPEST = os_env('RUN_TEMPEST', 'false') %}
+# Install OpenStack control services
+
+- description: Install glance on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@glance:server' state.sls glance -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install keystone service (note that different fernet keys are created on different nodes)
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' state.sls keystone.server -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 15}
+  skip_fail: false
+
+- description: Restart apache due to PROD-10477
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl restart apache2"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Check apache status to PROD-10477
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*' cmd.run "systemctl status apache2"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Mount glusterfs.client volumes (resuires created 'keystone' and 'glusterfs' system users)
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glance:server' state.sls glusterfs.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update fernet keys for keystone server on the mounted glusterfs volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' state.sls keystone.server -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Populate keystone services/tenants/admins
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:client' state.sls keystone.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Check keystone service-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack service list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check glance image-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; glance image-list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+- description: Install nova on all controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nova:controller' state.sls nova -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Check nova service-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; nova --debug service-list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+
+- description: Install cinder
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:controller' state.sls cinder -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install cinder volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:volume' state.sls cinder
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check cinder list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonerc; cinder list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+
+- description: Install neutron service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@neutron:server' state.sls neutron -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+# install contrail
+- description: Install docker for Opencontrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database' state.sls docker.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Install Opencontrail requirements
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Spawn Opencontrail docker images
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database' state.sls docker.client && sleep 15;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check contrail status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database' cmd.run 'doctrail all contrail-status'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Finalize opencontrail services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database and *01*' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Opencontrail client on computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.highstate exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install heat service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@heat:server' state.sls heat -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check heat service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack orchestration resource type list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
+- description: Deploy horizon dashboard
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@horizon:server' state.sls horizon
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Deploy nginx proxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls nginx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+
+# Install compute node
+
+- description: Apply formulas for compute node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Re-apply(as in doc) formulas for compute node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check IP on computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
+    'ip a'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
+
+
+  # Upload cirros image
+
+- description: Upload cirros image on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Register image in glance
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Install docker.io on ctl
+  cmd: salt "ctl01*" cmd.run 'apt-get install docker.io -y'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Enable forward policy
+  cmd: salt "ctl01*" cmd.run 'iptables --policy FORWARD ACCEPT'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Hack resolv.conf on VCP nodes for internal services access
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Hack vrouter (Delete default moun point)
+  cmd: salt "cmp*" cmd.run "sed -i 's/exit 0//g' /etc/rc.local; echo 'umount /dev/hugepages; service supervisor-vrouter restart' >> /etc/rc.local; echo 'exit 0' >> /etc/rc.local"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Remove crashes files from /var/crashes/ while vrouter was crashed
+  cmd: salt  "cmp*" cmd.run "rm -rf /var/crashes/*"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Reboot computes
+  cmd: salt --timeout=600  "cmp*" system.reboot
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Finalize contrail
+  cmd: salt -C 'I@opencontrail:compute' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Check status for contrail services
+  cmd: |
+    sleep 15;
+    salt -C 'I@opencontrail:database' cmd.run 'doctrail all contrail-status'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
