@@ -12,7 +12,6 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
-import os
 import json
 
 from devops.helpers import helpers
@@ -20,10 +19,9 @@ from devops.helpers import helpers
 from tcp_tests import logger
 from tcp_tests import settings
 
-
 LOG = logger.logger
 
-TEMPEST_CFG_DIR = '/tmp/test'
+TEMPEST_CFG_DIR = '/root/test'
 
 CONFIG = {
     'classes': ['service.runtest.tempest'],
@@ -79,28 +77,14 @@ CONFIG = {
                     '${_param:runtest_tempest_public_net}'
                 },
                 'share': {
-                    'backend_names': 'lvm',
-                    'capability_create_share_from_snapshot_support': True,
                     'capability_snapshot_support': True,
-                    'default_share_type_name': 'default',
-                    'enable_ip_rules_for_protocols': 'nfs',
-                    'enable_user_rules_for_protocols': 'cifs',
-                    'max_api_microversion': 2.4,
-                    'min_api_microversion': 2.0,
                     'run_driver_assisted_migration_tests': False,
-                    'run_host_assisted_migration_tests': True,
                     'run_manage_unmanage_snapshot_tests': False,
                     'run_manage_unmanage_tests': False,
                     'run_migration_with_preserve_snapshots_tests': False,
-                    'run_mount_snapshot_tests': True,
                     'run_quota_tests': True,
                     'run_replication_tests': False,
-                    'run_revert_to_snapshot_tests': True,
-                    'run_share_group_tests': False,
-                    'run_shrink_tests': False,
                     'run_snapshot_tests': True,
-                    'share_creation_retry_number': 2,
-                    'suppress_errors_in_cleanup': True
                 }}}}}
 
 
@@ -155,14 +139,21 @@ class RuntestManager(object):
     def generate_config(self):
         return self.salt_api.enforce_state(self.master_tgt, 'runtest')
 
-    def fetch_arficats(self, username=None):
+    def fetch_arficats(self, username=None, file_format='xml'):
         target_name = next(node_name for node_name
                            in self.underlay.node_names() if
                            self.target in node_name)
         with self.underlay.remote(node_name=target_name, username=None) as tgt:
+            result = tgt.execute('find /var/log/ -name "report_*.{}"'.format(
+                file_format))
+            LOG.debug("Find result {0}".format(result))
+            assert len(result['stdout']) > 0, ('No report found, please check'
+                                               ' if test run was successful.')
+            report = result['stdout'][0].rstrip()
+            LOG.debug("Found files {0}".format(report))
             tgt.download(
-                destination="{cfg_dir}/report_*.xml".format(cfg_dir=TEMPEST_CFG_DIR),  # noqa
-                target="{}".format(os.environ.get("PWD")))
+                destination=report,  # noqa
+                target="{}/".format(settings.LOGS_DIR))
 
     def store_runtest_model(self, config=CONFIG):
         master_name = next(node_name for node_name
@@ -196,12 +187,12 @@ class RuntestManager(object):
                     path=settings.LOGS_DIR, target=self.target), 'w') as f:
                 LOG.info("Save tempest console log")
                 container_log = logs
-                f.write(container_log)
+                f.write(container_log.encode('ascii', 'ignore'))
 
         if inspect:
-            with open("{path}/{target}_tempest_container_info.json".format(
+            with open("{path}/{target}_tempest_container_info.json.log".format(
                     path=settings.LOGS_DIR, target=self.target), 'w') as f:
-                LOG.info("Save tempest containes inspect data")
+                LOG.info("Save tempest container inspect data")
 
                 container_inspect = json.dumps(inspect,
                                                indent=4, sort_keys=True)
@@ -226,7 +217,7 @@ class RuntestManager(object):
         tgt = "{}*".format(self.target)
         params = {
             "name": self.container_name,
-            "image": self.image_name,
+            "image": "{}:{}".format(self.image_name, self.image_version),
             "environment": {
                 "ARGS": "-r {tempest_pattern} -w "
                         "{tempest_threads} "
@@ -245,7 +236,8 @@ class RuntestManager(object):
             "cmd": self.run_cmd
         }
 
-        res = self.salt_api.local(tgt, 'dockerng.pull', self.image_name)
+        res = self.salt_api.local(tgt, 'dockerng.pull', "{}:{}".format(
+            self.image_name, self.image_version))
         LOG.info("Tempest image has beed pulled- \n{}".format(
             json.dumps(res, indent=4)))
 
@@ -291,7 +283,8 @@ class RuntestManager(object):
                                        self.container_name)
         logs = logs_res['return'][0]
         logs = next(logs.iteritems())[1]
-        LOG.info("Tempest result - \n{}".format(logs))
+        LOG.info("Tempest result - \n{}".format(
+            logs.encode('ascii', 'ignore')))
 
         res = self.salt_api.local(tgt, 'dockerng.rm', self.container_name)
         LOG.info("Tempest container was removed".format(
