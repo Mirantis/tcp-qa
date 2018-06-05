@@ -23,6 +23,7 @@ from paramiko import rsakey
 import yaml
 
 from tcp_tests import logger
+from tcp_tests import settings
 from tcp_tests.helpers import ext
 from tcp_tests.helpers import utils
 
@@ -255,10 +256,14 @@ class UnderlaySSHManager(object):
             keys=[rsakey.RSAKey(file_obj=StringIO.StringIO(key))
                   for key in ssh_data['keys']])
 
-        return ssh_client.SSHClient(
+        client = ssh_client.SSHClient(
             host=ssh_data['host'],
             port=ssh_data['port'] or 22,
             auth=ssh_auth)
+        client._ssh.get_transport().set_keepalive(
+            settings.SSH_SERVER_ALIVE_INTERVAL)
+
+        return client
 
     def local(self):
         """Get Subprocess instance for local operations like:
