@@ -66,6 +66,9 @@ _default_ceph_prepare_tests_steps_path = pkg_resources.resource_filename(
 _default_k8s_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/k8s.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_k8s_update_steps = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/k8s-update.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 _default_net_mgm = os.environ.get("NET_MGMT", "admin-pool01")
 _default_configure_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/cfg01_configure.yaml'.format(
@@ -294,6 +297,9 @@ k8s_deploy_opts = [
     ct.Cfg('k8s_steps_path', ct.String(),
            help="Path to YAML with steps to deploy Kubernetes",
            default=_default_k8s_steps),
+    ct.Cfg('k8s_update_steps_path', ct.String(),
+           help="Path to YAML with steps to update Kubernetes",
+           default=_default_k8s_update_steps),
     ct.Cfg('kubernetes_admin_user', ct.String(), default='admin'),
     ct.Cfg('kubernetes_admin_password', ct.String(),
            default='sbPfel23ZigJF3Bm'),
@@ -355,7 +361,9 @@ k8s_opts = [
            default=False),
     ct.Cfg('k8s_conformance_image', ct.String(),
            default='docker-prod-virtual.docker.mirantis.net/mirantis/'
-                   'kubernetes/k8s-conformance:v1.8.13-11')
+                   'kubernetes/k8s-conformance:v1.8.13-11'),
+    ct.Cfg('k8s_update_chain', ct.String(),
+           default='v1.9.8-4 v1.10.3-3')
 ]
 
 day1_cfg_config_opts = [
