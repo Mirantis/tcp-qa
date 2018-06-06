@@ -1,0 +1,93 @@
+{# Collection of common macroses shared across different deployments #}
+
+{%- macro MACRO_BACKUP_BACKUPNINJA() %}
+- description: Apply backup state on minions
+  cmd: salt -C 'I@backupninja:server or backupninja:client' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Refresh grains and mine for the backupninja client node
+  cmd: |
+    salt -C 'I@backupninja:client' state.sls salt.minion.grains
+    salt -C 'I@backupninja:client' mine.flush
+    salt -C 'I@backupninja:client' mine.update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Apply the backupninja state to the backupninja client node
+  cmd: |
+    salt -C 'I@backupninja:client' state.sls backupninja
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Refresh grains for the backupninja server node
+  cmd: |
+    salt -C 'I@backupninja:server' state.sls salt.minion.grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Apply the backupninja state to the backupninja server node
+  cmd: |
+    salt -C 'I@backupninja:server' state.sls backupninja
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro MACRO_BACKUP_XTRABACKUPtraback() %}
+
+- description: Refresh pillars
+  cmd: salt '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Apply the salt.minion state
+  cmd: |
+    salt -C 'I@xtrabackup:backup:client or I@xtrabackup:backup:server' state.sls salt.minion
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Refresh grains for the xtrabackup client node
+  cmd: salt -C 'I@xtrabackup:client' saltutil.sync_grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Update the mine for the xtrabackup client node
+  cmd: |
+    salt -C 'I@xtrabackup:client' mine.flush
+    salt -C 'I@xtrabackup:client' mine.update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Apply the xtrabackup client state
+  cmd: |
+    salt -C 'I@xtrabackup:client' state.sls openssh.client,xtrabackup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Apply the xtrabackup server state
+  cmd: |
+    salt -C 'I@xtrabackup:server' state.sls xtrabackup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{%- endmacro %}
+
+
+
+
+
+
+
+
