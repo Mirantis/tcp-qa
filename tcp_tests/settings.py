@@ -66,4 +66,4 @@ TEMPEST_IMAGE = os.environ.get(
     'docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest')  # noqa
 TEMPEST_IMAGE_VERSION = os.environ.get('TEMPEST_IMAGE_VERSION', 'latest')
 TEMPEST_PATTERN = os.environ.get('TEMPEST_PATTERN', 'tempest')
-TEMPEST_TIMEOUT = int(os.environ.get('TEMPEST_TIMEOUT', 1800))
+TEMPEST_TIMEOUT = int(os.environ.get('TEMPEST_TIMEOUT', 18000))
