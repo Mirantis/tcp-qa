@@ -269,6 +269,8 @@
     find ${REPLACE_DIRS} -type f -exec sed -i 's/172\.16\.10/==IPV4_NET_CONTROL_PREFIX==/g' {} +
     find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.1\.0/==IPV4_NET_TENANT_PREFIX==/g' {} +
     find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.16\.0/==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.60\.0/==IPV4_NET_CONTROL_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.70\.0/==IPV4_NET_ADMIN_PREFIX==/g' {} +
 
     find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}/g' {} +
     find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}/g' {} +
