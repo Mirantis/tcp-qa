@@ -4,6 +4,8 @@
 {% from 'virtual-mcp-pike-dvr-ceph-rgw/underlay.yaml' import DOMAIN_NAME with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
+
 # Install ceph mons
 - description: Update grains
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -16,7 +18,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@ceph:mon:keyring:mon or I@ceph:common:keyring:admin' state.sls ceph.mon
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 3, delay: 10}
   skip_fail: false
 
 - description: Sync grains on ceph mon nodes
@@ -165,4 +167,5 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
+{{ BACKUP.MACRO_BACKUP_CEPH() }}
 {{ SHARED.RUN_NEW_TEMPEST() }}
