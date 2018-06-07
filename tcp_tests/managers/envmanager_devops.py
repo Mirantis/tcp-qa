@@ -307,29 +307,50 @@ class EnvironmentManager(object):
             raise exceptions.EnvironmentIsNotSet()
         self.__env.start()
         LOG.info('Environment "{0}" started'.format(self.__env.name))
+        check_cloudinit_started = '[ -f /is_cloud_init_started ]'
+        check_cloudinit_finished = '[ -f /is_cloud_init_finished ]'
         for node in self.__env.get_nodes(role__in=underlay_node_roles):
             LOG.info("Waiting for SSH on node '{0}' / {1} ...".format(
                 node.name, self.node_ip(node)))
+
+            passed = [0]
 
             def _ssh_wait(host,
                           port,
                           username=settings.SSH_NODE_CREDENTIALS['login'],
                           password=settings.SSH_NODE_CREDENTIALS['password'],
                           timeout=0):
+
                 try:
                     ssh = ssh_client.SSHClient(
                         host=host, port=port,
                         auth=ssh_client.SSHAuth(
                             username=username,
                             password=password))
-                except AuthenticationException:
-                    return True
-                except BadAuthenticationType:
-                    return True
+
+                    # If '/is_cloud_init_started' exists, then wait for
+                    # the flag /is_cloud_init_finished
+                    if ssh.execute(check_cloudinit_started)['exit_code'] == 0:
+                        status = ssh.execute(
+                            check_cloudinit_finished)['exit_code'] == 0
+                    # Else, just wait for SSH
+                    else:
+                        status = ssh.execute('echo ok')['exit_code'] == 0
+
+                    if not status:
+                        passed[0] = 0
+                        return False
+
+                except (AuthenticationException, BadAuthenticationType):
+                    pass
                 except Exception:
+                    passed[0] = 0
                     return False
 
-                return ssh.execute('echo ok')['exit_code'] == 0
+                if passed[0] >= 2:
+                    return True
+                passed[0] += 1
+                return False
 
             helpers.wait(
                 lambda: _ssh_wait(self.node_ip(node), 22),
