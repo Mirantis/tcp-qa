@@ -102,15 +102,29 @@ class Cfg(cfg.Opt):
     """
     def __init__(self, *args, **kwargs):
 
-        env_var_name = args[0].upper()
-        if 'default' in kwargs:
-            # Load a default environment variable with expected type
-            kwargs['default'] = args[1](
-                os.environ.get(env_var_name, kwargs.get('default', None))
-            )
+        # if 'default' in kwargs:
+        #    # Load a default environment variable with expected type
+        #    kwargs['default'] = args[1](
+        #        os.environ.get(env_var_name, kwargs.get('default', None))
+        #    )
+
         super(Cfg, self).__init__(*args, **kwargs)
 
+        env_var_name = args[0].upper()
+        if env_var_name in os.environ:
+            self.environment_value = self.type(os.environ.get(env_var_name))
+            print('{}={}  # {}'.format(env_var_name,
+                                       self.environment_value,
+                                       kwargs.get('help', '')))
+
         # Print info about default environment variables to console
-        print('{}={}  # {}'.format(env_var_name,
-                                   kwargs.get('default', ''),
-                                   kwargs.get('help', '')))
+        # print('{}={}  # {}'.format(env_var_name,
+        #                           kwargs.get('default', ''),
+        #                           kwargs.get('help', '')))
+
+    def _get_from_namespace(self, namespace, group_name):
+        res = super(Cfg, self)._get_from_namespace(namespace, group_name)
+        # Use the value from enviroment variable instead of config
+        if hasattr(self, 'environment_value'):
+            res = (self.environment_value, res[1])
+        return res
