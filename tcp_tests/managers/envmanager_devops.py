@@ -307,29 +307,58 @@ class EnvironmentManager(object):
             raise exceptions.EnvironmentIsNotSet()
         self.__env.start()
         LOG.info('Environment "{0}" started'.format(self.__env.name))
+        check_cloudinit_started = '[ -f /is_cloud_init_started ]'
+        check_cloudinit_finished = '[ -f /is_cloud_init_finished ]'
+        passed = {}
         for node in self.__env.get_nodes(role__in=underlay_node_roles):
             LOG.info("Waiting for SSH on node '{0}' / {1} ...".format(
                 node.name, self.node_ip(node)))
 
-            def _ssh_wait(host,
-                          port,
-                          username=settings.SSH_NODE_CREDENTIALS['login'],
-                          password=settings.SSH_NODE_CREDENTIALS['password'],
-                          timeout=0):
+            def _ssh_check(host,
+                           port,
+                           username=settings.SSH_NODE_CREDENTIALS['login'],
+                           password=settings.SSH_NODE_CREDENTIALS['password'],
+                           timeout=0):
                 try:
                     ssh = ssh_client.SSHClient(
                         host=host, port=port,
                         auth=ssh_client.SSHAuth(
                             username=username,
                             password=password))
-                except AuthenticationException:
-                    return True
-                except BadAuthenticationType:
+
+                    # If '/is_cloud_init_started' exists, then wait for
+                    # the flag /is_cloud_init_finished
+                    if ssh.execute(check_cloudinit_started)['exit_code'] == 0:
+                        status = ssh.execute(
+                            check_cloudinit_finished)['exit_code'] == 0
+                    # Else, just wait for SSH
+                    else:
+                        status = ssh.execute('echo ok')['exit_code'] == 0
+                    return status
+
+                except (AuthenticationException, BadAuthenticationType):
                     return True
                 except Exception:
                     return False
 
-                return ssh.execute('echo ok')['exit_code'] == 0
+            def _ssh_wait(host,
+                          port,
+                          username=settings.SSH_NODE_CREDENTIALS['login'],
+                          password=settings.SSH_NODE_CREDENTIALS['password'],
+                          timeout=0):
+
+                if host in passed and passed[host] >= 2:
+                    # host already passed the check
+                    return True
+
+                for node in self.__env.get_nodes(role__in=underlay_node_roles):
+                    ip = self.node_ip(node)
+                    if ip not in passed:
+                        passed[ip] = 0
+                    if _ssh_check(ip, port):
+                        passed[ip] += 1
+                    else:
+                        passed[ip] = 0
 
             helpers.wait(
                 lambda: _ssh_wait(self.node_ip(node), 22),
