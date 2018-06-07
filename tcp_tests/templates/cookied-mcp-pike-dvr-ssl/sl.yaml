@@ -70,19 +70,20 @@
 - description: Install Mongo if target matches
   cmd: |
     if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' match.pillar 'mongodb:server' ; then
-      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb.server
     fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Configure Alerta if it is exists
+# Create MongoDB cluster
+- description: Install Mongo if target matches
   cmd: |
-    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:alerta' match.pillar 'prometheus:alerta' ; then
-      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:alerta' state.sls prometheus.alerta
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' match.pillar 'mongodb:server' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb.cluster
     fi
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 5, delay: 20}
   skip_fail: false
 
 - description: Install telegraf
@@ -162,22 +163,23 @@
   skip_fail: false
 
 # Configure the services running in Docker Swarm
-- description: Install prometheus alertmanager
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
+- description: Configure prometheus in docker swarm
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' state.sls prometheus,heka.remote_collector
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: run docker state
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker
+#Launch containers
+- description: launch prometheus containers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and I@prometheus:server' state.sls docker.client
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
-- description: docker ps
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' dockerng.ps
+- description: Check docker ps
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' cmd.run "docker ps"
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 - description: Configure Grafana dashboards and datasources
