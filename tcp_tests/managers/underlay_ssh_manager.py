@@ -357,7 +357,7 @@ class UnderlaySSHManager(object):
         """
         remote = self.remote(node_name=node_name, host=host,
                              address_pool=address_pool)
-        with remote.get_sudo(remote):
+        with remote.sudo(enforce=True):
             return remote.check_call(
                 command=cmd, verbose=verbose, timeout=timeout,
                 error_info=error_info, expected=expected,
