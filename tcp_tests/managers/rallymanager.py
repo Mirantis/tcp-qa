@@ -104,8 +104,13 @@ class RallyManager(object):
         self._underlay.check_call(cmd, node_name=self._node_name)
 
         LOG.info("Copy keystonercv3")
-        cmd = "cp /root/keystonercv3 /root/rally/keystonercv3"
-        self._underlay.check_call(cmd, node_name=self._node_name)
+        tgt = self._node_name.split('.')[0]
+        cmd = "scp -3 ctl01:/root/keystonercv3 " \
+              "{tgt}:/root/rally/keystonercv3".format(
+                  tgt=tgt)
+        domain = '.'.join(self._node_name.split('.')[1:])
+        self._underlay.check_call(cmd, node_name="cfg01.{domain}".format(
+            domain=domain))
         self._run()
 
         LOG.info("Create rally deployment")
