@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Source file to set access credentials to salt-api for using with libpepper
+# Requires parameters to work with libpepper:
+#  - SALTAPI_URL
+#  - SALTAPI_USER
+#  - SALTAPI_PASS
+# Example usage:
+# $> export ENV_NAME=some-test-environment
+# $> . ./tcp_tests/utils/saltrc
+# $> . ./tcp_tests/utils/rc_jenkins_cicd
+# $> ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="{... json ...}"
+
+CURRENT_DIR=$(dirname $(readlink -f "${BASH_SOURCE[@]}"))
+export PYTHONPATH=${CURRENT_DIR}/../..
+
+SALT_MASTER_IP=$(for node in $(dos.py slave-ip-list --address-pool-name admin-pool01 ${ENV_NAME}); do echo $node|grep cfg01|cut -d',' -f2; done)
+
+if [ -z "$SALT_MASTER_IP" ]; then
+    echo "SALT_MASTER_IP not found in the environment '${ENV_NAME}'"
+    unset JENKINS_URL
+    unset JENKINS_USER
+    unset JENKINS_PASS
+    unset JENKINS_START_TIMEOUT
+    unset JENKINS_BUILD_TIMEOUT
+else
+MASTER="${PYTHONPATH}/tcp_tests/utils/get_param.py -C I@docker:client:stack:jenkins pillar.get jenkins:client:master"
+    export JENKINS_HOST=$(${MASTER}:host)
+    export JENKINS_PORT=$(${MASTER}:port)
+    export JENKINS_URL=http://${JENKINS_HOST}:${JENKINS_PORT}
+    export JENKINS_USER=$(${MASTER}:username)
+    export JENKINS_PASS=$(${MASTER}:password)
+    export JENKINS_START_TIMEOUT=60
+    export JENKINS_BUILD_TIMEOUT=1800
+fi
+
+echo "export JENKINS_URL='$JENKINS_URL'  # Jenkins API URL"
+echo "export JENKINS_USER='${JENKINS_USER}'  # Jenkins API username"
+echo "export JENKINS_PASS='${JENKINS_PASS}'  # Jenkins API password or token"
+echo "export JENKINS_START_TIMEOUT='${JENKINS_START_TIMEOUT}'  # Timeout waiting for job in queue to start building"
+echo "export JENKINS_BUILD_TIMEOUT='${JENKINS_BUILD_TIMEOUT}'  # Timeout waiting for building job to complete"
