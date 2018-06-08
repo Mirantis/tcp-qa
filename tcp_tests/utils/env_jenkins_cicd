@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Source file to set access credentials to Jenkins API on CICD cluster
+# Requires parameters to work with libpepper:
+#  - SALTAPI_URL
+#  - SALTAPI_USER
+#  - SALTAPI_PASS
+# Example usage:
+# $> export ENV_NAME=some-test-environment
+# $> . ./tcp_tests/utils/env_salt
+# $> . ./tcp_tests/utils/env_jenkins_cicd
+# $> ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="{... json ...}"
+
+CURRENT_DIR=$(dirname $(readlink -f "${BASH_SOURCE[@]}"))
+export PYTHONPATH="${CURRENT_DIR}/../.."
+
+if [ -z "$SALTAPI_URL" ]; then
+    echo "$SALTAPI_URL not found in the environment variables, getting values from salt-master is impossible."
+    unset JENKINS_URL
+    unset JENKINS_USER
+    unset JENKINS_PASS
+    unset JENKINS_START_TIMEOUT
+    unset JENKINS_BUILD_TIMEOUT
+else
+    MASTER="get_param.py -C I@docker:client:stack:jenkins pillar.get jenkins:client:master"
+    export JENKINS_HOST=$(${CURRENT_DIR}/${MASTER}:host)
+    export JENKINS_PORT=$(${CURRENT_DIR}/${MASTER}:port)
+    export JENKINS_URL=http://${JENKINS_HOST}:${JENKINS_PORT}
+    export JENKINS_USER=$(${CURRENT_DIR}/${MASTER}:username)
+    export JENKINS_PASS=$(${CURRENT_DIR}/${MASTER}:password)
+    export JENKINS_START_TIMEOUT=60
+    export JENKINS_BUILD_TIMEOUT=1800
+fi
+
+echo "export JENKINS_URL='$JENKINS_URL'  # Jenkins API URL"
+echo "export JENKINS_USER='${JENKINS_USER}'  # Jenkins API username"
+echo "export JENKINS_PASS='${JENKINS_PASS}'  # Jenkins API password or token"
+echo "export JENKINS_START_TIMEOUT='${JENKINS_START_TIMEOUT}'  # Timeout waiting for job in queue to start building"
+echo "export JENKINS_BUILD_TIMEOUT='${JENKINS_BUILD_TIMEOUT}'  # Timeout waiting for building job to complete"
