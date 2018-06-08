@@ -1,6 +1,8 @@
 {% from 'virtual-mcp11-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% from 'virtual-mcp11-k8s-contrail/salt.yaml' import ENVIRONMENT_MODEL_INVENTORY_NAME with context %}
 
+{% import 'shared-sl-tests.yaml' as SHARED_SL_TESTS with context %}
+
 # Install docker swarm
 - description: Configure docker service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls docker.host
@@ -266,3 +268,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+
+{{  SHARED_SL_TESTS.MACRO_CLONE_SL_TESTS() }}
+{{  SHARED_SL_TESTS.MACRO_CONFIGURE_TESTS() }}
