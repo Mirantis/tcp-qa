@@ -55,9 +55,9 @@ template:
             default_{{ HOSTNAME_MON01 }}: +107
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
-            default_{{ HOSTNAME_NTW01 }}: +110
-            default_{{ HOSTNAME_NTW02 }}: +111
-            default_{{ HOSTNAME_NTW03 }}: +112
+            default_{{ HOSTNAME_NTW01 }}: +111
+            default_{{ HOSTNAME_NTW02 }}: +112
+            default_{{ HOSTNAME_NTW03 }}: +113
             default_{{ HOSTNAME_PRX01 }}: +121
             default_{{ HOSTNAME_VSRX01 }}: +90
           ip_ranges:
@@ -78,9 +78,9 @@ template:
             default_{{ HOSTNAME_MON01 }}: +107
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
-            default_{{ HOSTNAME_NTW01 }}: +110
-            default_{{ HOSTNAME_NTW02 }}: +111
-            default_{{ HOSTNAME_NTW03 }}: +112
+            default_{{ HOSTNAME_NTW01 }}: +111
+            default_{{ HOSTNAME_NTW02 }}: +112
+            default_{{ HOSTNAME_NTW03 }}: +113
             default_{{ HOSTNAME_PRX01 }}: +121
             default_{{ HOSTNAME_VSRX01 }}: +90
           ip_ranges:
@@ -101,9 +101,9 @@ template:
             default_{{ HOSTNAME_MON01 }}: +107
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
-            default_{{ HOSTNAME_NTW01 }}: +110
-            default_{{ HOSTNAME_NTW02 }}: +111
-            default_{{ HOSTNAME_NTW03 }}: +112
+            default_{{ HOSTNAME_NTW01 }}: +111
+            default_{{ HOSTNAME_NTW02 }}: +112
+            default_{{ HOSTNAME_NTW03 }}: +113
             default_{{ HOSTNAME_PRX01 }}: +121
             default_{{ HOSTNAME_VSRX01 }}: +90
           ip_ranges:
