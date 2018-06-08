@@ -13,6 +13,7 @@
 #    under the License.
 
 import pytest
+import time
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -105,6 +106,9 @@ class TestMCPK8sActions(object):
             'deployment', deployment_name, '8080', 'ClusterIP')
         sample_service_ip = k8s_deployed.get_svc_ip(deployment_name, 'default')
         k8s_deployed.wait_deploy_ready(deployment_name)
+
+        # sometimes we can break network on ctl01 because of frequent curling?
+        time.sleep(30)
 
         def check_is_test_service_available():
             assert "Hello Kubernetes!" in k8s_deployed.curl(
