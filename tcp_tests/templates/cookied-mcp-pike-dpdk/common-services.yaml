@@ -1,4 +1,5 @@
 {% from 'cookied-mcp-pike-dpdk/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
 
 # Install support services
 - description: Install keepalived on ctl01
