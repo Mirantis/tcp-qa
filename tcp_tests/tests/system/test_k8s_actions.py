@@ -27,6 +27,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8116
+    @pytest.mark.k8s_calico
     def test_k8s_externaldns_coredns(self, show_step, config, k8s_deployed):
         """Test externaldns integration with coredns
 
