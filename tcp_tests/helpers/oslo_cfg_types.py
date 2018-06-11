@@ -115,14 +115,18 @@ class Cfg(cfg.Opt):
             env_var_name = args[0]
         if env_var_name in os.environ:
             self.environment_value = self.type(os.environ.get(env_var_name))
-            print('{}={}  # {}'.format(env_var_name,
-                                       self.environment_value,
-                                       kwargs.get('help', '')))
+            default = kwargs.get('default', '')
+            kwargs['default'] = self.environment_value
+            print('{0}={1} (default = {2}) # {3}'
+                  .format(env_var_name,
+                          self.environment_value,
+                          default,
+                          kwargs.get('help', '')))
 
         # Print info about default environment variables to console
-        # print('{}={}  # {}'.format(env_var_name,
-        #                           kwargs.get('default', ''),
-        #                           kwargs.get('help', '')))
+        # print('{}={} (default)  # {}'.format(env_var_name,
+        #                                     kwargs.get('default', ''),
+        #                                     kwargs.get('help', '')))
 
     def _get_from_namespace(self, namespace, group_name):
         res = super(Cfg, self)._get_from_namespace(namespace, group_name)
