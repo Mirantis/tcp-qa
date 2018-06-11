@@ -25,3 +25,7 @@ class TestLocalDns(object):
     @pytest.mark.fail_snapshot
     def test_install_local_dns(self, config, underlay):
         LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
+    def test_install_local_salt(self, config, underlay, salt_deployed):
+        LOG.info("*************** DONE **************")
