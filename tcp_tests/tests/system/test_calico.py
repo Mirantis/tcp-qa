@@ -52,6 +52,7 @@ class TestMCPCalico(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.calico_ci
     @pytest.mark.cz8116
+    @pytest.mark.k8s_calico
     def test_calico_route_recovery(self, show_step, config, underlay,
                                    k8s_deployed):
         """Test for deploying k8s environment with Calico plugin and check
