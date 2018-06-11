@@ -120,13 +120,14 @@ class Cfg(cfg.Opt):
                                        kwargs.get('help', '')))
 
         # Print info about default environment variables to console
-        # print('{}={}  # {}'.format(env_var_name,
-        #                           kwargs.get('default', ''),
-        #                           kwargs.get('help', '')))
+        print('{}={} (default)  # {}'.format(env_var_name,
+                                             kwargs.get('default', ''),
+                                             kwargs.get('help', '')))
 
     def _get_from_namespace(self, namespace, group_name):
         res = super(Cfg, self)._get_from_namespace(namespace, group_name)
         # Use the value from enviroment variable instead of config
         if hasattr(self, 'environment_value'):
             res = (self.environment_value, res[1])
+        print(self.name, res)
         return res
