@@ -1,0 +1,110 @@
+nodes:
+    cfg01:
+      reclass_storage_name: infra_config_node01
+      roles:
+      - infra_config
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_static_ctl
+
+    cid01:
+      reclass_storage_name: cicd_control_node01
+      roles:
+      - cicd_control_leader
+      - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    cid02:
+      reclass_storage_name: cicd_control_node02
+      roles:
+      - cicd_control_manager
+      - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    cid03:
+      reclass_storage_name: cicd_control_node03
+      roles:
+      - cicd_control_manager
+      - linux_system_codename_xenial
+      classes:
+      - cluster.${_param:cluster_name}.infra.glusterfs
+      - cluster.${_param:cluster_name}.infra.backup.server
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    ctl01:
+      reclass_storage_name: kubernetes_control_node01
+      roles:
+      - kubernetes_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    ctl02:
+      reclass_storage_name: kubernetes_control_node02
+      roles:
+      - kubernetes_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    ctl03:
+      reclass_storage_name: kubernetes_control_node03
+      roles:
+      - kubernetes_control
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    cmp01:
+      reclass_storage_name: kubernetes_compute_node01
+      roles:
+      - kubernetes_compute
+      - linux_system_codename_xenial
+      - salt_master_host
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+          single_address: ${_param:kubernetes_compute_node01_address}
+
+    cmp02:
+      reclass_storage_name: kubernetes_compute_node02
+      roles:
+      - kubernetes_compute
+      - linux_system_codename_xenial
+      - salt_master_host
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+          single_address: ${_param:kubernetes_compute_node02_address}

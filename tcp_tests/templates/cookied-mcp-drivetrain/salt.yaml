@@ -1,0 +1,82 @@
+{% from 'cookied-mcp-drivetrain/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-drivetrain/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'cookied-mcp-drivetrain/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-mcp-drivetrain/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-mcp-drivetrain/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+- description: Workaround, configure ntp and rsyslog on salt master node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:master' state.sls ntp,rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+## SHARED.REGISTER_COMPUTE_NODES()
+
+#- description: Workaround, register cmp01 node
+#  cmd: |
+#    salt-call event.send 'reclass/minion/classify' \
+#    '{"node_master_ip": "{{ config.salt.salt_master_host }}",
+#      "node_os": "xenial",
+#      "node_deploy_ip": "{{ SHARED.IPV4_NET_ADMIN_PREFIX }}.101",
+#      "node_deploy_iface": "ens3",
+#      "node_control_ip": "{{ SHARED.IPV4_NET_CONTROL_PREFIX }}.101",
+#      "node_control_iface": "ens4",
+#      "node_tenant_ip": "",
+#      "node_tenant_iface": "",
+#      "node_external_ip": "",
+#      "node_external_iface": "",
+#      "node_baremetal_ip": "",
+#      "node_baremetal_iface": "",
+#      "node_baremetal_hwaddress": "",
+#      "node_domain": "{{ DOMAIN_NAME }}",
+#      "node_cluster": "{{ SHARED.CLUSTER_NAME }}",
+#      "node_hostname": "{{ HOSTNAME_CMP01.split('.')[0] }}"}';
+#    sleep 5;
+#    salt-call saltutil.sync_all;
+#    salt-call mine.flush;
+#    salt-call mine.update;
+#  node_name: {{ HOSTNAME_CMP01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+#
+#- description: Workaround, register cmp02 node
+#  cmd: |
+#    salt-call event.send 'reclass/minion/classify' \
+#    '{"node_master_ip": "{{ config.salt.salt_master_host }}",
+#      "node_os": "xenial",
+#      "node_deploy_ip": "{{ SHARED.IPV4_NET_ADMIN_PREFIX }}.102",
+#      "node_deploy_iface": "ens3",
+#      "node_control_ip": "{{ SHARED.IPV4_NET_CONTROL_PREFIX }}.102",
+#      "node_control_iface": "ens4",
+#      "node_tenant_ip": "",
+#      "node_tenant_iface": "",
+#      "node_external_ip": "",
+#      "node_external_iface": "",
+#      "node_baremetal_ip": "",
+#      "node_baremetal_iface": "",
+#      "node_baremetal_hwaddress": "",
+#      "node_domain": "{{ DOMAIN_NAME }}",
+#      "node_cluster": "{{ SHARED.CLUSTER_NAME }}",
+#      "node_hostname": "{{ HOSTNAME_CMP02.split('.')[0] }}"}';
+#    sleep 5;
+#    salt-call saltutil.sync_all;
+#    salt-call mine.flush;
+#    salt-call mine.update;
+#  node_name: {{ HOSTNAME_CMP02 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+#
+
+- description: Fix openssh ClientAliveInterval
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system' cmd.run "sed -i 's/ClientAliveInterval 300/ClientAliveInterval 18000/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
