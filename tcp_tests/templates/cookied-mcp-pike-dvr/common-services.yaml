@@ -1,5 +1,7 @@
 {% from 'cookied-mcp-pike-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
+
 # Install support services
 - description: Install keepalived on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -115,3 +117,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
+
+{{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
+{{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
