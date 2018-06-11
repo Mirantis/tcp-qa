@@ -27,6 +27,7 @@ class Testk8sInstall(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8116
+    @pytest.mark.k8s_calico_sl
     def test_k8s_install_calico_lma(self, config, show_step,
                                     k8s_deployed, k8s_actions,
                                     sl_deployed, sl_actions):
@@ -193,6 +194,7 @@ class Testk8sInstall(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8116
+    @pytest.mark.k8s_calico
     def test_only_k8s_install(self, config, show_step,
                               k8s_deployed, k8s_actions, k8s_logs):
         """Test for deploying MCP environment with k8s and check it
