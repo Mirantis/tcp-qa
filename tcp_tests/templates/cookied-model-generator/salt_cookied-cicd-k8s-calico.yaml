@@ -1,0 +1,45 @@
+{% from 'cookied-model-generator/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-model-generator/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set LAB_CONFIG_NAME = 'cookied-cicd-k8s-calico' %}
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'cookiecutter-context-k8s.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['environment-context-k8s-sl.yaml'] %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
+- description: Re-install all the fromulas
+  cmd: |
+    set -e;
+    apt-get install -y salt-formula-*
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+- description: "Workaround for combined roles: remove unnecessary classes"
+  cmd: |
+    set -e;
+    sed -i '/system.reclass.storage.system.physical_control_cluster/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    sed -i '/service.keepalived.cluster.single/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/glusterfs.yml;
+
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node02 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node03 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+
+    # Workaround for compute nodes. Auto-registration for compute nodes cannot be used without external address inventory
+    reclass-tools add-key parameters._param.kubernetes_compute_node01_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.101 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/init.yml;
+    reclass-tools add-key parameters._param.kubernetes_compute_node02_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.102 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/init.yml;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
