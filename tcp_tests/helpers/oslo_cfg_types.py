@@ -108,21 +108,26 @@ class Cfg(cfg.Opt):
         #        os.environ.get(env_var_name, kwargs.get('default', None))
         #    )
 
-        super(Cfg, self).__init__(*args, **kwargs)
-
         env_var_name = args[0].upper()
         if env_var_name not in os.environ:
             env_var_name = args[0]
         if env_var_name in os.environ:
-            self.environment_value = self.type(os.environ.get(env_var_name))
-            print('{}={}  # {}'.format(env_var_name,
-                                       self.environment_value,
-                                       kwargs.get('help', '')))
+            # args[1] is 'type' class for the current value
+            self.environment_value = args[1](os.environ.get(env_var_name))
+            default = kwargs.get('default', '')
+            kwargs['default'] = args[1](self.environment_value)
+            print('{0}={1} (default = {2}) # {3}'
+                  .format(env_var_name,
+                          self.environment_value,
+                          default,
+                          kwargs.get('help', '')))
+
+        super(Cfg, self).__init__(*args, **kwargs)
 
         # Print info about default environment variables to console
-        # print('{}={}  # {}'.format(env_var_name,
-        #                           kwargs.get('default', ''),
-        #                           kwargs.get('help', '')))
+        # print('{}={} (default)  # {}'.format(env_var_name,
+        #                                     kwargs.get('default', ''),
+        #                                     kwargs.get('help', '')))
 
     def _get_from_namespace(self, namespace, group_name):
         res = super(Cfg, self)._get_from_namespace(namespace, group_name)
