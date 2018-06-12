@@ -29,8 +29,8 @@ class Testk8sInstall(object):
     @pytest.mark.cz8116
     @pytest.mark.k8s_calico_sl
     def test_k8s_install_calico_lma(self, config, show_step,
-                                    k8s_deployed, k8s_actions,
-                                    sl_deployed, sl_actions):
+                                    k8s_deployed,
+                                    sl_deployed):
         """Test for deploying MCP with k8s+stacklight_calico and check it
 
         Scenario:
@@ -48,6 +48,8 @@ class Testk8sInstall(object):
 
         """
         # STEP #5
+        k8s_actions = k8s_deployed
+        sl_actions = sl_deployed
         show_step(5)
         k8sclient = k8s_deployed.api
         assert k8sclient.nodes.list() is not None, "Can not get nodes list"
@@ -128,8 +130,8 @@ class Testk8sInstall(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8115
     def test_k8s_install_contrail_lma(self, config, show_step,
-                                      k8s_deployed, k8s_actions,
-                                      sl_deployed, sl_actions):
+                                      k8s_deployed,
+                                      sl_deployed):
         """Test for deploying MCP with k8s+stacklight+contrail and check it
 
         Scenario:
@@ -142,6 +144,8 @@ class Testk8sInstall(object):
             7. Optionally run k8s e2e conformance
 
         """
+        k8s_actions = k8s_deployed
+        sl_actions = sl_deployed
         # STEP #5
         show_step(5)
         k8sclient = k8s_deployed.api
@@ -196,7 +200,7 @@ class Testk8sInstall(object):
     @pytest.mark.cz8116
     @pytest.mark.k8s_calico
     def test_only_k8s_install(self, config, show_step,
-                              k8s_deployed, k8s_actions, k8s_logs):
+                              k8s_deployed, k8s_logs):
         """Test for deploying MCP environment with k8s and check it
 
         Scenario:
@@ -207,6 +211,7 @@ class Testk8sInstall(object):
             5. Run conformance if need
 
         """
+        k8s_actions = k8s_deployed
         if config.k8s.k8s_conformance_run:
             show_step(5)
             k8s_actions.run_conformance()
