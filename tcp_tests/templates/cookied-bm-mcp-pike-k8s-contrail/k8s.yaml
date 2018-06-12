@@ -1,0 +1,264 @@
+{% from 'k8s-ha-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+- description: Install etcd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@etcd:server' state.sls etcd.server.service
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check the etcd health
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@etcd:server' cmd.run '. /var/lib/etcd/configenv && etcdctl cluster-health'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Kubernetes Addons
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Install Kubernetes components
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:pool' state.sls kubernetes.pool
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 60}
+  skip_fail: false
+
+# Opencontrail Control Plane
+
+- description: Create configuration files for OpenContrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install Opencontrail db on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database and *01*' state.sls opencontrail.database
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 20}
+  skip_fail: false
+
+- description: Configure OpenContrail as an add-on for Kubernetes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Verify the status of the OpenContrail service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database' cmd.run 'doctrail all contrail-status'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Set up the OpenContrail resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database:id:1' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# OpenContrail vrouters
+- description: Refresh pillars on cmp*
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'cmp*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all on contrail computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' saltutil.sync_all
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Apply highstate on contrail computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.highstate exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# - description: Reboot contrail computes
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:compute' cmd.run 'reboot'
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
+- description: Reboot contrail computes
+  cmd: salt --timeout=600 -C 'I@opencontrail:compute' system.reboot
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Apply opencontrail.client on contrail computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Run Kubernetes master without setup
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: true
+
+- description: Run Kubernetes master setup
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Restart Kubelet
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:pool' service.restart 'kubelet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Check nodes registrations
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:pool' cmd.run 'sleep 60; kubectl get nodes'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Renew hosts file on a whole cluster
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '*' state.sls linux.network.host;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+# - description: Install Opencontrail db on all nodes
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:database' state.sls opencontrail.database
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 2, delay: 20}
+#   skip_fail: false
+
+# - description: Install Opencontrail control on ctl01
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:control and *01*' state.sls opencontrail exclude=opencontrail.client
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
+# - description: Install Opencontrail control on all nodes
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
+# - description: Install Opencontrail on collector
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:collector' state.sls opencontrail exclude=opencontrail.client
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
+# # OpenContrail vrouters
+# - description: Install Opencontrail client
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:database:id:1' state.sls opencontrail.client
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
+# - description: Install Opencontrail on computes
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:compute' state.sls opencontrail exclude=opencontrail.client
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 2, delay: 5}
+#   skip_fail: false
+
+# - description: Wake up vhost0
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@nova:compute' cmd.run 'exec 0>&-; exec 1>&-; exec 2>&-;
+#     nohup bash -c "ip link | grep vhost && echo no_reboot || sleep 5 && reboot & "'
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
+# - description: Install Opencontrail client on computes
+#   cmd: sleep 300 && salt --timeout=60 --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:compute' state.sls 'opencontrail.client'
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
+# - description: Install Opencontrail on computes #2
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:compute' state.sls opencontrail
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 2, delay: 5}
+#   skip_fail: false
+
+# # Kubernetes
+# - description: Install Kubernetes Addons
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: true
+
+# - description: Check contrail status
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@opencontrail:database' cmd.run contrail-status
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
+# - description: Install Kubernetes components
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@kubernetes:pool' state.sls kubernetes.pool
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 5, delay: 60}
+#   skip_fail: false
+
+# # NOTE(vryzhenkin): There is nothing to setup at this model
+# #- description: Setup etcd server on primary controller
+# #  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+# #     -C 'I@kubernetes:master and *01*' state.sls etcd.server.setup
+# #  node_name: {{ HOSTNAME_CFG01 }}
+# #  retry: {count: 1, delay: 5}
+# #  skip_fail: false
+
+# - description: Run Kubernetes master without setup
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#      -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 3, delay: 5}
+#   skip_fail: true
+
+# - description: Run Kubernetes master setup
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#      -C 'I@kubernetes:master and *01*' state.sls kubernetes.master.setup
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: true
+
+# - description: Restart Kubelet
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#     -C 'I@kubernetes:pool' service.restart 'kubelet'
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: true
+
+# - description: Renew hosts file on a whole cluster
+#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '*' state.sls linux.network.host;
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
