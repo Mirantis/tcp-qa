@@ -293,3 +293,14 @@ class RuntestManager(object):
 
         return {'inspect': inspect,
                 'logs': logs}
+
+
+def run_tempest(runtest, username='root'):
+    """
+    Run tempest tests
+    """
+    tempest_timeout = settings.TEMPEST_TIMEOUT
+    runtest.prepare()
+    test_res = runtest.run_tempest(tempest_timeout)
+    runtest.fetch_arficats(username=username)
+    runtest.save_runtime_logs(**test_res)
