@@ -344,5 +344,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
-
-{{ SHARED.RUN_NEW_TEMPEST() }}

@@ -338,8 +338,11 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+<<<<<<< HEAD
 
 {{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
 {{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
 
 {{ SHARED.RUN_NEW_TEMPEST() }}
+=======
+>>>>>>> a26dcbf... Use runtestmanager on ci

@@ -74,5 +74,7 @@ __all__ = sorted([  # sort for documentation
     'k8s_deployed',
     'day1_underlay',
     'day1_cfg_config',
-    'day1_salt_action'
+    'day1_salt_action',
+    # tempest
+    'tempest_actions'
 ])
