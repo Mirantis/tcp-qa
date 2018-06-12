@@ -182,6 +182,7 @@ def underlay(request, revert_snapshot, config, hardware):
         config.underlay.ssh = hardware.get_ssh_data(
             roles=config.underlay.roles)
 
+        LOG.info("Config - {}".format(config))
         underlay = underlay_ssh_manager.UnderlaySSHManager(config)
 
         if not config.underlay.lvm:
