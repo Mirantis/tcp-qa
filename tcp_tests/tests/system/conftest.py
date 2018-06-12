@@ -27,6 +27,7 @@ from tcp_tests.fixtures.stacklight_fixtures import *  # noqa
 from tcp_tests.fixtures.k8s_fixtures import *  # noqa
 from tcp_tests.fixtures.drivetrain_fixtures import *  # noqa
 from tcp_tests.fixtures.day1_fixtures import *  # noqa
+from tcp_tests.fixtures.runtest_fixtures import * # noqa
 
 
 __all__ = sorted([  # sort for documentation
@@ -74,5 +75,7 @@ __all__ = sorted([  # sort for documentation
     'k8s_deployed',
     'day1_underlay',
     'day1_cfg_config',
-    'day1_salt_action'
+    'day1_salt_action',
+    # tempest
+    'tempest_actions'
 ])
