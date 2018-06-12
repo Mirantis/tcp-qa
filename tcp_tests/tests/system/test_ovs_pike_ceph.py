@@ -26,9 +26,11 @@ class TestInstallOvsPikeCeph(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_pike_ceph_all_ovs_install(self, underlay, openstack_deployed,
+    def test_pike_ceph_all_ovs_install(self, underlay,
+                                       openstack_deployed,
                                        ceph_deployed,
-                                       openstack_actions):
+                                       openstack_actions,
+                                       tempest_actions):
         """Test for deploying pike ovs with ceph and check it
         Scenario:
         1. Prepare salt on hosts
@@ -43,7 +45,5 @@ class TestInstallOvsPikeCeph(object):
                 args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN,
-                                          conf_name='ceph_mcp.conf')
-            openstack_actions.download_tempest_report()
+            tempest_actions.prepare_and_run_tempest()
         LOG.info("*************** DONE **************")
