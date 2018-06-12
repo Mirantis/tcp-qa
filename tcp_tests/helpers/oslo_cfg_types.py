@@ -133,5 +133,6 @@ class Cfg(cfg.Opt):
         res = super(Cfg, self)._get_from_namespace(namespace, group_name)
         # Use the value from enviroment variable instead of config
         if hasattr(self, 'environment_value'):
-            res = (self.environment_value, res[1])
+            # res = (self.environment_value, res[1])
+            res = self.environment_value
         return res
