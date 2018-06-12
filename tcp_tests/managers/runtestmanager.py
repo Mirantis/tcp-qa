@@ -293,3 +293,27 @@ class RuntestManager(object):
 
         return {'inspect': inspect,
                 'logs': logs}
+
+def run_tempest():
+    """
+    Run tempest tests
+    """
+    tempest_threads = settings.TEMPEST_THREADS
+    tempest_exclude_test_args = settings.TEMPEST_EXCLUDE_TEST_ARGS
+    tempest_pattern = settings.TEMPEST_PATTERN
+    cluster_name = settings.LAB_CONFIG_NAME
+    tempest_timeout = settings.TEMPEST_TIMEOUT
+    domain_name = "{}.local".format(cluster_name)
+    target = settings.TEMPEST_TARGET
+    runtest = RuntestManager(
+        underlay, salt_actions,
+        cluster_name=cluster_name,
+        domain_name=domain_name,
+        tempest_threads=tempest_threads,
+        tempest_exclude_test_args=tempest_exclude_test_args,
+        tempest_pattern=tempest_pattern,
+        target=target)
+    runtest.prepare()
+    test_res = runtest.run_tempest(tempest_timeout)
+    runtest.fetch_arficats(username='root')
+    runtest.save_runtime_logs(**test_res)
