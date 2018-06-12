@@ -1,0 +1,87 @@
+nodes:
+    cfg01.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: infra_config_node01
+      roles:
+      - infra_config
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+    # Physical nodes
+
+    kvm01.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: infra_kvm_node01
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp9s0f0:
+          role: single_mgm
+        enp9s0f1:
+          role: single_ctl
+
+    kvm02.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: infra_kvm_node02
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp9s0f0:
+          role: single_mgm
+        enp9s0f1:
+          role: single_ctl
+
+    kvm03.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: infra_kvm_node03
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp9s0f0:
+          role: single_mgm
+        enp9s0f1:
+          role: single_ctl
+
+    prx01.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: infra_kvm_node03
+      roles:
+      - infra_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        enp9s0f0:
+          role: single_mgm
+        enp9s0f1:
+          role: single_ctl
+
+    cmp001.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: kubernetes_compute_node01
+      roles:
+      - features_lvm_backend
+      - linux_system_codename_xenial
+      - kubernetes_compute_contrail
+      interfaces:
+        enp2s0f1:
+          role: single_dhcp
+        enp5s0f0:
+          role: bond0_ab_contrail
+          tenant_address: 192.168.0.101
+        enp5s0f1:
+          role: single_ctl
+          single_address: 10.167.8.101
+
+    # cmp002.bm-mcp-pike-k8s-contrail.local:
+    #   reclass_storage_name: kubernetes_compute_node02
+    #   roles:
+    #   - features_lvm_backend
+    #   - linux_system_codename_xenial
+    #   - kubernetes_compute_contrail
+    #   interfaces:
+    #     enp2s0f1:
+    #       role: single_mgm
+    #       deploy_address: 172.16.49.74
+    #     enp5s0f0:
+    #       role: bond0_ab_contrail
+    #       tenant_address: 192.168.0.102
+    #     enp5s0f1:
+    #       role: single_vlan_ctl
+    #       single_address: 10.167.8.102
