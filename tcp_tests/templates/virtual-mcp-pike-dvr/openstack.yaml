@@ -9,6 +9,7 @@
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', '') %}
 {% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
 
 # Install OpenStack control services
 
@@ -337,5 +338,8 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+{{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
+{{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
 
 {{ SHARED.RUN_NEW_TEMPEST() }}

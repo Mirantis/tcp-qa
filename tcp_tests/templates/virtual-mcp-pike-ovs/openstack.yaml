@@ -8,6 +8,7 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
 # Install OpenStack control services
 
 - description: Install glance on all controllers
@@ -357,3 +358,5 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+{{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
+{{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
