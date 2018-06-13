@@ -1,0 +1,183 @@
+default_context:
+  bmk_enabled: 'False'
+  ceph_enabled: 'False'
+  cicd_enabled: 'False'
+  cluster_domain: cookied-mcp-mitaka-ovs.local
+  cluster_name: cookied-mcp-mitaka-ovs
+  compute_bond_mode: active-backup
+  compute_primary_first_nic: eth1
+  compute_primary_second_nic: eth2
+  context_seed: wUqrwKeBTCpRpVrhK1KwZQv4cjM9VhG7L2vQ0iQsTuMrXASklEBDmJEf6bnPEqcK
+  control_network_netmask: 255.255.255.0
+  control_network_subnet: 172.16.10.0/24
+  control_vlan: '10'
+  cookiecutter_template_branch: master
+  cookiecutter_template_credentials: gerrit
+  cookiecutter_template_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/mk/cookiecutter-templates.git
+  deploy_network_gateway: 192.168.10.1
+  deploy_network_netmask: 255.255.255.0
+  deploy_network_subnet: 192.168.10.0/24
+  deployment_type: physical
+  dns_server01: 172.18.176.6
+  dns_server02: 172.18.208.44
+  email_address: ddmitriev@mirantis.com
+  gateway_primary_first_nic: eth1
+  gateway_primary_second_nic: eth2
+  infra_bond_mode: active-backup
+  infra_deploy_nic: eth0
+  infra_kvm01_control_address: 172.16.10.101
+  infra_kvm01_deploy_address: 192.168.10.101
+  infra_kvm01_hostname: kvm01
+  infra_kvm02_control_address: 172.16.10.102
+  infra_kvm02_deploy_address: 192.168.10.102
+  infra_kvm02_hostname: kvm02
+  infra_kvm03_control_address: 172.16.10.103
+  infra_kvm03_deploy_address: 192.168.10.103
+  infra_kvm03_hostname: kvm03
+  infra_kvm_vip_address: 172.16.10.100
+  infra_primary_first_nic: eth1
+  infra_primary_second_nic: eth2
+  kubernetes_enabled: 'False'
+  local_repositories: 'False'
+  maas_deploy_address: 192.168.10.90
+  maas_hostname: cfg01
+  mcp_version: stable
+  offline_deployment: 'False'
+  opencontrail_enabled: 'False'
+  openstack_benchmark_node01_address: 172.16.10.95
+  openstack_benchmark_node01_hostname: bmk01
+  openstack_cluster_size: compact
+  openstack_compute_count: '2'
+  openstack_compute_rack01_hostname: cmp
+  openstack_compute_rack01_single_subnet: 172.16.10
+  openstack_compute_rack01_tenant_subnet: 10.1.0
+  openstack_control_address: 172.16.10.100
+  openstack_control_hostname: ctl
+  openstack_control_node01_address: 172.16.10.101
+  openstack_control_node01_hostname: ctl01
+  openstack_control_node02_address: 172.16.10.102
+  openstack_control_node02_hostname: ctl02
+  openstack_control_node03_address: 172.16.10.103
+  openstack_control_node03_hostname: ctl03
+  openstack_database_address: 172.16.10.100
+  openstack_database_hostname: ctl
+  openstack_database_node01_address: 172.16.10.101
+  openstack_database_node01_hostname: ctl01
+  openstack_database_node02_address: 172.16.10.102
+  openstack_database_node02_hostname: ctl02
+  openstack_database_node03_address: 172.16.10.103
+  openstack_database_node03_hostname: ctl03
+  openstack_enabled: 'True'
+  openstack_gateway_node01_address: 172.16.10.110
+  openstack_gateway_node01_hostname: gtw01
+  openstack_gateway_node01_tenant_address: 10.1.0.6
+  openstack_gateway_node02_address: 172.16.10.111
+  openstack_gateway_node02_hostname: gtw02
+  openstack_gateway_node02_tenant_address: 10.1.0.7
+  openstack_gateway_node03_address: 172.16.10.112
+  openstack_gateway_node03_hostname: gtw03
+  openstack_gateway_node03_tenant_address: 10.1.0.8
+  openstack_message_queue_address: 172.16.10.100
+  openstack_message_queue_hostname: ctl
+  openstack_message_queue_node01_address: 172.16.10.101
+  openstack_message_queue_node01_hostname: ctl01
+  openstack_message_queue_node02_address: 172.16.10.102
+  openstack_message_queue_node02_hostname: ctl02
+  openstack_message_queue_node03_address: 172.16.10.103
+  openstack_message_queue_node03_hostname: ctl03
+  openstack_network_engine: ovs
+  openstack_neutron_qos: 'False'
+  openstack_neutron_vlan_aware_vms: 'False'
+  openstack_nfv_dpdk_enabled: 'False'
+  openstack_nfv_sriov_enabled: 'False'
+  openstack_nova_compute_nfv_req_enabled: 'False'
+  openstack_ovs_dvr_enabled: 'False'
+  openstack_ovs_encapsulation_type: vxlan
+  openstack_proxy_address: 172.16.10.80
+  openstack_proxy_hostname: prx
+  openstack_proxy_node01_address: 172.16.10.121
+  openstack_proxy_node01_hostname: prx01
+  openstack_proxy_node02_address: 172.16.10.122
+  openstack_proxy_node02_hostname: prx02
+  openstack_upgrade_node01_address: 172.16.10.19
+  openstack_version: mitaka
+  oss_enabled: 'False'
+  oss_node03_address: ${_param:stacklight_monitor_node03_address}
+  oss_webhook_app_id: '24'
+  oss_pushkin_email_sender_password: password
+  oss_pushkin_smtp_port: '587'
+  oss_webhook_login_id: '13'
+  platform: openstack_enabled
+  public_host: ${_param:openstack_proxy_address}
+  publication_method: email
+  reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
+  backup_private_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEowIBAAKCAQEAxL6/rVgCetsETpZaUmXmkj8cZ1WN0eubH1FvMDOi/La9ZJyT
+      k0C6AYpJnIyEm93pMj5cLm08qRqMW+2pdOhYjcH69yg5MrX5SkRk8jCmIHIYoIbh
+      Qnwbnj3dd3I39ZdfU2FO7u2vlbglVou6ZoQxlJDItuLNtzq6EG+w9eF19e7+OsC6
+      6iUItp618zfw1l3J/8nKvCGe2RYDf7mJW6XwCl/DwryJmwwzvPgYJ3QMuDD8/HFj
+      lrJ3xjFTXj4b4Ws1XIoy78fFbtiLr4OwqCYkho03u2E5rOOP1qZxZB63sivHMLMO
+      MM5bOAQKbulFNoyALADGYfc7sf0bZ4u9XXDXxQIDAQABAoIBAQCfmc2MJRT97KW1
+      yqpCpX9BrAiymuiNHf+cjEcSZxEUyHkjIRFmJt+9WB0W7ba1anM92vCUiPDojSzH
+      dig9Oi578JxR20NrK8uqv4jUHzrknynzLveVI3CUEcOSnglfJQijbxDFKfOCFPvV
+      FUyE1UATMNBh6+LNfMprgu+exuMWOPnDyUiYQ+WZ0JfuZY8fuaZte4woJJOb9LUu
+      5rsMG/smIzjpgZ0Z9ZVDMurfq565qhpaXRAqKeIuyht8pacTo31iMQdHB78AvY/3
+      g0z21Gk8k3z0Kr/YFKr2r4FmXY5m/gAUvZly2ZrVQM5XsbTVCzq/JpI5fssNvSbU
+      AKmXzf4RAoGBAOO3d4/cstxERzW6hyOTjZIN1ppR52CsnZTsVPbfd0pCtmzmVZce
+      CtHKdcXSbTwZvvkK09QSWAp3MoSpd0gIOiLU8Wx/R/RIZsu9BlhTS3r3EQLnk72d
+      H/1TTA+j4T/LIYLSojQ1RxvIrHetAD44j732aTwKAHj/SybEAVqNkOB/AoGBAN0u
+      gLcrgqIHGrk4VjWSvlCGymfF40equcx+ud7XhfZDGETUOSahW4dPZ52cjPAkrCBQ
+      MMfcDwSVGsOAjd+mNt11BHUKobnhXwFaWWuyqyn9NmWFbjMbICVh7E3Of5aVN38o
+      lrmo/7LuKMVG7XRwphCv5NkaJmQG4njDyUQWlaW7AoGADCd8wDb9bPhP/LQqBmIX
+      ylXmwHHisaxE9O/wUQT4bwREjGd25gv6c9wkkRx8LBsLsGs9hzI7dMOL9Ly+2x9l
+      SvqmsC3S/1zl77X1Ir2/Z57MT6Vgo1xBmtnZU3Rhz2/eKAdqFPNLClaZrgGT475N
+      HcyLLWMzR0IJFtabY+Puea0CgYA8Zb5wRkldxWLewSuJZZDinGwY+kieAVjLJq/K
+      0j+ah6fQ48LXcah0wpIgz+cMjHcUO9GWQdk3/x9X03rqX5EL2DBnZYfUIl63F9zj
+      M97ZkHOSNWVqPzX//0Vv2butewG0j3jZKfTo/2/SrxOYgEpYtC9huWpSVi7xm0US
+      erhSkQKBgFIf9JEsfgE57ANhvITZ3ZI0uZXNxZkXQaVg8jvScDi79IIhy9iPzhKC
+      aIIQoDNIlWv1ftCRZ5AlBvVXgvQ/QNrwy48JiQTzWZlb9Ezg8w+olQmSbG6fq7Y+
+      7r3i+QUZ7RBdOb24QcQ618q54ozNTCB7OywY78ptFzeoBeptiNr1
+      -----END RSA PRIVATE KEY-----
+  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvr+tWAJ62wROllpSZeaSPxxnVY3R65sfUW8wM6L8tr1knJOTQLoBikmcjISb3ekyPlwubTypGoxb7al06FiNwfr3KDkytflKRGTyMKYgchighuFCfBuePd13cjf1l19TYU7u7a+VuCVWi7pmhDGUkMi24s23OroQb7D14XX17v46wLrqJQi2nrXzN/DWXcn/ycq8IZ7ZFgN/uYlbpfAKX8PCvImbDDO8+BgndAy4MPz8cWOWsnfGMVNePhvhazVcijLvx8Vu2Iuvg7CoJiSGjTe7YTms44/WpnFkHreyK8cwsw4wzls4BApu6UU2jIAsAMZh9zux/Rtni71dcNfF
+  salt_api_password: H0rTPdmktZ8RI7T7y6fjqY0uEbbs7Kwi
+  salt_api_password_hash: $6$lfbIFtMZ$.nTbTDMzs1iYv0WqkZHia8H8Fma963Nv3qyyz1x68jQh0YXK9i907B/hvoG4QHMvfolE7V7vQnFClJ1mVA3Yb.
+  salt_master_address: 172.16.10.90
+  salt_master_hostname: cfg01
+  salt_master_management_address: 192.168.10.90
+  shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
+  fluentd_enabled: 'True'
+  stacklight_enabled: 'True'
+  stacklight_log_address: 172.16.10.60
+  stacklight_log_hostname: log
+  stacklight_log_node01_address: 172.16.10.61
+  stacklight_log_node01_hostname: log01
+  stacklight_log_node02_address: 172.16.10.62
+  stacklight_log_node02_hostname: log02
+  stacklight_log_node03_address: 172.16.10.63
+  stacklight_log_node03_hostname: log03
+  stacklight_monitor_address: 172.16.10.70
+  stacklight_monitor_hostname: mon
+  stacklight_monitor_node01_address: 172.16.10.71
+  stacklight_monitor_node01_hostname: mon01
+  stacklight_monitor_node02_address: 172.16.10.72
+  stacklight_monitor_node02_hostname: mon02
+  stacklight_monitor_node03_address: 172.16.10.73
+  stacklight_monitor_node03_hostname: mon03
+  stacklight_telemetry_address: 172.16.10.85
+  stacklight_telemetry_hostname: mtr
+  stacklight_telemetry_node01_address: 172.16.10.86
+  stacklight_telemetry_node01_hostname: mtr01
+  stacklight_telemetry_node02_address: 172.16.10.87
+  stacklight_telemetry_node02_hostname: mtr02
+  stacklight_telemetry_node03_address: 172.16.10.88
+  stacklight_telemetry_node03_hostname: mtr03
+  stacklight_version: '2'
+  stacklight_long_term_storage_type: influxdb
+  static_ips_on_deploy_network_enabled: 'False'
+  tenant_network_gateway: 10.1.0.1
+  tenant_network_netmask: 255.255.255.0
+  tenant_network_subnet: 10.1.0.0/24
+  tenant_vlan: '20'
+  upstream_proxy_enabled: 'False'
+  use_default_network_scheme: 'False'
