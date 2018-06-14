@@ -32,8 +32,6 @@ parameters:
         min_compute_nodes: 2
         volume_device_name: 'vdc'
       dns_feature_enabled:
-        # Switch this to designate_admin_api_enabled once [1] is promoted to stable packages
-        # [1] https://gerrit.mcp.mirantis.net/gitweb?p=salt-formulas/designate.git;a=commit;h=96a3f43f6cf1149559e54a00b5548bdf46333749
         api_admin: false
         api_v1: false
         api_v2: true
@@ -41,25 +39,11 @@ parameters:
         api_v2_root_recordsets: true
         bug_1573141_fixed: true
       share:
-        min_api_microversion: 2.0
-        max_api_microversion: 2.40
-        backend_names: lvm
-        default_share_type_name: default
-        capability_create_share_from_snapshot_support: True
-        run_mount_snapshot_tests: True
-        run_migration_with_preserve_snapshots_tests: False
+        capability_snapshot_support: True
         run_driver_assisted_migration_tests: False
-        run_host_assisted_migration_tests: True
-        run_replication_tests: False
         run_manage_unmanage_snapshot_tests: False
         run_manage_unmanage_tests: False
-        run_share_group_tests: False
-        run_revert_to_snapshot_tests: True
-        run_snapshot_tests: True
-        run_shrink_tests: False
+        run_migration_with_preserve_snapshots_tests: False
         run_quota_tests: True
-        capability_snapshot_support: True
-        enable_user_rules_for_protocols: cifs
-        enable_ip_rules_for_protocols: nfs
-        suppress_errors_in_cleanup: True
-        share_creation_retry_number: 2
+        run_replication_tests: False
+        run_snapshot_tests: True
