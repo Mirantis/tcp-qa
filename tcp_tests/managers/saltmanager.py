@@ -138,8 +138,9 @@ class SaltManager(ExecuteCommandsMixin):
 
         return fails if fails else None
 
-    def enforce_state(self, tgt, state, args=None, kwargs=None):
-        r = self.local(tgt=tgt, fun='state.sls', args=state)
+    def enforce_state(self, tgt, state, fun='state.sls',
+                      args=None, kwargs=None):
+        r = self.local(tgt=tgt, fun=fun, args=state)
         f = self.check_result(r)
         return r, f
 
