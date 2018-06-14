@@ -6,6 +6,8 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
+{% import 'shared-salt.yaml' as SHARED with context %}
+
 # Install OpenStack control services
 
 - description: Install glance on all controllers
@@ -225,20 +227,6 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-#- description:  Allow all tcp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; openstack security group rule create --proto tcp --dst-port 22 default'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description:  Allow all icmp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; openstack security group rule create --proto icmp default'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-
 - description: sync time
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
     'service ntp stop; ntpd -gq;  service ntp start'
@@ -246,26 +234,4 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Install docker.io on gtw
-  cmd: salt-call cmd.run 'apt-get install docker.io -y'
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Enable forward policy
-  cmd: iptables --policy FORWARD ACCEPT
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create rc file on cfg
-  cmd: scp ctl01:/root/keystonercv3 /root
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Copy rc file
-  cmd: scp /root/keystonercv3 gtw01:/root
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
