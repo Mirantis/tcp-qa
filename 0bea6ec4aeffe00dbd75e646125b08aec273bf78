@@ -22,6 +22,30 @@
       "revId": "0bea6ec4aeffe00dbd75e646125b08aec273bf78",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0192a3c4_60968934",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-06-14T13:10:30Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "6bd11cda_025da181",
+      "range": {
+        "startLine": 298,
+        "startChar": 0,
+        "endLine": 298,
+        "endChar": 42
+      },
+      "revId": "0bea6ec4aeffe00dbd75e646125b08aec273bf78",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
