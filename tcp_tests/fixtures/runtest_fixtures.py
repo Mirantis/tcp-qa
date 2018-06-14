@@ -26,7 +26,7 @@ def tempest_actions(underlay, salt_actions):
     tempest_exclude_test_args = settings.TEMPEST_EXCLUDE_TEST_ARGS
     tempest_pattern = settings.TEMPEST_PATTERN
     cluster_name = settings.LAB_CONFIG_NAME
-    domain_name = "{}.local".format(cluster_name)
+    domain_name = settings.DOMAIN_NAME
     target = settings.TEMPEST_TARGET
     runtest = RuntestManager(
         underlay, salt_actions,
