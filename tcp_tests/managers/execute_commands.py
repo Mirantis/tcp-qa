@@ -114,6 +114,8 @@ class ExecuteCommandsMixin(object):
                         failed += 1
                     if s.startswith("[CRITICAL]"):
                         failed += 1
+                    if 'Fatal' in s:
+                        failed += 1
 
                 if result.exit_code != 0:
                     time.sleep(retry_delay)
