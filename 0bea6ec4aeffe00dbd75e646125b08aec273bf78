@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6bd11cda_025da181",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 298,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-06-14T12:56:59Z",
+      "side": 1,
+      "message": "Please put this method under the RuntestManager class",
+      "range": {
+        "startLine": 298,
+        "startChar": 0,
+        "endLine": 298,
+        "endChar": 42
+      },
+      "revId": "0bea6ec4aeffe00dbd75e646125b08aec273bf78",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
