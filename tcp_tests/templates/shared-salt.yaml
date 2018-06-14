@@ -1252,3 +1252,20 @@
   skip_fail: true
 
 {%- endmacro %}
+
+{%- macro INSTALL_DOCKER_ON_GTW() %}
+{###################################}
+
+- description: Install docker.io on gtw
+  cmd: salt-call cmd.run 'apt-get install docker.io -y'
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Enable forward policy
+  cmd: iptables --policy FORWARD ACCEPT
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+{%- endmacro %}

@@ -289,18 +289,6 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Install docker.io on gtw
-  cmd: salt-call cmd.run 'apt-get install docker.io -y'
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Enable forward policy
-  cmd: iptables --policy FORWARD ACCEPT
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Install manila-api on first node
   cmd: |
     salt -C 'I@manila:api and *01*' state.sls manila.api;
@@ -359,3 +347,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
+
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
+
