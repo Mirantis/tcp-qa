@@ -258,6 +258,7 @@ class RuntestManager(object):
                 inspect = inspect_res['return']
                 inspect = inspect[0]
                 inspect = next(inspect.iteritems())[1]
+                import rpdb; rpdb.set_trace()
                 status = inspect['State']['Status']
 
                 return status.lower() == s.lower()
