@@ -13,33 +13,55 @@
 #    under the License.
 
 from tcp_tests import logger
+from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 
 
 LOG = logger.logger
 
 
-class BackupRestoreManager(object):
+class BackupRestoreManager(ExecuteCommandsMixin):
     """Helper manager for execution backup restore"""
 
-    backup_cmd = 'backupninja -n --run /etc/backup.d/200.backup.rsync'
-
-    def __init__(self, underlay, salt_api, backup_cmd=None):
+    def __init__(self, config, underlay, salt_api):
+        self.__config = config
         self.underlay = underlay
         self.__salt_api = salt_api
-        self.backup_cmd = backup_cmd or self.backup_cmd
+        super(BackupRestoreManager, self).__init__(config, underlay)
 
     @property
     def salt_api(self):
         return self.__salt_api
 
-    def create_backup(self, tgt, backup_cmd=backup_cmd):
-        return self.salt_api.enforce_state(tgt, 'cmd.run', backup_cmd)
+    def get_node_name(self, tgt):
+        res = [node_name for node_name in
+               self.underlay.node_names() if tgt in node_name]
+        assert len(res) > 0, 'Can not find node name by tgt {}'.format(tgt)
+        return res[0]
 
-    def restore_salt_master(self, tgt):
-        return self.salt_api.local(tgt, 'salt.master.restore')
+    def create_backup(self, tgt, backup_cmd=None):
+        if not backup_cmd:
+            backup_cmd = 'backupninja -n --run /etc/backup.d/200.backup.rsync'
+        step = {'cmd': backup_cmd, 'node_name': self.get_node_name(tgt)}
+        self.execute_command(step, 'Running backup command')
 
-    def restore_salt_minion(self, tgt):
-        return self.salt_api.local(tgt, 'salt.minion.restore')
+    def check_file_exists(self, tgt, file_path=None):
+        if not file_path:
+            file_path = '/etc/backup.d/200.backup.rsync'
+        cmd = 'test -f {}'.format(file_path)
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        self.execute_command(step, 'Check file {} exists'.format(file_path))
+
+    def delete_dirs_files(self, tgt, file_path='/srv/salt/reclass/classes/'):
+        cmd = 'rm -rf {}'.format(file_path)
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        self.execute_command(step, 'Check file {} exists'.format(file_path))
+
+    def restore_salt(self, tgt):
+        cmd = 'salt-call state.sls salt.master.restore,salt.minion.restore'
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        result = self.execute_command(step, 'Restore salt master')
+        LOG.info('!!!!!!{}'.format(result))
+        return result
 
     def create_mysql_backup_backupninja(self, tgt, ):
         rets = []
@@ -56,7 +78,7 @@ class BackupRestoreManager(object):
         # for every restored database in /root/mysql/flags.
         return self.salt_api.local(tgt, 'mysql.client')
 
-    def create_mysql_xtrabackup(self, tgt, backup_cmd=backup_cmd):
+    def create_mysql_xtrabackup(self, tgt, backup_cmd=None):
         # Should be run on mysql master node
         return self.salt_api.enforce_state(
             tgt, 'cmd.run', '/usr/local/bin/innobackupex-runner.sh')
@@ -76,7 +98,7 @@ class BackupRestoreManager(object):
         return self.salt_api.enforce_state(tgt, 'service.stop mysql')
 
     def disconnect_wresp_master(self, tgt='I@galera:master'):
-        # TODO fins the way updated wresp
+        # TODO finds the way updated wresp
         return self.salt_api.enforce_state(
             tgt, 'cmd.run', 'wsrep_cluster_address=gcomm://')
 
