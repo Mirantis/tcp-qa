@@ -168,3 +168,4 @@
   skip_fail: false
 
 {{ BACKUP.MACRO_BACKUP_CEPH() }}
+{{ SHARED.RUN_NEW_TEMPEST() }}
