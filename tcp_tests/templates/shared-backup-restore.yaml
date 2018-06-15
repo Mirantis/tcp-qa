@@ -57,7 +57,7 @@
 - description: Refresh grains for the xtrabackup client node
   cmd: salt -C 'I@xtrabackup:client' saltutil.sync_grains
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
+  retry: {count: 5, delay: 10}
   skip_fail: false
 
 - description: Update the mine for the xtrabackup client node
@@ -65,7 +65,7 @@
     salt -C 'I@xtrabackup:client' mine.flush
     salt -C 'I@xtrabackup:client' mine.update
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
+  retry: {count: 3, delay: 5}
   skip_fail: false
 
 - description: Apply the xtrabackup client state
