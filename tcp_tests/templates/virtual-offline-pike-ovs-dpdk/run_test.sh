@@ -17,7 +17,7 @@ export TEST_GROUP=test_mcp_pike_ovs_install
 export RUN_TEMPEST=true
 
 # Offline deploy parameters
-export SALT_MODELS_REF_CHANGE=refs/changes/44/15144/1
+#export SALT_MODELS_REF_CHANGE=refs/changes/44/15144/1
 
 export BOOTSTRAP_TIMEOUT=1200
 
@@ -34,9 +34,9 @@ export FORMULA_REPOSITORY="deb [arch=amd64] http://apt.mirantis.local.test/ubunt
 export FORMULA_GPG="http://apt.mirantis.local.test/public.gpg"
 export SALT_REPOSITORY="deb [arch=amd64] http://apt.mirantis.local.test/ubuntu-xenial/ ${REPOSITORY_SUITE} salt/2016.3 main"
 export SALT_GPG="http://apt.mirantis.local.test/public.gpg"
-export UBUNTU_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/ubuntu xenial main universe restricted"
-export UBUNTU_UPDATES_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/ubuntu xenial-updates main universe restricted"
-export UBUNTU_SECURITY_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/ubuntu xenial-security main universe restricted"
+export UBUNTU_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/${REPOSITORY_SUITE}/ubuntu xenial main universe restricted"
+export UBUNTU_UPDATES_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/${REPOSITORY_SUITE}/ubuntu xenial-updates main universe restricted"
+export UBUNTU_SECURITY_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/${REPOSITORY_SUITE}/ubuntu xenial-security main universe restricted"
 
 cd tcp_tests
 py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -k ${TEST_GROUP}
