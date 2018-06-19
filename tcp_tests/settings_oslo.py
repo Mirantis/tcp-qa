@@ -305,10 +305,10 @@ k8s_deploy_opts = [
            default='sbPfel23ZigJF3Bm'),
     ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
     ct.Cfg('kubernetes_hyperkube_image', ct.String(),
-           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.8.13-11'.format(
+           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.10.4-4'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_pause_image', ct.String(),
-           default='{}/mirantis/kubernetes/pause-amd64:v1.8.13-11'.format(
+           default='{}/mirantis/kubernetes/pause-amd64:v1.10.4-4'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/node:v2.6.9'.format(
@@ -335,7 +335,7 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_virtlet_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_virtlet_image', ct.String(),
-           help="", default='mirantis/virtlet:v0.8.0'),
+           help="", default='mirantis/virtlet:v1.1.0'),
     ct.Cfg('kubernetes_externaldns_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_externaldns_image', ct.String(),
