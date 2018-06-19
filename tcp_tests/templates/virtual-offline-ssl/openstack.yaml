@@ -13,6 +13,7 @@
 {% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker/ ' + REPOSITORY_SUITE + ' stable') %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
 
 # Install OpenStack control services
 
@@ -523,5 +524,8 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+{{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
+{{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
 
 {{ SHARED.RUN_NEW_TEMPEST() }}

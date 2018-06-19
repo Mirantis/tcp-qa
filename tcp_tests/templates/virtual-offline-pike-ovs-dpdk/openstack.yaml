@@ -9,6 +9,8 @@
 {% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker/ ' + REPOSITORY_SUITE + ' stable') %}
 # Install OpenStack control services
 
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
+
 - description: Install glance on all controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@glance:server' state.sls glance -b 1
@@ -363,3 +365,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+{{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
+{{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
