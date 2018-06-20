@@ -77,7 +77,7 @@ class ExecuteCommandsMixin(object):
                 LOG.info(log_msg)
                 self.action_download(step)
 
-    def execute_command(self, step, msg):
+    def execute_command(self, step, msg, return_res=None):
         # Required fields
         cmd = step.get('cmd')
         node_name = step.get('node_name')
@@ -102,6 +102,8 @@ class ExecuteCommandsMixin(object):
                     msg + retry_msg, '=' * len(msg + retry_msg)))
 
                 result = remote.execute(cmd, verbose=True)
+                if return_res:
+                    return result
 
                 # Workaround of exit code 0 from salt in case of failures
                 failed = 0
