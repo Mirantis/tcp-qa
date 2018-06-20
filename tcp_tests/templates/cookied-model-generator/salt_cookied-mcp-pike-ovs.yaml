@@ -5,7 +5,7 @@
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
 # Path to the context files used to render Cluster and Environment models
-{%- set CLUSTER_CONTEXT_NAME = '_context-cookiecutter-mcp-pike-ovs.yaml' %}
+{%- set CLUSTER_CONTEXT_NAME = '_context-cookiecutter-mcp-mitaka-ovs.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['_context-environment.yaml'] %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
