@@ -153,31 +153,37 @@ class BackupRestoreManager(ExecuteCommandsMixin):
     # #################Backup_Restore_Glance###################
 
     def copy_glance_images_to_backup(self, path_to_backup,
-                                     tgt="I@glance:server and *01*"):
+                                     tgt="ctl03"):
         cmd = 'cp -a /var/lib/glance/images/. {}'.format(path_to_backup)
-        return self.salt_api.enforce_state(
-            tgt, 'cmd.run', cmd)
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        return self.execute_command(step, 'Copy glance images to backup')
+
+    def get_image_uud(self, tgt='ctl03'):
+        cmd = (". /root/keystonercv3; "
+               "openstack image list -c ID|  awk 'NR==4'| cut -d '|' -f 2")
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        res = self.execute_command(step, 'Get uuid of image on fs',
+                                   return_res=True)
+        return res
+
+    def delete_image_from_fs(self, uuid, tgt="ctl03"):
+        cmd = ('cd /var/lib/glance/images/; rm {}'.format(uuid))
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        self.execute_command(step, 'Delete image before restore')
 
     def copy_glance_images_from_backup(self, path_to_backup,
-                                       tgt="I@glance:server and *01*"):
+                                       tgt="ctl03"):
         cmd = 'cp -a {}/. /var/lib/glance/images/'.format(path_to_backup)
-        return self.salt_api.enforce_state(
-            tgt, 'cmd.run', cmd)
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        return self.execute_command(step, 'Copy to glance')
 
-    def check_images_after_backup(self, tgt="I@keystone:client"):
-        # TODO If the context of the Glance
-        # images files is lost, run the following commands:
-        # salt -C 'I@glance:server' cmd.run
-        # "chown glance:glance <IMAGE_FILE_NAME>"
-        # salt -C 'I@glance:server' cmd.run "chmod 640 <IMAGE_FILE_NAME>"
-        cmd = '. /root/keystonercv3; openstack image list'
-        return self.salt_api.enforce_state(tgt, 'cmd.run', cmd)
+    def check_image_on_fs(self, uuid, tgt="ctl03"):
+        cmd = ('ls /var/lib/glance/images/ | grep {}'.format(uuid))
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        self.execute_command(step, 'Check image exists after restore')
 
-    # #################Backup_Restore_cinder_volumes_and_snapshots###
-    # TODO Verify that a complete backup was created on
-    # the MySQL Galera Database Master node
-    # ls /var/backups/mysql/xtrabackup/full
-    # TODO(tleontovich): add method to check needed configs
-    # TODO (tleontovich): check pillars
-    # TODO (tleontovich): check  backup is created, and
-    # restore restores
+    def check_image_after_backup(self, uuid, tgt="ctl03"):
+        cmd = ('. /root/keystonercv3; '
+               'openstack image save {} --file test'.format(uuid))
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        self.execute_command(step, 'Save image after backup')
