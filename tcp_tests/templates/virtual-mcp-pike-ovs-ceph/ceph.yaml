@@ -166,3 +166,7 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
+
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
+{{ SHARED.RUN_NEW_TEMPEST() }}
+

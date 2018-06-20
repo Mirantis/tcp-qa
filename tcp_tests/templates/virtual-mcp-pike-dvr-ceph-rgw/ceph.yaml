@@ -168,3 +168,5 @@
   skip_fail: false
 
 {{ BACKUP.MACRO_BACKUP_CEPH() }}
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
+{{ SHARED.RUN_NEW_TEMPEST() }}

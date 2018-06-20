@@ -123,6 +123,12 @@ class RuntestManager(object):
             "{}*".format(self.target),
             'pip.install', 'docker'), None
 
+    def run_salt_minion_state(self):
+        return self.salt_api.enforce_state(self.master_tgt, 'salt.minion')
+
+    def check_ping_salt_master(self):
+        return self.salt_api.local('cfg01*', 'test.ping')
+
     def install_formula(self):
         return self.salt_api.local(
             self.master_tgt,
@@ -203,14 +209,25 @@ class RuntestManager(object):
         self.store_runtest_model()
         res = self.install_formula()
         LOG.info(json.dumps(res, indent=4))
+
         res = self.install_python_lib()
         LOG.info(json.dumps(res, indent=4))
+
+        res = self.run_salt_minion_state()
+        LOG.info(json.dumps(res, indent=4))
+
+        res = self.check_ping_salt_master()
+        LOG.info(json.dumps(res, indent=4))
+
         res = self.create_networks()
         LOG.info(json.dumps(res, indent=4))
+
         res = self.create_flavors()
         LOG.info(json.dumps(res, indent=4))
+
         res = self.create_cirros()
         LOG.info(json.dumps(res, indent=4))
+
         res = self.generate_config()
         LOG.info(json.dumps(res, indent=4))
 
