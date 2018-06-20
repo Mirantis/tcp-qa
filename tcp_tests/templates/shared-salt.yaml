@@ -47,7 +47,7 @@
 
 {% set SALT_FORMULAS_REFS = os_env('SALT_FORMULAS_REFS', '') %}
 {% set TEMPEST_PATTERN = os_env('TEMPEST_PATTERN', 'tempest') %}
-{% set EXCLUDE_TEST_ARGS = os_env('EXCLUDE_TEST_ARGS', '') %}
+{% set EXCLUDE_TEST_ARGS = os_env('EXCLUDE_TEST_ARGS', '--blacklist-file mcp_pike_lvm_skip.list') %}
 {% set SALT_FORMULAS_REPO = os_env('SALT_FORMULAS_REPO', 'https://gerrit.mcp.mirantis.net/salt-formulas') %}
 
 # Needed for using different models in different templates
