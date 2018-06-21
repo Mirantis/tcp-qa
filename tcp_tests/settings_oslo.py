@@ -361,9 +361,9 @@ k8s_opts = [
            default=False),
     ct.Cfg('k8s_conformance_image', ct.String(),
            default='docker-prod-virtual.docker.mirantis.net/mirantis/'
-                   'kubernetes/k8s-conformance:v1.8.13-11'),
+                   'kubernetes/k8s-conformance:v1.10.4-4'),
     ct.Cfg('k8s_update_chain', ct.String(),
-           default='v1.9.8-4 v1.10.3-3')
+           default='v1.9.8-4 v1.10.4-4')
 ]
 
 day1_cfg_config_opts = [
