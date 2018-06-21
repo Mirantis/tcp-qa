@@ -3,6 +3,8 @@
 {% from 'cookied-mcp-pike-dvr/underlay.yaml' import HOSTNAME_CTL02 with context %}
 {% from 'cookied-mcp-pike-dvr/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'cookied-mcp-pike-dvr/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-mcp-pike-dvr/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-mcp-pike-dvr/underlay.yaml' import DOMAIN_NAME with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
