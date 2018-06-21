@@ -1208,6 +1208,18 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: Execute salt.minion on config node
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls salt.minion;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Test ping
+  cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False test.ping;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Create flavors for tests
   cmd: |
     salt 'cfg01*' state.sls nova.client;
