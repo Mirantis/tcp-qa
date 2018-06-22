@@ -311,13 +311,13 @@ k8s_deploy_opts = [
            default='{}/mirantis/kubernetes/pause-amd64:v1.10.4-4'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/node:v2.6.9'.format(
+           default='{}/mirantis/projectcalico/calico/node:v2.6.10'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_calicoctl_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/ctl:v1.6.4'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_cni_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/cni:v1.11.5'.format(
+           default='{}/mirantis/projectcalico/calico/cni:v1.11.6'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_netchecker_enabled', ct.Boolean(),
            help="", default=True),
