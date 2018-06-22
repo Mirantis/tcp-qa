@@ -7,6 +7,8 @@ nodes:
       interfaces:
         ens3:
           role: single_dhcp
+        ens4:
+          role: single_ctl
 
     # Physical nodes
     kvm01.cookied-bm-mcp-ovs-dpdk.local:

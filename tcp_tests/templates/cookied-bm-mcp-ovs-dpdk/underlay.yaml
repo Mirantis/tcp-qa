@@ -136,16 +136,16 @@ template:
                   l2_network_device: admin
                   interface_model: *interface_model
                   mac_address: !os_env ETH1_MAC_ADDRESS_CFG01
-                #- label: ens4
-                #  l2_network_device: private
-                #  interface_model: *interface_model
+                - label: ens4
+                  l2_network_device: private
+                  interface_model: *interface_model
               network_config:
                 ens3:
                   networks:
                     - admin
-                #ens4:
-                #  networks:
-                #    - private
+                ens4:
+                  networks:
+                    - private
 
 
       - name: default
