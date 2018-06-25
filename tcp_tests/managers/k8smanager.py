@@ -37,9 +37,10 @@ class K8SManager(ExecuteCommandsMixin):
     __config = None
     __underlay = None
 
-    def __init__(self, config, underlay, salt):
+    def __init__(self, config, underlay, salt, hardware):
         self.__config = config
         self.__underlay = underlay
+        self.__hardware = hardware
         self._salt = salt
         self._api_client = None
         super(K8SManager, self).__init__(
@@ -343,15 +344,17 @@ class K8SManager(ExecuteCommandsMixin):
         return sum(pods)
 
     def run_conformance(self, timeout=60 * 60, log_out='k8s_conformance.log',
-                        raise_on_err=True):
-        with self.__underlay.remote(
-                node_name=self.ctl_host) as remote:
-            result = remote.check_call(
-                "set -o pipefail; docker run --net=host -e API_SERVER="
-                "'http://127.0.0.1:8080' {0} | tee {1}".format(
-                    self.__config.k8s.k8s_conformance_image, log_out),
-                timeout=timeout, raise_on_err=raise_on_err)['stdout']
-            return result
+                        raise_on_err=True, node_name=None,
+                        api_server='http://127.0.0.1:8080'):
+        if node_name is None:
+            node_name = self.ctl_host
+        cmd = "set -o pipefail; docker run --net=host -e API_SERVER="\
+              "'{api}' {image} | tee '{log}'".format(
+               api=api_server, image=self.__config.k8s.k8s_conformance_image,
+               log=log_out)
+        return self.__underlay.check_call(
+               cmd=cmd, node_name=node_name, timeout=timeout,
+               raise_on_err=raise_on_err)
 
     def get_k8s_masters(self):
         k8s_masters_fqdn = self._salt.get_pillar(tgt='I@kubernetes:master',
@@ -704,3 +707,27 @@ class K8SManager(ExecuteCommandsMixin):
         update_commands = self.__underlay.read_template(steps_path)
         self.execute_commands(
             update_commands, label="Updating kubernetes to '{}'".format(tag))
+
+    def get_keepalived_vip(self):
+        ctl_vip_pillar = self._salt.get_pillar(
+            tgt="I@kubernetes:control:enabled:True",
+            pillar="_param:cluster_vip_address")[0]
+        return [vip for minion_id, vip in ctl_vip_pillar.items()][0]
+
+    def get_node_name_by_subname(self, node_sub_name):
+        return [node_name for node_name
+                in self.__underlay.node_names()
+                if node_sub_name in node_name]
+
+    def shutdown_node(self, node_name, warm=True, reboot=True, timeout=10*60):
+        if warm:
+            LOG.info("Warm shutdown on node '{}'".format(node_name))
+            self.__underlay.check_call(cmd="shutdown +1", node_name=node_name)
+        LOG.info("Destroying node '{}'".format(node_name))
+        self.__hardware.destroy_node(node_name)
+        self.__hardware.wait_for_node_state(
+            node_name, state='offline', timeout=timeout)
+        if reboot:
+            self.__hardware.start_node(node_name)
+            self.__hardware.wait_for_node_state(
+                node_name, state='active', timeout=timeout)
