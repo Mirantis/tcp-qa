@@ -561,3 +561,7 @@ class UnderlaySSHManager(object):
         return [node_name for node_name
                 in self.node_names()
                 if node_name.startswith(target)]
+
+    def get_node_names_by_subname(self, node_sub_name):
+        return [node_name for node_name in self.node_names()
+                if node_sub_name in node_name]

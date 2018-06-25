@@ -23,12 +23,10 @@ class CephManager(ExecuteCommandsMixin):
 
     __config = None
     __underlay = None
-    __hardware = None
 
-    def __init__(self, config, underlay,  hardware, salt):
+    def __init__(self, config, underlay, salt):
         self.__config = config
         self.__underlay = underlay
-        self.__hardware = hardware
         self._salt = salt
         super(CephManager, self).__init__(
             config=config, underlay=underlay)
