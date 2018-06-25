@@ -13,6 +13,7 @@
 #    under the License.
 
 import pytest
+import time
 
 from tcp_tests.helpers import ext
 from tcp_tests.helpers import utils
@@ -23,7 +24,7 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def k8s_actions(config, underlay, salt_deployed):
+def k8s_actions(config, underlay, salt_deployed, hardware):
     """Fixture that provides various actions for K8S
 
     :param config: fixture provides oslo.config
@@ -33,7 +34,7 @@ def k8s_actions(config, underlay, salt_deployed):
 
     For use in tests or fixtures to deploy a custom K8S
     """
-    return k8smanager.K8SManager(config, underlay, salt_deployed)
+    return k8smanager.K8SManager(config, underlay, salt_deployed, hardware)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.k8s_deployed)
@@ -79,7 +80,8 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
     LOG.warning('Restarting keepalived service on controllers...')
     k8s_actions._salt.local(tgt='ctl*', fun='cmd.run',
                             args='systemctl restart keepalived.service')
-
+    # give some time to keepalived to enter in MASTER state
+    time.sleep(5)
     return k8s_actions
 
 
