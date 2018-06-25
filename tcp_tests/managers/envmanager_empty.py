@@ -104,3 +104,11 @@ class EnvironmentManagerEmpty(object):
     def delete_environment(self):
         """Delete environment"""
         pass
+
+    def warm_shutdown_nodes(self, underlay, nodes_prefix, timeout=600):
+        raise Exception(
+            "Node shutdown unsupported method on this environment manager")
+
+    def warm_restart_nodes(self, underlay, nodes_prefix, timeout=600):
+        raise Exception(
+            "Node restart unsupported method on this environment manager")

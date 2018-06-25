@@ -44,7 +44,7 @@ class TestFailoverCeph(object):
     @pytest.mark.fail_snapshot
     def test_restart_osd_node(self, func_name, underlay, config,
                               openstack_deployed, ceph_deployed,
-                              openstack_actions,
+                              openstack_actions, hardware,
                               rally, show_step):
         """Test restart ceph osd node
 
@@ -78,7 +78,7 @@ class TestFailoverCeph(object):
 
         # STEP #3
         show_step(3)
-        openstack_actions.warm_restart_nodes('osd01')
+        hardware.warm_restart_nodes(underlay, 'osd01')
 
         openstack_actions._salt.local(
             tgt='*', fun='cmd.run',
@@ -112,7 +112,7 @@ class TestFailoverCeph(object):
                               openstack_deployed, ceph_deployed,
                               common_services_actions,
                               salt_actions, openstack_actions,
-                              rally, show_step):
+                              rally, show_step, hardware):
         """Test restart ceph cmn node
 
         Scenario:
@@ -145,7 +145,7 @@ class TestFailoverCeph(object):
 
         # STEP #3
         show_step(3)
-        openstack_actions.warm_restart_nodes('cmn01')
+        hardware.warm_restart_nodes(underlay, 'cmn01')
 
         openstack_actions._salt.local(
             tgt='*', fun='cmd.run',
@@ -177,7 +177,7 @@ class TestFailoverCeph(object):
     @pytest.mark.fail_snapshot
     def test_restart_rgw_node(self, func_name, underlay, config,
                               openstack_deployed, ceph_deployed,
-                              common_services_actions,
+                              common_services_actions, hardware,
                               salt_actions, openstack_actions,
                               rally, show_step):
         """Test restart ceph rgw node
@@ -215,7 +215,7 @@ class TestFailoverCeph(object):
 
         # STEP #3
         show_step(3)
-        openstack_actions.warm_restart_nodes('rgw01')
+        hardware.warm_restart_nodes(underlay, 'rgw01')
 
         openstack_actions._salt.local(
             tgt='*', fun='cmd.run',
