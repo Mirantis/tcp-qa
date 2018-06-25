@@ -420,6 +420,27 @@ class EnvironmentManager(object):
                          timeout_msg=('Node {0} failed '
                                       'to become active'.format(node)))
 
+    def get_node_names_by_subname(self, node_sub_name):
+        return [node_name for node_name
+                in self.__underlay.node_names()
+                if node_sub_name in node_name]
+
+    def warm_shutdown_nodes(self, underlay, nodes_sub_name, timeout=600):
+        node_names = self.get_node_names_by_subname(nodes_sub_name)
+        for node in node_names:
+            LOG.debug('Shutdown node {0}'.format(node))
+            underlay.check_call(cmd="shutdown +1", node_name=node)
+        for node in node_names:
+            self.wait_for_node_state(node, state='offline', timeout=timeout)
+
+    def warm_restart_nodes(self, underlay, nodes_sub_name, timeout=600):
+        self.warm_shutdown_nodes(underlay, nodes_sub_name, timeout)
+        node_names = self.get_node_names_by_subname(nodes_sub_name)
+        for node in node_names:
+            LOG.debug('Starting node {0}'.format(node))
+            self.start_node(node)
+            self.wait_for_node_state(node, state='active', timeout=timeout)
+
     def has_snapshot(self, name):
         return self.__env.has_snapshot(name)
 
