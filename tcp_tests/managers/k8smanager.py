@@ -37,9 +37,10 @@ class K8SManager(ExecuteCommandsMixin):
     __config = None
     __underlay = None
 
-    def __init__(self, config, underlay, salt):
+    def __init__(self, config, underlay, salt, hardware):
         self.__config = config
         self.__underlay = underlay
+        self.__hardware = hardware
         self._salt = salt
         self._api_client = None
         super(K8SManager, self).__init__(
@@ -704,3 +705,27 @@ class K8SManager(ExecuteCommandsMixin):
         update_commands = self.__underlay.read_template(steps_path)
         self.execute_commands(
             update_commands, label="Updating kubernetes to '{}'".format(tag))
+
+    def get_keepalived_vip(self):
+        ctl_vip_pillar = self._salt.get_pillar(
+            tgt="I@kubernetes:control:enabled:True",
+            pillar="_param:cluster_vip_address")[0]
+        return [vip for minion_id, vip in ctl_vip_pillar.items()][0]
+
+    def get_node_name_by_subname(self, node_sub_name):
+        return [node_name for node_name
+                in self.__underlay.node_names()
+                if node_sub_name in node_name]
+
+    def shutdown_node(self, node_name, warm=True, reboot=True, timeout=10*60):
+        if warm:
+            LOG.info("Warm shutdown on node '{}'".format(node_name))
+            self.__underlay.check_call(cmd="shutdown +1", node_name=node_name)
+        LOG.info("Destroying node '{}'".format(node_name))
+        self.__hardware.destroy_node(node_name)
+        self.__hardware.wait_for_node_state(
+            node_name, state='offline', timeout=timeout)
+        if reboot:
+            self.__hardware.start_node(node_name)
+            self.__hardware.wait_for_node_state(
+                node_name, state='active', timeout=timeout)
