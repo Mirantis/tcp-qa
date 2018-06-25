@@ -22,10 +22,25 @@ LOG = logger.logger
 class TestFailoverNodes(object):
     """Test class for testing OpenStack nodes failover"""
 
+    def warm_shutdown_nodes(self, underlay, hardware, nodes_sub_name):
+        node_names = hardware.get_node_names_by_subname(nodes_sub_name)
+        for node in node_names:
+            LOG.debug('Shutdown node {0}'.format(node))
+            underlay.check_call(cmd="shutdown +1", node_name=node)
+        for node in node_names:
+            hardware.wait_for_node_state(node, state='offline', timeout=600)
+
+    def warm_restart_nodes(self, underlay, hardware, nodes_sub_name):
+        self.warm_shutdown_nodes(underlay. hardware, nodes_sub_name)
+        node_names = hardware.get_node_names_by_subname(nodes_sub_name)
+        for node in node_names:
+            hardware.start_node(node)
+            hardware.wait_for_node_state(node, state='active', timeout=600)
+
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_warm_shutdown_ctl01_node(self, underlay, openstack_deployed,
-                                      openstack_actions, show_step):
+    def test_warm_shutdown_ctl01_node(self, underlay, hardware, show_step,
+                                      openstack_deployed, openstack_actions):
         """Test warm shutdown ctl01
 
         Scenario:
@@ -43,7 +58,7 @@ class TestFailoverNodes(object):
         show_step(3)
         # STEP #4
         show_step(4)
-        openstack_actions.warm_shutdown_openstack_nodes('ctl01')
+        self.warm_shutdown_nodes(underlay, hardware, 'ctl01')
         # STEP #5
         show_step(5)
         openstack_actions.run_tempest(pattern='smoke')
@@ -52,7 +67,7 @@ class TestFailoverNodes(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_restart_ctl01_node(self, underlay, openstack_deployed,
+    def test_restart_ctl01_node(self, underlay, hardware, openstack_deployed,
                                 openstack_actions, show_step):
         """Test restart ctl01
 
@@ -72,7 +87,7 @@ class TestFailoverNodes(object):
 
         # STEP #4
         show_step(4)
-        openstack_actions.warm_restart_nodes('ctl01')
+        self.warm_restart_nodes(underlay, hardware, 'ctl01')
         # STEP #5
         show_step(5)
         openstack_actions.run_tempest(pattern='smoke')
@@ -82,7 +97,7 @@ class TestFailoverNodes(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_warm_shutdown_cmp01_node(self, underlay, openstack_deployed,
-                                      openstack_actions, show_step):
+                                      hardware, openstack_actions, show_step):
         """Test warm shutdown cmp01
 
         Scenario:
@@ -101,7 +116,7 @@ class TestFailoverNodes(object):
 
         # STEP #4
         show_step(4)
-        openstack_actions.warm_shutdown_openstack_nodes('cmp01')
+        self.warm_shutdown_nodes(underlay, hardware, 'cmp01')
         # STEP #5
         show_step(5)
         openstack_actions.run_tempest(pattern='smoke')
@@ -111,7 +126,7 @@ class TestFailoverNodes(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_restart_cmp01_node(self, underlay, openstack_deployed,
-                                openstack_actions, show_step):
+                                openstack_actions, show_step, hardware):
         """Test restart cmp01
 
         Scenario:
@@ -130,7 +145,7 @@ class TestFailoverNodes(object):
 
         # STEP #4
         show_step(4)
-        openstack_actions.warm_restart_nodes('cmp01')
+        self.warm_restart_nodes(underlay, hardware, 'cmp01')
         # STEP #5
         show_step(5)
         openstack_actions.run_tempest(pattern='smoke')
@@ -140,7 +155,7 @@ class TestFailoverNodes(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
-    def test_restart_mon01_node(self, openstack_actions,
+    def test_restart_mon01_node(self, openstack_actions, hardware, underlay,
                                 sl_os_deployed, show_step):
         """Test restart mon01
 
@@ -172,7 +187,7 @@ class TestFailoverNodes(object):
                         before_result if 'passed' not in test['outcome']]
         # STEP #5
         show_step(5)
-        openstack_actions.warm_restart_nodes('mon01')
+        self.warm_restart_nodes(underlay, hardware, 'mon01')
         # STEP #6
         show_step(6)
         sl_os_deployed.check_prometheus_targets(mon_nodes)
@@ -191,9 +206,8 @@ class TestFailoverNodes(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
-    def test_warm_shutdown_mon01_node(self, openstack_actions,
-                                      sl_os_deployed,
-                                      show_step):
+    def test_warm_shutdown_mon01_node(self, underlay, hardware, sl_os_deployed,
+                                      openstack_actions, show_step):
         """Test warm shutdown mon01
 
         Scenario:
@@ -223,7 +237,7 @@ class TestFailoverNodes(object):
                         before_result if 'passed' not in test['outcome']]
         # STEP #5
         show_step(5)
-        openstack_actions.warm_shutdown_openstack_nodes('mon01')
+        self.warm_shutdown_nodes(underlay, hardware, 'mon01')
         # STEP #6
         show_step(6)
         # Run SL component tetsts
@@ -239,7 +253,7 @@ class TestFailoverNodes(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
-    def test_restart_mon_with_vip(self, sl_os_deployed,
+    def test_restart_mon_with_vip(self, underlay, hardware, sl_os_deployed,
                                   openstack_actions, salt_actions,
                                   common_services_actions, show_step):
         """Test restart mon with VIP
@@ -286,7 +300,7 @@ class TestFailoverNodes(object):
 
         # STEP #6
         show_step(6)
-        openstack_actions.warm_restart_nodes(minion_vip)
+        self.warm_restart_nodes(underlay, hardware, minion_vip)
 
         # STEP #7
         show_step(7)
@@ -314,7 +328,7 @@ class TestFailoverNodes(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
-    def test_restart_ctl_with_vip(self, underlay, openstack_deployed,
+    def test_restart_ctl_with_vip(self, underlay, hardware, openstack_deployed,
                                   openstack_actions, salt_actions,
                                   common_services_actions, show_step):
         """Test restart clt with VIP
@@ -350,7 +364,7 @@ class TestFailoverNodes(object):
 
         # STEP #5
         show_step(5)
-        openstack_actions.warm_restart_nodes(minion_vip)
+        self.warm_restart_nodes(underlay, hardware, minion_vip)
 
         # STEP #6
         show_step(6)

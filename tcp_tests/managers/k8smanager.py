@@ -343,15 +343,17 @@ class K8SManager(ExecuteCommandsMixin):
         return sum(pods)
 
     def run_conformance(self, timeout=60 * 60, log_out='k8s_conformance.log',
-                        raise_on_err=True):
-        with self.__underlay.remote(
-                node_name=self.ctl_host) as remote:
-            result = remote.check_call(
-                "set -o pipefail; docker run --net=host -e API_SERVER="
-                "'http://127.0.0.1:8080' {0} | tee {1}".format(
-                    self.__config.k8s.k8s_conformance_image, log_out),
-                timeout=timeout, raise_on_err=raise_on_err)['stdout']
-            return result
+                        raise_on_err=True, node_name=None,
+                        api_server='http://127.0.0.1:8080'):
+        if node_name is None:
+            node_name = self.ctl_host
+        cmd = "set -o pipefail; docker run --net=host -e API_SERVER="\
+              "'{api}' {image} | tee '{log}'".format(
+               api=api_server, image=self.__config.k8s.k8s_conformance_image,
+               log=log_out)
+        return self.__underlay.check_call(
+               cmd=cmd, node_name=node_name, timeout=timeout,
+               raise_on_err=raise_on_err)
 
     def get_k8s_masters(self):
         k8s_masters_fqdn = self._salt.get_pillar(tgt='I@kubernetes:master',
@@ -704,3 +706,14 @@ class K8SManager(ExecuteCommandsMixin):
         update_commands = self.__underlay.read_template(steps_path)
         self.execute_commands(
             update_commands, label="Updating kubernetes to '{}'".format(tag))
+
+    def get_keepalived_vip(self):
+        """
+        Return k8s VIP IP address
+
+        :return: str, IP address
+        """
+        ctl_vip_pillar = self._salt.get_pillar(
+            tgt="I@kubernetes:control:enabled:True",
+            pillar="_param:cluster_vip_address")[0]
+        return [vip for minion_id, vip in ctl_vip_pillar.items()][0]
