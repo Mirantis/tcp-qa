@@ -20,16 +20,11 @@
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
 {%- if OVERRIDES != '' %}
-- description: Clear {{OVERRIDES_FILENAME}}
-  cmd: touch {{OVERRIDES_FILENAME}}
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 {%- for param in OVERRIDES.splitlines() %}
+{%- set key, value = param.replace(' ','').split(':') %}
 - description: Override cluster parameters
   cmd: |
-    echo -e "{{ param }}" >> {{OVERRIDES_FILENAME}}
+    salt-call reclass.cluster_meta_set name='{{ key }}' value='{{ value }}' file_name='{{OVERRIDES_FILENAME}}'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
