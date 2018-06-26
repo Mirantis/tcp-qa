@@ -4,7 +4,7 @@
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
-
+{% set SALT_VERSION = os_env('SALT_VERSION', '2016.3') %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
 # Install salt to the config node
@@ -15,8 +15,8 @@
     which wget >/dev/null || (apt-get update; apt-get install -y wget);
     echo "deb [arch=amd64] http://apt.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
-    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
-    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/" + SALT_VERSION + "xenial main" > /etc/apt/sources.list.d/saltstack.list;
+    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/"+SALT_VERSION+ "/SALTSTACK-GPG-KEY.pub | apt-key add -;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false

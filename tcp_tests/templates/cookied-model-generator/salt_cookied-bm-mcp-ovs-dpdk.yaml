@@ -4,6 +4,7 @@
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-baremetal-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 {% set LAB_CONFIG_NAME = 'cookied-bm-mcp-ovs-dpdk' %}
+{% set SALT_VERSION = os_env('SALT_VERSION', '2016.3') %}
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-bm-mcp-ovs-dpdk') %}
 # Path to the context files used to render Cluster and Environment models
@@ -12,7 +13,8 @@
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2416') %}
 {%- set TENANT_VLAN = os_env('TENANT_VLAN', '2417') %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
-{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-2016.3/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
+{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/" + SALT_VERSION  + REPOSITORY_SUITE + " main") %}
+#{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-2016.3/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
