@@ -1,7 +1,7 @@
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_CTL01 with context %}
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW01 with context %}
-#{% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW02 with context %}
+{# from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_GTW02 with context #}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set PATTERN = os_env('PATTERN', 'false') %}

@@ -5,6 +5,7 @@
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 {% set OVERRIDES = os_env('OVERRIDES', 'override_example: true') %}
+{% set SALT_VERSION = os_env('SALT_VERSION', '2016.3') %}
 {% set OVERRIDES_FILENAME = os_env('OVERRIDES_FILENAME', '/srv/salt/reclass/classes/cluster/overrides.yml') %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}

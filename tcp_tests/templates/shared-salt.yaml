@@ -14,12 +14,14 @@
 {% set COOKIECUTTER_TAG = os_env('COOKIECUTTER_TAG','') %}
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
-
+# Currently we support 2 salt version that can be set over bellow var
+{% set SALT_VERSION = os_env('SALT_VERSION','2016.3') %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 {% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME} ' + REPOSITORY_SUITE + ' salt extra') %}
 {% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') %}
-#{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/2016.3 " + REPOSITORY_SUITE + " main") %}
-{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-2016.3/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
+#{# set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/2016.3 " + REPOSITORY_SUITE + " main") #}
+# Note repo is changed so new one looks like defined bellow
+{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-" + SALT_VERSION+ "/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
 {% set SALT_GPG = os_env('SALT_GPG', 'http://apt.mirantis.com/public.gpg') %}
 {% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME} main restricted universe") %}
 {% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-updates main restricted universe") %}
@@ -470,6 +472,15 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
+
+- description: Restart salt-api
+  cmd: |
+    set -e;
+    systemctl restart salt-api
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
 {%- endmacro %}
 
 
@@ -847,6 +858,13 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
+
+- description: Restart salt-api after states
+  cmd: systemctl restart salt-api
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
 {%- endmacro %}
 
 {%- macro MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=false) %}
@@ -1058,6 +1076,7 @@
     export node_domain={{ DOMAIN_NAME }}
     export nodes_os="xenial"
     export node_hostname={{ node_hostname }}
+    export saltversion={{ SALT_VERSION }}
     set -xe
     export BOOTSTRAP_SCRIPT_URL=$bootstrap_script_url
     export BOOTSTRAP_SCRIPT_URL=${BOOTSTRAP_SCRIPT_URL:-https://raw.githubusercontent.com/salt-formulas/salt-formulas-scripts/master/bootstrap.sh}
@@ -1311,6 +1330,42 @@
   cmd: iptables --policy FORWARD ACCEPT
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro MACRO_CHECK_SALT_VERSION_ON_NODES() %}
+{#####################################################}
+
+{%- for ssh in config.underlay.ssh %}
+  {%- set salt_roles = [] %}
+  {%- for role in ssh['roles'] %}
+    {%- if role in config.salt_deploy.salt_roles %}
+      {%- set _ = salt_roles.append(role) %}
+    {%- endif %}
+  {%- endfor %}
+
+  {%- if salt_roles %}
+- description: 'Check salt version is as expected'
+  cmd: salt-call test.version | grep {{ SALT_VERSION }}
+  node_name: {{ ssh['node_name'] }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+  {%- endif %}
+
+{%- endfor %}
+{%- endmacro %}
+
+{%- macro MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG() %}
+{#####################################################}
+
+- description: 'Check salt-api, salt-master and salt-minion version'
+  cmd: |
+    salt-master --version  | grep {{ SALT_VERSION }};
+    salt-minion --version  | grep {{ SALT_VERSION }};
+    salt-api --version  | grep {{ SALT_VERSION }};
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 {%- endmacro %}
