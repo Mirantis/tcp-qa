@@ -1,0 +1,105 @@
+nodes:
+    cfg01.bm-mcp-dpdk-cicd-pipeline.local:
+      reclass_storage_name: infra_config_node01
+      roles:
+      - infra_config
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+
+    # Physical nodes
+    kvm01.bm-mcp-dpdk-cicd-pipeline.local:
+      reclass_storage_name: infra_kvm_node01
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: single_mgm
+        enp3s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    kvm02.bm-mcp-dpdk-cicd-pipeline.local:
+      reclass_storage_name: infra_kvm_node02
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: single_mgm
+        enp3s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    kvm03.bm-mcp-dpdk-cicd-pipeline.local:
+      reclass_storage_name: infra_kvm_node03
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: single_mgm
+        enp3s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    cmp01.bm-mcp-dpdk-cicd-pipeline.local:
+      reclass_storage_name: openstack_compute_node01
+      roles:
+      - openstack_compute_dpdk
+      - features_lvm_backend
+      - linux_system_codename_xenial
+      - openstack_compute_sriov
+      interfaces:
+        enp5s0f0:
+          role: combined_vlan_ctl_mgm
+          single_address: 10.167.11.105
+        enp3s0f0:
+          role: bond_dpdk_prv_lacp
+          dpdk_pci: "0000:03:00.0"
+          tenant_address: 10.167.12.105
+        enp3s0f1:
+          role: bond_dpdk_prv_lacp
+          dpdk_pci: "0000:03:00.1"
+
+    cmp02.bm-mcp-dpdk-cicd-pipeline.local:
+      reclass_storage_name: openstack_compute_node02
+      roles:
+      - openstack_compute_dpdk
+      - features_lvm_backend
+      - linux_system_codename_xenial
+      - openstack_compute_sriov
+      interfaces:
+        enp5s0f0:
+          role: combined_vlan_ctl_mgm
+          single_address: 10.167.11.106
+        enp3s0f0:
+          role: bond_dpdk_prv_lacp
+          dpdk_pci: "0000:03:00.0"
+          tenant_address: 10.167.12.106
+        enp3s0f1:
+          role: bond_dpdk_prv_lacp
+          dpdk_pci: "0000:03:00.1"
+
+    gtw01.bm-mcp-dpdk-cicd-pipeline.local:
+      reclass_storage_name: openstack_gateway_node01
+      roles:
+      - openstack_gateway
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: single_mgm
+          deploy_address: 172.16.49.5
+        enp3s0f1:
+          role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+
+    gtw02.bm-mcp-dpdk-cicd-pipeline.local:
+      reclass_storage_name: openstack_gateway_node02
+      roles:
+      - openstack_gateway
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: single_mgm
+          deploy_address: 172.16.49.4
+        enp3s0f1:
+          role: bond0_ab_dvr_vxlan_ctl_mesh_floating

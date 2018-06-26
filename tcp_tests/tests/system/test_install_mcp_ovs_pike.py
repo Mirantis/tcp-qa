@@ -277,3 +277,12 @@ class TestMcpInstallOvsPike(object):
         if settings.RUN_TEMPEST:
             tempest_actions.prepare_and_run_tempest()
         LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
+    def test_bm_deploy_cicd(self, config, underlay,
+                            salt_deployed):
+        """Test for deploying an mcp environment on baremetal
+        via pipeline
+
+        """
+        LOG.info("*************** DONE **************")

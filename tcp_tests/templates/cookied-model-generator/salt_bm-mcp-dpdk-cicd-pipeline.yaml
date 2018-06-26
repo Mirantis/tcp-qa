@@ -1,0 +1,46 @@
+{% from 'cookied-model-generator/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-model-generator/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set LAB_CONFIG_NAME = 'bm-mcp-dpdk-cicd-pipeline' %}
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs_dpdk.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-environment.yaml'] %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
+- description: Re-install all the fromulas
+  cmd: |
+    set -e;
+    apt-get install -y salt-formula-*
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+- description: "Workaround for rack01 compute generator"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    # Remove rack01 key
+    reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    # Add openstack_compute_node definition from system
+    reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml --merge;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Temporary workaround for removing cinder-volume from CTL nodes
+  cmd: |
+    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/control.yml;
+    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/control.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+{{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
