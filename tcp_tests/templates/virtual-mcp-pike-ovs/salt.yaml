@@ -2,6 +2,14 @@
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_CMP01 with context %}
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_CMP02 with context %}
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_CTL03 with context %}
+{% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_PRX01 with context %}
+{% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_MDB01 with context %}
+{% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_MDB02 with context %}
+{% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_MDB03 with context %}
+{% from 'virtual-mcp-pike-ovs/underlay.yaml' import HOSTNAME_SHARE01 with context %}
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'virtual-mcp-pike-ovs/underlay.yaml' import DOMAIN_NAME with context %}
 
@@ -24,20 +32,15 @@
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
-- description: Hack gtw node
-  cmd: salt '{{ HOSTNAME_GTW01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Hack cmp01 node
-  cmd: salt '{{ HOSTNAME_CMP01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Hack cmp02 node
-  cmd: salt '{{ HOSTNAME_CMP02 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
+{{ SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG() }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_CTL01) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_CTL02) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_CTL03) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_CMP01) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_CMP02) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_GTW01) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_PRX01) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_SHARE01) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_MDB01) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_MDB02) }}
+{{ SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES(HOSTNAME_MDB03) }}

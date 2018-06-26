@@ -58,21 +58,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
-- description: Hack gtw node
-  cmd: salt '{{ HOSTNAME_GTW01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Hack cmp01 node
-  cmd: salt '{{ HOSTNAME_CMP01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Hack cmp02 node
-  cmd: salt '{{ HOSTNAME_CMP02 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
