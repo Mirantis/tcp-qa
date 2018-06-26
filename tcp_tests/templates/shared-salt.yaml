@@ -18,7 +18,7 @@
 {% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME} ' + REPOSITORY_SUITE + ' salt extra') %}
 {% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') %}
 #{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/2016.3 " + REPOSITORY_SUITE + " main") %}
-{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-2016.3/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
+{% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-2017.7/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
 {% set SALT_GPG = os_env('SALT_GPG', 'http://apt.mirantis.com/public.gpg') %}
 {% set UBUNTU_REPOSITORY = os_env('UBUNTU_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME} main restricted universe") %}
 {% set UBUNTU_UPDATES_REPOSITORY = os_env('UBUNTU_UPDATES_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-updates main restricted universe") %}
@@ -437,6 +437,15 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
+
+- description: Restart salt-api
+  cmd: |
+    set -e;
+    systemctl restart salt-api
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
 {%- endmacro %}
 
 
@@ -814,6 +823,13 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 10}
   skip_fail: false
+
+- description: Restart salt-api after states
+  cmd: systemctl restart salt-api
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 10}
+  skip_fail: false
+
 {%- endmacro %}
 
 {%- macro MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=false) %}
