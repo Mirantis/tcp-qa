@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "72b5241e_b6780cd8",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-pike-k8s-contrail/salt-context-environment.yaml",
+        "patchSetId": 38
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-06-26T12:51:51Z",
+      "side": 1,
+      "message": "Where is cmp nodes here?\nshould be something like \ncmp01:\n      reclass_storage_name: kubernetes_compute_node01\n      roles:\n      - kubernetes_compute\n      - linux_system_codename_xenial\n      - salt_master_host\n      interfaces:\n        ens3:\n          role: single_dhcp\n        ens4:\n          role: single_ctl\n          single_address: ${_param:kubernetes_compute_node01_address}\n\nAlso note that autoregistration is working only when external net available, so this also need to be hajacked  somewhere reclass-tools add-key parameters._param.kubernetes_compute_node01_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.ip+here /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/init.yml;  probably in model generator (cookied-model-generator in tcp qa)",
+      "revId": "2ffeab25b55f0b7a293dda21547e5a52e2f8eb77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c058bd83_f5703037",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-pike-k8s-contrail/underlay.yaml",
+        "patchSetId": 38
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-06-26T12:51:51Z",
+      "side": 1,
+      "message": "don\u0027t think you need gtw nodes in this deploy",
+      "range": {
+        "startLine": 16,
+        "startChar": 50,
+        "endLine": 16,
+        "endChar": 55
+      },
+      "revId": "2ffeab25b55f0b7a293dda21547e5a52e2f8eb77",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
