@@ -4,7 +4,7 @@
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
-
+{% set SALT_VERSION = os_env('SALT_VERSION', '2016.3') %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
 # Install salt to the config node
@@ -15,8 +15,8 @@
     which wget >/dev/null || (apt-get update; apt-get install -y wget);
     echo "deb [arch=amd64] http://apt.mirantis.com/xenial nightly salt extra" > /etc/apt/sources.list.d/mcp_salt.list;
     wget -O - http://apt.mirantis.com/public.gpg | apt-key add -;
-    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3 xenial main" > /etc/apt/sources.list.d/saltstack.list;
-    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/2016.3/SALTSTACK-GPG-KEY.pub | apt-key add -;
+    echo "deb http://repo.saltstack.com/apt/ubuntu/16.04/amd64/{{ SALT_VERSION }} xenial main" > /etc/apt/sources.list.d/saltstack.list;
+    wget -O - https://repo.saltstack.com/apt/ubuntu/16.04/amd64/{{ SALT_VERSION }}/SALTSTACK-GPG-KEY.pub | apt-key add -;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
@@ -69,21 +69,25 @@
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
-- description: Hack gtw node
-  cmd: salt 'gtw*' cmd.run "ip addr del 172.16.10.110/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
 
-- description: Hack cmp01 node
-  cmd: salt 'cmp01*' cmd.run "ip addr del 172.16.10.105/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
 
-- description: Hack cmp02 node
-  cmd: salt 'cmp02*' cmd.run "ip addr del 172.16.10.106/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
+#- description: Hack gtw node
+#  cmd: salt 'gtw*' cmd.run "ip addr del 172.16.10.110/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+#
+#- description: Hack cmp01 node
+#  cmd: salt 'cmp01*' cmd.run "ip addr del 172.16.10.105/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+#
+#- description: Hack cmp02 node
+#  cmd: salt 'cmp02*' cmd.run "ip addr del 172.16.10.106/24 dev ens4; ip addr flush dev ens4";
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
 

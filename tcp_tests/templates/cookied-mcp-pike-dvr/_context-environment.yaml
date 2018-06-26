@@ -210,7 +210,7 @@ nodes:
       - system.linux.system.repo.mcp.extra
       - system.linux.system.repo.mcp.apt_mirantis.openstack
       - system.linux.system.repo.mcp.apt_mirantis.ubuntu
-      - system.linux.system.repo.mcp.apt_mirantis.saltstack_2016_3
+      - system.linux.system.repo.mcp.apt_mirantis.saltstack
       interfaces:
         ens3:
           role: single_dhcp
@@ -227,7 +227,7 @@ nodes:
       - system.linux.system.repo.mcp.extra
       - system.linux.system.repo.mcp.apt_mirantis.openstack
       - system.linux.system.repo.mcp.apt_mirantis.ubuntu
-      - system.linux.system.repo.mcp.apt_mirantis.saltstack_2016_3
+      - system.linux.system.repo.mcp.apt_mirantis.saltstack
       interfaces:
         ens3:
           role: single_dhcp
