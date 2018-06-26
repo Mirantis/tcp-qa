@@ -42,45 +42,6 @@
 
 {{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/cluster/' + SHARED.CLUSTER_NAME + '/stacklight/server.yml') }}
 
-#- description: "Workaround for PROD-14831 , add 'dns' role to cmp01 and cmp02 nodes"
-#  cmd: |
-#    set -e;
-#    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
-#    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
-#    . /root/venv-reclass-tools/bin/activate;
-#    pip install git+https://github.com/dis-xcom/reclass-tools;
-
-#    # Combine 'dns' role with compute nodes
-#    reclass-tools add-key 'classes' 'cluster.{{ LAB_CONFIG_NAME }}.openstack.dns' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute.yml --merge;
-#    # Remove linux.network.interface hardcode from 'dns' role to avoid conflict with compute interfaces
-#    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/dns.yml
-
-#    export REPLACE_DIRS="/srv/salt/reclass/classes/ /srv/salt/reclass/nodes/"
-#    find ${REPLACE_DIRS} -type f -exec sed -i 's/openstack_dns_node01_address:.*/openstack_dns_node01_address: {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.105/g' {} +
-#    find ${REPLACE_DIRS} -type f -exec sed -i 's/openstack_dns_node02_address:.*/openstack_dns_node02_address: {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.106/g' {} +
-
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
-
-- description: Hack gtw node
-  cmd: salt '{{ HOSTNAME_GTW01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Hack cmp01 node
-  cmd: salt '{{ HOSTNAME_CMP01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Hack cmp02 node
-  cmd: salt '{{ HOSTNAME_CMP02 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false

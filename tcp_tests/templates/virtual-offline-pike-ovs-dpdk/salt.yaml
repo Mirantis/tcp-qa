@@ -20,17 +20,6 @@
 {% import 'virtual-offline-pike-ovs-dpdk/vswitch-config.yaml' as VSWITCH with context %}
 {% set VSWITCH_IP = SHARED.IPV4_NET_CONTROL_PREFIX+'.178' %}
 
-
-
-#- description: 'Generate nginx cert'
-#  cmd: |
-#    openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
-#    -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.gerrit.com" \
-#    -keyout ssl-nginx.key  -out ssl-nginx.crt;
-#  node_name: {{ HOSTNAME_APT01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
 - description: Check nginx APT node is ready
   cmd: systemctl status nginx;
   node_name: {{ HOSTNAME_APT01 }}
@@ -79,20 +68,3 @@
 {{ VSWITCH.MACRO_CHECK_BGPVPN_ENABLED_BY_DEFAULT() }}
 
 {{ VSWITCH.MACRO_ENABLE_L2GW(SHARED.CLUSTER_NAME, VSWITCH_IP) }}
-- description: Hack gtw node
-  cmd: salt 'gtw*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Hack cmp01 node
-  cmd: salt 'cmp01*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.105/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Hack cmp02 node
-  cmd: salt 'cmp02*' cmd.run "ip addr del {{ IPV4_NET_CONTROL_PREFIX }}.106/24 dev ens4; ip addr flush dev ens4";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
