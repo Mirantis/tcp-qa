@@ -26,7 +26,7 @@ class TestPipeline(object):
 
     @pytest.mark.fail_snapshot
     def test_pipeline(self, show_step, underlay,
-                      common_services_deployed, salt_deployed):
+                      salt_deployed):
         """Runner for Juniper contrail-tests
 
         Scenario:
@@ -38,19 +38,19 @@ class TestPipeline(object):
         """
         nodes = underlay.node_names()
         LOG.info("Nodes - {}".format(nodes))
-        cfg_node = 'cfg01.ocata-cicd.local'
+        cfg_node = 'cfg01.cookied-bm-mcp-ovs-dpdk.local'
         salt_api = salt_deployed.get_pillar(
             cfg_node, '_param:jenkins_salt_api_url')
         salt_api = salt_api[0].get(cfg_node)
         jenkins = JenkinsClient(
-            host='http://172.16.49.66:8081',
+            host='http://172.16.49.2:8081',
             username='admin',
             password='r00tme')
 
         # Creating param list for openstack deploy
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
-        params['STACK_INSTALL'] = 'core,kvm,openstack,ovs'
+        params['STACK_INSTALL'] = 'core,kvm,cicd,ovs'
         show_step(4)
         build = jenkins.run_build('deploy_openstack', params)
         jenkins.wait_end_of_build(
@@ -62,15 +62,15 @@ class TestPipeline(object):
         assert result == 'SUCCESS', "Deploy openstack was failed"
 
         # Changing param for cicd deploy
-        show_step(5)
-        params['STACK_INSTALL'] = 'cicd'
-        build = jenkins.run_build('deploy_openstack', params)
-        jenkins.wait_end_of_build(
-            name=build[0],
-            build_id=build[1],
-            timeout=60 * 60 * 2)
-        result = jenkins.build_info(name=build[0],
-                                    build_id=build[1])['result']
-        assert result == 'SUCCESS', "Deploy CICD was failed"
+        # show_step(5)
+        # params['STACK_INSTALL'] = 'openstack'
+        # build = jenkins.run_build('deploy_openstack', params)
+        # jenkins.wait_end_of_build(
+        #    name=build[0],
+        #    build_id=build[1],
+        #    timeout=60 * 60 * 2)
+        # result = jenkins.build_info(name=build[0],
+        #                            build_id=build[1])['result']
+        # assert result == 'SUCCESS', "Deploy CICD was failed"
 
         LOG.info("*************** DONE **************")
