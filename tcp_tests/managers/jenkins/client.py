@@ -78,24 +78,24 @@ class JenkinsClient(object):
     def run_build(self, name, params=None, timeout=600, verbose=False):
         params = params or self.make_defults_params(name)
         num = self.__client.build_job(name, params)
-        time.sleep(2)  # wait while job is started
+        time.sleep(20)  # wait while job is started
 
-        def is_blocked():
-            queued = self.__client.get_queue_item(num)
-            status = not queued['blocked']
-            if not status and verbose:
-                print("pending the job [{}] : {}".format(name, queued['why']))
-            return (status and
-                    'executable' in (queued or {}) and
-                    'number' in (queued['executable'] or {}))
+        #def is_blocked():
+        #    queued = self.__client.get_queue_item(num)
+        #    status = not queued['blocked']
+        #    if not status and verbose:
+        #        print("pending the job [{}] : {}".format(name, queued['why']))
+        #    return (status and
+        #            'executable' in (queued or {}) and
+        #            'number' in (queued['executable'] or {}))
 
-        helpers.wait(
-            is_blocked,
-            timeout=timeout,
-            interval=30,
-            timeout_msg='Timeout waiting to run the job [{}]'.format(name))
-        build_id = self.__client.get_queue_item(num)['executable']['number']
-        return name, build_id
+       # helpers.wait(
+       #     is_blocked,
+       #     timeout=timeout,
+       #     interval=30,
+       #     timeout_msg='Timeout waiting to run the job [{}]'.format(name))
+       # build_id = self.__client.get_queue_item(num)['executable']['number']
+       # return name, build_id
 
     def wait_end_of_build(self, name, build_id, timeout=600, interval=5,
                           verbose=False, job_output_prefix=''):
@@ -139,7 +139,6 @@ class JenkinsClient(object):
                         print(text.replace("\n", prefix), end='')
                         start[0] = text_size
             return status
-
         helpers.wait(
             building,
             timeout=timeout,
