@@ -17,12 +17,7 @@
 {# set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-2016.3/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") #}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
-{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
-
-{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
-
 {{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
-
 - description: Re-install all the fromulas
   cmd: |
     set -e;
@@ -31,22 +26,9 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
-- description: Sync formulas to service
-  cmd: |
-    set -e;
-    RECLASS_ROOT=${RECLASS_ROOT:-/srv/salt/reclass/};
-    FORMULAS_PATH=${FORMULAS_PATH:-/usr/share/salt-formulas};
-    [ ! -d ${RECLASS_ROOT}/classes/service ] && mkdir -p ${RECLASS_ROOT}/classes/service;
-    for formula_service in $(ls /usr/share/salt-formulas/reclass/service/); do
-        #Since some salt formula names contain "-" and in symlinks they should contain "_" adding replacement;
-        formula_service=${formula_service//-/$'_'};
-        if [ ! -L "${RECLASS_ROOT}/classes/service/${formula_service}" ]; then
-            ln -sf ${FORMULAS_PATH}/reclass/service/${formula_service} ${RECLASS_ROOT}/classes/service/${formula_service};
-        fi;
-    done
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
 - description: "Workaround for rack01 compute generator"
   cmd: |
@@ -68,6 +50,16 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/gateway.yml;
+    salt '*' saltutil.refresh_pillar;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
 
