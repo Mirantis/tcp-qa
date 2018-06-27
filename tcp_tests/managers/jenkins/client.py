@@ -78,7 +78,7 @@ class JenkinsClient(object):
     def run_build(self, name, params=None, timeout=600, verbose=False):
         params = params or self.make_defults_params(name)
         num = self.__client.build_job(name, params)
-        time.sleep(2)  # wait while job is started
+        time.sleep(20)  # wait while job is started
 
         def is_blocked():
             queued = self.__client.get_queue_item(num)
@@ -139,7 +139,6 @@ class JenkinsClient(object):
                         print(text.replace("\n", prefix), end='')
                         start[0] = text_size
             return status
-
         helpers.wait(
             building,
             timeout=timeout,
