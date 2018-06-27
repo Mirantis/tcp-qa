@@ -227,3 +227,12 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+- description: temp WR
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
+    'ifdown br-prv; ifup br-prv'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
