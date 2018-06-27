@@ -7,6 +7,9 @@ nodes:
       interfaces:
         ens3:
           role: single_dhcp
+        ens4:
+          role: single_static_ctl 
+        
 
     # Physical nodes
     kvm01.cookied-bm-mcp-ovs-dpdk.local:
@@ -60,6 +63,10 @@ nodes:
         enp3s0f1:
           role: bond_dpdk_prv_lacp
           dpdk_pci: "0000:03:00.1"
+        enp5s0f1:
+          role: sriov
+          openstack_nfv_sriov_pf_nic: ${_param:openstack_nfv_sriov_pf_nic}
+          openstack_nfv_sriov_numvfs: ${_param:openstack_nfv_sriov_pf_nic}
 
     cmp02.cookied-bm-mcp-ovs-dpdk.local:
       reclass_storage_name: openstack_compute_node02
@@ -79,6 +86,10 @@ nodes:
         enp3s0f1:
           role: bond_dpdk_prv_lacp
           dpdk_pci: "0000:03:00.1"
+        enp5s0f1:
+          role: sriov
+          openstack_nfv_sriov_pf_nic: ${_param:openstack_nfv_sriov_pf_nic}
+          openstack_nfv_sriov_numvfs: ${_param:openstack_nfv_sriov_pf_nic}
 
     gtw01.cookied-bm-mcp-ovs-dpdk.local:
       reclass_storage_name: openstack_gateway_node01
