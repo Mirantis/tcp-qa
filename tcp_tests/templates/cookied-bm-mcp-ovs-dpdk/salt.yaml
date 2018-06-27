@@ -75,41 +75,18 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
-
-########################################
-# Spin up Control Plane VMs on KVM nodes
-########################################
-
-- description: Execute 'libvirt' states to create necessary libvirt networks
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 10}
-  skip_fail: false
-
-- description: Temporary WR for correct bridge name according to envoronment templates
+- description: WR for correct acces to git repo from jenkins on cfg01 node
   cmd: |
-    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/gateway.yml;
-    salt '*' saltutil.refresh_pillar;
+    git clone --mirror https://github.com/Mirantis/mk-pipelines.git /home/repo/mk/mk-pipelines/;
+    git clone --mirror https://github.com/Mirantis/pipeline-library.git /home/repo/mcp-ci/pipeline-library/;
+    chown -R git:www-data /home/repo/mk/mk-pipelines/*;
+    chown -R git:www-data /home/repo/mcp-ci/pipeline-library/*;
+
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Create VMs for control plane
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls salt.control
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 10}
-  skip_fail: false
-
-- description: '*Workaround* for waiting the control-plane VMs in the salt-key (instead of sleep)'
-  cmd: |
-    salt-key -l acc| sort > /tmp/current_keys.txt &&
-    salt 'kvm*' cmd.run 'virsh list --name' | grep -v 'kvm'|sort|xargs -I {} fgrep {} /tmp/current_keys.txt
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 20, delay: 30}
-  skip_fail: false
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 #########################################
 # Configure all running salt minion nodes
@@ -133,12 +110,11 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
-
 - description: Add cpm nodes to /etc/hosts
   cmd: |
     salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo '10.167.11.105 cmp01.cookied-bm-mcp-ovs-dpdk.local cmp01' >> /etc/hosts";
     salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo '10.167.11.106 cmp02.cookied-bm-mcp-ovs-dpdk.local cmp02' >> /etc/hosts";
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'cfg01*' cmd.run "sed -i 's/10.167.11.2/172.16.49.2/g' /etc/hosts"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
@@ -159,4 +135,19 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
+
+- description: Temporary WR
+  cmd: |
+    ssh-keyscan cfg01 > /var/lib/jenkins/.ssh/known_hosts || true;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: run jenkins.client
+  cmd: |
+    salt-call state.sls jenkins.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 
