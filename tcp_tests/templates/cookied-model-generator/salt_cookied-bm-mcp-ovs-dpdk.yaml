@@ -50,5 +50,15 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/gateway.yml;
+    salt '*' saltutil.refresh_pillar;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
 
