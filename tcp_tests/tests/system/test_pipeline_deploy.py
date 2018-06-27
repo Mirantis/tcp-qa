@@ -16,6 +16,7 @@ import pytest
 from tcp_tests.managers.jenkins.client import JenkinsClient
 
 from tcp_tests import logger
+from tcp_tests import settings
 
 LOG = logger.logger
 
@@ -73,4 +74,40 @@ class TestPipeline(object):
                                     build_id=build[1])['result']
         assert result == 'SUCCESS', "Deploy CICD was failed"
 
+    @pytest.mark.fail_snapshot
+    def test_pipeline_dpdk(self, show_step, underlay,
+                           salt_deployed, tempest_actions):
+        """Deploy bm via pipeline
+
+        Scenario:
+            1. Prepare salt on hosts.
+            .........................
+        """
+        nodes = underlay.node_names()
+        LOG.info("Nodes - {}".format(nodes))
+        cfg_node = 'cfg01.cookied-bm-mcp-ovs-dpdk.local'
+        salt_api = salt_deployed.get_pillar(
+            cfg_node, '_param:jenkins_salt_api_url')
+        salt_api = salt_api[0].get(cfg_node)
+        jenkins = JenkinsClient(
+            host='http://172.16.49.2:8081',
+            username='admin',
+            password='r00tme')
+
+        # Creating param list for openstack deploy
+        params = jenkins.make_defults_params('deploy_openstack')
+        params['SALT_MASTER_URL'] = salt_api
+        params['STACK_INSTALL'] = 'core,kvm,cicd,ovs,openstack'
+        show_step(4)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy openstack was failed"
+
+        if settings.RUN_TEMPEST:
+            tempest_actions.prepare_and_run_tempest()
         LOG.info("*************** DONE **************")
