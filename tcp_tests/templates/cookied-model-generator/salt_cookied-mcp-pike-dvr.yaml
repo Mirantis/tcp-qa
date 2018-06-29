@@ -47,6 +47,9 @@
     reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     # reclass-tools del-key parameters.reclass.storage.node.stacklight_log_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
 
+    # set virtual disks for compute
+    sed -i 's/cinder_lvm_devices: \[ "\/dev\/sdb" \]/cinder_lvm_devices: \[ "\/dev\/vdb" \]/g' /srv/salt/reclass/classes/environment/{{ SHARED.CLUSTER_NAME }}/features/lvm_backend/init.yml
+
     salt-call reclass.cluster_meta_set name='openstack_dns_node01_address' value='{{ SHARED.IPV4_NET_CONTROL_PREFIX }}.111' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
     salt-call reclass.cluster_meta_set name='openstack_dns_node02_address' value='{{ SHARED.IPV4_NET_CONTROL_PREFIX }}.112' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
     # Workaround of missing reclass.system for dns role

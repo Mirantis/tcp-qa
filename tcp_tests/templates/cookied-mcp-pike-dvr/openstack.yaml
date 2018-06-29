@@ -270,53 +270,53 @@
   skip_fail: false
 
 # Configure cinder-volume salt-call PROD-13167
-- description: Set disks 01
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 03
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 01
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create volume_group
-  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install cinder-volume
-  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description: Set disks 01
+#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+#  node_name: {{ HOSTNAME_CTL01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Set disks 02
+#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+#  node_name: {{ HOSTNAME_CTL02 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Set disks 03
+#  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
+#  node_name: {{ HOSTNAME_CTL03 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Create partitions 01
+#  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+#  node_name: {{ HOSTNAME_CTL01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Create partitions 02
+#  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+#  node_name: {{ HOSTNAME_CTL02 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Create partitions 03
+#  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
+#  node_name: {{ HOSTNAME_CTL03 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: create volume_group
+#  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Install cinder-volume
+#  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
 
 - description: Install crudini
   cmd: salt "ctl*" cmd.run 'apt-get install crudini -y'
@@ -324,30 +324,30 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Temporary WR set enabled backends value 01
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 02
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 03
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Restart cinder volume
-  cmd: |
-    salt -C 'I@cinder:controller' service.restart cinder-volume;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
-  skip_fail: false
+#- description: Temporary WR set enabled backends value 01
+#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+#  node_name: {{ HOSTNAME_CTL01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Temporary WR set enabled backends value 02
+#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+#  node_name: {{ HOSTNAME_CTL02 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Temporary WR set enabled backends value 03
+#  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
+#  node_name: {{ HOSTNAME_CTL03 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Restart cinder volume
+#  cmd: |
+#    salt -C 'I@cinder:controller' service.restart cinder-volume;
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 2, delay: 5}
+#  skip_fail: false
 
 {{ SHARED.INSTALL_DOCKER_ON_GTW() }}
 {{ SHARED.RUN_NEW_TEMPEST() }}

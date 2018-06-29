@@ -47,11 +47,22 @@
     reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     # reclass-tools del-key parameters.reclass.storage.node.stacklight_log_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
 
+    # set virtual disks for compute
+    sed -i 's/cinder_lvm_devices: \[ "\/dev\/sdb" \]/cinder_lvm_devices: \[ "\/dev\/vdb" \]/g' /srv/salt/reclass/classes/environment/{{ SHARED.CLUSTER_NAME }}/features/lvm_backend/init.yml
+
     # Bind9 services are placed on the first two ctl nodes
     salt-call reclass.cluster_meta_set name='openstack_dns_node01_address' value='${_param:openstack_control_node01_address}' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
     salt-call reclass.cluster_meta_set name='openstack_dns_node02_address' value='${_param:openstack_control_node02_address}' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+- description: Temporary workaround for removing cinder-volume from CTL nodes
+  cmd: |
+    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/control.yml;
+    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/control.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
 
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}

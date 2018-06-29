@@ -175,6 +175,7 @@ nodes:
       reclass_storage_name: openstack_compute_rack01
       roles:
       - openstack_compute
+      - features_lvm_backend
       - linux_system_codename_xenial
       interfaces:
         ens3:
