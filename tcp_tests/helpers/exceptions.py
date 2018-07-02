@@ -133,3 +133,14 @@ class SaltPillarError(BaseException):
     def __str__(self):
         return ("Salt pillar '{0}' error on minion {1}: {2}"
                 .format(self.minion_id, self.pillar, self.message))
+
+
+class EnvironmentNodeIsNotStarted(BaseException):
+    def __init__(self, node_name, message=''):
+        super(EnvironmentNodeIsNotStarted, self).__init__()
+        self.node_name = node_name
+        self.message = message
+
+    def __str__(self):
+        return ("Cloud-init failed on node {0} with error: \n{1}"
+                .format(self.node_name, self.message))
