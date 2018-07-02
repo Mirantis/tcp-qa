@@ -61,7 +61,7 @@
    #- cp /root/config-drive/user-data /root/user-data
    #- sed -i '/^reboot$/d' /root/user-data
    #- set -x; cd /root && /bin/bash -xe ./user-data
-   - set -x; cd /root/config-drive && /bin/bash -xe ./user-data
+   - set -x; cd /root/config-drive && /bin/bash -xe ./user-data || (set +x; echo "bootstrap script /root/config-drive/user-data failed. tail -n 10 /var/log/cloud-init-output.log:\n" > /is_cloud_init_failed; tail -n 10 /var/log/cloud-init-output.log >> /is_cloud_init_failed; reboot; sleep 7200)
 
    #- echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
 
