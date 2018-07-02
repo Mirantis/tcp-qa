@@ -61,19 +61,22 @@
    #- cp /root/config-drive/user-data /root/user-data
    #- sed -i '/^reboot$/d' /root/user-data
    #- set -x; cd /root && /bin/bash -xe ./user-data
-   - set -x; cd /root/config-drive && /bin/bash -xe ./user-data
-
-   #- echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
+   - |
+     set -x
+     cd /root/config-drive
+     if /bin/bash -xe ./user-data; then
+         touch /is_cloud_init_finished
+     else
+         set +x
+         sync
+         echo "bootstrap script /root/config-drive/user-data failed. tail -n 10 /var/log/cloud-init-output.log:\n" > /is_cloud_init_failed
+         tail -n 10 /var/log/cloud-init-output.log >> /is_cloud_init_failed
+         reboot
+         sleep 7200
+     fi
 
    # Enable root access (after reboot)
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
-   #- service sshd stop
-
-   ########################################################
-   # Node is ready, allow SSH access
-   - touch /is_cloud_init_finished
-   #- reboot
-   ########################################################
 
   write_files:
    - path: /etc/default/grub.d/97-enable-grub-menu.cfg
