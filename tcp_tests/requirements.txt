@@ -5,7 +5,7 @@ git+git://github.com/dis-xcom/fuel-devops-driver-ironic
 paramiko
 six
 requests>=2.2.0
-oslo.config>=3.12.0 # Apache-2.0
+oslo.config>=6.2.1 # Apache-2.0
 pytest>=2.9,<=3.2.5
 docker-py
 docker-compose==1.7.1
