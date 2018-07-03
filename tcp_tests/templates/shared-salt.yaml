@@ -331,6 +331,15 @@
     remote_path: /tmp/
   node_name: {{ HOSTNAME_CFG01 }}
 
+- description: "Show options enabled in the context file for model generation"
+  cmd: |
+      echo "===== Options enabled in the context for generation the model {{ LAB_CONFIG_NAME }} ====="
+      fgrep "True" {{ CLUSTER_CONTEXT_PATH }}
+      echo "======================================="
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 - description: Create cluster model from cookiecutter templates
   cmd: |
     set -e;
