@@ -187,3 +187,13 @@ class BackupRestoreManager(ExecuteCommandsMixin):
                'openstack image save {} --file test'.format(uuid))
         step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
         self.execute_command(step, 'Save image after backup')
+
+    def create_cirros(self, tgt='ctl03'):
+        cmd = ('wget http://download.cirros-cloud.'
+               'net/0.3.4/cirros-0.3.4-i386-disk.img; . '
+               '/root/keystonercv3; glance --timeout 120 '
+               'image-create --name cirros --visibility '
+               'public --disk-format qcow2 --container-format '
+               'bare --progress < /root/cirros-0.3.4-i386-disk.img')
+        step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
+        self.execute_command(step, 'Create image before run')

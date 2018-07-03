@@ -103,7 +103,7 @@ class TestBackupVCP(object):
         show_step(1)
         show_step(2)
         show_step(3)
-
+        backup.create_cirros()
         # STEP #4
         show_step(4)
         backup.copy_glance_images_to_backup(
