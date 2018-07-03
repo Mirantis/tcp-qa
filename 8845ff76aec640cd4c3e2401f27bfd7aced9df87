@@ -48,6 +48,52 @@
     },
     {
       "key": {
+        "uuid": "69c1576f_29552c86",
+        "filename": "tcp_tests/templates/virtual-mcp10-dvr/salt.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-03T09:26:17Z",
+      "side": 1,
+      "message": "{{ SALT_VERSION }}",
+      "range": {
+        "startLine": 18,
+        "startChar": 63,
+        "endLine": 18,
+        "endChar": 83
+      },
+      "revId": "8845ff76aec640cd4c3e2401f27bfd7aced9df87",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2fa93e6f_7c4cef1f",
+        "filename": "tcp_tests/templates/virtual-mcp10-ovs/salt.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-03T09:26:17Z",
+      "side": 1,
+      "message": "{{ SALT_VERSION }}",
+      "range": {
+        "startLine": 18,
+        "startChar": 63,
+        "endLine": 18,
+        "endChar": 83
+      },
+      "revId": "8845ff76aec640cd4c3e2401f27bfd7aced9df87",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51649ba0_79be25d5",
         "filename": "tcp_tests/templates/virtual-pike-ovs-dpdk/salt.yaml",
         "patchSetId": 7
