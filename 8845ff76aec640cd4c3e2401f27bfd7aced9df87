@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "51649ba0_79be25d5",
+        "filename": "tcp_tests/templates/virtual-pike-ovs-dpdk/salt.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-03T09:05:43Z",
+      "side": 1,
+      "message": "It\u0027s better to make a loop for checking salt version for all nodes with salt",
+      "range": {
+        "startLine": 37,
+        "startChar": 0,
+        "endLine": 42,
+        "endChar": 60
+      },
+      "revId": "8845ff76aec640cd4c3e2401f27bfd7aced9df87",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
