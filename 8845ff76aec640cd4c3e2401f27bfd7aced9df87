@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "121045fb_26aefeb6",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 1304,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-03T09:13:21Z",
+      "side": 1,
+      "message": "Instead of importing NODE_NAME to each environment, it is better to get all the nodes with salt roles from underlay.ssh, something like this (such code is already used in MACRO_INSTALL_SALT_MINIONS() , or just add this check in the loop to MACRO_INSTALL_SALT_MINIONS()):\n\n{%- macro MACRO_CHECK_SALT_VERSION_ON_NODES(NODE_NAME) %}\n{#####################################################}\n{%- for ssh in config.underlay.ssh %}\n  {%- set salt_roles \u003d [] %}\n  {%- for role in ssh[\u0027roles\u0027] %}\n    {%- if role in config.salt_deploy.salt_roles %}\n      {%- set _ \u003d salt_roles.append(role) %}\n    {%- endif %}\n  {%- endfor %}\n\n  {%- if salt_roles %}\n- description: \u0027Check salt version is as expected\u0027\n  cmd: salt-call test.version | grep {{ SALT_VERSION }}\n  node_name: {{ ssh[\u0027node_name\u0027] }}\n  retry: {count: 1, delay: 1}\n  skip_fail: false\n  {%- endif %}\n  \n{%- endfor %}\n\n{%- endmacro %}",
+      "range": {
+        "startLine": 1304,
+        "startChar": 44,
+        "endLine": 1304,
+        "endChar": 53
+      },
+      "revId": "8845ff76aec640cd4c3e2401f27bfd7aced9df87",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "51649ba0_79be25d5",
         "filename": "tcp_tests/templates/virtual-pike-ovs-dpdk/salt.yaml",
         "patchSetId": 7
