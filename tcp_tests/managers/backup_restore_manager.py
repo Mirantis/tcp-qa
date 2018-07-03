@@ -187,3 +187,6 @@ class BackupRestoreManager(ExecuteCommandsMixin):
                'openstack image save {} --file test'.format(uuid))
         step = {'cmd': cmd, 'node_name': self.get_node_name(tgt)}
         self.execute_command(step, 'Save image after backup')
+
+    def create_cirros(self):
+        return self.salt_api.enforce_state('cfg01', 'glance.client')
