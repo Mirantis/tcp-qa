@@ -11,6 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+import pytest
 
 from tcp_tests import logger
 from tcp_tests.managers import backup_restore_manager
@@ -21,6 +22,9 @@ LOG = logger.logger
 class TestBackupRestoreMaster(object):
     """Test class for testing backup restore of master node"""
 
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    @pytest.mark.backup_all
     def test_backup_cfg_backupninja_rsync(
             self, underlay, config, openstack_deployed,
             salt_actions, show_step):
@@ -74,7 +78,9 @@ class TestBackupRestoreMaster(object):
 
 class TestBackupVCP(object):
     """Test class for testing backup restore of VCP nodes"""
-
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    @pytest.mark.backup_all
     def test_backup_restore_glance_images(
             self, underlay, config, openstack_deployed,
             salt_actions, show_step):
