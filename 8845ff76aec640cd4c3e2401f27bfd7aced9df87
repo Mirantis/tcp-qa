@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "4face01a_23b0b872",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-bm-mcp-ovs-dpdk.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-03T09:20:58Z",
+      "side": 1,
+      "message": "This \u0027#\u0027 won\u0027t work with Jinja, it will proceed with the code in {% ... %} anyway. Please change {% ... %} to {# ... #} to make actual comment.",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 1
+      },
+      "revId": "8845ff76aec640cd4c3e2401f27bfd7aced9df87",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "121045fb_26aefeb6",
         "filename": "tcp_tests/templates/shared-salt.yaml",
         "patchSetId": 7
