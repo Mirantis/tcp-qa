@@ -168,5 +168,4 @@
   skip_fail: false
 
 {{ SHARED.INSTALL_DOCKER_ON_GTW() }}
-{{ SHARED.RUN_NEW_TEMPEST() }}
 
