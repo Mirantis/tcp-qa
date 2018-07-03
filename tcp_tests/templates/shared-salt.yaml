@@ -345,11 +345,9 @@
       {%- endif %}
       {%- if COOKIECUTTER_TEMPLATE_COMMIT != '' %}
         echo "COOKIECUTTER_TEMPLATE_COMMIT={{ COOKIECUTTER_TEMPLATE_COMMIT }}"
-      {%- endif %}
-      {%- if COOKIECUTTER_REF_CHANGE != '' %}
+      {%- elif COOKIECUTTER_REF_CHANGE != '' %}
         echo "COOKIECUTTER_REF_CHANGE={{ COOKIECUTTER_REF_CHANGE }}"
-      {%- endif %}
-      {%- if COOKIECUTTER_TAG != '' %}
+      {%- elif COOKIECUTTER_TAG != '' %}
         echo "COOKIECUTTER_TAG={{ COOKIECUTTER_TAG }}"
       {%- endif %}
       echo "SALT_MODELS_SYSTEM_REPOSITORY={{ SALT_MODELS_SYSTEM_REPOSITORY }}"
@@ -376,15 +374,11 @@
     pushd /tmp/cookiecutter-templates
     git checkout {{ COOKIECUTTER_TEMPLATE_COMMIT }}
     popd
-    {%- endif %}
-
-    {%- if COOKIECUTTER_REF_CHANGE != '' %}
+    {%- elif COOKIECUTTER_REF_CHANGE != '' %}
     pushd /tmp/cookiecutter-templates
     git fetch {{ COOKIECUTTER_TEMPLATES_REPOSITORY }} {{ COOKIECUTTER_REF_CHANGE }} && git checkout FETCH_HEAD
     popd
-    {%- endif %}
-
-    {%- if COOKIECUTTER_TAG != '' %}
+    {%- elif COOKIECUTTER_TAG != '' %}
     pushd /tmp/cookiecutter-templates
     git fetch --all --tags --prune
     git checkout tags/{{ COOKIECUTTER_TAG }}
