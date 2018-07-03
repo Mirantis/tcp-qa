@@ -9,6 +9,7 @@
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
 {% set SALT_MODELS_SYSTEM_TAG = os_env('SALT_MODELS_SYSTEM_TAG','') %}
+{% set COOKIECUTTER_TEMPLATES_REPOSITORY = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY','https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates') %}
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
 {% set COOKIECUTTER_TAG = os_env('COOKIECUTTER_TAG','') %}
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
@@ -331,12 +332,45 @@
     remote_path: /tmp/
   node_name: {{ HOSTNAME_CFG01 }}
 
+- description: "Show options enabled in the context file for model generation"
+  cmd: |
+      echo "===== Options enabled in the context for generation the model {{ LAB_CONFIG_NAME }} ====="
+      fgrep "True" {{ CLUSTER_CONTEXT_PATH }}
+      echo "===== Sources for model generation ====="
+      echo "# mcp_version: {{ REPOSITORY_SUITE }}"
+      echo "COOKIECUTTER_TEMPLATES_REPOSITORY={{ COOKIECUTTER_TEMPLATES_REPOSITORY }}"
+      {%- if CLUSTER_PRODUCT_MODELS != '' %}
+        echo "CLUSTER_PRODUCT_MODELS={{ CLUSTER_PRODUCT_MODELS }}"
+      {%- endif %}
+      {%- if COOKIECUTTER_TEMPLATE_COMMIT != '' %}
+        echo "COOKIECUTTER_TEMPLATE_COMMIT={{ COOKIECUTTER_TEMPLATE_COMMIT }}"
+      {%- endif %}
+      {%- if COOKIECUTTER_REF_CHANGE != '' %}
+        echo "COOKIECUTTER_REF_CHANGE={{ COOKIECUTTER_REF_CHANGE }}"
+      {%- endif %}
+      {%- if COOKIECUTTER_TAG != '' %}
+        echo "COOKIECUTTER_TAG={{ COOKIECUTTER_TAG }}"
+      {%- endif %}
+      echo "SALT_MODELS_SYSTEM_REPOSITORY={{ SALT_MODELS_SYSTEM_REPOSITORY }}"
+      {%- if SALT_MODELS_SYSTEM_COMMIT != '' %}
+        echo "SALT_MODELS_SYSTEM_COMMIT={{ SALT_MODELS_SYSTEM_COMMIT }}"
+      {%- if SALT_MODELS_SYSTEM_TAG != '' %}
+        echo "SALT_MODELS_SYSTEM_TAG={{ SALT_MODELS_SYSTEM_TAG }}"
+      {%- endif %}
+      {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
+        echo "SALT_MODELS_SYSTEM_REF_CHANGE={{ SALT_MODELS_SYSTEM_REF_CHANGE }}"
+      {%- endif %}
+      echo "======================================="
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 - description: Create cluster model from cookiecutter templates
   cmd: |
     set -e;
     sudo apt-get install python-setuptools -y
     pip install cookiecutter
-    export GIT_SSL_NO_VERIFY=true; git clone  https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates /tmp/cookiecutter-templates
+    export GIT_SSL_NO_VERIFY=true; git clone {{ COOKIECUTTER_TEMPLATES_REPOSITORY }} /tmp/cookiecutter-templates
 
     {%- if COOKIECUTTER_TEMPLATE_COMMIT != '' %}
     pushd /tmp/cookiecutter-templates
@@ -346,7 +380,7 @@
 
     {%- if COOKIECUTTER_REF_CHANGE != '' %}
     pushd /tmp/cookiecutter-templates
-    git fetch https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates {{ COOKIECUTTER_REF_CHANGE }} && git checkout FETCH_HEAD
+    git fetch {{ COOKIECUTTER_TEMPLATES_REPOSITORY }} {{ COOKIECUTTER_REF_CHANGE }} && git checkout FETCH_HEAD
     popd
     {%- endif %}
 
