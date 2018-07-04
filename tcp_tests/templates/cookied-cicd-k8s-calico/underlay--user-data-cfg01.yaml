@@ -63,13 +63,19 @@
    #- set -x; cd /root && /bin/bash -xe ./user-data
    - |
      set -x
-     cd /root/config-drive
-     if /bin/bash -xe ./user-data > /var/log/cloud-init-user-data.log; then
+     #cd /root/config-drive
+     cd /root/
+     # Workaround for PROD-21179:
+     cp /root/config-drive/user-data /root/
+     sed -i 's/linux.network,linux,openssh,salt/linux.network,linux,openssh,salt.minion.ca/g' /root/user-data
+
+     #if /bin/bash -xe ./user-data; then
+     if /bin/bash -xe ./user-data; then
          touch /is_cloud_init_finished
      else
          set +x
-         echo "bootstrap script /root/config-drive/user-data failed. tail -n 10 /var/log/cloud-init-user-data.log:\n" > /is_cloud_init_failed
-         tail -n 10 /var/log/cloud-init-user-data.log >> /is_cloud_init_failed
+         echo "bootstrap script /root/config-drive/user-data failed\n" > /is_cloud_init_failed
+         sync
      fi
 
    # Enable root access (after reboot)
