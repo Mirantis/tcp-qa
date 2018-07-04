@@ -539,7 +539,7 @@
     declare -a formula_services=({{ FORMULA_SERVICES }});
     echo -e "\nInstalling all required salt formulas\n";
     apt-get install -y "${formula_services[@]/#/salt-formula-}";
-    for formula_service in "${formula_services[@]}"; do
+    for formula_service in $(ls -1 ${FORMULA_PATH}/reclass/service); do
       echo -e "\nLink service metadata for formula ${formula_service} ...\n";
       [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
     done;
@@ -651,7 +651,7 @@
 
 {%- macro MACRO_INSTALL_FORMULAS(FORMULA_SERVICES='') %}
 {#######################################################}
-- description: Configure reclass
+- description: Install salt formulas
   cmd: |
     set -e;
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
@@ -664,24 +664,12 @@
     declare -a formula_services=({{ FORMULA_SERVICES }});
     echo -e "\nInstalling all required salt formulas\n";
     eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
-    for formula_service in "${formula_services[@]}"; do
+    for formula_service in $(ls -1 ${FORMULA_PATH}/reclass/service); do
       echo -e "\nLink service metadata for formula ${formula_service} ...\n";
       [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
     done;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
-  skip_fail: false
-
-- description: Show reclass-salt --top for cfg01 node
-  cmd: reclass-salt --top
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Restart salt-master service
-  cmd: systemctl restart salt-master;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
   skip_fail: false
 {%- endmacro %}
 
