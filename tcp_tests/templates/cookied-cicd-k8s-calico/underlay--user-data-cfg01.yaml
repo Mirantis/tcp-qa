@@ -68,8 +68,10 @@
          touch /is_cloud_init_finished
      else
          set +x
+         sync
          echo "bootstrap script /root/config-drive/user-data failed. tail -n 10 /var/log/cloud-init-user-data.log:\n" > /is_cloud_init_failed
          tail -n 10 /var/log/cloud-init-user-data.log >> /is_cloud_init_failed
+         sync
      fi
 
    # Enable root access (after reboot)
