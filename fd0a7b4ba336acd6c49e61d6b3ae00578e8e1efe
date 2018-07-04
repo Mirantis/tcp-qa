@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7eababd2_7c950b72",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-ovs-dpdk/underlay.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 140,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-04T10:07:11Z",
+      "side": 1,
+      "message": "there is no \u0027private\u0027 object in the l2_network_devices, see L94:L100\n\nIf you need access to the \u003ccontrol\u003e network from cfg01, you need to configure the \u003ccontrol\u003e network on some interface on the host, and then create the l2_network_device object based on this \"phys_dev:\" from the host.",
+      "range": {
+        "startLine": 140,
+        "startChar": 37,
+        "endLine": 140,
+        "endChar": 44
+      },
+      "revId": "fd0a7b4ba336acd6c49e61d6b3ae00578e8e1efe",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
