@@ -346,7 +346,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-{{ BACKUP.MACRO_WR_NGINX_MASTER() }}
 {{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
 {{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
 {{ SHARED.INSTALL_DOCKER_ON_GTW() }}

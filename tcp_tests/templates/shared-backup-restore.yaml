@@ -134,7 +134,7 @@
 
 - description: WR for https://mirantis.jira.com/browse/PROD-21132
   cmd: |
-    sed -i  's/listen \[\:\:\]\:8080/listen \[\:\:\]\:8181/g'/etc/nginx/sites-available/nginx_proxy_ceph_radosgw.conf ;
+    sed -i  's/listen 8080/listen 8181/g'/etc/nginx/sites-available/nginx_proxy_ceph_radosgw.conf ;
     sed -i  's/listen \[\:\:\]\:80/listen \[\:\:\]\:8181/g' /etc/nginx/sites-available/default ;
     sed -i  's/listen 80 default_server/listen 8181 default_server/g' /etc/nginx/sites-available/default ;
     systemctl restart nginx;
