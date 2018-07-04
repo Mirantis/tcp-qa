@@ -1,7 +1,7 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
-#{% set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'physical_mcp11_ovs_dpdk') + '.local' %}
+#{# set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'physical_mcp11_ovs_dpdk') + '.local' #}
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-bm-mcp-ocata-contrail') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME + '.local') %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
@@ -10,8 +10,8 @@
 {% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM03', 'kvm03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP001 = os_env('HOSTNAME_CMP001', 'cmp001.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP002', 'cmp002.' + DOMAIN_NAME) %}
-# {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
-# {% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
+# {# set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) #}
+# {# set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) #}
 
 {% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.49.66') %}
 {% set ETH0_IP_ADDRESS_KVM01 = os_env('ETH0_IP_ADDRESS_KVM01', '172.16.49.67') %}
@@ -19,9 +19,9 @@
 {% set ETH0_IP_ADDRESS_KVM03 = os_env('ETH0_IP_ADDRESS_KVM03', '172.16.49.69') %}
 {% set ETH0_IP_ADDRESS_CMP001 = os_env('ETH0_IP_ADDRESS_CMP001', '172.16.49.73') %}
 {% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '172.16.49.74') %}
-# {% set ETH0_IP_ADDRESS_CMP003 = os_env('ETH0_IP_ADDRESS_CMP003', '172.16.167.140') %}
-# {% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '172.16.49.5') %}
-# {% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
+# {# set ETH0_IP_ADDRESS_CMP003 = os_env('ETH0_IP_ADDRESS_CMP003', '172.16.167.140') #}
+# {# set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '172.16.49.5') #}
+# {# set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') #}
 
 {% import 'cookied-bm-mcp-ocata-contrail/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-bm-mcp-ocata-contrail/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}

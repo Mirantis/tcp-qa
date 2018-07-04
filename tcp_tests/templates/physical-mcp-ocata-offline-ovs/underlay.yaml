@@ -6,7 +6,7 @@
 
 
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'physical-mcp-ocata-offline-ovs') %}
-#{% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
+{# set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' #}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'offline-ocata-vxlan.local') %}
 {% set HOSTNAME_APT = os_env('HOSTNAME_CFG01', 'apt.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_APT01', 'cfg01.' + DOMAIN_NAME) %}

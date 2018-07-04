@@ -26,6 +26,10 @@
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
+
 - description: Hack gtw node
   cmd: salt '{{ HOSTNAME_GTW01 }}' cmd.run "ip addr del {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.110/24 dev ens4; ip addr flush dev ens4";
   node_name: {{ HOSTNAME_CFG01 }}

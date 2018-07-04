@@ -160,3 +160,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}

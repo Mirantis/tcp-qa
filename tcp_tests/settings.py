@@ -82,3 +82,4 @@ TEMPEST_EXCLUDE_TEST_ARGS = os.environ.get(
     'TEMPEST_EXCLUDE_TEST_ARGS',
     '--blacklist-file mcp_pike_lvm_skip.list')
 TEMPEST_TARGET = os.environ.get('TEMPEST_TARGET', 'gtw01')
+SALT_VERSION = os.environ.get('SALT_VERSION', '2016.3')
