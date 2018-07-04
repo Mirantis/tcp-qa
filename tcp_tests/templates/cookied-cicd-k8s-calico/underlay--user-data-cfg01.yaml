@@ -64,12 +64,11 @@
    - |
      set -x
      cd /root/config-drive
-     if /bin/bash -xe ./user-data > /var/log/cloud-init-user-data.log; then
+     if /bin/bash -xe ./user-data; then
          touch /is_cloud_init_finished
      else
          set +x
-         echo "bootstrap script /root/config-drive/user-data failed. tail -n 10 /var/log/cloud-init-user-data.log:\n" > /is_cloud_init_failed
-         tail -n 10 /var/log/cloud-init-user-data.log >> /is_cloud_init_failed
+         echo "bootstrap script /root/config-drive/user-data failed\n" > /is_cloud_init_failed
      fi
 
    # Enable root access (after reboot)
