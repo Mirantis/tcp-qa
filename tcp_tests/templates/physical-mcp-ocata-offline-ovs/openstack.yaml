@@ -1,4 +1,4 @@
-{% from 'physical_mcp11_ovs_dpdk/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install OpenStack control services
 
