@@ -2,15 +2,6 @@
 
 {%- macro MACRO_BACKUP_BACKUPNINJA() %}
 
-- description: WR for https://mirantis.jira.com/browse/PROD-21132
-  cmd: |
-    sed -i  's/listen \[\:\:\]\:80/listen \[\:\:\]\:8181/g' /etc/nginx/sites-available/default ;
-    sed -i  's/listen 80 default_server/listen 8181 default_server/g' /etc/nginx/sites-available/default ;
-    systemctl restart nginx;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
 - description: Apply backup state on minions
   cmd: salt -C 'I@backupninja:server or backupninja:client' state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
@@ -139,9 +130,18 @@
 
 {%- endmacro %}
 
+{%- macro MACRO_WR_NGINX_MASTER() %}
 
+- description: WR for https://mirantis.jira.com/browse/PROD-21132
+  cmd: |
+    sed -i  's/listen \[\:\:\]\:8080/listen \[\:\:\]\:8181/g'/etc/nginx/sites-available/nginx_proxy_ceph_radosgw.conf ;
+    sed -i  's/listen \[\:\:\]\:80/listen \[\:\:\]\:8181/g' /etc/nginx/sites-available/default ;
+    sed -i  's/listen 80 default_server/listen 8181 default_server/g' /etc/nginx/sites-available/default ;
+    systemctl restart nginx;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
 
-
-
+{%- endmacro %}
 
 
