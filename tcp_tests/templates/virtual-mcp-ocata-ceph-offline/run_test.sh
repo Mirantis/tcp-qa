@@ -13,7 +13,7 @@ export LAB_CONFIG_NAME=virtual-mcp-ocata-ceph-offline
 export CLUSTER_NAME=virtual-mcp-ocata-ovs-ceph-local
 export REPOSITORY_SUITE=stable
 export DISTROS_CODENAME=xenial
-export SALT_VERSION=2016.3
+export SALT_VERSION=2017.7
 
 export TEST_GROUP=test_ocata_ceph_all_ovs_install
 export RUN_TEMPEST=true
@@ -36,7 +36,7 @@ export FORMULA_REPOSITORY="deb [arch=amd64] http://apt.mirantis.local.test/ubunt
 export FORMULA_GPG="http://apt.mirantis.local.test/public.gpg"
 export SALT_REPOSITORY = "deb [arch=amd64] http://mirror.mirantis.local.test/" + REPOSITORY_SUITE+ "/saltstack-" + SALT_VERSION+ "/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main"
 
-export SALT_REPOSITORY="deb [arch=amd64] http://apt.mirantis.local.test/ubuntu-xenial/ ${REPOSITORY_SUITE} salt/2016.3 main"
+export SALT_REPOSITORY="deb [arch=amd64] http://apt.mirantis.local.test/ubuntu-xenial/ ${REPOSITORY_SUITE} salt/2017.7 main"
 export SALT_GPG="http://apt.mirantis.local.test/public.gpg"
 export UBUNTU_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/ubuntu xenial main universe restricted"
 export UBUNTU_UPDATES_REPOSITORY="deb http://mirror.mcp.mirantis.local.test/ubuntu xenial-updates main universe restricted"

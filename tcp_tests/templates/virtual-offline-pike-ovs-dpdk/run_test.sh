@@ -12,7 +12,7 @@ export PYTHONIOENCODING=UTF-8
 export LAB_CONFIG_NAME=virtual-offline-pike-ovs-dpdk
 export CLUSTER_NAME=virtual-offline-pike-ovs-dpdk
 export REPOSITORY_SUITE=2018.3.0
-export SALT_VERSION=2016.3
+export SALT_VERSION=2017.7
 
 export TEST_GROUP=test_mcp_pike_ovs_install
 export RUN_TEMPEST=true

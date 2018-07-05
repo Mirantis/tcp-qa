@@ -3,7 +3,7 @@
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
-{% set SALT_VERSION = os_env('SALT_VERSION', '2016.3') %}
+{% set SALT_VERSION = os_env('SALT_VERSION', '2017.7') %}
 {% set LAB_CONFIG_NAME = 'cookied-mcp-mitaka-ovs' %}
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}

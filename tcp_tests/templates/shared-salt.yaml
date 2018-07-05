@@ -15,7 +15,7 @@
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 # Currently we support 2 salt version that can be set over bellow var
-{% set SALT_VERSION = os_env('SALT_VERSION','2016.3') %}
+{% set SALT_VERSION = os_env('SALT_VERSION','2017.7') %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 {% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME} ' + REPOSITORY_SUITE + ' salt extra') %}
 {% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') %}
@@ -1106,7 +1106,7 @@
 
     # Set default salt version
     if [ -z "$saltversion" ]; then
-        saltversion="2016.3"
+        saltversion="2017.7"
     fi
     echo "Using Salt version $saltversion"
 

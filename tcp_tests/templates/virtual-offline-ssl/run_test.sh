@@ -13,7 +13,7 @@ export LAB_CONFIG_NAME=virtual-offline-ssl
 export CLUSTER_NAME=virtual-offline-ssl
 export REPOSITORY_SUITE=proposed
 export DISTRIB_CODENAME=xenial
-export SALT_VERSION=2016.3
+export SALT_VERSION=2017.7
 
 export TEST_GROUP=test_mcp_pike_ovs_install
 export RUN_TEMPEST=true
