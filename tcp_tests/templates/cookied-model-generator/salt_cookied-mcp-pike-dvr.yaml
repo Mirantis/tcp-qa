@@ -19,6 +19,22 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 
+- description: Sync formulas to service
+  cmd: |
+    set -e;
+    local RECLASS_ROOT=${RECLASS_ROOT:-/srv/salt/reclass/};
+    local FORMULAS_PATH=${FORMULAS_PATH:-/usr/share/salt-formulas};
+    [ ! -d ${RECLASS_ROOT}/classes/service ] && mkdir -p ${RECLASS_ROOT}/classes/service
+    for formula_service in $(ls /usr/share/salt-formulas/reclass/service/); do
+        #Since some salt formula names contain "-" and in symlinks they should contain "_" adding replacement
+        formula_service=${formula_service//-/$'_'}
+        if [ ! -L "${RECLASS_ROOT}/classes/service/${formula_service}" ]; then
+            ln -sf ${FORMULAS_PATH}/reclass/service/${formula_service} ${RECLASS_ROOT}/classes/service/${formula_service}
+        fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
