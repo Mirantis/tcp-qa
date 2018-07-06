@@ -25,6 +25,7 @@
 - description: Configure tests
   cmd: |
     set -e;
+    apt-get install -y  build-essential python-dev;
     . venv-stacklight-pytest/bin/activate;
     stl-tests gen-config-mk;
     cp venv-stacklight-pytest/lib/python2.7/site-packages/stacklight_tests/fixtures/config.yaml /root/stacklight-pytest/stacklight_tests/fixtures/config.yaml;
