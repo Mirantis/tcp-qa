@@ -9,6 +9,7 @@
 - description: Install stacklight-pytest into virlual environemnt
   cmd: |
     set -e;
+    apt-get install -y  build-essential python-dev;
     apt-get -y install python-virtualenv;
     virtualenv --system-site-packages venv-stacklight-pytest;
     . venv-stacklight-pytest/bin/activate;
@@ -25,7 +26,6 @@
 - description: Configure tests
   cmd: |
     set -e;
-    apt-get install -y  build-essential python-dev;
     . venv-stacklight-pytest/bin/activate;
     stl-tests gen-config-mk;
     cp venv-stacklight-pytest/lib/python2.7/site-packages/stacklight_tests/fixtures/config.yaml /root/stacklight-pytest/stacklight_tests/fixtures/config.yaml;
