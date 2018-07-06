@@ -231,30 +231,6 @@
 #  skip_fail: false
 ###
 
-- description: Install sphinx
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@sphinx:server' state.sls sphinx
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-
-#- description: Install prometheus alertmanager
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
-#- description: run docker state
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-#
-#- description: docker ps
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' dockerng.ps
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
 
 - description: Configure Grafana dashboards and datasources
   cmd: sleep 30;  salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@grafana:client' state.sls grafana.client
