@@ -1,6 +1,8 @@
-common = new com.mirantis.mk.Common()
+package com.mirantis.system_qa
+
 
 def run_cmd(cmd, returnStdout=false) {
+    def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
     script = """\
@@ -17,6 +19,7 @@ def run_cmd_stdout(cmd) {
 }
 
 def generate_cookied_model() {
+        def common = new com.mirantis.mk.Common()
         // do not fail if environment doesn't exists
         def IPV4_NET_ADMIN=run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep admin-pool01").trim().split().last()
         def IPV4_NET_CONTROL=run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep private-pool01").trim().split().last()
@@ -47,6 +50,7 @@ def generate_cookied_model() {
 }
 
 def generate_configdrive_iso() {
+        def common = new com.mirantis.mk.Common()
         def SALT_MASTER_IP=run_cmd_stdout("""\
             export ENV_NAME=${ENV_NAME}
             . ./tcp_tests/utils/env_salt
@@ -110,7 +114,3 @@ def run_job_on_cicd_nodes(stack_to_install, timeout=1800) {
         sleep 60  # Wait for IO calm down on cluster nodes
     """)
 }
-
-
-// pretend a groovy class, DO NOT REMOVE
-return this
