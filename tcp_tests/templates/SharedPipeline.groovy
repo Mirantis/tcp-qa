@@ -76,13 +76,14 @@ def generate_configdrive_iso() {
             parameters: parameters
 }
 
-def run_job_on_day01_node(stack_to_install) {
+def run_job_on_day01_node(stack_to_install, timeout=1800) {
     // stack_to_install="core,cicd"
     def stack = "${stack_to_install}"
     run_cmd("""\
         export ENV_NAME=${ENV_NAME}
         . ./tcp_tests/utils/env_salt
         . ./tcp_tests/utils/env_jenkins_day01
+        export JENKINS_BUILD_TIMEOUT=${timeout}
         JOB_PARAMETERS=\"{
             \\\"SALT_MASTER_URL\\\": \\\"\${SALTAPI_URL}\\\",
             \\\"STACK_INSTALL\\\": \\\"${stack}\\\"
@@ -92,13 +93,14 @@ def run_job_on_day01_node(stack_to_install) {
     """)
 }
 
-def run_job_on_cicd_nodes(stack_to_install) {
+def run_job_on_cicd_nodes(stack_to_install, timeout=1800) {
     // stack_to_install="k8s,calico,stacklight"
     def stack = "${stack_to_install}"
     run_cmd("""\
         export ENV_NAME=${ENV_NAME}
         . ./tcp_tests/utils/env_salt
         . ./tcp_tests/utils/env_jenkins_cicd
+        export JENKINS_BUILD_TIMEOUT=${timeout}
         JOB_PARAMETERS=\"{
             \\\"SALT_MASTER_URL\\\": \\\"\${SALTAPI_URL}\\\",
             \\\"STACK_INSTALL\\\": \\\"${stack}\\\"
