@@ -11,8 +11,8 @@
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp001.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp002.' + DOMAIN_NAME) %}
 {% set HOSTNAME_LOG01 = os_env('HOSTNAME_LOG01', 'log01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_LOG02 = os_env('HOSTNAME_LOG02', 'log02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_LOG03 = os_env('HOSTNAME_LOG03', 'log03.' + DOMAIN_NAME) %}
