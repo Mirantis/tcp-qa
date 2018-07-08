@@ -150,10 +150,25 @@ def snapshot(request, hardware):
     request.addfinalizer(test_fin)
 
 
+@pytest.fixture(scope="function")
+def underlay_actions(config):
+    """Fixture that provides SSH access to underlay objects.
+
+    :param config: oslo_config object that keeps various parameters
+                   across the fixtures, tests and test runs.
+                   All SSH data is taken from the provided config.
+    :rtype UnderlaySSHManager: Object that encapsulate SSH credentials;
+                               - provide list of underlay nodes;
+                               - provide SSH access to underlay nodes using
+                                 node names or node IPs.
+    """
+    return underlay_ssh_manager.UnderlaySSHManager(config)
+
+
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.underlay)
 @pytest.fixture(scope="function")
 def underlay(request, revert_snapshot, config, hardware):
-    """Fixture that should provide SSH access to underlay objects.
+    """Fixture that bootstraps the environment underlay.
 
     - Starts the 'hardware' environment and creates 'underlay' with required
       configuration.
@@ -182,7 +197,7 @@ def underlay(request, revert_snapshot, config, hardware):
         config.underlay.ssh = hardware.get_ssh_data(
             roles=config.underlay.roles)
 
-        underlay = underlay_ssh_manager.UnderlaySSHManager(config)
+        underlay = underlay_actions(config)
 
         if not config.underlay.lvm:
             underlay.enable_lvm(hardware.lvm_storages())
@@ -200,7 +215,7 @@ def underlay(request, revert_snapshot, config, hardware):
         config.underlay.ssh = hardware.get_ssh_data(
             roles=config.underlay.roles)
 
-        underlay = underlay_ssh_manager.UnderlaySSHManager(config)
+        underlay = underlay_actions(config)
 
         LOG.info("Generate MACs for MaaS")
         macs = {
@@ -241,7 +256,7 @@ def underlay(request, revert_snapshot, config, hardware):
         # 1. hardware environment created and powered on
         # 2. config.underlay.ssh contains SSH access to provisioned nodes
         #    (can be passed from external config with TESTS_CONFIGS variable)
-        underlay = underlay_ssh_manager.UnderlaySSHManager(config)
+        underlay = underlay_actions(config)
 
     return underlay
 
