@@ -3,6 +3,7 @@
 common = new com.mirantis.mk.Common()
 shared = new com.mirantis.system_qa.SharedPipeline()
 
+
 node ("${NODE_NAME}") {
   try {
 
@@ -10,41 +11,8 @@ node ("${NODE_NAME}") {
         shared.prepare_working_dir()
     }
 
-    stage("Create an environment ${ENV_NAME} in disabled state") {
-        // do not fail if environment doesn't exists
-        shared.run_cmd("""\
-        python ./tcp_tests/utils/create_devops_env.py
-        """)
-    }
-
-    stage("Generate the model") {
-        shared.generate_cookied_model()
-    }
-
-    stage("Generate config drive ISO") {
-        shared.generate_configdrive_iso()
-    }
-
-    stage("Upload generated config drive ISO into volume on cfg01 node") {
-        shared.run_cmd("""\
-        virsh vol-upload ${ENV_NAME}_cfg01.${LAB_CONFIG_NAME}.local_config /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} --pool default
-        virsh pool-refresh --pool default
-        """)
-    }
-
-    stage("Run the 'underlay' and 'salt-deployed' fixtures to bootstrap salt cluster") {
-        shared.run_cmd("""\
-        export MANAGER=devops
-        export SHUTDOWN_ENV_ON_TEARDOWN=false
-        export BOOTSTRAP_TIMEOUT=900
-        export PYTHONIOENCODING=UTF-8
-        export REPOSITORY_SUITE=${MCP_VERSION}
-        #export SALT_STEPS_PATH=templates/${LAB_CONFIG_NAME}/salt.yaml
-        export TEST_GROUP=test_install_local_salt
-        py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -k \${TEST_GROUP}
-        sleep 60  # wait for jenkins to start and IO calm down
-
-        """)
+    stage("Create environment, generate mode, bootstrap the salt-cluster") {
+        shared.swarm_bootstrap_salt_cluster_devops()
     }
 
     // Install core and cicd
@@ -70,7 +38,7 @@ node ("${NODE_NAME}") {
             . ./tcp_tests/utils/env_k8s
 
             # Initialize variables used in tcp-qa tests
-            export CURRENT_SNAPSHOT=k8s_deployed  # provide the snapshot name required by the test
+            export CURRENT_SNAPSHOT=sl_deployed  # provide the snapshot name required by the test
             export TESTS_CONFIGS=\$(pwd)/${ENV_NAME}_salt_deployed.ini  # some SSH data may be filled separatelly
 
             export MANAGER=empty  # skip 'hardware' fixture, disable snapshot/revert features
@@ -80,9 +48,15 @@ node ("${NODE_NAME}") {
             export SALT_USER=\$SALTAPI_USER
             export SALT_PASSWORD=\$SALTAPI_PASS
             export COMMON_SERVICES_INSTALLED=true  # skip common_services_deployed fixture
-            export K8S_INSTALLED=true              # skip k8s_deployed fixture
+            export OPENSTACK_INSTALLED=true              # skip k8s_deployed fixture
+            export sl_installed=true              # skip sl_deployed fixture
 
-            py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -m k8s_calico
+            py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -k test_mcp_pike_cookied_ovs_install
+
+            #dos.py suspend ${ENV_NAME}
+            #dos.py snapshot ${ENV_NAME} test_completed
+            #dos.py resume ${ENV_NAME}
+            #dos.py time-sync ${ENV_NAME}
             """)
     }
 
@@ -92,9 +66,10 @@ node ("${NODE_NAME}") {
   } finally {
     // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
     // and report appropriate data to TestRail
-    shared.run_cmd("""\
-        dos.py destroy ${ENV_NAME}
-    """)
+    if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
+        shared.run_cmd("""\
+            dos.py destroy ${ENV_NAME}
+        """)
+    }
   }
-
 }
