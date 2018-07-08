@@ -132,6 +132,10 @@ default_context:
   kubernetes_virtlet_enabled: 'False'
   local_repositories: 'False'
   maas_deploy_address: 10.167.5.15
+  maas_deploy_range_end: 10.167.5.199
+  maas_deploy_range_start: 10.167.5.180
+  maas_deploy_vlan: '0'
+  maas_fabric_name: deploy-fabric0
   maas_hostname: cfg01
   mcp_common_scripts_branch: ''
   mcp_version: proposed
@@ -153,7 +157,7 @@ default_context:
   salt_master_address: 10.167.4.15
   salt_master_hostname: cfg01
   salt_master_management_address: 10.167.5.15
-  shared_reclass_branch: ''
+  shared_reclass_branch: 'proposed'
   shared_reclass_url: https://gerrit.mcp.mirantis.net/salt-models/reclass-system.git
   stacklight_enabled: 'False'
   stacklight_version: '2'
