@@ -1,4 +1,4 @@
-#    Copyright 2017 Mirantis, Inc.
+#    Copyright 2018 Mirantis, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -19,9 +19,6 @@ from tcp_tests import logger
 LOG = logger.logger
 
 
-class TestLocalDns(object):
-    """Test class for deploy local dns_vm"""
-
-    @pytest.mark.fail_snapshot
-    def test_install_local_dns(self, config, underlay):
-        LOG.info("*************** DONE **************")
+@pytest.mark.check_ovs
+def test_check_ovs(config, underlay_actions):
+    LOG.info("*************** DONE **************")
