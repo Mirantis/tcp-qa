@@ -1,3 +1,5 @@
+package com.mirantis.system_qa
+
 common = new com.mirantis.mk.Common()
 
 def run_cmd(cmd, returnStdout=false) {
