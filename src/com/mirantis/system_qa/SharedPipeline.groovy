@@ -1,3 +1,5 @@
+package com.mirantis.system_qa
+
 common = new com.mirantis.mk.Common()
 
 def run_cmd(cmd, returnStdout=false) {
@@ -110,7 +112,3 @@ def run_job_on_cicd_nodes(stack_to_install, timeout=1800) {
         sleep 60  # Wait for IO calm down on cluster nodes
     """)
 }
-
-
-// pretend a groovy class, DO NOT REMOVE
-return this
