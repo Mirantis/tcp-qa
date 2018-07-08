@@ -1,4 +1,4 @@
-#    Copyright 2017 Mirantis, Inc.
+#    Copyright 2018 Mirantis, Inc.
 #
 #    Licensed under the Apache License, Version 2.0 (the "License"); you may
 #    not use this file except in compliance with the License. You may obtain
@@ -19,9 +19,13 @@ from tcp_tests import logger
 LOG = logger.logger
 
 
-class TestLocalDns(object):
-    """Test class for deploy local dns_vm"""
+@pytest.mark.check_finalize
+def test_check_finalize(config, underlay_actions):
+    """Not a component test, just a placeholder.
 
-    @pytest.mark.fail_snapshot
-    def test_install_local_dns(self, config, underlay):
-        LOG.info("*************** DONE **************")
+    'finalize' stands for state.highstate on all nodes
+    at the end of the deployment.
+    Here, can be checked that all the nodes completed this state
+    without errors (so no errors were skipped by pipelines)
+    """
+    LOG.info("*************** DONE **************")
