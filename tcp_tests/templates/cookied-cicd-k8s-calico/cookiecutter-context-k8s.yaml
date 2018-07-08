@@ -153,7 +153,7 @@ default_context:
   salt_master_address: 10.167.4.15
   salt_master_hostname: cfg01
   salt_master_management_address: 10.167.5.15
-  shared_reclass_branch: ''
+  shared_reclass_branch: 'proposed'
   shared_reclass_url: https://gerrit.mcp.mirantis.net/salt-models/reclass-system.git
   stacklight_enabled: 'False'
   stacklight_version: '2'
