@@ -1,6 +1,8 @@
-common = new com.mirantis.mk.Common()
+package com.mirantis.system_qa
+
 
 def run_cmd(cmd, returnStdout=false) {
+    def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
     script = """\
@@ -110,7 +112,3 @@ def run_job_on_cicd_nodes(stack_to_install, timeout=1800) {
         sleep 60  # Wait for IO calm down on cluster nodes
     """)
 }
-
-
-// pretend a groovy class, DO NOT REMOVE
-return this
