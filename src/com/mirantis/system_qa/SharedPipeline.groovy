@@ -1,4 +1,6 @@
-common = new com.mirantis.mk.Common()
+package com.mirantis.system_qa
+
+def common = new com.mirantis.mk.Common()
 
 def run_cmd(cmd, returnStdout=false) {
     common.printMsg("Run shell command:\n" + cmd, "blue")
