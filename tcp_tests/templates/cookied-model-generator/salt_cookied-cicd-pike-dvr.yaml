@@ -1,0 +1,87 @@
+{% from 'cookied-model-generator/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-model-generator/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set LAB_CONFIG_NAME = 'cookied-cicd-pike-dvr' %}
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'cookiecutter-context-pike-dvr-sl.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['environment_context.yaml'] %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
+- description: Re-install all the fromulas
+  cmd: |
+    set -e;
+    apt-get install -y salt-formula-*
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Sync formulas to service
+  cmd: |
+    set -e;
+    RECLASS_ROOT=${RECLASS_ROOT:-/srv/salt/reclass/};
+    FORMULAS_PATH=${FORMULAS_PATH:-/usr/share/salt-formulas};
+    [ ! -d ${RECLASS_ROOT}/classes/service ] && mkdir -p ${RECLASS_ROOT}/classes/service;
+    for formula_service in $(ls /usr/share/salt-formulas/reclass/service/); do
+        #Since some salt formula names contain "-" and in symlinks they should contain "_" adding replacement;
+        formula_service=${formula_service//-/$'_'};
+        if [ ! -L "${RECLASS_ROOT}/classes/service/${formula_service}" ]; then
+            ln -sf ${FORMULAS_PATH}/reclass/service/${formula_service} ${RECLASS_ROOT}/classes/service/${formula_service};
+        fi;
+    done
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+{{ SHARED.MACRO_INSTALL_FORMULAS('\*') }}
+
+- description: "Workaround for combined roles: remove unnecessary classes"
+  cmd: |
+    set -e;
+    sed -i '/system.reclass.storage.system.physical_control_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    sed -i '/system.reclass.storage.system.openstack_database_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    sed -i '/system.reclass.storage.system.openstack_message_queue_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    # sed -i '/system.reclass.storage.system.stacklight_telemetry_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    # sed -i '/system.reclass.storage.system.stacklight_log_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+
+    # Start compute node addresses from .105 , as in static models
+    sed -i 's/start: 101/start: 105/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_database_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_database_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_database_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    # reclass-tools del-key parameters.reclass.storage.node.stacklight_log_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+
+    # salt-call reclass.cluster_meta_set name='openstack_dns_node01_address' value='{{ SHARED.IPV4_NET_CONTROL_PREFIX }}.111' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    # salt-call reclass.cluster_meta_set name='openstack_dns_node02_address' value='{{ SHARED.IPV4_NET_CONTROL_PREFIX }}.112' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    # Workaround of missing reclass.system for dns role
+    # salt-call reclass.cluster_meta_set name='salt_master_host' value='${_param:infra_config_deploy_address}' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Temporary workaround for removing cinder-volume from CTL nodes
+  cmd: |
+    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/control.yml;
+    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/control.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+  
+
+{{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}

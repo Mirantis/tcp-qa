@@ -1,0 +1,42 @@
+{% from 'cookied-mcp-pike-dpdk/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-pike-dpdk/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'cookied-mcp-pike-dpdk/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-mcp-pike-dpdk/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-mcp-pike-dpdk/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-mcp-pike-dpdk/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+- description: Enable hugepages on cmp nodes
+  cmd: salt 'cmp*' cmd.run "apt-get install -y hugepages; echo 2048 > /proc/sys/vm/nr_hugepages";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Workaround for PROD-18834: Pre-install linux-headers package"
+  cmd: salt 'cmp*' cmd.run "apt-get install -y linux-headers-$(uname -r)";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Workaround for PROD-17975: Pre-install ovs packages to update alternatives to DPDK"
+  cmd: |
+    set -ex;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.system.repo
+    salt 'cmp*' cmd.run "apt-get install -y openvswitch-switch openvswitch-switch-dpdk";
+    salt 'cmp*' cmd.run "service openvswitch-switch stop";
+    salt 'cmp*' cmd.run "rm -f /var/lib/openvswitch/*";
+    salt 'cmp*' cmd.run "update-alternatives --remove ovs-vswitchd /usr/lib/openvswitch-switch/ovs-vswitchd";
+    salt 'cmp*' cmd.run "service openvswitch-switch start";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
