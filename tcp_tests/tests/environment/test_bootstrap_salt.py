@@ -19,9 +19,13 @@ from tcp_tests import logger
 LOG = logger.logger
 
 
-class TestLocalDns(object):
+class TestBootstrapCore(object):
     """Test class for deploy local dns_vm"""
 
+    def test_create_environment(self, config, hardware):
+        """Create environment hardware in disabled state"""
+        LOG.info("*************** DONE **************")
+
     @pytest.mark.fail_snapshot
-    def test_install_local_dns(self, config, underlay):
+    def test_bootstrap_salt(self, config, underlay, salt_deployed):
         LOG.info("*************** DONE **************")

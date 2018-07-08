@@ -1,85 +1,17 @@
+@Library('tcp-qa')_
+
 common = new com.mirantis.mk.Common()
-
-def run_cmd(cmd, returnStdout=false) {
-    common.printMsg("Run shell command:\n" + cmd, "blue")
-    def VENV_PATH='/home/jenkins/fuel-devops30'
-    script = "set +x; echo 'activate python virtualenv ${VENV_PATH}';. ${VENV_PATH}/bin/activate; bash -c 'set -ex;set -ex;${cmd.stripIndent()}'"
-    return sh(script: script, returnStdout: returnStdout)
-}
-
-def run_cmd_stdout(cmd) {
-    return run_cmd(cmd, true)
-}
+shared = new com.mirantis.system_qa.SharedPipeline()
 
 node ("${NODE_NAME}") {
   try {
 
-    stage("Clean the environment") {
-        println "Clean the working directory ${env.WORKSPACE}"
-        deleteDir()
-        // do not fail if environment doesn't exists
-        println "Remove environment ${ENV_NAME}"
-        run_cmd("""\
-            dos.py erase ${ENV_NAME} || true
-        """)
-        println "Remove config drive ISO"
-        run_cmd("""\
-            rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
-        """)
+    stage("Clean the environment and clone tcp-qa") {
+        shared.prepare_working_dir()
     }
 
-    stage("Clone tcp-qa project and install requirements") {
-        run_cmd("""\
-        git clone https://github.com/Mirantis/tcp-qa.git ${env.WORKSPACE}
-        #cd tcp-qa
-        if [ -n "$TCP_QA_REFS" ]; then
-            set -e
-            git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
-        fi
-        pip install --upgrade --upgrade-strategy=only-if-needed -r tcp_tests/requirements.txt
-        """)
-    }
-
-    // load shared methods from the clonned tcp-qa repository.
-    // DO NOT MOVE this code before clonning the repo
-    def rootDir = pwd()
-    def shared = load "${rootDir}/tcp_tests/templates/SharedPipeline.groovy"
-
-    stage("Create an environment ${ENV_NAME} in disabled state") {
-        // do not fail if environment doesn't exists
-        run_cmd("""\
-        python ./tcp_tests/utils/create_devops_env.py
-        """)
-    }
-
-    stage("Generate the model") {
-        shared.generate_cookied_model()
-    }
-
-    stage("Generate config drive ISO") {
-        shared.generate_configdrive_iso()
-    }
-
-    stage("Upload generated config drive ISO into volume on cfg01 node") {
-        run_cmd("""\
-        virsh vol-upload ${ENV_NAME}_cfg01.${LAB_CONFIG_NAME}.local_config /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} --pool default
-        virsh pool-refresh --pool default
-        """)
-    }
-
-    stage("Run the 'underlay' and 'salt-deployed' fixtures to bootstrap salt cluster") {
-        run_cmd("""\
-        export MANAGER=devops
-        export SHUTDOWN_ENV_ON_TEARDOWN=false
-        export BOOTSTRAP_TIMEOUT=900
-        export PYTHONIOENCODING=UTF-8
-        export REPOSITORY_SUITE=${MCP_VERSION}
-        #export SALT_STEPS_PATH=templates/${LAB_CONFIG_NAME}/salt.yaml
-        export TEST_GROUP=test_install_local_salt
-        py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -k \${TEST_GROUP}
-        sleep 60  # wait for jenkins to start and IO calm down
-
-        """)
+    stage("Create environment, generate mode, bootstrap the salt-cluster") {
+        shared.swarm_bootstrap_salt_cluster_devops()
     }
 
     // Install core and cicd
@@ -92,14 +24,14 @@ node ("${NODE_NAME}") {
     }
 
     // Install the cluster
-    for (stack in "${STACK_INSTALL}".split(",")) {
+    for (stack in "${PLATFORM_STACK_INSTALL}".split(",")) {
         stage("Run Jenkins job on CICD [deploy_openstack:${stack}]") {
             shared.run_job_on_cicd_nodes(stack)
         }
     }
 
     stage("Run tests") {
-        run_cmd("""\
+        shared.run_cmd("""\
             export ENV_NAME=${ENV_NAME}
             . ./tcp_tests/utils/env_salt
             . ./tcp_tests/utils/env_k8s
@@ -133,7 +65,7 @@ node ("${NODE_NAME}") {
   } finally {
     // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
     // and report appropriate data to TestRail
-    run_cmd("""\
+    shared.run_cmd("""\
         dos.py destroy ${ENV_NAME}
     """)
   }
