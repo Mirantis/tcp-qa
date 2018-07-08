@@ -3,6 +3,7 @@
 common = new com.mirantis.mk.Common()
 shared = new com.mirantis.system_qa.SharedPipeline()
 
+
 node ("${NODE_NAME}") {
   try {
 
@@ -10,24 +11,16 @@ node ("${NODE_NAME}") {
         shared.prepare_working_dir()
     }
 
-    stage("Create environment, generate mode, bootstrap the salt-cluster") {
+    stage("Create environment, generate model, bootstrap the salt-cluster") {
         shared.swarm_bootstrap_salt_cluster_devops()
     }
 
-    // Install core and cicd
-    stage("Run Jenkins job on salt-master [deploy_openstack:core]") {
-        shared.run_job_on_day01_node("core")
+    stage("Install core infrastructure and deploy CICD nodes") {
+        shared.swarm_deploy_cicd('core,cicd')
     }
 
-    stage("Run Jenkins job on salt-master [deploy_openstack:cicd]") {
-        shared.run_job_on_day01_node("cicd")
-    }
-
-    // Install the cluster
-    for (stack in "${STACK_INSTALL}".split(",")) {
-        stage("Run Jenkins job on CICD [deploy_openstack:${stack}]") {
-            shared.run_job_on_cicd_nodes(stack)
-        }
+    stage("Install core infrastructure and deploy CICD nodes") {
+        shared.swarm_deploy_stacks(env.STACK_INSTALL)
     }
 
     stage("Run tests") {
@@ -37,7 +30,7 @@ node ("${NODE_NAME}") {
             . ./tcp_tests/utils/env_k8s
 
             # Initialize variables used in tcp-qa tests
-            export CURRENT_SNAPSHOT=k8s_deployed  # provide the snapshot name required by the test
+            export CURRENT_SNAPSHOT=sl_deployed  # provide the snapshot name required by the test
             export TESTS_CONFIGS=\$(pwd)/${ENV_NAME}_salt_deployed.ini  # some SSH data may be filled separatelly
 
             export MANAGER=empty  # skip 'hardware' fixture, disable snapshot/revert features
@@ -47,9 +40,15 @@ node ("${NODE_NAME}") {
             export SALT_USER=\$SALTAPI_USER
             export SALT_PASSWORD=\$SALTAPI_PASS
             export COMMON_SERVICES_INSTALLED=true  # skip common_services_deployed fixture
-            export K8S_INSTALLED=true              # skip k8s_deployed fixture
+            export OPENSTACK_INSTALLED=true              # skip k8s_deployed fixture
+            export sl_installed=true              # skip sl_deployed fixture
 
-            py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -m k8s_calico
+            py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -k test_mcp_pike_cookied_ovs_install
+
+            #dos.py suspend ${ENV_NAME}
+            #dos.py snapshot ${ENV_NAME} test_completed
+            #dos.py resume ${ENV_NAME}
+            #dos.py time-sync ${ENV_NAME}
             """)
     }
 
@@ -59,9 +58,10 @@ node ("${NODE_NAME}") {
   } finally {
     // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
     // and report appropriate data to TestRail
-    shared.run_cmd("""\
-        dos.py destroy ${ENV_NAME}
-    """)
+    if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
+        shared.run_cmd("""\
+            dos.py destroy ${ENV_NAME}
+        """)
+    }
   }
-
 }
