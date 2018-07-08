@@ -1,7 +1,9 @@
-common = new com.mirantis.mk.Common()
+package com.mirantis.system_qa
+
+import com.mirantis.mk.Common
 
 def run_cmd(cmd, returnStdout=false) {
-    common.printMsg("Run shell command:\n" + cmd, "blue")
+    Common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
     script = """\
         set +x;
@@ -40,8 +42,8 @@ def generate_cookied_model() {
                 string(name: 'IPV4_NET_TENANT', value: IPV4_NET_TENANT),
                 string(name: 'IPV4_NET_EXTERNAL', value: IPV4_NET_EXTERNAL),
             ]
-        common.printMsg("Start building job 'swarm-cookied-model-generator' with parameters:", "purple")
-        common.prettyPrint(parameters)
+        Common.printMsg("Start building job 'swarm-cookied-model-generator' with parameters:", "purple")
+        Common.prettyPrint(parameters)
         build job: 'swarm-cookied-model-generator',
             parameters: parameters
 }
@@ -70,8 +72,8 @@ def generate_configdrive_iso() {
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${PIPELINE_LIBRARY_REF}"),
                 string(name: 'MK_PIPELINES_REF', value: "${MK_PIPELINES_REF}"),
             ]
-        common.printMsg("Start building job 'create-cfg-config-drive' with parameters:", "purple")
-        common.prettyPrint(parameters)
+        Common.printMsg("Start building job 'create-cfg-config-drive' with parameters:", "purple")
+        Common.prettyPrint(parameters)
         build job: 'create-cfg-config-drive',
             parameters: parameters
 }
@@ -110,7 +112,3 @@ def run_job_on_cicd_nodes(stack_to_install, timeout=1800) {
         sleep 60  # Wait for IO calm down on cluster nodes
     """)
 }
-
-
-// pretend a groovy class, DO NOT REMOVE
-return this
