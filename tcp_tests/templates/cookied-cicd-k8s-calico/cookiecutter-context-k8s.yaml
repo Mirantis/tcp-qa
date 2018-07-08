@@ -1,4 +1,5 @@
 default_context:
+  auditd_enabled: 'False'
   backup_private_key: |-
     -----BEGIN RSA PRIVATE KEY-----
     MIIEpAIBAAKCAQEA3ufjR+Eh/CJp84JZPKosMNL7ydXidfe9qdAnQIGGOsS/TBnc
@@ -109,12 +110,11 @@ default_context:
   internal_proxy_enabled: 'False'
   kqueen_custom_mail_enabled: 'False'
   kqueen_enabled: 'False'
-  kubernetes_compute_node01_address: 10.167.4.101
-  kubernetes_compute_node01_deploy_address: 10.167.5.101
-  kubernetes_compute_node01_hostname: cmp01
-  kubernetes_compute_node02_address: 10.167.4.102
-  kubernetes_compute_node02_deploy_address: 10.167.5.102
-  kubernetes_compute_node02_hostname: cmp02
+  kubernetes_compute_count: 2
+  kubernetes_compute_rack01_deploy_subnet: 10.167.5
+  kubernetes_compute_rack01_single_subnet: 10.167.4
+  kubernetes_compute_rack01_tenant_subnet: 10.167.6
+  kubernetes_compute_rack01_hostname: cmp
   kubernetes_control_address: 10.167.4.10
   kubernetes_control_node01_address: 10.167.4.11
   kubernetes_control_node01_deploy_address: 10.167.5.11
@@ -132,6 +132,10 @@ default_context:
   kubernetes_virtlet_enabled: 'False'
   local_repositories: 'False'
   maas_deploy_address: 10.167.5.15
+  maas_deploy_range_end: 10.167.5.199
+  maas_deploy_range_start: 10.167.5.180
+  maas_deploy_vlan: '0'
+  maas_fabric_name: deploy-fabric0
   maas_hostname: cfg01
   mcp_common_scripts_branch: ''
   mcp_version: proposed
@@ -153,7 +157,7 @@ default_context:
   salt_master_address: 10.167.4.15
   salt_master_hostname: cfg01
   salt_master_management_address: 10.167.5.15
-  shared_reclass_branch: ''
+  shared_reclass_branch: 'proposed'
   shared_reclass_url: https://gerrit.mcp.mirantis.net/salt-models/reclass-system.git
   stacklight_enabled: 'False'
   stacklight_version: '2'
