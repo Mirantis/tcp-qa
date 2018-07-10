@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "428a21e6_da4f7514",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 742,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-10T09:00:19Z",
+      "side": 1,
+      "message": "Please do not add the dependency from \u0027hardware\u0027 fixture in the K8SManager.\nIf you need such functionality, please move the method to the envmanager_devops.py , dumb prototype in the envmanager_empty.py , and use \u0027hardware\u0027 fixture in the specific test.",
+      "range": {
+        "startLine": 722,
+        "startChar": 0,
+        "endLine": 742,
+        "endChar": 59
+      },
+      "revId": "6ef3d6147cd8b60ad4a59ad75e96e1ebbd236a6d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
