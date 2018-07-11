@@ -13,6 +13,7 @@
 #    under the License.
 
 import pytest
+import time
 
 from tcp_tests.helpers import ext
 from tcp_tests.helpers import utils
@@ -79,7 +80,8 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
     LOG.warning('Restarting keepalived service on controllers...')
     k8s_actions._salt.local(tgt='ctl*', fun='cmd.run',
                             args='systemctl restart keepalived.service')
-
+    # give some time to keepalived to enter in MASTER state
+    time.sleep(5)
     return k8s_actions
 
 
