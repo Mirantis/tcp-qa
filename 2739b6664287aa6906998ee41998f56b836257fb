@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "97af6047_48563904",
+        "filename": "tcp_tests/managers/envmanager_devops.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-07-11T12:13:22Z",
+      "side": 1,
+      "message": "destroy node is missing",
+      "range": {
+        "startLine": 427,
+        "startChar": 21,
+        "endLine": 427,
+        "endChar": 31
+      },
+      "revId": "2739b6664287aa6906998ee41998f56b836257fb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
