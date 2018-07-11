@@ -22,6 +22,30 @@
       "revId": "2739b6664287aa6906998ee41998f56b836257fb",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "749282d2_a7a2af08",
+        "filename": "tcp_tests/managers/envmanager_devops.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 427,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-11T12:54:09Z",
+      "side": 1,
+      "message": "In warm shutdown, node should not be destroyed by power-off. Shutdown process can take some time, and if the node is destroyed at that time, filesystem may be corrupted.\n\nDestroy the node is an another case, for power-off HA scenario",
+      "parentUuid": "97af6047_48563904",
+      "range": {
+        "startLine": 427,
+        "startChar": 21,
+        "endLine": 427,
+        "endChar": 31
+      },
+      "revId": "2739b6664287aa6906998ee41998f56b836257fb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
