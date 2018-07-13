@@ -3,10 +3,13 @@
 {% from 'virtual-offline-pike-ovs/underlay.yaml' import HOSTNAME_CTL02 with context %}
 {% from 'virtual-offline-pike-ovs/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'virtual-offline-pike-ovs/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'virtual-offline-pike-ovs/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
-{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker/ ' + REPOSITORY_SUITE + ' stable') %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'virtual-offline-pike-ovs') %}
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
+{% import 'shared-salt.yaml' as SHARED with context %}
 # Install OpenStack control services
 
 - description: Install glance on all controllers
@@ -329,15 +332,6 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Enable local docker repo
-  cmd: |
-    set -e;
-    echo "{{ DOCKER_LOCAL_REPO }}" > /etc/apt/sources.list.d/mcp_docker.list;
-    apt-get clean; apt-get update;
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Install docker-ce on gtw
   cmd: salt-call cmd.run 'apt-get install docker-ce -y'
   node_name: {{ HOSTNAME_GTW01 }}
@@ -363,3 +357,5 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+{{ BACKUP.MACRO_WR_NGINX_MASTER() }}
