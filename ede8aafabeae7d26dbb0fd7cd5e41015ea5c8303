@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "08632859_c155ca8b",
+        "filename": "jobs/pipelines/swarm-bootstrap-salt-cluster-devops.groovy",
+        "patchSetId": 58
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-07-13T22:20:38Z",
+      "side": 1,
+      "message": "In a feature will be useful also have  MK_PIPELINES/library _COMMIT  Commit/tag/branch var - this need to add todo",
+      "range": {
+        "startLine": 16,
+        "startChar": 25,
+        "endLine": 16,
+        "endChar": 35
+      },
+      "revId": "ede8aafabeae7d26dbb0fd7cd5e41015ea5c8303",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a4ad12ed_78cd4fdd",
+        "filename": "jobs/pipelines/swarm-bootstrap-salt-cluster-devops.groovy",
+        "patchSetId": 58
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-07-13T22:20:38Z",
+      "side": 1,
+      "message": "ERASE_EXISTING_ENVIRONMENT that  is true by default but for some cases need to be possible to set in false\nDOMAIN NAME - in case is we plan to use the same LAB_CONFIG for several deploys that has changes only on CC level context(for me make sense to have 1 lab conf with sevral CC context in case if we have the same underay nodes/roles/nets) - at least for openstack this now looks like true: )",
+      "range": {
+        "startLine": 20,
+        "startChar": 5,
+        "endLine": 20,
+        "endChar": 29
+      },
+      "revId": "ede8aafabeae7d26dbb0fd7cd5e41015ea5c8303",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "48aacc50_8fcc445a",
+        "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
+        "patchSetId": 58
+      },
+      "lineNbr": 62,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-07-13T22:20:38Z",
+      "side": 1,
+      "message": "probably we need move here doc string with param description from swarm_bootsrap_groovy,so that /TODOs can be applied here (possibility to use commit from pipelines/pipelines library/ Do not earse the env if var is false, domain name in case if we use the same undrlay.yaml for several envs)",
+      "range": {
+        "startLine": 62,
+        "startChar": 12,
+        "endLine": 62,
+        "endChar": 13
+      },
+      "revId": "ede8aafabeae7d26dbb0fd7cd5e41015ea5c8303",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2560f6e9_e7613bc2",
+        "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
+        "patchSetId": 58
+      },
+      "lineNbr": 158,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-07-13T22:20:38Z",
+      "side": 1,
+      "message": "Seems we need one more var like mcp_common repo that be default \u003d mcp_version under tests - but can be defined from commit as well",
+      "range": {
+        "startLine": 158,
+        "startChar": 28,
+        "endLine": 158,
+        "endChar": 29
+      },
+      "revId": "ede8aafabeae7d26dbb0fd7cd5e41015ea5c8303",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
