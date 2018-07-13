@@ -5,6 +5,11 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'virtual-pike-ovs-dpdk') %}
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+
 # Install OpenStack control services
 
 - description: Install glance on all controllers
@@ -275,3 +280,8 @@
   node_name: {{ HOSTNAME_CTL03 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
+{{ BACKUP.MACRO_WR_NGINX_MASTER() }}
+{{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
+{{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}

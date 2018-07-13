@@ -6,10 +6,13 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
-{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker/ ' + REPOSITORY_SUITE + ' stable') %}
 # Install OpenStack control services
-
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'virtual-offline-pike-ovs-dpdk') %}
 {% import 'shared-backup-restore.yaml' as BACKUP with context %}
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker ' + REPOSITORY_SUITE + ' stable') %}
+
 
 - description: Install glance on all controllers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -366,5 +369,6 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
+{{ BACKUP.MACRO_WR_NGINX_MASTER() }}
 {{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
 {{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
