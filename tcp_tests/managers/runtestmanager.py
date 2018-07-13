@@ -167,7 +167,7 @@ class RuntestManager(object):
                               class_name=self.class_name),
                 node_name=master_name) as editor:
             editor.content = config
-
+        LOG.info('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!{}'.format(editor.content))
         with self.underlay.yaml_editor(
                 file_path="/srv/salt/reclass/nodes/_generated/"
                           "cfg01.{domain_name}.yml".format(

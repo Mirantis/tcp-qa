@@ -3,9 +3,13 @@
 {% from 'virtual-offline-pike-ovs/underlay.yaml' import HOSTNAME_CTL02 with context %}
 {% from 'virtual-offline-pike-ovs/underlay.yaml' import HOSTNAME_CTL03 with context %}
 {% from 'virtual-offline-pike-ovs/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'virtual-offline-pike-ovs/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'virtual-offline-pike-ovs/underlay.yaml' import DOMAIN_NAME with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% import 'shared-backup-restore.yaml' as BACKUP with context %}
+{% import 'shared-salt.yaml' as SHARED with context %}
 {% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker/ ' + REPOSITORY_SUITE + ' stable') %}
 # Install OpenStack control services
 
@@ -363,3 +367,8 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
+{{ BACKUP.MACRO_WR_NGINX_MASTER() }}
+{{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
+{{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
