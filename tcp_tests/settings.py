@@ -35,6 +35,7 @@ SHUTDOWN_ENV_ON_TEARDOWN = get_var_as_bool('SHUTDOWN_ENV_ON_TEARDOWN', True)
 
 LAB_CONFIG_NAME = os.environ.get('LAB_CONFIG_NAME', 'mk22-lab-basic')
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local'
+CLUSTER_NAME = os.environ.get('CLUSTER_NAME', LAB_CONFIG_NAME)
 # LAB_CONFIGS_NAME = os.environ.get('LAB_NAME', 'mk22-lab-advanced')
 
 SSH_LOGIN = os.environ.get('SSH_LOGIN', 'root')
