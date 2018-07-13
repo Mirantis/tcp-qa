@@ -11,9 +11,9 @@
 
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'proposed') %}
 {% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker/ ' + REPOSITORY_SUITE + ' stable') %}
-
-{% import 'shared-salt.yaml' as SHARED with context %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'virtual-offline-ssl') %}
 {% import 'shared-backup-restore.yaml' as BACKUP with context %}
+{% import 'shared-salt.yaml' as SHARED with context %}
 
 # Install OpenStack control services
 
@@ -525,7 +525,7 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
+{{ BACKUP.MACRO_WR_NGINX_MASTER() }}
 {{ BACKUP.MACRO_BACKUP_BACKUPNINJA() }}
 {{ BACKUP.MACRO_BACKUP_XTRABACKUP() }}
-
-{{ SHARED.RUN_NEW_TEMPEST() }}
