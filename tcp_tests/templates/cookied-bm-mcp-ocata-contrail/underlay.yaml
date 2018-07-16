@@ -1,5 +1,7 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set CUSTOM_VCP_TRUSTY_IMAGE_URL = os_env('CUSTOM_VCP_TRUSTY_IMAGE_URL', '') %}
+{% set CUSTOM_VCP_XENIAL_IMAGE_URL = os_env('CUSTOM_VCP_XENIAL_IMAGE_URL', '') %}
 
 #{# set DOMAIN_NAME = os_env('LAB_CONFIG_NAME', 'physical_mcp11_ovs_dpdk') + '.local' #}
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-bm-mcp-ocata-contrail') %}
