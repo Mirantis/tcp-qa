@@ -136,13 +136,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install heat service
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@heat:server' state.sls heat -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Deploy horizon dashboard
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@horizon:server' state.sls horizon
@@ -156,6 +149,13 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+
+- description: Install heat service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@heat:server' state.sls heat -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 - description: Check heat service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
