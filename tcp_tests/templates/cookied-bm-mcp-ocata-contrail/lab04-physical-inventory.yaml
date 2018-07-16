@@ -45,6 +45,7 @@ nodes:
     cmp001.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: openstack_compute_node01
       roles:
+      - openstack_compute
       - features_lvm_backend
       - linux_system_codename_xenial
       interfaces:
@@ -61,6 +62,7 @@ nodes:
     cmp002.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: openstack_compute_node02
       roles:
+      - openstack_compute
       - features_lvm_backend
       - linux_system_codename_xenial
       interfaces:
