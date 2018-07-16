@@ -1,9 +1,6 @@
 {% from 'cookied-bm-contrail40/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% from 'cookied-bm-contrail40/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-bm-contrail40/underlay.yaml' import DOMAIN_NAME with context %}
-{% from 'cookied-bm-contrail40/underlay.yaml' import HOSTNAME_KVM01 with context %}
-{% from 'cookied-bm-contrail40/underlay.yaml' import HOSTNAME_KVM02 with context %}
-{% from 'cookied-bm-contrail40/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
@@ -43,15 +40,15 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-  #- description: "WR for changing image to proposed"
-  #  cmd: |
-  #    set -e;
+- description: "WR for changing image to proposed"
+  cmd: |
+    set -e;
     # Add message_queu host for opencontrail
-    #    . /root/venv-reclass-tools/bin/activate;
-    #    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcp{{ SHARED.REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
-    #  node_name: {{ HOSTNAME_CFG01 }}
-    #  retry: {count: 1, delay: 10}
-    #  skip_fail: false
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcp{{ SHARED.REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
 - description: Temporary workaround for removing cinder-volume from CTL nodes
   cmd: |
@@ -127,7 +124,7 @@
 
 - description: Hack resolv.conf on VCP nodes for internal services access
   cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not cfg*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -151,6 +148,10 @@
   skip_fail: false
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
 
 - description: "Lab04 workaround: Give each node root acces with key from cfg01"
   cmd: |
