@@ -107,11 +107,19 @@
   cmd: |
     if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:exporters' match.pillar 'prometheus:exporters' ; then
       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:exporters' state.sls prometheus
-      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:exporters' state.sls prometheus.collector
     fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
-  skip_fail: true
+  skip_fail: false
+
+- description: Configure Prometheus exporters, if pillar 'prometheus:collector' exists on any server
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:collector' match.pillar 'prometheus:collector' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:collector' state.sls prometheus.collector
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
 - description: Install elasticsearch server
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:server' state.sls elasticsearch.server -b 1
@@ -255,4 +263,4 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False "*" state.sls salt.minion
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 15}
-  skip_fail: true
+  skip_fail: false
