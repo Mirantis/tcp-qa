@@ -71,3 +71,15 @@
 {{ VSWITCH.MACRO_CHECK_BGPVPN_ENABLED_BY_DEFAULT() }}
 
 {{ VSWITCH.MACRO_ENABLE_L2GW(SHARED.CLUSTER_NAME, VSWITCH_IP) }}
+
+- description: Reboot computes
+  cmd: salt --timeout=600  "cmp*" system.reboot
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Ping computes after reboot
+  cmd: salt --timeout=600  "cmp*" test.ping
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
