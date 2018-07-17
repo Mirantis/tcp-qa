@@ -104,7 +104,7 @@ class OpenstackManager(ExecuteCommandsMixin):
         else:
             target_name = node_name
 
-        cmd = ("apt-get -y install docker.io")
+        cmd = ("apt-get -y install docker-ce")
         with self.__underlay.remote(node_name=target_name) as node_remote:
             result = node_remote.execute(cmd, verbose=True)
 
