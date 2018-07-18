@@ -18,7 +18,7 @@ from tcp_tests.fixtures.config_fixtures import *  # noqa
 from tcp_tests.fixtures.underlay_fixtures import *  # noqa
 from tcp_tests.fixtures.rally_fixtures import *  # noqa
 from tcp_tests.fixtures.salt_fixtures import *  # noqa
-from tcp_tests.fixtures.common_services_fixtures import *  # noqa
+from tcp_tests.fixtures.core_fixtures import *  # noqa
 from tcp_tests.fixtures.openstack_fixtures import *  # noqa
 from tcp_tests.fixtures.opencontrail_fixtures import *  # noqa
 from tcp_tests.fixtures.oss_fixtures import *  # noqa
@@ -39,8 +39,8 @@ __all__ = sorted([  # sort for documentation
     'rally',
     # salt_fixtures
     'salt_actions',
-    # common_services_fixtures
-    'common_services_actions',
+    # core_fixtures
+    'core_actions',
     # openstack_fixtures
     'openstack_actions',
     # oss_fixtures

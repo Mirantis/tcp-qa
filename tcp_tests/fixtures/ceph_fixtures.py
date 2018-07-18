@@ -38,7 +38,7 @@ def ceph_actions(config, underlay, salt_deployed):
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.ceph_deployed)
 @pytest.fixture(scope='function')
 def ceph_deployed(revert_snapshot, request, config,
-                  hardware, underlay, common_services_deployed,
+                  hardware, underlay, core_deployed,
                   salt_deployed, ceph_actions):
     """Fixture to get or install Ceph services on environment
 
@@ -48,7 +48,7 @@ def ceph_deployed(revert_snapshot, request, config,
     :param config: fixture provides oslo.config
     :param hardware: fixture provides enviromnet manager
     :param underlay: fixture provides underlay manager
-    :param common_services_deployed: fixture provides CommonServicesManager
+    :param core_deployed: fixture provides CoreManager
     :param ceph_actions: fixture provides CephManager instance
     :rtype: CephManager
 

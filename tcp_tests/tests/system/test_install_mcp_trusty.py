@@ -49,7 +49,7 @@ class TestMcpInstallStacklightOpenstackTrusty(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_mcp_trusty_sl_os_install(self, underlay, config,
-                                      openstack_deployed, sl_deployed,
+                                      openstack_deployed, stacklight_deployed,
                                       openstack_actions):
         """Test for deploying an mcp environment and check it
         Scenario:
@@ -62,20 +62,20 @@ class TestMcpInstallStacklightOpenstackTrusty(object):
         7. Run SL component tests
         8. Download SL component tests report
         """
-        mon_nodes = sl_deployed.get_monitoring_nodes()
+        mon_nodes = stacklight_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
-        sl_deployed.check_prometheus_targets(mon_nodes)
+        stacklight_deployed.check_prometheus_targets(mon_nodes)
 
         # Run SL component tetsts
-        sl_deployed.run_sl_functional_tests(
+        stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus',
             'test_alerts.py')
 
         # Download report
-        sl_deployed.download_sl_test_report(
+        stacklight_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")

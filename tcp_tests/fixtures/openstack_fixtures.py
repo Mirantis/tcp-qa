@@ -39,7 +39,7 @@ def openstack_actions(config, underlay, salt_deployed):
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
 @pytest.fixture(scope='function')
 def openstack_deployed(revert_snapshot, request, config,
-                       hardware, underlay, common_services_deployed,
+                       hardware, underlay, core_deployed,
                        salt_deployed, openstack_actions, rally):
     """Fixture to get or install OpenStack services on environment
 
@@ -49,7 +49,7 @@ def openstack_deployed(revert_snapshot, request, config,
     :param config: fixture provides oslo.config
     :param hardware: fixture provides enviromnet manager
     :param underlay: fixture provides underlay manager
-    :param common_services_deployed: fixture provides CommonServicesManager
+    :param core_deployed: fixture provides CoreManager
     :param openstack_actions: fixture provides OpenstackManager instance
     :param rally: fixture provides RallyManager instance
     :rtype: OpenstackManager
