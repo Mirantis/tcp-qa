@@ -45,7 +45,7 @@ __all__ = sorted([  # sort for documentation
     'rally',
     # salt_fixtures
     'salt_actions',
-    'salt_deployed',
+    'core_deployed',
     # common_services_fixtures
     'common_services_actions',
     'common_services_deployed',
@@ -66,7 +66,7 @@ __all__ = sorted([  # sort for documentation
     'opencontrail',
     # stacklight_fixtures
     'sl_actions',
-    'sl_deployed',
+    'stacklight_deployed',
     'sl_os_deployed',
     'ceph_deployed',
     'ceph_action',

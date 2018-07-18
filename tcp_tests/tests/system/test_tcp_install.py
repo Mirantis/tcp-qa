@@ -59,7 +59,7 @@ class TestTCPInstaller(object):
         assert res['failures'] == 0, fail_msg
 
     @pytest.mark.fail_snapshot
-    def test_tcp_install_with_scripts(self, config, underlay, salt_deployed,
+    def test_tcp_install_with_scripts(self, config, underlay, core_deployed,
                                       show_step, rally):
         """Test for deploying an tcp environment with scripts and check it
 

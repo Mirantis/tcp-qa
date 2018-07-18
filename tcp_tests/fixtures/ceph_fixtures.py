@@ -22,24 +22,24 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def ceph_actions(config, underlay, salt_deployed):
+def ceph_actions(config, underlay, core_deployed):
     """Fixture that provides various actions for OpenStack
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
-    :param salt_deployed: fixture provides salt manager
+    :param core_deployed: fixture provides salt manager
     :rtype: CephManager
 
     For use in tests or fixtures to deploy a custom OpenStack
     """
-    return ceph_manager.CephManager(config, underlay, salt_deployed)
+    return ceph_manager.CephManager(config, underlay, core_deployed)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.ceph_deployed)
 @pytest.fixture(scope='function')
 def ceph_deployed(revert_snapshot, request, config,
                   hardware, underlay, common_services_deployed,
-                  salt_deployed, ceph_actions):
+                  core_deployed, ceph_actions):
     """Fixture to get or install Ceph services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -71,7 +71,7 @@ def ceph_deployed(revert_snapshot, request, config,
         commands = underlay.read_template(steps_path)
         ceph_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.ceph_deployed)
-        salt_deployed.sync_time()
+        core_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on

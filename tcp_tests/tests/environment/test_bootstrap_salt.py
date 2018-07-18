@@ -27,5 +27,5 @@ class TestBootstrapCore(object):
         LOG.info("*************** DONE **************")
 
     @pytest.mark.fail_snapshot
-    def test_bootstrap_salt(self, config, underlay, salt_deployed):
+    def test_bootstrap_salt(self, config, underlay, core_deployed):
         LOG.info("*************** DONE **************")

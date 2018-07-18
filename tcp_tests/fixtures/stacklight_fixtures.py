@@ -23,7 +23,7 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def sl_actions(config, underlay, salt_deployed):
+def sl_actions(config, underlay, core_deployed):
     """Fixture that provides various actions for K8S
 
     :param config: fixture provides oslo.config
@@ -32,14 +32,14 @@ def sl_actions(config, underlay, salt_deployed):
 
     For use in tests or fixtures to deploy a custom K8S
     """
-    return sl_manager.SLManager(config, underlay, salt_deployed)
+    return sl_manager.SLManager(config, underlay, core_deployed)
 
 
-@pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+@pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
 @pytest.fixture(scope='function')
-def sl_deployed(revert_snapshot, request, config,
-                hardware, underlay, common_services_deployed,
-                salt_deployed, sl_actions):
+def stacklight_deployed(revert_snapshot, request, config,
+                        hardware, underlay, common_services_deployed,
+                        core_deployed, sl_actions):
     """Fixture to get or install SL services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -56,8 +56,8 @@ def sl_deployed(revert_snapshot, request, config,
         steps_path = config.sl_deploy.sl_steps_path
         commands = underlay.read_template(steps_path)
         sl_actions.install(commands)
-        hardware.create_snapshot(ext.SNAPSHOT.sl_deployed)
-        salt_deployed.sync_time()
+        hardware.create_snapshot(ext.SNAPSHOT.stacklight_deployed)
+        core_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on
@@ -70,16 +70,16 @@ def sl_deployed(revert_snapshot, request, config,
     return sl_actions
 
 
-@pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+@pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
 @pytest.fixture(scope='function')
 def sl_os_deployed(revert_snapshot,
                    openstack_deployed,
-                   sl_deployed):
+                   stacklight_deployed):
     """Fixture to get or install SL and OpenStack services on environment
 
-    Uses fixtures openstack_deployed and sl_deployed, with 'sl_deployed'
+    Uses fixtures openstack_deployed and stacklight_deployed, with 'stacklight_deployed'
     top-level snapshot.
 
     Returns SLManager instance object
     """
-    return sl_deployed
+    return stacklight_deployed

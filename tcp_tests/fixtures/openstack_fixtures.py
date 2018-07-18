@@ -22,25 +22,25 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def openstack_actions(config, underlay, salt_deployed):
+def openstack_actions(config, underlay, core_deployed):
     """Fixture that provides various actions for OpenStack
 
     :param config: fixture provides oslo.config
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
-    :param salt_deployed: fixture provides salt manager
+    :param core_deployed: fixture provides salt manager
     :rtype: OpenstackManager
 
     For use in tests or fixtures to deploy a custom OpenStack
     """
-    return openstack_manager.OpenstackManager(config, underlay, salt_deployed)
+    return openstack_manager.OpenstackManager(config, underlay, core_deployed)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
 @pytest.fixture(scope='function')
 def openstack_deployed(revert_snapshot, request, config,
                        hardware, underlay, common_services_deployed,
-                       salt_deployed, openstack_actions, rally):
+                       core_deployed, openstack_actions, rally):
     """Fixture to get or install OpenStack services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -98,7 +98,7 @@ def openstack_deployed(revert_snapshot, request, config,
             rally.run_container()
 
         hardware.create_snapshot(ext.SNAPSHOT.openstack_deployed)
-        salt_deployed.sync_time()
+        core_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on

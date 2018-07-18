@@ -26,8 +26,8 @@ class TestOpenContrail(object):
 
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="ctl01.")
-    def test_opencontrail_simple(self, config, underlay, salt_deployed,
-                                 openstack_deployed, sl_deployed, show_step):
+    def test_opencontrail_simple(self, config, underlay, core_deployed,
+                                 openstack_deployed, stacklight_deployed, show_step):
         """Runner for Juniper contrail-tests
 
         Scenario:
@@ -50,14 +50,14 @@ class TestOpenContrail(object):
         # Run SL component tetsts
         if settings.RUN_SL_TESTS:
             show_step(5)
-            sl_deployed.run_sl_functional_tests(
+            stacklight_deployed.run_sl_functional_tests(
                 'ctl01',
                 '/root/stacklight-pytest/stacklight_tests/',
                 'tests/prometheus',
                 'test_alerts.py')
             show_step(8)
             # Download report
-            sl_deployed.download_sl_test_report(
+            stacklight_deployed.download_sl_test_report(
                 'ctl01',
                 '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
@@ -65,7 +65,7 @@ class TestOpenContrail(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="ctl01.")
     def test_opencontrail3_maas(self, config, underlay, salt_actions,
-                                openstack_deployed, show_step, sl_deployed):
+                                openstack_deployed, show_step, stacklight_deployed):
         """Runner for Juniper contrail-tests
 
         Scenario:
@@ -94,7 +94,7 @@ class TestOpenContrail(object):
                                  'monitoring_alertmanager',
                                  'monitoring_remote_collector',
                                  'monitoring_pushgateway']
-        mon_nodes = sl_deployed.get_monitoring_nodes()
+        mon_nodes = stacklight_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
         prometheus_relay_enabled = salt_actions.get_pillar(
@@ -104,18 +104,18 @@ class TestOpenContrail(object):
             # InfluxDB is used if prometheus relay service is not installed
             expected_service_list.append('monitoring_remote_storage_adapter')
         show_step(6)
-        sl_deployed.check_docker_services(mon_nodes, expected_service_list)
+        stacklight_deployed.check_docker_services(mon_nodes, expected_service_list)
         # Run SL component tetsts
         if settings.RUN_SL_TESTS:
             show_step(7)
-            sl_deployed.run_sl_functional_tests(
+            stacklight_deployed.run_sl_functional_tests(
                 'ctl01',
                 '/root/stacklight-pytest/stacklight_tests/',
                 'tests/prometheus',
                 'test_alerts.py')
             show_step(8)
             # Download report
-            sl_deployed.download_sl_test_report(
+            stacklight_deployed.download_sl_test_report(
                 'ctl01',
                 '/root/stacklight-pytest/stacklight_tests/report.xml')
 

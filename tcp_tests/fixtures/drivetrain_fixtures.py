@@ -35,7 +35,7 @@ def drivetrain_actions(config, underlay, salt_actions):
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.drivetrain_deployed)
 @pytest.fixture(scope='function')
 def drivetrain_deployed(revert_snapshot, request, config,
-                        hardware, underlay, salt_deployed,
+                        hardware, underlay, core_deployed,
                         drivetrain_actions):
     """Fixture to get or install Drivetrain on the environment
 
@@ -68,7 +68,7 @@ def drivetrain_deployed(revert_snapshot, request, config,
         commands = underlay.read_template(steps_path)
         drivetrain_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.drivetrain_deployed)
-        salt_deployed.sync_time()
+        core_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on

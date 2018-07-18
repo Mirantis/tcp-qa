@@ -35,7 +35,7 @@ def oss_actions(config, underlay, salt_actions):
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.oss_deployed)
 @pytest.fixture(scope='function')
 def oss_deployed(revert_snapshot, request, config,
-                 hardware, underlay, salt_deployed,
+                 hardware, underlay, core_deployed,
                  oss_actions):
     """Fixture to get or install OSS on the environment
 
@@ -68,7 +68,7 @@ def oss_deployed(revert_snapshot, request, config,
         commands = underlay.read_template(steps_path)
         oss_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.oss_deployed)
-        salt_deployed.sync_time()
+        core_deployed.sync_time()
 
     else:
         # 1. hardware environment created and powered on
@@ -88,7 +88,7 @@ def oss_sl_os_deployed(revert_snapshot,
                        oss_deployed):
     """Fixture to get or install SL and OpenStack services on environment
 
-    Uses fixtures openstack_deployed and sl_deployed, with 'sl_deployed'
+    Uses fixtures openstack_deployed and stacklight_deployed, with 'stacklight_deployed'
     top-level snapshot.
 
     Returns SLManager instance object

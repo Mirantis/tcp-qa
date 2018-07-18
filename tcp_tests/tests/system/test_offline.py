@@ -162,7 +162,7 @@ class TestOfflineDeployment(object):
         LOG.info("*************** DONE **************")
 
     def test_deploy_day1(self, show_step, config, underlay, hardware,
-                         common_services_deployed, salt_deployed):
+                         common_services_deployed, core_deployed):
         """Test for deploying an mcp from day01 images
 
         Scenario:
@@ -373,7 +373,7 @@ class TestOfflineDeployment(object):
                 '"$(ssh-keygen -y -f ~/.ssh/id_rsa | cut -d " " -f 2)"')
 
         salt_api = \
-            salt_deployed.get_pillar(cfg_node, '_param:jenkins_salt_api_url')
+            core_deployed.get_pillar(cfg_node, '_param:jenkins_salt_api_url')
         salt_api = salt_api[0].get(cfg_node)
 
         show_step(10)
@@ -419,7 +419,7 @@ class TestOfflineDeployment(object):
             cmd='salt "*" ssh.set_auth_key ubuntu '
                 '"$(ssh-keygen -y -f ~/.ssh/id_rsa | cut -d " " -f 2)"')
 
-        salt_nodes = salt_deployed.get_ssh_data()
+        salt_nodes = core_deployed.get_ssh_data()
         nodes_list = \
             [node for node in salt_nodes
              if not any(node['node_name'] == n['node_name']
@@ -432,7 +432,7 @@ class TestOfflineDeployment(object):
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         openstack = managers.openstack_manager.OpenstackManager(
-            config, underlay, hardware, salt_deployed)
+            config, underlay, hardware, core_deployed)
 
         if settings.RUN_TEMPEST:
             openstack.run_tempest(

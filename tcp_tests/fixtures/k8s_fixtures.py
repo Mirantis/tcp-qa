@@ -24,23 +24,23 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def k8s_actions(config, underlay, salt_deployed):
+def k8s_actions(config, underlay, core_deployed):
     """Fixture that provides various actions for K8S
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
-    :param salt_deployed: fixture provides salt manager
+    :param core_deployed: fixture provides salt manager
     :rtype: K8SManager
 
     For use in tests or fixtures to deploy a custom K8S
     """
-    return k8smanager.K8SManager(config, underlay, salt_deployed)
+    return k8smanager.K8SManager(config, underlay, core_deployed)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.k8s_deployed)
 @pytest.fixture(scope='function')
 def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
-                 common_services_deployed, salt_deployed, k8s_actions):
+                 common_services_deployed, core_deployed, k8s_actions):
     """Fixture to get or install k8s on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -73,7 +73,7 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
         commands = underlay.read_template(steps_path)
         k8s_actions.install(commands)
         hardware.create_snapshot(ext.SNAPSHOT.k8s_deployed)
-        salt_deployed.sync_time()
+        core_deployed.sync_time()
 
     # Workaround for keepalived hang issue after env revert from snapshot
     # see https://mirantis.jira.com/browse/PROD-12038
