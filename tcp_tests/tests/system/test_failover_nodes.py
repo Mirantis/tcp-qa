@@ -139,7 +139,7 @@ class TestFailoverNodes(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_restart_mon01_node(self, openstack_actions, hardware, underlay,
                                 sl_os_deployed, show_step):
         """Test restart mon01
@@ -190,7 +190,7 @@ class TestFailoverNodes(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_warm_shutdown_mon01_node(self, underlay, hardware, sl_os_deployed,
                                       openstack_actions, show_step):
         """Test warm shutdown mon01
@@ -237,10 +237,10 @@ class TestFailoverNodes(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_restart_mon_with_vip(self, underlay, hardware, sl_os_deployed,
                                   openstack_actions, salt_actions,
-                                  common_services_actions, show_step):
+                                  core_actions, show_step):
         """Test restart mon with VIP
 
         Scenario:
@@ -256,7 +256,7 @@ class TestFailoverNodes(object):
 
         """
         # TR case #4753939
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
         salt = salt_actions
 
         # STEP #1,2,3
@@ -280,7 +280,7 @@ class TestFailoverNodes(object):
             tgt="mon0*",
             pillar="_param:cluster_vip_address")[0]
         vip = [vip for minion_id, vip in mon_vip_pillar.items()][0]
-        minion_vip = common_services_actions.get_keepalived_vip_minion_id(vip)
+        minion_vip = core_actions.get_keepalived_vip_minion_id(vip)
         LOG.info("VIP {0} is on {1}".format(vip, minion_vip))
 
         # STEP #6
@@ -290,13 +290,13 @@ class TestFailoverNodes(object):
         # STEP #7
         show_step(7)
         # Check that VIP has been actually migrated to a new node
-        new_minion_vip = common_services_actions.get_keepalived_vip_minion_id(
+        new_minion_vip = core_actions.get_keepalived_vip_minion_id(
             vip)
         LOG.info("Migrated VIP {0} is on {1}".format(vip, new_minion_vip))
         assert new_minion_vip != minion_vip, (
             "VIP {0} wasn't migrated from {1} after node reboot!"
             .format(vip, new_minion_vip))
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
 
         # STEP #8
         show_step(8)
@@ -315,7 +315,7 @@ class TestFailoverNodes(object):
     @pytest.mark.revert_snapshot(ext.SNAPSHOT.openstack_deployed)
     def test_restart_ctl_with_vip(self, underlay, hardware, openstack_deployed,
                                   openstack_actions, salt_actions,
-                                  common_services_actions, show_step):
+                                  core_actions, show_step):
         """Test restart clt with VIP
 
         Scenario:
@@ -330,7 +330,7 @@ class TestFailoverNodes(object):
 
         """
         # TR case #3385671
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
         salt = salt_actions
 
         # STEP #1,2,3
@@ -344,7 +344,7 @@ class TestFailoverNodes(object):
             tgt="I@nova:controller:enabled:True",
             pillar="_param:cluster_vip_address")[0]
         vip = [vip for minion_id, vip in ctl_vip_pillar.items()][0]
-        minion_vip = common_services_actions.get_keepalived_vip_minion_id(vip)
+        minion_vip = core_actions.get_keepalived_vip_minion_id(vip)
         LOG.info("VIP {0} is on {1}".format(vip, minion_vip))
 
         # STEP #5
@@ -354,13 +354,13 @@ class TestFailoverNodes(object):
         # STEP #6
         show_step(6)
         # Check that VIP has been actually migrated to a new node
-        new_minion_vip = common_services_actions.get_keepalived_vip_minion_id(
+        new_minion_vip = core_actions.get_keepalived_vip_minion_id(
             vip)
         LOG.info("Migrated VIP {0} is on {1}".format(vip, new_minion_vip))
         assert new_minion_vip != minion_vip, (
             "VIP {0} wasn't migrated from {1} after node reboot!"
             .format(vip, new_minion_vip))
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
 
         # STEP #7
         show_step(7)

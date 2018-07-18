@@ -27,7 +27,7 @@ class TestPipeline(object):
 
     @pytest.mark.fail_snapshot
     def test_pipeline(self, show_step, underlay,
-                      common_services_deployed, salt_deployed):
+                      core_deployed, salt_deployed):
         """Runner for Juniper contrail-tests
 
         Scenario:

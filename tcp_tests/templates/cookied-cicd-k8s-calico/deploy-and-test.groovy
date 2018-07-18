@@ -46,7 +46,7 @@ node ("${NODE_NAME}") {
             export salt_master_port=6969
             export SALT_USER=\$SALTAPI_USER
             export SALT_PASSWORD=\$SALTAPI_PASS
-            export COMMON_SERVICES_INSTALLED=true  # skip common_services_deployed fixture
+            export CORE_INSTALLED=true  # skip core_deployed fixture
             export K8S_INSTALLED=true              # skip k8s_deployed fixture
 
             py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -m k8s_calico

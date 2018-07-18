@@ -96,7 +96,7 @@ class TestFailoverOpenStackServices(object):
     @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
     def test_restart_keepalived(self, func_name, underlay, config,
                                 openstack_deployed,
-                                common_services_actions,
+                                core_actions,
                                 salt_actions, openstack_actions,
                                 rally, show_step):
         """Test restart keepalived on ctl* nodes
@@ -114,7 +114,7 @@ class TestFailoverOpenStackServices(object):
             - OpenStack cluster
         """
         # TR case #4756965
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
         salt = salt_actions
 
         ctl_node_names = underlay.get_target_node_names(
@@ -165,7 +165,7 @@ class TestFailoverOpenStackServices(object):
     @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
     def test_stop_keepalived(self, func_name, underlay, config,
                              openstack_deployed,
-                             common_services_actions,
+                             core_actions,
                              salt_actions, openstack_actions,
                              rally, show_step):
         """Test stop keepalived on ctl node with VIP under load
@@ -184,7 +184,7 @@ class TestFailoverOpenStackServices(object):
             - OpenStack cluster
         """
         # TR case #3385682
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
         salt = salt_actions
 
         ctl_node_names = underlay.get_target_node_names(
@@ -201,7 +201,7 @@ class TestFailoverOpenStackServices(object):
             tgt="I@nova:controller:enabled:True",
             pillar="_param:cluster_vip_address")[0]
         vip = [vip for minion_id, vip in ctl_vip_pillar.items()][0]
-        minion_vip = common_services_actions.get_keepalived_vip_minion_id(vip)
+        minion_vip = core_actions.get_keepalived_vip_minion_id(vip)
         LOG.info("VIP {0} is on {1}".format(vip, minion_vip))
 
         # STEP #2
@@ -252,7 +252,7 @@ class TestFailoverOpenStackServices(object):
     @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
     def test_kill_keepalived(self, func_name, underlay, config,
                              openstack_deployed,
-                             common_services_actions,
+                             core_actions,
                              salt_actions, openstack_actions,
                              rally, show_step):
         """Test kill keepalived and haproxy on ctl node with VIP under load
@@ -283,7 +283,7 @@ class TestFailoverOpenStackServices(object):
             - Salt cluster
             - OpenStack cluster
         """
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
         salt = salt_actions
 
         ctl_node_names = underlay.get_target_node_names(
@@ -301,7 +301,7 @@ class TestFailoverOpenStackServices(object):
             tgt="I@nova:controller:enabled:True",
             pillar="_param:cluster_vip_address")[0]
         vip = [vip for minion_id, vip in ctl_vip_pillar.items()][0]
-        minion_vip = common_services_actions.get_keepalived_vip_minion_id(vip)
+        minion_vip = core_actions.get_keepalived_vip_minion_id(vip)
         LOG.info("VIP {0} is on {1}".format(vip, minion_vip))
 
         # STEP #2
@@ -362,13 +362,13 @@ class TestFailoverOpenStackServices(object):
         # STEP #6
         show_step(6)
         # Check that VIP has been actually migrated to a new node
-        new_minion_vip = common_services_actions.get_keepalived_vip_minion_id(
+        new_minion_vip = core_actions.get_keepalived_vip_minion_id(
             vip)
         LOG.info("Migrated VIP {0} is on {1}".format(vip, new_minion_vip))
         assert new_minion_vip != minion_vip, (
             "VIP {0} wasn't migrated from {1} after killing keepalived!"
             .format(vip, new_minion_vip))
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
 
         # Haproxy case
         # STEP #7
@@ -431,7 +431,7 @@ class TestFailoverOpenStackServices(object):
     @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
     def test_kill_rabbit_galera(self, func_name, underlay, config,
                                 openstack_deployed,
-                                common_services_actions,
+                                core_actions,
                                 salt_actions, openstack_actions,
                                 rally, show_step):
         """Test kill rabbitmq and galera on ctl node with VIP under load
@@ -455,7 +455,7 @@ class TestFailoverOpenStackServices(object):
             - Salt cluster
             - OpenStack cluster
         """
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
         salt = salt_actions
 
         ctl_node_names = underlay.get_target_node_names(
@@ -476,7 +476,7 @@ class TestFailoverOpenStackServices(object):
             pillar="_param:cluster_vip_address")[0]
         vip = [vip for minion_id, vip in ctl_vip_pillar.items()][0]
         ctl_minions = ctl_vip_pillar.keys()
-        minion_vip = common_services_actions.get_keepalived_vip_minion_id(vip)
+        minion_vip = core_actions.get_keepalived_vip_minion_id(vip)
         LOG.info("VIP {0} is on {1}".format(vip, minion_vip))
 
         # STEP #2
@@ -533,7 +533,7 @@ class TestFailoverOpenStackServices(object):
 
         # Check haproxy status on the node with VIP and find the mysql backend
         # which is receiving the connections
-        haproxy_status = common_services_actions.get_haproxy_status(minion_vip)
+        haproxy_status = core_actions.get_haproxy_status(minion_vip)
         mysql_status = haproxy_status['mysql_cluster']
         mysql_tgt = ''
         scur = 0
