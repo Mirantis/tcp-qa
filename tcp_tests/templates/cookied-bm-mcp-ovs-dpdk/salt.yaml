@@ -43,12 +43,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: "Workaround for PROD-18834: Pre-install linux-headers package"
-  cmd: salt 'cmp*' cmd.run "apt-get install -y linux-headers-$(uname -r)";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
 - description: WR for correct acces to git repo from jenkins on cfg01 node
   cmd: |
     git clone --mirror https://github.com/Mirantis/mk-pipelines.git /home/repo/mk/mk-pipelines/;
