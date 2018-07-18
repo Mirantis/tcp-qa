@@ -13,7 +13,6 @@
 #    under the License.
 
 import pytest
-import time
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -98,24 +97,13 @@ class TestMCPK8sActions(object):
                availability, run conformance
         """
 
-        deployment_name = 'test-dep-chain-upgrade'
-
         show_step(5)
-        k8s_deployed.kubectl_run(
-            deployment_name, 'gcr.io/google-samples/node-hello:1.0', '8080')
-        k8s_deployed.kubectl_expose(
-            'deployment', deployment_name, '8080', 'ClusterIP')
-        sample_service_ip = k8s_deployed.get_svc_ip(deployment_name, 'default')
-        k8s_deployed.wait_deploy_ready(deployment_name)
+        sample = k8s_deployed.get_sample_deployment('test-dep-chain-upgrade')
+        sample.run()
+        sample.expose()
+        sample.wait_for_ready()
 
-        # workaround for PROD-20720
-        time.sleep(30)
-
-        def check_is_test_service_available():
-            assert "Hello Kubernetes!" in k8s_deployed.curl(
-                "http://{}:{}".format(sample_service_ip, 8080))
-
-        check_is_test_service_available()
+        assert sample.is_service_available()
 
         show_step(6)
         k8s_deployed.run_conformance(log_out="k8s_conformance.log")
@@ -127,8 +115,57 @@ class TestMCPK8sActions(object):
             k8s_deployed.update_k8s_images(version)
 
             LOG.info("Checking test service availability")
-            check_is_test_service_available()
+            assert sample.is_service_available()
 
             LOG.info("Running conformance on {} version".format(version))
             log_name = "k8s_conformance_{}.log".format(version)
             k8s_deployed.run_conformance(log_out=log_name, raise_on_err=False)
+
+    @pytest.mark.grap_versions
+    def test_k8s_metallb(self, show_step, config, k8s_deployed):
+        """Enable metallb in cluster and do basic tests
+
+        Scenario:
+            1. Setup Kubernetes cluster with enabled metallb
+            2. Check that metallb pods created in metallb-system namespace
+            3. Run 5 sample deployments
+            4. Expose deployments with type=LoadBalancer
+            5. Check services availability from outside of cluster
+            6. Run conformance
+        """
+        show_step(1)
+        if not config.k8s_deploy.kubernetes_metallb_enabled:
+            pytest.skip("Test requires metallb addon enabled")
+
+        show_step(2)
+        pods = k8s_deployed.api.pods.list(namespace="metallb-system")
+
+        def is_pod_exists_with_prefix(prefix):
+            for pod in pods:
+                if pod.name.startswith(prefix) and pod.phase == 'Running':
+                    return True
+            return False
+
+        assert is_pod_exists_with_prefix("controller")
+        assert is_pod_exists_with_prefix("speaker")
+
+        show_step(3)
+        samples = []
+        for i in range(5):
+            name = 'test-dep-metallb-{}'.format(i)
+            sample = k8s_deployed.get_sample_deployment(name)
+            sample.run()
+            samples.append(sample)
+
+        show_step(4)
+        for sample in samples:
+            sample.expose('LoadBalancer')
+        for sample in samples:
+            sample.wait_for_ready()
+
+        show_step(5)
+        for sample in samples:
+            assert sample.is_service_available(external=True)
+
+        show_step(6)
+        k8s_deployed.run_conformance()
