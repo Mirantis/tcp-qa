@@ -16,28 +16,27 @@ import pytest
 
 from tcp_tests import logger
 from tcp_tests.helpers import ext
-from tcp_tests.managers import common_services_manager
+from tcp_tests.managers import core_manager
 
 LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def common_services_actions(config, underlay, salt_actions):
-    """Fixture that provides various actions for CommonServices
+def core_actions(config, underlay, salt_actions):
+    """Fixture that provides various actions for Core
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
-    :rtype: CommonServicesManager
+    :rtype: CoreManager
     """
-    return common_services_manager.CommonServicesManager(config, underlay,
-                                                         salt_actions)
+    return core_manager.CoreManager(config, underlay, salt_actions)
 
 
-@pytest.mark.revert_snapshot(ext.SNAPSHOT.common_services_deployed)
+@pytest.mark.revert_snapshot(ext.SNAPSHOT.core_deployed)
 @pytest.fixture(scope='function')
-def common_services_deployed(revert_snapshot, request, config,
-                             hardware, underlay, salt_deployed,
-                             common_services_actions):
+def core_deployed(revert_snapshot, request, config,
+                  hardware, underlay, salt_deployed,
+                  core_actions):
     """Fixture to get or install common services on the environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -46,31 +45,31 @@ def common_services_deployed(revert_snapshot, request, config,
     :param config: fixture provides oslo.config
     :param hardware: fixture provides enviromnet manager
     :param underlay: fixture provides underlay manager
-    :param common_services_actions: fixture provides CommonServicesManager
+    :param core_actions: fixture provides CoreManager
                                     instance
-    :rtype: CommonServicesManager
+    :rtype: CoreManager
 
-    If config.common_services.common_services_installed is not set, this
+    If config.core.core_installed is not set, this
     fixture assumes that the common services were not installed
     , and do the following:
     - install common services
-    - make snapshot with name 'common_services_deployed'
-    - return CommonServicesManager
+    - make snapshot with name 'core_deployed'
+    - return CoreManager
 
-    If config.common_services.common_services_installed was set, this fixture
+    If config.core.core_installed was set, this fixture
     assumes that the common services were already installed, and do
     the following:
-    - return CommonServicesManager instance
+    - return CoreManager instance
 
-    If you want to revert 'common_services_deployed' snapshot, please use mark:
-    @pytest.mark.revert_snapshot("common_services_deployed")
+    If you want to revert 'core_deployed' snapshot, please use mark:
+    @pytest.mark.revert_snapshot("core_deployed")
     """
     # Create Salt cluster
-    if not config.common_services.common_services_installed:
-        steps_path = config.common_services_deploy.common_services_steps_path
+    if not config.core.core_installed:
+        steps_path = config.core_deploy.core_steps_path
         commands = underlay.read_template(steps_path)
-        common_services_actions.install(commands)
-        hardware.create_snapshot(ext.SNAPSHOT.common_services_deployed)
+        core_actions.install(commands)
+        hardware.create_snapshot(ext.SNAPSHOT.core_deployed)
         salt_deployed.sync_time()
 
     else:
@@ -81,4 +80,4 @@ def common_services_deployed(revert_snapshot, request, config,
         #    installed TCP API endpoint
         pass
 
-    return common_services_actions
+    return core_actions

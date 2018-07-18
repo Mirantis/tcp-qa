@@ -30,7 +30,7 @@ class Testk8sInstall(object):
     @pytest.mark.k8s_calico_sl
     def test_k8s_install_calico_lma(self, config, show_step,
                                     k8s_deployed,
-                                    sl_deployed):
+                                    stacklight_deployed):
         """Test for deploying MCP with k8s+stacklight_calico and check it
 
         Scenario:
@@ -49,7 +49,7 @@ class Testk8sInstall(object):
         """
         # STEP #5
         # k8s_actions = k8s_deployed
-        sl_actions = sl_deployed
+        sl_actions = stacklight_deployed
         show_step(5)
         k8sclient = k8s_deployed.api
         assert k8sclient.nodes.list() is not None, "Can not get nodes list"
@@ -87,7 +87,7 @@ class Testk8sInstall(object):
                 'Mandotory metric {0} is missing in {1}'.format(
                     metric, res.text)
 
-        prometheus_client = sl_deployed.api
+        prometheus_client = stacklight_deployed.api
         try:
             current_targets = prometheus_client.get_targets()
             LOG.debug('Current targets after install {0}'
@@ -114,14 +114,14 @@ class Testk8sInstall(object):
             # with acceptance criteria
         show_step(10)
         # Run SL component tests
-        sl_deployed.run_sl_functional_tests(
+        stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus',
             'test_alerts.py')
 
         # Download report
-        sl_deployed.download_sl_test_report(
+        stacklight_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
@@ -131,7 +131,7 @@ class Testk8sInstall(object):
     @pytest.mark.cz8115
     def test_k8s_install_contrail_lma(self, config, show_step,
                                       k8s_deployed,
-                                      sl_deployed):
+                                      stacklight_deployed):
         """Test for deploying MCP with k8s+stacklight+contrail and check it
 
         Scenario:
@@ -145,13 +145,13 @@ class Testk8sInstall(object):
 
         """
         k8s_actions = k8s_deployed
-        sl_actions = sl_deployed
+        sl_actions = stacklight_deployed
         # STEP #5
         show_step(5)
         k8sclient = k8s_deployed.api
         assert k8sclient.nodes.list() is not None, "Can not get nodes list"
 
-        prometheus_client = sl_deployed.api
+        prometheus_client = stacklight_deployed.api
         try:
             current_targets = prometheus_client.get_targets()
             LOG.debug('Current targets after install {0}'
@@ -167,20 +167,20 @@ class Testk8sInstall(object):
             current_targets = prometheus_client.get_targets()
             LOG.debug('Current targets after install {0}'
                       .format(current_targets))
-        mon_nodes = sl_deployed.get_monitoring_nodes()
+        mon_nodes = stacklight_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
-        sl_deployed.check_prometheus_targets(mon_nodes)
+        stacklight_deployed.check_prometheus_targets(mon_nodes)
         show_step(6)
         # Run SL component tests
-        sl_deployed.run_sl_functional_tests(
+        stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus',
             'test_alerts.py')
 
         # Download report
-        sl_deployed.download_sl_test_report(
+        stacklight_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
 

@@ -19,8 +19,8 @@ from tcp_tests import logger
 LOG = logger.logger
 
 
-class CommonServicesManager(ExecuteCommandsMixin):
-    """docstring for CommonServicesManager"""
+class CoreManager(ExecuteCommandsMixin):
+    """docstring for CoreManager"""
 
     __config = None
     __underlay = None
@@ -29,13 +29,13 @@ class CommonServicesManager(ExecuteCommandsMixin):
         self.__config = config
         self.__underlay = underlay
         self._salt = salt
-        super(CommonServicesManager, self).__init__(
+        super(CoreManager, self).__init__(
             config=config, underlay=underlay)
 
     def install(self, commands):
         self.execute_commands(commands,
                               label='Install common services')
-        self.__config.common_services.common_services_installed = True
+        self.__config.core.core_installed = True
 
     def get_keepalived_vip_minion_id(self, vip):
         """Get minion ID where keepalived VIP is at the moment"""

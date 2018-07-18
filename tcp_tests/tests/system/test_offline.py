@@ -162,7 +162,7 @@ class TestOfflineDeployment(object):
         LOG.info("*************** DONE **************")
 
     def test_deploy_day1(self, show_step, config, underlay, hardware,
-                         common_services_deployed, salt_deployed):
+                         core_deployed, salt_deployed):
         """Test for deploying an mcp from day01 images
 
         Scenario:

@@ -25,7 +25,7 @@ class TestUpgradeStacklight(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_upgrade_stacklight(self, underlay, config,
-                                hardware, sl_actions, sl_deployed):
+                                hardware, sl_actions, stacklight_deployed):
         """Runner
 
         Scenario:
@@ -42,19 +42,19 @@ class TestUpgradeStacklight(object):
         sl_actions.install(commands, label='Upgrade SL services')
         hardware.create_snapshot(name='sl_v1_upgraded')
 
-        mon_nodes = sl_deployed.get_monitoring_nodes()
+        mon_nodes = stacklight_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
 
 # Run SL component tetsts
-        sl_deployed.run_sl_functional_tests(
+        stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
             'tests',
             'tests/prometheus')
 
 # Download report
-        sl_deployed.download_sl_test_report(
+        stacklight_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
