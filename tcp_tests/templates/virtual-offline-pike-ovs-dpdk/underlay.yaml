@@ -376,10 +376,12 @@ template:
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 3
+              vcpu: !os_env SLAVE_NODE_CPU, 12
               memory: !os_env SLAVE_NODE_MEMORY, 8192
               numa:
-              - cpus: 0,1,2
+              - cpus: 0,1,2,3,4,5
+                memory: 4096
+              - cpus: 6,7,8,9,10,11
                 memory: 4096
               boot:
                 - hd
@@ -430,10 +432,12 @@ template:
           - name: {{ HOSTNAME_CMP02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 3
+              vcpu: !os_env SLAVE_NODE_CPU, 12
               memory: !os_env SLAVE_NODE_MEMORY, 8192
               numa:
-              - cpus: 0,1,2
+              - cpus: 0,1,2,3,4,5
+                memory: 4096
+              - cpus: 6,7,8,9,10,11
                 memory: 4096
               boot:
                 - hd

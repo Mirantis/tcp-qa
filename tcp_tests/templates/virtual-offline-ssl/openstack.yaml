@@ -342,12 +342,6 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
-- description: Workaround to avoid reboot cmp nodes bring OVS interfaces UP
-  cmd: |
-    salt 'cmp*' cmd.run "ifup br-mesh";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
 # Configure cinder-volume salt-call
 #- description: Set disks 01
 #  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
