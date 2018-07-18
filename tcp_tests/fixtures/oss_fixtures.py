@@ -88,8 +88,8 @@ def oss_sl_os_deployed(revert_snapshot,
                        oss_deployed):
     """Fixture to get or install SL and OpenStack services on environment
 
-    Uses fixtures openstack_deployed and sl_deployed, with 'sl_deployed'
-    top-level snapshot.
+    Uses fixtures openstack_deployed and stacklight_deployed,
+    with 'stacklight_deployed' top-level snapshot.
 
     Returns SLManager instance object
     """
