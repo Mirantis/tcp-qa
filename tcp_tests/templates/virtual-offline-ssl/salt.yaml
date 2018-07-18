@@ -67,3 +67,16 @@
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+- description: Enable hugepages on cmp nodes
+  cmd: salt 'cmp*' cmd.run "apt-get install -y hugepages; echo 2048 > /proc/sys/vm/nr_hugepages";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Workaround to avoid reboot cmp nodes bring OVS interfaces UP
+  cmd: |
+    salt 'cmp*' cmd.run "ifup br-mesh";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false

@@ -140,7 +140,7 @@
     systemctl restart nginx;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
-  skip_fail: false
+  skip_fail: true
 
 {%- endmacro %}
 
