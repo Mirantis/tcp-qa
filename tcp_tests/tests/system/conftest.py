@@ -66,7 +66,7 @@ __all__ = sorted([  # sort for documentation
     'opencontrail',
     # stacklight_fixtures
     'sl_actions',
-    'sl_deployed',
+    'stacklight_deployed',
     'sl_os_deployed',
     'ceph_deployed',
     'ceph_action',

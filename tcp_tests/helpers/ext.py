@@ -47,7 +47,7 @@ SNAPSHOT = enum(
     'oss_deployed',
     'drivetrain_deployed',
     'openstack_deployed',
-    'sl_deployed',
+    'stacklight_deployed',
     'virtlet_deployed',
     'virtlet_ceph_deployed',
     'k8s_deployed',

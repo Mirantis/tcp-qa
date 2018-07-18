@@ -37,7 +37,7 @@ node ("${NODE_NAME}") {
             . ./tcp_tests/utils/env_k8s
 
             # Initialize variables used in tcp-qa tests
-            export CURRENT_SNAPSHOT=sl_deployed  # provide the snapshot name required by the test
+            export CURRENT_SNAPSHOT=stacklight_deployed  # provide the snapshot name required by the test
             export TESTS_CONFIGS=\$(pwd)/${ENV_NAME}_salt_deployed.ini  # some SSH data may be filled separatelly
 
             export MANAGER=empty  # skip 'hardware' fixture, disable snapshot/revert features
@@ -48,7 +48,7 @@ node ("${NODE_NAME}") {
             export SALT_PASSWORD=\$SALTAPI_PASS
             export COMMON_SERVICES_INSTALLED=true  # skip common_services_deployed fixture
             export K8S_INSTALLED=true              # skip k8s_deployed fixture
-            export sl_installed=true              # skip sl_deployed fixture
+            export sl_installed=true              # skip stacklight_deployed fixture
 
             py.test -vvv -s -p no:django -p no:ipdb --junit-xml=nosetests.xml -m k8s_calico_sl
 

@@ -139,7 +139,7 @@ class TestFailoverNodes(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_restart_mon01_node(self, openstack_actions, hardware, underlay,
                                 sl_os_deployed, show_step):
         """Test restart mon01
@@ -190,7 +190,7 @@ class TestFailoverNodes(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_warm_shutdown_mon01_node(self, underlay, hardware, sl_os_deployed,
                                       openstack_actions, show_step):
         """Test warm shutdown mon01
@@ -237,7 +237,7 @@ class TestFailoverNodes(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_restart_mon_with_vip(self, underlay, hardware, sl_os_deployed,
                                   openstack_actions, salt_actions,
                                   common_services_actions, show_step):
