@@ -27,7 +27,7 @@ class TestPipeline(object):
 
     @pytest.mark.fail_snapshot
     def test_pipeline(self, show_step, underlay,
-                      common_services_deployed, salt_deployed):
+                      common_services_deployed, core_deployed):
         """Runner for Juniper contrail-tests
 
         Scenario:
@@ -40,7 +40,7 @@ class TestPipeline(object):
         nodes = underlay.node_names()
         LOG.info("Nodes - {}".format(nodes))
         cfg_node = 'cfg01.ocata-cicd.local'
-        salt_api = salt_deployed.get_pillar(
+        salt_api = core_deployed.get_pillar(
             cfg_node, '_param:jenkins_salt_api_url')
         salt_api = salt_api[0].get(cfg_node)
         jenkins = JenkinsClient(
@@ -76,7 +76,7 @@ class TestPipeline(object):
 
     @pytest.mark.fail_snapshot
     def test_pipeline_dpdk(self, show_step, underlay,
-                           salt_deployed, tempest_actions):
+                           core_deployed, tempest_actions):
         """Deploy bm via pipeline
 
         Scenario:
@@ -86,7 +86,7 @@ class TestPipeline(object):
         nodes = underlay.node_names()
         LOG.info("Nodes - {}".format(nodes))
         cfg_node = 'cfg01.cookied-bm-mcp-ovs-dpdk.local'
-        salt_api = salt_deployed.get_pillar(
+        salt_api = core_deployed.get_pillar(
             cfg_node, '_param:jenkins_salt_api_url')
         salt_api = salt_api[0].get(cfg_node)
         jenkins = JenkinsClient(

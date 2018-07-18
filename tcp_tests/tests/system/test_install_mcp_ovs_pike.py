@@ -52,7 +52,7 @@ class TestMcpInstallOvsPike(object):
     @pytest.mark.pike_ovs_sl
     def test_mcp_pike_ovs_sl_install(self, underlay, config,
                                      openstack_deployed,
-                                     sl_deployed):
+                                     stacklight_deployed):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -64,20 +64,20 @@ class TestMcpInstallOvsPike(object):
         7. Run SL component tests
         8. Download SL component tests report
         """
-        mon_nodes = sl_deployed.get_monitoring_nodes()
+        mon_nodes = stacklight_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
-        sl_deployed.check_prometheus_targets(mon_nodes)
+        stacklight_deployed.check_prometheus_targets(mon_nodes)
 
         # Run SL component tetsts
-        sl_deployed.run_sl_functional_tests(
+        stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus',
             'test_alerts.py')
 
         # Download report
-        sl_deployed.download_sl_test_report(
+        stacklight_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
@@ -110,7 +110,7 @@ class TestMcpInstallOvsPike(object):
     @pytest.mark.pike_ovs_dvr_sl
     def test_mcp_pike_dvr_sl_install(self, underlay, config,
                                      openstack_deployed,
-                                     sl_deployed):
+                                     stacklight_deployed):
         """Test for deploying an mcp environment and check it
         Scenario:
         1. Prepare salt on hosts
@@ -123,20 +123,20 @@ class TestMcpInstallOvsPike(object):
         8. Download SL component tests report
         """
 
-        mon_nodes = sl_deployed.get_monitoring_nodes()
+        mon_nodes = stacklight_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
-        sl_deployed.check_prometheus_targets(mon_nodes)
+        stacklight_deployed.check_prometheus_targets(mon_nodes)
 
         # Run SL component tests
-        sl_deployed.run_sl_functional_tests(
+        stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus',
             'test_alerts.py')
 
         # Download report
-        sl_deployed.download_sl_test_report(
+        stacklight_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
@@ -167,7 +167,7 @@ class TestMcpInstallOvsPike(object):
     def test_mcp_pike_cookied_ovs_install(self, underlay,
                                           openstack_deployed,
                                           openstack_actions,
-                                          sl_deployed,
+                                          stacklight_deployed,
                                           tempest_actions):
         """Test for deploying an mcp environment and check it
         Scenario:
@@ -192,7 +192,7 @@ class TestMcpInstallOvsPike(object):
                                           underlay,
                                           openstack_deployed,
                                           openstack_actions,
-                                          sl_deployed,
+                                          stacklight_deployed,
                                           tempest_actions):
         """Test for deploying an mcp environment and check it
         Scenario:

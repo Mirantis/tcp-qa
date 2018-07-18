@@ -32,9 +32,9 @@ def salt_actions(config, underlay):
     return saltmanager.SaltManager(config, underlay)
 
 
-@pytest.mark.revert_snapshot(ext.SNAPSHOT.salt_deployed)
+@pytest.mark.revert_snapshot(ext.SNAPSHOT.core_deployed)
 @pytest.fixture(scope='function')
-def salt_deployed(revert_snapshot, request, config,
+def core_deployed(revert_snapshot, request, config,
                   hardware, underlay, salt_actions, snapshot, grab_versions):
     """Fixture to get or install salt service on environment
 
@@ -50,15 +50,15 @@ def salt_deployed(revert_snapshot, request, config,
     If config.salt.salt_master_host is not set, this fixture assumes that
     the salt was not installed, and do the following:
     - install salt master and salt minions
-    - make snapshot with name 'salt_deployed'
+    - make snapshot with name 'core_deployed'
     - return SaltManager
 
     If config.salt.salt_master_host was set, this fixture assumes that the
     salt was already deployed, and do the following:
     - return SaltManager instance
 
-    If you want to revert 'salt_deployed' snapshot, please use mark:
-    @pytest.mark.revert_snapshot("salt_deployed")
+    If you want to revert 'core_deployed' snapshot, please use mark:
+    @pytest.mark.revert_snapshot("core_deployed")
     """
     # Create Salt cluster
     if config.salt.salt_master_host == '0.0.0.0':
@@ -79,7 +79,7 @@ def salt_deployed(revert_snapshot, request, config,
         underlay.config_ssh = []
         underlay.add_config_ssh(config.underlay.ssh)
 
-        hardware.create_snapshot(ext.SNAPSHOT.salt_deployed)
+        hardware.create_snapshot(ext.SNAPSHOT.core_deployed)
         salt_actions.sync_time()
 
     else:

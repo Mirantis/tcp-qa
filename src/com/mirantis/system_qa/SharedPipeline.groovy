@@ -212,7 +212,7 @@ def sanity_check_component(stack) {
 def devops_snapshot(stack) {
     // Make the snapshot with name "${stack}_deployed"
     // for all VMs in the environment.
-    // If oslo_config INI file ${ENV_NAME}_salt_deployed.ini exists,
+    // If oslo_config INI file ${ENV_NAME}_core_deployed.ini exists,
     // then make a copy for the created snapshot to allow the system
     // tests to revert this snapshot along with the metadata from the INI file.
     run_cmd("""\
@@ -220,8 +220,8 @@ def devops_snapshot(stack) {
         dos.py snapshot ${ENV_NAME} ${stack}_deployed
         dos.py resume ${ENV_NAME}
         dos.py time-sync ${ENV_NAME}
-        if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
-            cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
+        if [ -f \$(pwd)/${ENV_NAME}_core_deployed.ini ]; then
+            cp \$(pwd)/${ENV_NAME}_core_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi
     """)
 }

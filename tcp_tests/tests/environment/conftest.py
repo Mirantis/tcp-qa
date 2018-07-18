@@ -35,7 +35,7 @@ __all__ = sorted([  # sort for documentation
     'rally',
     # salt_fixtures
     'salt_actions',
-    'salt_deployed',
+    'core_deployed',
     # common_services_fixtures
     'common_services_actions',
     'common_services_deployed',

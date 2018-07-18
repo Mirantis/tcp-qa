@@ -24,10 +24,11 @@ class TestFailoverStacklightServices(object):
     """Test class for testing OpenStack nodes failover"""
 
     @staticmethod
-    def check_influxdb_xfail(sl_deployed, node_name, value):
+    def check_influxdb_xfail(stacklight_deployed, node_name, value):
 
         def check_influxdb_data():
-            return value in sl_deployed.check_data_in_influxdb(node_name)
+            return value in stacklight_deployed.check_data_in_influxdb(
+                node_name)
 
         try:
             helpers.wait(
@@ -43,7 +44,7 @@ class TestFailoverStacklightServices(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_kill_influxdb_relay_mon01_node(self, sl_os_deployed,
                                             show_step):
         """Test kill influxdb relay on mon01 node
@@ -111,7 +112,7 @@ class TestFailoverStacklightServices(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_kill_influxdb_mon01_node(self, sl_os_deployed, show_step):
         """Test kill influxdb on mon01 node
 
@@ -177,7 +178,7 @@ class TestFailoverStacklightServices(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_stop_influxdb_relay_mon_nodes(self, sl_os_deployed,
                                            show_step):
         """Test stop influxdb relay on mon01 node
@@ -246,7 +247,7 @@ class TestFailoverStacklightServices(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.revert_snapshot(ext.SNAPSHOT.sl_deployed)
+    @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
     def test_stop_influxdb_mon_nodes(self, sl_os_deployed, show_step):
         """Test stop influxdb on mon01 node
 

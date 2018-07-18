@@ -30,29 +30,29 @@ node ("${NODE_NAME}") {
             . ./tcp_tests/utils/env_k8s
 
             # Prepare snapshots that may be used in tests if MANAGER=devops
-            cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_k8s_deployed.ini
-            cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_sl_deployed.ini
+            cp \$(pwd)/${ENV_NAME}_core_deployed.ini \$(pwd)/${ENV_NAME}_k8s_deployed.ini
+            cp \$(pwd)/${ENV_NAME}_core_deployed.ini \$(pwd)/${ENV_NAME}_stacklight_deployed.ini
             #dos.py suspend ${ENV_NAME}
             #dos.py snapshot ${ENV_NAME} k8s_deployed
-            #dos.py snapshot ${ENV_NAME} sl_deployed
+            #dos.py snapshot ${ENV_NAME} stacklight_deployed
             #dos.py resume ${ENV_NAME}
             #dos.py time-sync ${ENV_NAME}
 
             # Initialize variables used in tcp-qa tests
-            export CURRENT_SNAPSHOT=sl_deployed  # provide the snapshot name required by the test
-            export TESTS_CONFIGS=\$(pwd)/${ENV_NAME}_salt_deployed.ini  # some SSH data may be filled separatelly
+            export CURRENT_SNAPSHOT=stacklight_deployed  # provide the snapshot name required by the test
+            export TESTS_CONFIGS=\$(pwd)/${ENV_NAME}_core_deployed.ini  # some SSH data may be filled separatelly
 
             #export MANAGER=empty  # skip 'hardware' fixture, disable snapshot/revert features
             export MANAGER=devops  # use 'hardware' fixture to manage fuel-devops environment
             export MAKE_SNAPSHOT_STAGES=false  # skip 'hardware' fixture, disable snapshot/revert features
             # export SSH='{...}'  # non-empty SSH required to skip 'underlay' fixture. It is filled from TESTS_CONFIGS now
-            export salt_master_host=\$SALT_MASTER_IP  # skip salt_deployed fixture
+            export salt_master_host=\$SALT_MASTER_IP  # skip core_deployed fixture
             export salt_master_port=6969
             export SALT_USER=\$SALTAPI_USER
             export SALT_PASSWORD=\$SALTAPI_PASS
             export COMMON_SERVICES_INSTALLED=true  # skip common_services_deployed fixture
             export K8S_INSTALLED=true              # skip k8s_deployed fixture
-            export sl_installed=true              # skip sl_deployed fixture
+            export sl_installed=true              # skip stacklight_deployed fixture
 
             py.test --junit-xml=nosetests.xml ${RUN_TEST_OPTS}
 
