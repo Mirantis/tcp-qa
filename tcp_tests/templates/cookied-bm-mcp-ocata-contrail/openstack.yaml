@@ -298,7 +298,9 @@
   skip_fail: true
 
 - description: Reboot computes
-  cmd: salt --timeout=600  "cmp*" system.reboot
+  cmd: |
+    salt "cmp*" system.reboot;
+    sleep 600;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: true
