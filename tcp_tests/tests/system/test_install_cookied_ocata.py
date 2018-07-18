@@ -60,7 +60,7 @@ class Test_Mcp11_install(object):
     @pytest.mark.fail_snapshot
     def test_cookied_ocata_cicd_oss_install(self, underlay, salt_actions,
                                             openstack_deployed,
-                                            oss_deployed, sl_deployed,
+                                            oss_deployed, stacklight_deployed,
                                             show_step):
         """Test for deploying an mcp environment and check it
         Scenario:
@@ -87,7 +87,7 @@ class Test_Mcp11_install(object):
                                  'monitoring_remote_collector',
                                  'monitoring_pushgateway']
         show_step(6)
-        mon_nodes = sl_deployed.get_monitoring_nodes()
+        mon_nodes = stacklight_deployed.get_monitoring_nodes()
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
 
         show_step(7)
@@ -98,14 +98,15 @@ class Test_Mcp11_install(object):
             # InfluxDB is used if prometheus relay service is not installed
             expected_service_list.append('monitoring_remote_storage_adapter')
 
-        sl_deployed.check_docker_services(mon_nodes, expected_service_list)
+        stacklight_deployed.check_docker_services(mon_nodes,
+                                                  expected_service_list)
 
         show_step(8)
-        sl_deployed.check_prometheus_targets(mon_nodes)
+        stacklight_deployed.check_prometheus_targets(mon_nodes)
 
         show_step(9)
         # Run SL component tetsts
-        sl_deployed.run_sl_functional_tests(
+        stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
             'tests/prometheus',
@@ -113,7 +114,7 @@ class Test_Mcp11_install(object):
 
         show_step(10)
         # Download report
-        sl_deployed.download_sl_test_report(
+        stacklight_deployed.download_sl_test_report(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")

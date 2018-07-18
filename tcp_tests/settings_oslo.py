@@ -34,9 +34,9 @@ _default_environment_template_dir = pkg_resources.resource_filename(
     __name__, 'environment/')
 _default_templates_dir = pkg_resources.resource_filename(
     __name__, 'templates/')
-_default_common_services_steps = pkg_resources.resource_filename(
+_default_core_steps = pkg_resources.resource_filename(
     __name__,
-    'templates/{0}/common-services.yaml'.format(
+    'templates/{0}/core.yaml'.format(
         settings.LAB_CONFIG_NAME))
 _default_oss_steps = pkg_resources.resource_filename(
     __name__,
@@ -155,14 +155,14 @@ salt_opts = [
            help="", default='6969'),
 ]
 
-common_services_deploy_opts = [
-    ct.Cfg('common_services_steps_path', ct.String(),
+core_deploy_opts = [
+    ct.Cfg('core_steps_path', ct.String(),
            help="Path to YAML with steps to deploy common services",
-           default=_default_common_services_steps),
+           default=_default_core_steps),
 ]
 
-common_services_opts = [
-    ct.Cfg('common_services_installed', ct.Boolean(),
+core_opts = [
+    ct.Cfg('core_installed', ct.Boolean(),
            help="", default=False),
 ]
 
@@ -403,8 +403,8 @@ _group_opts = [
     ('underlay', underlay_opts),
     ('salt_deploy', salt_deploy_opts),
     ('salt', salt_opts),
-    ('common_services_deploy', common_services_deploy_opts),
-    ('common_services', common_services_opts),
+    ('core_deploy', core_deploy_opts),
+    ('core', core_opts),
     ('oss_deploy', oss_deploy_opts),
     ('oss', oss_opts),
     ('drivetrain_deploy', drivetrain_deploy_opts),
@@ -442,16 +442,16 @@ def register_opts(config):
                           title="salt config and credentials", help=""))
     config.register_opts(group='salt', opts=salt_opts)
 
-    config.register_group(cfg.OptGroup(name='common_services',
+    config.register_group(cfg.OptGroup(name='core',
                           title="Common services for Openstack", help=""))
-    config.register_opts(group='common_services', opts=common_services_opts)
+    config.register_opts(group='core', opts=core_opts)
 
     config.register_group(
-        cfg.OptGroup(name='common_services_deploy',
+        cfg.OptGroup(name='core_deploy',
                      title="Common services for Openstack deploy config",
                      help=""))
-    config.register_opts(group='common_services_deploy',
-                         opts=common_services_deploy_opts)
+    config.register_opts(group='core_deploy',
+                         opts=core_deploy_opts)
 
     config.register_group(cfg.OptGroup(name='oss',
                           title="Operational Support System Tools", help=""))

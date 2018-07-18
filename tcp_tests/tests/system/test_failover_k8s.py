@@ -24,7 +24,7 @@ class TestFailoverK8s(object):
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
     def test_k8s_master_vip_migration(self, show_step, k8s_deployed, underlay,
-                                      k8s_actions, common_services_actions,
+                                      k8s_actions, core_actions,
                                       config, hardware):
         """Test restart and shutdown master with VIP
 
@@ -40,12 +40,12 @@ class TestFailoverK8s(object):
         """
         show_step(1)
         show_step(2)
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
 
         show_step(3)
         vip = k8s_actions.get_keepalived_vip()
         LOG.info("VIP ip address: {}".format(vip))
-        minion_vip = common_services_actions.get_keepalived_vip_minion_id(vip)
+        minion_vip = core_actions.get_keepalived_vip_minion_id(vip)
         LOG.info("VIP {0} is on {1}".format(vip, minion_vip))
 
         show_step(4)
@@ -54,16 +54,16 @@ class TestFailoverK8s(object):
         show_step(5)
         try:
             new_minion_vip =\
-                common_services_actions.get_keepalived_vip_minion_id(vip)
+                core_actions.get_keepalived_vip_minion_id(vip)
         except Exception:
                 time.sleep(15)
                 new_minion_vip = \
-                    common_services_actions.get_keepalived_vip_minion_id(vip)
+                    core_actions.get_keepalived_vip_minion_id(vip)
         LOG.info("VIP {0} migrated to {1}".format(vip, new_minion_vip))
         assert new_minion_vip != minion_vip
 
         show_step(6)
-        common_services_actions.check_keepalived_pillar()
+        core_actions.check_keepalived_pillar()
 
         show_step(7)
         curl_output = ''.join(underlay.check_call(

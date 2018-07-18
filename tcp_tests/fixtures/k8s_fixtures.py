@@ -40,7 +40,7 @@ def k8s_actions(config, underlay, salt_deployed):
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.k8s_deployed)
 @pytest.fixture(scope='function')
 def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
-                 common_services_deployed, salt_deployed, k8s_actions):
+                 core_deployed, salt_deployed, k8s_actions):
     """Fixture to get or install k8s on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
@@ -49,7 +49,7 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
     :param config: fixture provides oslo.config
     :param hardware: fixture provides enviromnet manager
     :param underlay: fixture provides underlay manager
-    :param common_services_deployed: fixture provides CommonServicesManager
+    :param core_deployed: fixture provides CoreManager
     :param k8s_actions: fixture provides K8SManager instance
     :rtype: K8SManager
 
