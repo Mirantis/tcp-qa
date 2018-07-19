@@ -26,7 +26,8 @@ LOG = logger.logger
 TEMPEST_CFG_DIR = '/tmp/test'
 
 CONFIG = {
-    'classes': ['service.runtest.tempest'],
+    'classes': ['service.runtest.tempest',
+                'service.runtest.tempest.services.manila.glance'],
     'parameters': {
         '_param': {
             'runtest_tempest_cfg_dir': TEMPEST_CFG_DIR,
