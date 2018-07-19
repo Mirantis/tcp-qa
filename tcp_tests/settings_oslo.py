@@ -344,6 +344,8 @@ k8s_deploy_opts = [
            help="", default='coredns'),
     ct.Cfg('kubernetes_coredns_enabled', ct.Boolean(),
            help="", default=False),
+    ct.Cfg('kubernetes_metallb_enabled', ct.Boolean(),
+           help="", default=False),
     ct.Cfg('kubelet_fail_on_swap', ct.Boolean(),
            help="", default=False)
 ]

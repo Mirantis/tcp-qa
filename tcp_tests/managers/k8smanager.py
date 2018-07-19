@@ -16,6 +16,7 @@ import os
 import time
 from uuid import uuid4
 
+import requests
 import yaml
 
 from devops.helpers import helpers
@@ -361,25 +362,19 @@ class K8SManager(ExecuteCommandsMixin):
         return [self._K8SManager__underlay.host_by_node_name(node_name=v)
                 for pillar in k8s_masters_fqdn for k, v in pillar.items()]
 
-    def kubectl_run(self, name, image, port):
-        with self.__underlay.remote(
-                node_name=self.ctl_host) as remote:
-            result = remote.check_call(
-                "kubectl run {0} --image={1} --port={2}".format(
-                    name, image, port
-                )
-            )
-            return result
+    def kubectl_run(self, name, image, port, replicas=None):
+        cmd = "kubectl run {0} --image={1} --port={2}".format(
+            name, image, port)
+        if replicas is not None:
+            cmd += " --replicas={}".format(replicas)
+        return self.__underlay.check_call(cmd=cmd, node_name=self.ctl_host)
 
-    def kubectl_expose(self, resource, name, port, type):
-        with self.__underlay.remote(
-                node_name=self.ctl_host) as remote:
-            result = remote.check_call(
-                "kubectl expose {0} {1} --port={2} --type={3}".format(
-                    resource, name, port, type
-                )
-            )
-            return result
+    def kubectl_expose(self, resource, name, port, type, target_name=None):
+        cmd = "kubectl expose {0} {1} --port={2} --type={3}".format(
+            resource, name, port, type)
+        if target_name is not None:
+            cmd += " --name={}".format(target_name)
+        return self.__underlay.check_call(cmd=cmd, node_name=self.ctl_host)
 
     def kubectl_annotate(self, resource, name, annotation):
         with self.__underlay.remote(
@@ -391,14 +386,11 @@ class K8SManager(ExecuteCommandsMixin):
             )
             return result
 
-    def get_svc_ip(self, name, namespace='kube-system'):
-        with self.__underlay.remote(
-                node_name=self.ctl_host) as remote:
-            result = remote.check_call(
-                "kubectl get svc {0} -n {1} | "
-                "awk '{{print $3}}' | tail -1".format(name, namespace)
-            )
-            return result['stdout'][0].strip()
+    def get_svc_ip(self, name, namespace='kube-system', external=False):
+        cmd = "kubectl get svc {0} -n {1} | awk '{{print ${2}}}' | tail -1".\
+            format(name, namespace, 4 if external else 3)
+        result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
+        return result['stdout'][0].strip()
 
     @retry(300, exception=DevopsCalledProcessError)
     def nslookup(self, host, src):
@@ -718,3 +710,42 @@ class K8SManager(ExecuteCommandsMixin):
             tgt="I@kubernetes:control:enabled:True",
             pillar="_param:cluster_vip_address")[0]
         return [vip for minion_id, vip in ctl_vip_pillar.items()][0]
+
+    def get_sample_deployment(self, name, **kwargs):
+        return K8SSampleDeployment(self, name, **kwargs)
+
+
+class K8SSampleDeployment:
+    def __init__(self, manager, name, replicas=2,
+                 image='gcr.io/google-samples/node-hello:1.0', port=8080):
+        self.manager = manager
+        self.name = name
+        self.image = image
+        self.port = port
+        self.replicas = replicas
+
+    def run(self):
+        self.manager.kubectl_run(self.name, self.image, self.port,
+                                 replicas=self.replicas)
+
+    def expose(self, service_type='ClusterIP', target_name=None):
+        self.manager.kubectl_expose(
+            'deployment', self.name, self.port, service_type, target_name)
+
+    def get_svc_ip(self, external=False):
+        return self.manager.get_svc_ip(self.name, namespace='default',
+                                       external=external)
+
+    def curl(self, external=False):
+        url = "http://{0}:{1}".format(
+            self.get_svc_ip(external=external), self.port)
+        if external:
+            return requests.get(url).text
+        else:
+            return self.manager.curl(url)
+
+    def is_service_available(self, external=False):
+        return "Hello Kubernetes!" in self.curl(external=external)
+
+    def wait_for_ready(self):
+        return self.manager.wait_deploy_ready(self.name)
