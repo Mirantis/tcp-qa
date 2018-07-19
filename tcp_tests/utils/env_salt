@@ -10,7 +10,9 @@
 CURRENT_DIR=$(dirname $(readlink -f "${BASH_SOURCE[0]}"))
 export PYTHONPATH=${CURRENT_DIR}/../..
 
-export SALT_MASTER_IP=${SALT_MASTER_IP:-$(for node in $(dos.py slave-ip-list --address-pool-name admin-pool01 ${ENV_NAME}); do echo $node|grep cfg01|cut -d',' -f2; done)}
+export SALT_MASTER_INFO=$(for node in $(dos.py slave-ip-list --address-pool-name admin-pool01 ${ENV_NAME}); do echo $node|grep cfg01; done)
+export SALT_MASTER_HOSTNAME=${SALT_MASTER_HOSTNAME:-$(echo $SALT_MASTER_INFO|cut -d',' -f1)}
+export SALT_MASTER_IP=${SALT_MASTER_IP:-$(echo $SALT_MASTER_INFO|cut -d',' -f2)}
 
 if [ -z "$SALT_MASTER_IP" ]; then
     echo "SALT_MASTER_IP not found in the environment '${ENV_NAME}'"
