@@ -75,8 +75,8 @@ default_context:
     So+yjY6Y787NTuAtS97T1AfOPQR8VOm9vuGT1IRWNno3ckThokPcCg==
     -----END RSA PRIVATE KEY-----
   cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDS+zfJXgZWucwNPWLWtzcMpUJTiRDoPs4IOEnXSSIDhVn/1N0IgobEvf6TM0cGoQHcdyOwYnvNO53dL3tl3bUfNN4XSKJruRBdmzfPDcadTghYLN3N7Il6cPW3CsMgtzVDzRI8jDySVuArdPxZyzSwALJ8A5FMqczgCWurc9LKfYb8vuzAv7g5hbDz5XUGjp//XOxV0lYV6VnUc13V+4Y/0SDH49IfOeYFCeJ7AzYCS1lUeR17aP6wgyeKZGvnmJzq0SI8pvWyn6Z2p/FRuTFTWrevzQGermVtg17ElktkVtjykEXDmq1WheytStrTFPrrIOz3P2SBNdm3wymlI8TL
-  cluster_domain: cookied-mcp-k8s-calico.local
-  cluster_name: cookied-mcp-k8s-calico
+  cluster_domain: cookied-cicd-k8s-calico.local
+  cluster_name: cookied-cicd-k8s-calico
   context_seed: 6RD8HFGk0xksGje6RcIiGRkHIIkdvHUDgBuUsCTYDv5Tw4DmVMbRlRVnatzGHYJd
   control_network_netmask: 255.255.255.0
   control_network_subnet: 10.167.4.0/24
@@ -92,7 +92,6 @@ default_context:
   dns_server02: 172.18.208.44
   email_address: ddmitriev@mirantis.com
   etcd_ssl: 'True'
-  #hyperkube_image: docker-prod-local.artifactory.mirantis.com/mirantis/kubernetes/hyperkube-amd64:v1.8.5-4
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
   infra_kvm01_control_address: 10.167.4.241
