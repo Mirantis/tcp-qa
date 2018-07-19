@@ -71,8 +71,10 @@ node ("${PARENT_NODE_NAME}") {
 
             stage("Upload generated config drive ISO into volume on cfg01 node") {
                 shared.run_cmd("""\
-                virsh vol-upload ${ENV_NAME}_cfg01.${LAB_CONFIG_NAME}.local_config /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} --pool default
-                virsh pool-refresh --pool default
+                    # Get SALT_MASTER_HOSTNAME to determine the volume name
+                    . ./tcp_tests/utils/env_salt
+                    virsh vol-upload ${ENV_NAME}_\${SALT_MASTER_HOSTNAME}.local_config /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} --pool default
+                    virsh pool-refresh --pool default
                 """)
             }
 
