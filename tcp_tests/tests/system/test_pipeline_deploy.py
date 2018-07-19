@@ -97,7 +97,7 @@ class TestPipeline(object):
         # Creating param list for openstack deploy
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
-        params['STACK_INSTALL'] = 'core,kvm,cicd,ovs,openstack'
+        params['STACK_INSTALL'] = 'core,kvm,cicd'
         show_step(4)
         build = jenkins.run_build('deploy_openstack', params)
         jenkins.wait_end_of_build(
@@ -107,7 +107,11 @@ class TestPipeline(object):
         result = jenkins.build_info(name=build[0],
                                     build_id=build[1])['result']
         assert result == 'SUCCESS', "Deploy openstack was failed"
-
+        # cicd_passwd = ""
+        # jenkins_cicd = JenkinsClient(
+        #    host='http://10.167.11.90:8081',
+        #    username='admin',
+        #    password='r00tme')
         if settings.RUN_TEMPEST:
             tempest_actions.prepare_and_run_tempest()
         LOG.info("*************** DONE **************")
