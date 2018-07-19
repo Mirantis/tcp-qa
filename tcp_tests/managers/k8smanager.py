@@ -630,7 +630,8 @@ class K8SManager(ExecuteCommandsMixin):
         """
         with self.__underlay.remote(node_name=self.ctl_host) as r:
             cmd = ("apt-get install python-setuptools -y; "
-                   "pip install git+https://github.com/mogaika/xunitmerge.git")
+                   "pip install "
+                   "https://github.com/mogaika/xunitmerge/archive/master.zip")
             LOG.debug('Installing xunitmerge')
             r.check_call(cmd, raise_on_err=False)
             LOG.debug('Merging xunit')
