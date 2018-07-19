@@ -3,29 +3,29 @@
 
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-cicd-k8s-calico-sl') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME + '.local') %}
-{% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CID01 = os_env('HOSTNAME_CID01', 'cid01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CID02 = os_env('HOSTNAME_CID02', 'cid02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CID03 = os_env('HOSTNAME_CID03', 'cid03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01') %}
+{% set HOSTNAME_CID01 = os_env('HOSTNAME_CID01', 'cid01') %}
+{% set HOSTNAME_CID02 = os_env('HOSTNAME_CID02', 'cid02') %}
+{% set HOSTNAME_CID03 = os_env('HOSTNAME_CID03', 'cid03') %}
 
-{% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp001.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp002.' + DOMAIN_NAME) %}
-{% set HOSTNAME_LOG01 = os_env('HOSTNAME_LOG01', 'log01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_LOG02 = os_env('HOSTNAME_LOG02', 'log02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_LOG03 = os_env('HOSTNAME_LOG03', 'log03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MTR01 = os_env('HOSTNAME_MTR01', 'mtr01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MTR02 = os_env('HOSTNAME_MTR02', 'mtr02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MTR03 = os_env('HOSTNAME_MTR03', 'mtr03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_KVM02 = os_env('HOSTNAME_KVM02', 'kvm02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM03', 'kvm03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01') %}
+{% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02') %}
+{% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03') %}
+{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp001') %}
+{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp002') %}
+{% set HOSTNAME_LOG01 = os_env('HOSTNAME_LOG01', 'log01') %}
+{% set HOSTNAME_LOG02 = os_env('HOSTNAME_LOG02', 'log02') %}
+{% set HOSTNAME_LOG03 = os_env('HOSTNAME_LOG03', 'log03') %}
+{% set HOSTNAME_MTR01 = os_env('HOSTNAME_MTR01', 'mtr01') %}
+{% set HOSTNAME_MTR02 = os_env('HOSTNAME_MTR02', 'mtr02') %}
+{% set HOSTNAME_MTR03 = os_env('HOSTNAME_MTR03', 'mtr03') %}
+{% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01') %}
+{% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02') %}
+{% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03') %}
+{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01') %}
+{% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01') %}
+{% set HOSTNAME_KVM02 = os_env('HOSTNAME_KVM02', 'kvm02') %}
+{% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM03', 'kvm03') %}
 
 {% import 'cookied-cicd-k8s-calico-sl/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-cicd-k8s-calico-sl/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
