@@ -1,4 +1,25 @@
-{% from 'k8s-ha-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+- description:  Install keepalived on primary controller
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster and *01*' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description:  Install keepalived
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keepalived:cluster' state.sls keepalived
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install haproxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@haproxy:proxy' state.sls haproxy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 - description: Install etcd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -35,13 +56,6 @@
     -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Install Opencontrail db on ctl01
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:database and *01*' state.sls opencontrail.database
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 20}
   skip_fail: false
 
 - description: Configure OpenContrail as an add-on for Kubernetes
@@ -141,33 +155,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# - description: Install Opencontrail db on all nodes
-#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#     -C 'I@opencontrail:database' state.sls opencontrail.database
-#   node_name: {{ HOSTNAME_CFG01 }}
-#   retry: {count: 2, delay: 20}
-#   skip_fail: false
-
-# - description: Install Opencontrail control on ctl01
-#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#     -C 'I@opencontrail:control and *01*' state.sls opencontrail exclude=opencontrail.client
-#   node_name: {{ HOSTNAME_CFG01 }}
-#   retry: {count: 1, delay: 5}
-#   skip_fail: false
-
-# - description: Install Opencontrail control on all nodes
-#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#     -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
-#   node_name: {{ HOSTNAME_CFG01 }}
-#   retry: {count: 1, delay: 5}
-#   skip_fail: false
-
-# - description: Install Opencontrail on collector
-#   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#     -C 'I@opencontrail:collector' state.sls opencontrail exclude=opencontrail.client
-#   node_name: {{ HOSTNAME_CFG01 }}
-#   retry: {count: 1, delay: 5}
-#   skip_fail: false
 
 # # OpenContrail vrouters
 # - description: Install Opencontrail client
