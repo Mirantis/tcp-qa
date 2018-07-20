@@ -8,27 +8,20 @@
 {% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_KVM02 = os_env('HOSTNAME_KVM02', 'kvm02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM03', 'kvm03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL01 = os_env('HOSTNAME_KVM01', 'ctl01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL02 = os_env('HOSTNAME_KVM02', 'ctl02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL03 = os_env('HOSTNAME_KVM03', 'ctl03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP001 = os_env('HOSTNAME_CMP001', 'cmp001.' + DOMAIN_NAME) %}
-{#
-{% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP002', 'cmp002.' + DOMAIN_NAME) %}
-{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
-#}
+{% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP001', 'cmp002.' + DOMAIN_NAME) %}
 {% set ETH0_IP_ADDRESS_CFG01 = os_env('ETH0_IP_ADDRESS_CFG01', '172.17.41.3') %}
 {% set ETH0_IP_ADDRESS_KVM01 = os_env('ETH0_IP_ADDRESS_KVM01', '172.17.41.4') %}
 {% set ETH0_IP_ADDRESS_KVM02 = os_env('ETH0_IP_ADDRESS_KVM02', '172.17.41.5') %}
 {% set ETH0_IP_ADDRESS_KVM03 = os_env('ETH0_IP_ADDRESS_KVM03', '172.17.41.6') %}
 {% set ETH0_IP_ADDRESS_CMP001 = os_env('ETH0_IP_ADDRESS_CMP001', '172.17.41.7') %}
-{#
-# {% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '172.16.49.74') %}
-# {% set ETH0_IP_ADDRESS_CMP003 = os_env('ETH0_IP_ADDRESS_CMP003', '172.16.167.140') %}
-#}
-{#
-# {% set ETH0_IP_ADDRESS_PRX01 = os_env('ETH0_IP_ADDRESS_PRX01', '172.17.41.8') %}
-# {% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '172.16.49.5') %}
-# {% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '172.16.49.4') %}
-#}
+{% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '172.17.41.8') %}
+{% set ETH0_IP_ADDRESS_CTL01 = os_env('ETH0_IP_ADDRESS_CTL01', '172.17.41.9') %}
+{% set ETH0_IP_ADDRESS_CTL02 = os_env('ETH0_IP_ADDRESS_CTL02', '172.17.41.10') %}
+{% set ETH0_IP_ADDRESS_CTL03 = os_env('ETH0_IP_ADDRESS_CTL03', '172.17.41.11') %}
 {% import 'cookied-bm-mcp-pike-k8s-contrail/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-bm-mcp-pike-k8s-contrail/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
 {% import 'cookied-bm-mcp-pike-k8s-contrail/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA with context %}
@@ -59,14 +52,20 @@ template:
             default_{{ HOSTNAME_KVM02 }}: {{ ETH0_IP_ADDRESS_KVM02 }}
             default_{{ HOSTNAME_KVM03 }}: {{ ETH0_IP_ADDRESS_KVM03 }}
             default_{{ HOSTNAME_CMP001 }}: {{ ETH0_IP_ADDRESS_CMP001 }}
-            #default_{{ HOSTNAME_PRX01 }}: {{ ETH0_IP_ADDRESS_PRX01 }}
+            default_{{ HOSTNAME_CMP002 }}: {{ ETH0_IP_ADDRESS_CMP002 }}
+            default_{{ HOSTNAME_CTL01 }}: {{ ETH0_IP_ADDRESS_CTL01 }}
+            default_{{ HOSTNAME_CTL02 }}: {{ ETH0_IP_ADDRESS_CTL02 }}
+            default_{{ HOSTNAME_CTL03 }}: {{ ETH0_IP_ADDRESS_CTL03 }}
 
             virtual_{{ HOSTNAME_CFG01 }}: {{ ETH0_IP_ADDRESS_CFG01 }}
             virtual_{{ HOSTNAME_KVM01 }}: {{ ETH0_IP_ADDRESS_KVM01 }}
             virtual_{{ HOSTNAME_KVM02 }}: {{ ETH0_IP_ADDRESS_KVM02 }}
             virtual_{{ HOSTNAME_KVM03 }}: {{ ETH0_IP_ADDRESS_KVM03 }}
             virtual_{{ HOSTNAME_CMP001 }}: {{ ETH0_IP_ADDRESS_CMP001 }}
-            #virtual_{{ HOSTNAME_PRX01 }}: {{ ETH0_IP_ADDRESS_PRX01 }}
+            virtual_{{ HOSTNAME_CMP002 }}: {{ ETH0_IP_ADDRESS_CMP002 }}
+            virtual_{{ HOSTNAME_CTL01 }}: {{ ETH0_IP_ADDRESS_CTL01 }}
+            virtual_{{ HOSTNAME_CTL02 }}: {{ ETH0_IP_ADDRESS_CTL02 }}
+            virtual_{{ HOSTNAME_CTL03 }}: {{ ETH0_IP_ADDRESS_CTL03 }}
           #ip_ranges:
           #    dhcp: [+2, -4]
       private-pool01:
@@ -415,6 +414,150 @@ template:
                   parents:
                    - enp9s0f1
 
+          - name: {{ HOSTNAME_CTL01 }}
+            role: salt_minion
+            params:
+              ipmi_user: !os_env IPMI_USER
+              ipmi_password: !os_env IPMI_PASSWORD
+              ipmi_previlegies: OPERATOR
+              ipmi_host: !os_env IPMI_HOST_CTL01  # hostname or IP address
+              ipmi_lan_interface: lanplus
+              ipmi_port: 623
+
+              root_volume_name: system     # see 'volumes' below
+              cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 200
+
+                  # The same as for agent URL, here is an URL to the image that should be
+                  # used for deploy the node. It should also be accessible from deploying
+                  # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
+                  source_image: !os_env IRONIC_SOURCE_IMAGE_URL
+                  source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
+
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data
+
+              interfaces:
+                - label: enp9s0f0
+                  l2_network_device: admin
+                  mac_address: !os_env ETH0_MAC_ADDRESS_CTL01
+                - label: enp9s0f1
+                  mac_address: !os_env ETH1_MAC_ADDRESS_CTL01
+
+              network_config:
+                enp9s0f0:
+                  networks:
+                   - admin
+                bond0:
+                  networks:
+                   - control
+                  aggregation: active-backup
+                  parents:
+                   - enp9s0f1
+
+          - name: {{ HOSTNAME_CTL02 }}
+            role: salt_minion
+            params:
+              ipmi_user: !os_env IPMI_USER
+              ipmi_password: !os_env IPMI_PASSWORD
+              ipmi_previlegies: OPERATOR
+              ipmi_host: !os_env IPMI_HOST_CTL02  # hostname or IP address
+              ipmi_lan_interface: lanplus
+              ipmi_port: 623
+
+              root_volume_name: system     # see 'volumes' below
+              cloud_init_volume_name: iso  # see 'volumes' below
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 200
+
+                  # The same as for agent URL, here is an URL to the image that should be
+                  # used for deploy the node. It should also be accessible from deploying
+                  # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
+                  source_image: !os_env IRONIC_SOURCE_IMAGE_URL
+                  source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
+
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data
+
+              interfaces:
+                - label: enp9s0f0
+                  l2_network_device: admin
+                  mac_address: !os_env ETH0_MAC_ADDRESS_CTL02
+                - label: enp9s0f1
+                  mac_address: !os_env ETH1_MAC_ADDRESS_CTL02
+
+              network_config:
+                enp9s0f0:
+                  networks:
+                   - admin
+                bond0:
+                  networks:
+                   - control
+                  aggregation: active-backup
+                  parents:
+                   - enp9s0f1
+
+          - name: {{ HOSTNAME_CTL03 }}
+            role: salt_minion
+            params:
+              ipmi_user: !os_env IPMI_USER
+              ipmi_password: !os_env IPMI_PASSWORD
+              ipmi_previlegies: OPERATOR
+              ipmi_host: !os_env IPMI_HOST_CTL03  # hostname or IP address
+              ipmi_lan_interface: lanplus
+              ipmi_port: 623
+
+              root_volume_name: system     # see 'volumes' below
+              cloud_init_volume_name: iso  # see 'volumes' below
+              # cloud_init_iface_up: eno1  # see 'interfaces' below.
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 200
+
+                  # The same as for agent URL, here is an URL to the image that should be
+                  # used for deploy the node. It should also be accessible from deploying
+                  # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
+                  source_image: !os_env IRONIC_SOURCE_IMAGE_URL
+                  source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
+
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data
+
+              interfaces:
+                # - label: eno1
+                - label: enp9s0f0
+                  l2_network_device: admin
+                  mac_address: !os_env ETH0_MAC_ADDRESS_CTL03
+                # - label: eno2
+                - label: enp9s0f1
+                  mac_address: !os_env ETH1_MAC_ADDRESS_CTL03
+
+              network_config:
+                # eno1:
+                enp9s0f0:
+                  networks:
+                   - admin
+                bond0:
+                  networks:
+                   - control
+                  aggregation: active-backup
+                  parents:
+                   - enp9s0f1
 
           - name: {{ HOSTNAME_CMP001 }}
             role: salt_minion
@@ -473,66 +616,49 @@ template:
                   parents:
                    - enp9s0f1
 
+          - name: {{ HOSTNAME_CMP002 }}
+            role: salt_minion
+            params:
+              ipmi_user: !os_env IPMI_USER
+              ipmi_password: !os_env IPMI_PASSWORD
+              ipmi_previlegies: OPERATOR
+              ipmi_host: !os_env IPMI_HOST_CMP002  # hostname or IP address
+              ipmi_lan_interface: lanplus
+              ipmi_port: 623
 
+              root_volume_name: system     # see 'volumes' below
+              cloud_init_volume_name: iso  # see 'volumes' below
+              # cloud_init_iface_up: enp3s0f0  # see 'interfaces' below.
+              cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 200
 
-          # - name: {{ HOSTNAME_CMP002 }}
-          #   role: salt_minion
-          #   params:
-          #     ipmi_user: !os_env IPMI_USER
-          #     ipmi_password: !os_env IPMI_PASSWORD
-          #     ipmi_previlegies: OPERATOR
-          #     ipmi_host: !os_env IPMI_HOST_CMP002  # hostname or IP address
-          #     ipmi_lan_interface: lanplus
-          #     ipmi_port: 623
+                  # The same as for agent URL, here is an URL to the image that should be
+                  # used for deploy the node. It should also be accessible from deploying
+                  # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
+                  source_image: !os_env IRONIC_SOURCE_IMAGE_URL
+                  source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
 
-          #     root_volume_name: system     # see 'volumes' below
-          #     cloud_init_volume_name: iso  # see 'volumes' below
-          #     # cloud_init_iface_up: eno1  # see 'interfaces' below.
-          #     cloud_init_iface_up: enp2s0f1  # see 'interfaces' below.
-          #     volumes:
-          #       - name: system
-          #         capacity: !os_env NODE_VOLUME_SIZE, 200
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
 
-          #         # The same as for agent URL, here is an URL to the image that should be
-          #         # used for deploy the node. It should also be accessible from deploying
-          #         # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
-          #         source_image: !os_env IRONIC_SOURCE_IMAGE_URL
-          #         source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_hwe_cmp
 
-          #       - name: iso  # Volume with name 'iso' will be used
-          #                    # for store image with cloud-init metadata.
-
-          #         cloudinit_meta_data: *cloudinit_meta_data
-          #         cloudinit_user_data: *cloudinit_user_data_hwe
-
-          #     interfaces:
-          #       # - label: eno1
-          #       - label: enp2s0f0
-          #         mac_address: !os_env ETH0_MAC_ADDRESS_CMP002
-          #       # - label: eth0
-          #       - label: enp2s0f1
-          #         l2_network_device: admin
-          #         mac_address: !os_env ETH1_MAC_ADDRESS_CMP002
-          #       # - label: eth3
-          #       - label: enp5s0f0
-          #         mac_address: !os_env ETH2_MAC_ADDRESS_CMP002
-          #         features: ['dpdk', 'dpdk_pci: 0000:05:00.0']
-          #       # - label: eth2
-          #       - label: enp5s0f1
-          #         mac_address: !os_env ETH3_MAC_ADDRESS_CMP002
-          #         features: ['dpdk', 'dpdk_pci: 0000:05:00.1']
-          #       # - label: eth4
-          #       #   mac_address: !os_env ETH4_MAC_ADDRESS_CMP002
-          #       #   features: ['dpdk', 'dpdk_pci: 0000:0b:00.0']
-
-          #     network_config:
-          #       enp2s0f1:
-          #         networks:
-          #          - admin
-          #       bond0:
-          #         networks:
-          #          - control
-          #         aggregation: active-backup
-          #         parents:
-          #          - enp5s0f0
-          #          - enp5s0f1
+              interfaces:
+                - label: enp9s0f0
+                  l2_network_device: admin
+                  mac_address: !os_env ETH0_MAC_ADDRESS_CMP002
+                - label: enp9s0f1
+                  mac_address: !os_env ETH1_MAC_ADDRESS_CMP002
+              network_config:
+                enp9s0f0:
+                  networks:
+                   - admin
+                bond0:
+                  networks:
+                   - control
+                  aggregation: active-backup
+                  parents:
+                   - enp9s0f1
