@@ -1,3 +1,4 @@
+#https://docs.mirantis.com/mcp/master/mcp-ref-arch/opencontrail-plan/contrail-overview/contrail-4.html#
 default_context:
   backup_private_key: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -118,28 +119,36 @@ default_context:
   mcp_common_scripts_branch: ''
   mcp_version: proposed
   offline_deployment: 'False'
-  opencontrail_analytics_address: 10.167.8.30
-  opencontrail_analytics_hostname: nal
-  opencontrail_analytics_node01_address: 10.167.8.31
-  opencontrail_analytics_node01_hostname: nal01
-  opencontrail_analytics_node02_address: 10.167.8.32
-  opencontrail_analytics_node02_hostname: nal02
-  opencontrail_analytics_node03_address: 10.167.8.33
-  opencontrail_analytics_node03_hostname: nal03
+  kubernetes_control_address: 10.167.8.30
+  kubernetes_control_node01_address: 10.167.8.31
+  kubernetes_control_node01_hostname: ctl01
+  kubernetes_control_node02_address: 10.167.8.32
+  kubernetes_control_node02_hostname: ctl02
+  kubernetes_control_node03_address: 10.167.8.33
+  kubernetes_control_node03_hostname: ctl03
+  linux_repo_contrail_component: oc40
+#  opencontrail_analytics_address: 10.167.8.30
+#  opencontrail_analytics_hostname: nal
+#  opencontrail_analytics_node01_address: 10.167.8.31
+#  opencontrail_analytics_node01_hostname: nal01
+#  opencontrail_analytics_node02_address: 10.167.8.32
+#  opencontrail_analytics_node02_hostname: nal02
+#  opencontrail_analytics_node03_address: 10.167.8.33
+#  opencontrail_analytics_node03_hostname: nal03
   opencontrail_compute_iface_mask: '24'
-  opencontrail_control_address: 10.167.8.20
-  opencontrail_control_hostname: ntw
-  opencontrail_control_node01_address: 10.167.8.21
-  opencontrail_control_node01_hostname: ntw01
-  opencontrail_control_node02_address: 10.167.8.22
-  opencontrail_control_node02_hostname: ntw02
-  opencontrail_control_node03_address: 10.167.8.23
-  opencontrail_control_node03_hostname: ntw03
+#  opencontrail_control_address: 10.167.8.20
+#  opencontrail_control_hostname: ntw
+#  opencontrail_control_node01_address: 10.167.8.21
+#  opencontrail_control_node01_hostname: ntw01
+#  opencontrail_control_node02_address: 10.167.8.22
+#  opencontrail_control_node02_hostname: ntw02
+#  opencontrail_control_node03_address: 10.167.8.23
+#  opencontrail_control_node03_hostname: ntw03
   opencontrail_enabled: 'True'
-  opencontrail_router01_address: 10.167.8.100
-  opencontrail_router01_hostname: rtr01
-  opencontrail_router02_address: 10.167.8.101
-  opencontrail_router02_hostname: rtr02
+#  opencontrail_router01_address: 10.167.8.100
+#  opencontrail_router01_hostname: rtr01
+#  opencontrail_router02_address: 10.167.8.101
+#  opencontrail_router02_hostname: rtr02
   opencontrail_version: '4.0'
   openstack_enabled: 'False'
   openssh_groups: ''
