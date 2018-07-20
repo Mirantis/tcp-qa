@@ -1,4 +1,4 @@
-{% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 # Install docker swarm
 - description: Configure docker service
