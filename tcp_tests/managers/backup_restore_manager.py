@@ -72,7 +72,9 @@ class BackupRestoreManager(ExecuteCommandsMixin):
         self.execute_command(step,
                              'Verify that the Salt Master node is restored')
         step = {'cmd': 'ls -la /etc/pki/ca/salt_master_ca/',
-                'node_name': self.get_node_name(tgt)}
+                'node_name': self.get_node_name(tgt),
+                'retry': {'count': 2, 'delay': 20},
+                'skip_fail': False}
         self.execute_command(step,
                              'Check pki files exists')
 
