@@ -645,8 +645,8 @@
 - description: Configure salt-minion on {{ ssh['node_name'] }}
   cmd: |
     [ ! -d /etc/salt/minion.d ] && mkdir -p /etc/salt/minion.d;
-    cat << "EOF" > /etc/salt/minion.d/minion.conf
-    id: {{ ssh['node_name'] }}
+    cat << EOF > /etc/salt/minion.d/minion.conf
+    id: $(hostname -s).{{ DOMAIN_NAME }}
     master: {{ config.salt.salt_master_host }}
     EOF
 
