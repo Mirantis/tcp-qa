@@ -42,6 +42,45 @@ nodes:
         enp9s0f1:
           role: single_ctl
 
+    ctl01.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: kubernetes_control_node01
+      roles:
+      - kubernetes_control_contrail
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f0:
+          role: single_mgm
+          deploy_address: 172.17.41.9
+        enp2s0f1:
+          role: single_ctl
+          single_address: 10.167.8.239
+
+    ctl02.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: kubernetes_control_node02
+      roles:
+      - kubernetes_control_contrail
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f0:
+          role: single_mgm
+          deploy_address: 172.17.41.10
+        enp2s0f1:
+          role: single_ctl
+          single_address: 10.167.8.238
+
+    ctl03.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: kubernetes_control_node03
+      roles:
+      - kubernetes_control_contrail
+      - linux_system_codename_xenial
+      interfaces:
+        enp2s0f0:
+          role: single_mgm
+          deploy_address: 172.17.41.11
+        enp2s0f1:
+          role: single_ctl
+          single_address: 10.167.8.237
+
     # prx01.bm-mcp-pike-k8s-contrail.local:
     #   reclass_storage_name: kubernetes_proxy_node01
     #   roles:
@@ -74,6 +113,23 @@ nodes:
         ens11f1:
           role: single_ctl
           single_address: 10.167.8.101
+
+    cmp002.bm-mcp-pike-k8s-contrail.local:
+      reclass_storage_name: kubernetes_compute_node002
+      roles:
+      - linux_system_codename_xenial
+      - kubernetes_compute_contrail
+      - salt_master_host
+        #- features_lvm_backend
+      interfaces:
+        enp9s0f0:
+          role: single_dhcp
+        ens11f0:
+          role: bond0_ab_contrail
+          tenant_address: 192.168.0.102
+        ens11f1:
+          role: single_ctl
+          single_address: 10.167.8.102
 
     # cmp002.bm-mcp-pike-k8s-contrail.local:
     #   reclass_storage_name: kubernetes_compute_node02
