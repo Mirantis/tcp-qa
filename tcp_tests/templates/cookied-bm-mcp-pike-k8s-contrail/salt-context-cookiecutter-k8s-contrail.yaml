@@ -1,3 +1,4 @@
+#https://docs.mirantis.com/mcp/master/mcp-ref-arch/opencontrail-plan/contrail-overview/contrail-4.html#
 default_context:
   backup_private_key: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -104,7 +105,7 @@ default_context:
   infra_primary_first_nic: eth1
   infra_primary_second_nic: eth2
   kubernetes_enabled: 'True'
-  kubernetes_compute_count: 1
+  kubernetes_compute_count: 2
   kubernetes_compute_rack01_single_subnet: 10.167.8
   kubernetes_compute_rack01_tenant_subnet: 192.168.0
   kubernetes_network_opencontrail_enabled: 'True'
@@ -118,6 +119,17 @@ default_context:
   mcp_common_scripts_branch: ''
   mcp_version: proposed
   offline_deployment: 'False'
+  kubernetes_control_address: 10.167.8.240
+  kubernetes_control_node01_deploy_address: 172.17.41.7
+  kubernetes_control_node01_address: 10.167.8.239
+  kubernetes_control_node01_hostname: ctl01
+  kubernetes_control_node02_deploy_address: 172.17.41.8
+  kubernetes_control_node02_address: 10.167.8.238
+  kubernetes_control_node02_hostname: ctl02
+  kubernetes_control_node02_deploy_address: 172.17.41.9
+  kubernetes_control_node03_address: 10.167.8.237
+  kubernetes_control_node03_hostname: ctl03
+  linux_repo_contrail_component: oc40
   opencontrail_analytics_address: 10.167.8.30
   opencontrail_analytics_hostname: nal
   opencontrail_analytics_node01_address: 10.167.8.31
