@@ -128,7 +128,6 @@ default_context:
   kubernetes_externaldns_enabled: 'False'
   kubernetes_keepalived_vip_interface: ens4
   kubernetes_network_calico_enabled: 'True'
-  kubernetes_virtlet_enabled: 'False'
   local_repositories: 'False'
   maas_deploy_address: 10.167.5.15
   maas_deploy_range_end: 10.167.5.199
