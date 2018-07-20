@@ -1,9 +1,6 @@
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CMP001 with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import DOMAIN_NAME with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import ETH0_IP_ADDRESS_CFG01 with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import ETH0_IP_ADDRESS_CMP001 with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM01 with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM02 with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM03 with context %}
@@ -36,22 +33,6 @@
 
 {{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml') }}
 
-
-# - description: "Registration cmp001 node"
-#   cmd: |
-#     salt-call event.send "reclass/minion/classify" \
-#       "{\"node_master_ip\": \"{{ ETH0_IP_ADDRESS_CFG01 }}\", \
-#       \"node_deploy_ip\": \"{{ ETH0_IP_ADDRESS_CMP001 }}\", \
-#       \"node_control_ip\": \"10.167.8.101\", \
-#       \"node_tenant_ipcontrol_ip\": \"10.167.8.101\", \
-#       \"node_os\": \"xenial\", \
-#       \"node_domain\": \"{{ DOMAIN_NAME }}\", \
-#       \"node_cluster\": \"{{ LAB_CONFIG_NAME }}\",
-#       \"node_hostname\": \"$(hostname -s)\"}"
-#   node_name: {{ HOSTNAME_CMP001 }}
-#   retry: {count: 1, delay: 10}
-#   skip_fail: false
-#
 - description: "Workaround for rack01 compute generator"
   cmd: |
     set -e;
@@ -186,4 +167,3 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
