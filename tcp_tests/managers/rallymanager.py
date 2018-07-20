@@ -91,10 +91,17 @@ class RallyManager(object):
         image = self.image_name
         LOG.info("Pull {image}:{version}".format(image=image,
                                                  version=version))
-        cmd = ("apt-get -y install docker-ce &&"
-               " docker pull {image}:{version}".format(image=image,
-                                                       version=version))
-        self._underlay.check_call(cmd, node_name=self._node_name)
+        try:
+            cmd = ("apt-get -y install docker-ce &&"
+                   " docker pull {image}:{version}".format(image=image,
+                                                           version=version))
+            self._underlay.check_call(cmd, node_name=self._node_name)
+        except Exception as e:
+            LOG.debug('Cannot install docker-ce')
+            cmd = ("apt-get -y install docker.io &&"
+                   " docker pull {image}:{version}".format(image=image,
+                                                           version=version))
+            self._underlay.check_call(cmd, node_name=self._node_name)
 
         cmd_iptables = "iptables --policy FORWARD ACCEPT"
         self._underlay.check_call(cmd_iptables, node_name=self._node_name)
