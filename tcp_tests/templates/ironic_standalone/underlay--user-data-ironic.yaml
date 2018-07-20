@@ -97,6 +97,11 @@
    - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    ########################################################
 
+   ########################################################
+   # Disable docker0 interface
+   - ip link set dev docker0 down
+   - ifconfig docker0 0.0.0.0/0
+   #########################################################
   write_files:
    - path: /etc/network/interfaces
      content: |
