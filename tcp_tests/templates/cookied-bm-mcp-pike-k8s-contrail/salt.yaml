@@ -1,9 +1,6 @@
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CMP001 with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import DOMAIN_NAME with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import ETH0_IP_ADDRESS_CFG01 with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import ETH0_IP_ADDRESS_CMP001 with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM01 with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM02 with context %}
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM03 with context %}
@@ -28,7 +25,7 @@
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
-{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd" "auditd"') }}
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd" "auditd" "logrotate"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
@@ -36,22 +33,6 @@
 
 {{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/environment/' + ENVIRONMENT_MODEL_INVENTORY_NAME + '/overrides.yml') }}
 
-
-# - description: "Registration cmp001 node"
-#   cmd: |
-#     salt-call event.send "reclass/minion/classify" \
-#       "{\"node_master_ip\": \"{{ ETH0_IP_ADDRESS_CFG01 }}\", \
-#       \"node_deploy_ip\": \"{{ ETH0_IP_ADDRESS_CMP001 }}\", \
-#       \"node_control_ip\": \"10.167.8.101\", \
-#       \"node_tenant_ipcontrol_ip\": \"10.167.8.101\", \
-#       \"node_os\": \"xenial\", \
-#       \"node_domain\": \"{{ DOMAIN_NAME }}\", \
-#       \"node_cluster\": \"{{ LAB_CONFIG_NAME }}\",
-#       \"node_hostname\": \"$(hostname -s)\"}"
-#   node_name: {{ HOSTNAME_CMP001 }}
-#   retry: {count: 1, delay: 10}
-#   skip_fail: false
-#
 - description: "Workaround for rack01 compute generator"
   cmd: |
     set -e;
@@ -73,55 +54,52 @@
 #   retry: {count: 1, delay: 10}
 #   skip_fail: false
 
-- description: "Workaround for xenial images"
-  cmd: |
-    set -e;
-    # Add tenant and single addresses for computes
-        set -e;
-    # Add message_queu host for opencontrail
-    . /root/venv-reclass-tools/bin/activate;
-    reclass-tools add-key parameters.salt.control.cluster.internal.node.nal01.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    reclass-tools add-key parameters.salt.control.cluster.internal.node.nal02.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    reclass-tools add-key parameters.salt.control.cluster.internal.node.nal03.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    reclass-tools add-key parameters.salt.control.cluster.internal.node.ntw01.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    reclass-tools add-key parameters.salt.control.cluster.internal.node.ntw02.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    reclass-tools add-key parameters.salt.control.cluster.internal.node.ntw03.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    reclass-tools add-key parameters.salt.control.cluster.internal.node.prx01.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    reclass-tools add-key parameters.salt.control.cluster.internal.node.prx02.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
+#- description: "Workaround for xenial images"
+#  cmd: |
+#    set -e;
+#    # Add tenant and single addresses for computes
+#        set -e;
+#    # Add message_queu host for opencontrail
+#    . /root/venv-reclass-tools/bin/activate;
+#    reclass-tools add-key parameters.salt.control.cluster.internal.node.nal01.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+#    reclass-tools add-key parameters.salt.control.cluster.internal.node.nal02.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+#    reclass-tools add-key parameters.salt.control.cluster.internal.node.nal03.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+#    reclass-tools add-key parameters.salt.control.cluster.internal.node.ntw01.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+#    reclass-tools add-key parameters.salt.control.cluster.internal.node.ntw02.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+#    reclass-tools add-key parameters.salt.control.cluster.internal.node.ntw03.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+#    reclass-tools add-key parameters.salt.control.cluster.internal.node.prx01.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+#    reclass-tools add-key parameters.salt.control.cluster.internal.node.prx02.image '${_param:salt_control_xenial_image}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
 
 
-{{ SHARED.MACRO_GENERATE_INVENTORY() }}
-
-{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
 
 
-- description: "Workaround for PROD-14060"
-  cmd: |
-    set -e;
-    # Add tenant and single addresses for computes
-    salt-call reclass.cluster_meta_set deploy_address 172.17.41.7 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
-    salt-call reclass.cluster_meta_set tenant_address 192.168.0.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
-    salt-call reclass.cluster_meta_set single_address 10.167.8.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
-
-    # salt-call reclass.cluster_meta_set deploy_address 172.16.49.74 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
-    # salt-call reclass.cluster_meta_set tenant_address 192.168.0.102 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
-    # salt-call reclass.cluster_meta_set single_address 10.167.8.102 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
-
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-
-- description: Temporary workaround for removing cinder-volume from CTL nodes
-  cmd: |
-    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
-    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+#- description: "Workaround for PROD-14060"
+#  cmd: |
+#    set -e;
+#    # Add tenant and single addresses for computes
+#    salt-call reclass.cluster_meta_set deploy_address 172.17.41.7 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
+#    salt-call reclass.cluster_meta_set tenant_address 192.168.0.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
+#    salt-call reclass.cluster_meta_set single_address 10.167.8.101 /srv/salt/reclass/nodes/_generated/cmp001.cookied-bm-mcp-ocata-contrail.local.yml
+#
+#    # salt-call reclass.cluster_meta_set deploy_address 172.16.49.74 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
+#    # salt-call reclass.cluster_meta_set tenant_address 192.168.0.102 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
+#    # salt-call reclass.cluster_meta_set single_address 10.167.8.102 /srv/salt/reclass/nodes/_generated/cmp002.cookied-bm-mcp-ocata-contrail.local.yml
+#
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 10}
+#  skip_fail: false
+#
+#
+#- description: Temporary workaround for removing cinder-volume from CTL nodes
+#  cmd: |
+#    sed -i 's/\-\ system\.cinder\.volume\.single//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
+#    sed -i 's/\-\ system\.cinder\.volume\.notification\.messagingv2//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml;
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: true
 
 - description: Temporary WR for correct bridge name according to envoronment templates
   cmd: |
@@ -129,6 +107,39 @@
     sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Rerun openssh after env model is generated
+  cmd: |
+    salt-call state.sls openssh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+- description: Update minion information
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_grains &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' mine.update &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar && sleep 10
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Rerun openssh after env model is generated
+  cmd: |
+    salt-call state.sls openssh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Execute linux.network.host one more time after salt.minion to apply dynamically registered hosts on the cluster nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.network.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
@@ -157,13 +168,15 @@
   retry: {count: 20, delay: 30}
   skip_fail: false
 
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
 #########################################
 # Configure all running salt minion nodes
 #########################################
 
 - description: Hack resolv.conf on VCP nodes for internal services access
   cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 172.17.41.2' > /etc/resolv.conf;"
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not cfg*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -186,4 +199,3 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
