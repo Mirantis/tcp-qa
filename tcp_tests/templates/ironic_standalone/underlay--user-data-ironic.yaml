@@ -114,6 +114,14 @@
             ServerAliveCountMax 10
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null
+   - path: /etc/docker/daemon.json
+     content: |
+         \{
+           "bip": "172.255.0.0/16"
+         \}
+  runcmd:
+   # Restart docker
+   - sudo systemctl restart docker
 
    {%- if os_env('IRONIC_DNSMASQ_HOSTFILE', '') %}
    - path: /var/lib/libvirt/dnsmasq/{{ IRONIC_ENV_NAME }}.hostsfile
