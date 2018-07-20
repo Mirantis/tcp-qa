@@ -97,6 +97,13 @@
    - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
    ########################################################
 
+   ########################################################
+   # Reconfigure network for docker
+   - touch /etc/docker/daemon.json
+   - echo -e "\{\n  \"bip\"\: \"172.255.0.0/16\"\n}" > /etc/docker/daemon.json
+   - sudo systemctl restart docker
+   ########################################################
+
   write_files:
    - path: /etc/network/interfaces
      content: |
