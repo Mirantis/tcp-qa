@@ -1,4 +1,4 @@
-{% from 'k8s-ha-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 - description: Install etcd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
