@@ -274,6 +274,13 @@
   retry: {count: 3, delay: 5}
   skip_fail: false
 
+  - description: Create manila type
+  cmd: |
+     salt 'cfg01*' state.sls manila.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Create CIFS and NFS share and check it status
   cmd: |
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila create CIFS 1 --share-type=default';
