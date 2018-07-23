@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-sample-calico
+  annotations:
+    cni: "calico"
+spec:
+  containers:
+    - name: pod-sample-calico-container
+      image: gcr.io/google-samples/node-hello:1.0
+      ports:
+        - containerPort: 8080
