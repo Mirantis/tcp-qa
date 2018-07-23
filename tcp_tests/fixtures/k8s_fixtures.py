@@ -14,6 +14,7 @@
 
 import pytest
 import time
+import os
 
 from tcp_tests.helpers import ext
 from tcp_tests.helpers import utils
@@ -195,3 +196,16 @@ def k8s_chain_update_log_helper(request, config, k8s_deployed):
                     [report_path, conformance_log_path])
 
     request.addfinalizer(test_fin)
+
+
+@pytest.fixture(scope='function')
+def k8s_copy_sample_testdata(config, underlay, k8s_deployed):
+    directory = 'testdata/k8s/'
+    LOG.info("Uploading '{}' directory on controllers".format(directory))
+    with underlay.remote(host=config.salt.salt_master_host) as r:
+        r.upload(os.path.join(os.getcwd(), 'tcp_tests', directory),
+                 os.path.join('/root/', directory))
+        for ctl_host in k8s_deployed.ctl_hosts():
+            cmd = "rsync -r \"{0}\"* \"{1}:/root/\"".format(
+                directory, ctl_host['node_name'])
+            r.check_call(cmd, raise_on_err=True)
