@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-sample-multicni
+  annotations:
+    cni: "calico,flannel"
+spec:
+  containers:
+    - name: pod-sample-multicni-container
+      image: gcr.io/google-samples/node-hello:1.0
+      ports:
+        - containerPort: 8080
