@@ -270,7 +270,7 @@ sl_deploy_opts = [
 ]
 
 sl_opts = [
-    ct.Cfg('sl_installed', ct.Boolean(),
+    ct.Cfg('stacklight_installed', ct.Boolean(),
            help="", default=False),
     ct.Cfg('sl_version', ct.String(),
            help="StackLight version. Could be 1 or 2", default=''),
