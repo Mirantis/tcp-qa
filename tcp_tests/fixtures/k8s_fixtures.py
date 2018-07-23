@@ -195,3 +195,15 @@ def k8s_chain_update_log_helper(request, config, k8s_deployed):
                     [report_path, conformance_log_path])
 
     request.addfinalizer(test_fin)
+
+
+@pytest.fixture(scope='session')
+def k8s_copy_sample_testdata(k8s_deployed, config, underlay):
+    directory_to_upload = 'testdata/k8s/'
+    LOG.info("Uploading k8s '{}' directory", directory_to_upload)
+    with underlay.remote(host=config.salt.salt_master_host) as r:
+        r.upload_dir(directory_to_upload)
+        for ctl_host in k8s_deployed.ctl_hosts():
+            cmd = "rsync -r \"{0}\"* \"{1}:/root/".format(
+                directory_to_upload, ctl_host['node_name'])
+            r.check_call(cmd, raise_on_err=True)

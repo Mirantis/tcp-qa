@@ -13,6 +13,7 @@
 #    under the License.
 
 import pytest
+import netaddr
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -140,16 +141,9 @@ class TestMCPK8sActions(object):
             pytest.skip("Test requires metallb addon enabled")
 
         show_step(2)
-        pods = k8s_deployed.api.pods.list(namespace="metallb-system")
-
-        def is_pod_exists_with_prefix(prefix):
-            for pod in pods:
-                if pod.name.startswith(prefix) and pod.phase == 'Running':
-                    return True
-            return False
-
-        assert is_pod_exists_with_prefix("controller")
-        assert is_pod_exists_with_prefix("speaker")
+        ns = "metallb-system"
+        assert k8s_deployed.is_pod_exists_with_prefix("controller", ns)
+        assert k8s_deployed.is_pod_exists_with_prefix("speaker", ns)
 
         show_step(3)
         samples = []
@@ -175,3 +169,60 @@ class TestMCPK8sActions(object):
         show_step(7)
         for sample in samples:
             assert sample.is_service_available(external=True)
+
+    @pytest.mark.grap_versions
+    # @pytest.mark.fail_snapshot TODO: uncomment
+    def test_k8s_genie_flannel(self, show_step, config, k8s_deployed,
+                               k8s_copy_sample_testdata, salt_deployed):
+        """Test genie-cni+flannel cni setup
+
+        Scenario:
+            1. Setup Kubernetes cluster with genie cni and flannel
+            2. Check that flannel pods created in kube-system namespace
+            3. Create sample deployment with flannel cni annotation
+            4. Check that the deployment have 1 ip addresses from cni provider
+            5. Create sample deployment with calico cni annotation
+            6. Check that the deployment have 1 ip addresses from cni provider
+            7. Create sample deployment with multi-cni annotation
+            8. Check that the deployment have 2 ip addresses from different
+            cni providers
+            9. Create sample deployment without cni annotation
+            10. Check that the deployment have 1 ip address
+            11. Check pods availability
+            12. Run conformance
+            13. Check pods availability
+        """
+        show_step(1)
+
+        # Find out calico and flannel network before tests
+        tgt_k8s_control = "I@kubernetes:control:enabled:True"
+
+        flannel_pillar = salt_deployed.get_pillar(
+            tgt=tgt_k8s_control,
+            pillar="kubernetes:master:network:flannel:private_ip_range")[0]
+        flannel_network = netaddr.IPNetwork(flannel_pillar.values()[0])
+        LOG.info("Flannel network: {}".format(flannel_network))
+
+        calico_network_pillar = salt_deployed.get_pillar(
+            tgt=tgt_k8s_control, pillar="_param:calico_private_network")[0]
+        calico_netmask_pillar = salt_deployed.get_pillar(
+            tgt=tgt_k8s_control, pillar="_param:calico_private_netmask")[0]
+        calico_network = netaddr.IPNetwork(
+            "{0}/{1}".format(calico_network_pillar.values()[0],
+                             calico_netmask_pillar.values()[0]))
+        LOG.info("Calico network: {}".format(calico_network))
+
+        show_step(2)
+        assert k8s_deployed.is_pod_exists_with_prefix("kube-flannel-",
+                                                      "kube-system")
+
+        show_step(3)
+        k8s_deployed.create_objects('pod-sample-flannel.yaml')
+
+        show_step(4)
+        flannel_ips = k8s_deployed.get_pod_ips('pod-sample-flannel')
+        assert flannel_ips == 1
+        assert netaddr.IPAddress(flannel_ips[0]) in flannel_network
+
+        # k8s_deployed.create_objects('testdata/pod-sample-calico.yaml')
+        # k8s_deployed.create_objects('testdata/pod-sample.yaml')
