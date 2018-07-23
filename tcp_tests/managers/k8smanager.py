@@ -15,7 +15,7 @@
 import os
 import time
 from uuid import uuid4
-
+import six
 import requests
 import yaml
 
@@ -86,11 +86,13 @@ class K8SManager(ExecuteCommandsMixin):
                 default_namespace='default')
         return self._api_client
 
+    def ctl_hosts(self):
+        return [node for node in self.__config.underlay.ssh if
+                ext.UNDERLAY_NODE_ROLES.k8s_controller in node['roles']]
+
     @property
     def ctl_host(self):
-        nodes = [node for node in self.__config.underlay.ssh if
-                 ext.UNDERLAY_NODE_ROLES.k8s_controller in node['roles']]
-        return nodes[0]['node_name']
+        return self.ctl_hosts()[0]['node_name']
 
     def get_pod_phase(self, pod_name, namespace=None):
         return self.api.pods.get(
@@ -149,6 +151,8 @@ class K8SManager(ExecuteCommandsMixin):
         :rtype: V1Pod
         """
         LOG.info("Creating pod in k8s cluster")
+        if isinstance(body, six.string_types):
+            body = yaml.load(body)
         LOG.debug(
             "POD spec to create:\n{}".format(
                 yaml.dump(body, default_flow_style=False))
@@ -156,7 +160,7 @@ class K8SManager(ExecuteCommandsMixin):
         LOG.debug("Timeout for creation is set to {}".format(timeout))
         LOG.debug("Checking interval is set to {}".format(interval))
         pod = self.api.pods.create(body=body, namespace=namespace)
-        pod.wait_running(timeout=300, interval=5)
+        pod.wait_running(timeout=timeout, interval=interval)
         LOG.info("Pod '{0}' is created in '{1}' namespace".format(
             pod.name, pod.namespace))
         return self.api.pods.get(name=pod.name, namespace=pod.namespace)
@@ -394,9 +398,8 @@ class K8SManager(ExecuteCommandsMixin):
 
     @retry(300, exception=DevopsCalledProcessError)
     def nslookup(self, host, src):
-        with self.__underlay.remote(
-                node_name=self.ctl_host) as remote:
-            remote.check_call("nslookup {0} {1}".format(host, src))
+        self.__underlay.check_call(
+            "nslookup {0} {1}".format(host, src), node_name=self.ctl_host)
 
     @retry(300, exception=DevopsCalledProcessError)
     def curl(self, url):
@@ -406,8 +409,10 @@ class K8SManager(ExecuteCommandsMixin):
         :param url: url to curl
         :return: response string
         """
-        with self.__underlay.remote(node_name=self.ctl_host) as r:
-            return r.check_call("curl -s -S \"{}\"".format(url))['stdout']
+        result = self.__underlay.check_call(
+            "curl -s -S \"{}\"".format(url), node_name=self.ctl_host)
+        LOG.debug("curl \"{0}\" result: {1}".format(url, result['stdout']))
+        return result['stdout']
 
 # ---------------------------- Virtlet methods -------------------------------
     def install_jq(self):
@@ -709,10 +714,31 @@ class K8SManager(ExecuteCommandsMixin):
         ctl_vip_pillar = self._salt.get_pillar(
             tgt="I@kubernetes:control:enabled:True",
             pillar="_param:cluster_vip_address")[0]
-        return [vip for minion_id, vip in ctl_vip_pillar.items()][0]
+        return ctl_vip_pillar.values()[0]
 
     def get_sample_deployment(self, name, **kwargs):
         return K8SSampleDeployment(self, name, **kwargs)
+
+    def is_pod_exists_with_prefix(self, prefix, namespace, phase='Running'):
+        for pod in self.api.pods.list(namespace=namespace):
+            if pod.name.startswith(prefix) and pod.phase == phase:
+                return True
+        return False
+
+    def get_pod_ips_from_container(self, pod_name, exclude_local=True):
+        """ Not all containers have 'ip' binary on-board """
+        cmd = "kubectl exec {0} ip a|grep \"inet \"|awk '{{print $2}}'".format(
+            pod_name)
+        result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
+        ips = [line.strip().split('/')[0] for line in result['stdout']]
+        if exclude_local:
+            ips = [ip for ip in ips if not ip.startswith("127.")]
+        return ips
+
+    def create_pod_from_file(self, path, namespace=None):
+        with open(path) as f:
+            data = f.read()
+        return self.check_pod_create(data, namespace=namespace)
 
 
 class K8SSampleDeployment:
