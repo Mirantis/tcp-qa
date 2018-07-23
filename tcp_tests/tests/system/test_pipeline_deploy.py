@@ -81,10 +81,16 @@ class TestPipeline(object):
 
         Scenario:
             1. Prepare salt on hosts.
-            .........................
+            2. Connect to jenkins on cfg01 node
+            3. Run deploy on cfg01 node
+            4. Connect to jenkins on cid node
+            5. Run deploy on cid node
         """
+        show_step(1)
         nodes = underlay.node_names()
         LOG.info("Nodes - {}".format(nodes))
+        show_step(2)
+
         cfg_node = 'cfg01.cookied-bm-dpdk-pipeline.local'
         salt_api = salt_deployed.get_pillar(
             cfg_node, '_param:jenkins_salt_api_url')
@@ -93,12 +99,11 @@ class TestPipeline(object):
             host='http://172.16.49.2:8081',
             username='admin',
             password='r00tme')
-
-        # Creating param list for openstack deploy
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
         params['STACK_INSTALL'] = 'core,kvm,cicd'
-        show_step(4)
+
+        show_step(3)
         build = jenkins.run_build('deploy_openstack', params)
         jenkins.wait_end_of_build(
             name=build[0],
@@ -107,11 +112,26 @@ class TestPipeline(object):
         result = jenkins.build_info(name=build[0],
                                     build_id=build[1])['result']
         assert result == 'SUCCESS', "Deploy openstack was failed"
-        # cicd_passwd = ""
-        # jenkins_cicd = JenkinsClient(
-        #    host='http://10.167.11.90:8081',
-        #    username='admin',
-        #    password='r00tme')
+
+        show_step(4)
+        cid_node = 'cid01.cookied-bm-dpdk-pipeline.local'
+        salt_output = salt_deployed.get_pillar(
+            cid_node, 'jenkins:client:master:password')
+        cid_passwd = salt_output[0].get(cid_node)
+        jenkins = JenkinsClient(host='http://10.167.11.90:8081',
+            username='admin',
+            password=cid_passwd)
+        params['STACK_INSTALL'] = 'ovs,openstack'
+        show_step(5)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy openstack was failed"
+
         if settings.RUN_TEMPEST:
             tempest_actions.prepare_and_run_tempest()
         LOG.info("*************** DONE **************")
