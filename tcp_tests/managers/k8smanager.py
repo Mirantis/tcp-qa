@@ -86,11 +86,13 @@ class K8SManager(ExecuteCommandsMixin):
                 default_namespace='default')
         return self._api_client
 
+    def ctl_hosts(self):
+        return [node for node in self.__config.underlay.ssh if
+                ext.UNDERLAY_NODE_ROLES.k8s_controller in node['roles']]
+
     @property
     def ctl_host(self):
-        nodes = [node for node in self.__config.underlay.ssh if
-                 ext.UNDERLAY_NODE_ROLES.k8s_controller in node['roles']]
-        return nodes[0]['node_name']
+        return self.ctl_hosts()[0]['node_name']
 
     def get_pod_phase(self, pod_name, namespace=None):
         return self.api.pods.get(
@@ -394,9 +396,7 @@ class K8SManager(ExecuteCommandsMixin):
 
     @retry(300, exception=DevopsCalledProcessError)
     def nslookup(self, host, src):
-        with self.__underlay.remote(
-                node_name=self.ctl_host) as remote:
-            remote.check_call("nslookup {0} {1}".format(host, src))
+        return self.__underlay.check_call("nslookup {0} {1}".format(host, src))
 
     @retry(300, exception=DevopsCalledProcessError)
     def curl(self, url):
@@ -406,8 +406,8 @@ class K8SManager(ExecuteCommandsMixin):
         :param url: url to curl
         :return: response string
         """
-        with self.__underlay.remote(node_name=self.ctl_host) as r:
-            return r.check_call("curl -s -S \"{}\"".format(url))['stdout']
+        result = self.__underlay.check_call("curl -s -S \"{}\"".format(url))
+        return result['stdout']
 
 # ---------------------------- Virtlet methods -------------------------------
     def install_jq(self):
@@ -709,10 +709,26 @@ class K8SManager(ExecuteCommandsMixin):
         ctl_vip_pillar = self._salt.get_pillar(
             tgt="I@kubernetes:control:enabled:True",
             pillar="_param:cluster_vip_address")[0]
-        return [vip for minion_id, vip in ctl_vip_pillar.items()][0]
+        return ctl_vip_pillar.values()[0]
 
     def get_sample_deployment(self, name, **kwargs):
         return K8SSampleDeployment(self, name, **kwargs)
+
+    def is_pod_exists_with_prefix(self, prefix, namespace, phase='Running'):
+        for pod in self.api.pods.list(namespace=namespace):
+            if pod.name.startswith(prefix) and pod.phase == phase:
+                return True
+        return False
+
+    def get_pod_ips(self, pod_name, exclude_local=True):
+        """ Not all containers have 'ip' binary """
+        cmd = "kubectl exec {0} ip a|grep \"inet \"|awk '{{print $2}}'".format(
+            pod_name)
+        result = self.__underlay.check_call(cmd, node_name=self.ctl_host)
+        ips = [line.strip().split('/')[0] for line in result['stdout']]
+        if exclude_local:
+            ips = [ip for ip in ips if not ip.startswith("127.")]
+        return ips
 
 
 class K8SSampleDeployment:
