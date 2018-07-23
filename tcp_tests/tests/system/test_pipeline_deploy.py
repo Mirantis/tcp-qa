@@ -93,8 +93,6 @@ class TestPipeline(object):
             host='http://172.16.49.2:8081',
             username='admin',
             password='r00tme')
-
-        # Creating param list for openstack deploy
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
         params['STACK_INSTALL'] = 'core,kvm,cicd'
@@ -107,11 +105,24 @@ class TestPipeline(object):
         result = jenkins.build_info(name=build[0],
                                     build_id=build[1])['result']
         assert result == 'SUCCESS', "Deploy openstack was failed"
-        # cicd_passwd = ""
-        # jenkins_cicd = JenkinsClient(
-        #    host='http://10.167.11.90:8081',
-        #    username='admin',
-        #    password='r00tme')
+        cid_node = 'cid01.cookied-bm-dpdk-pipeline.local'
+        salt_output = salt_deployed.get_pillar(
+            cid_node, 'jenkins:client:master:password')
+        cid_passwd = salt_output[0].get(cfg_node)
+        jenkins = JenkinsClient(
+            host='http://10.167.11.90:8081',
+            username='admin',
+            password=cid_passwd)
+        params['STACK_INSTALL'] = 'ovs,openstack'
+        import rpdb; rpdb.set_trace()
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy openstack was failed"
         if settings.RUN_TEMPEST:
             tempest_actions.prepare_and_run_tempest()
         LOG.info("*************** DONE **************")
