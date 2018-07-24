@@ -19,7 +19,7 @@ from tcp_tests import logger
 LOG = logger.logger
 
 
-class TestBootstrapCore(object):
+class TestBootstrapUnderlay(object):
     """Test class for deploy local dns_vm"""
 
     def test_create_environment(self, config, hardware):

@@ -52,7 +52,7 @@ def stacklight_deployed(revert_snapshot, request, config,
     :rtype: SLManager
     """
     # Deploy SL services
-    if not config.stack_light.sl_installed:
+    if not config.stack_light.stacklight_installed:
         steps_path = config.sl_deploy.sl_steps_path
         commands = underlay.read_template(steps_path)
         sl_actions.install(commands)

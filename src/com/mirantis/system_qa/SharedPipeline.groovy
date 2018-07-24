@@ -101,6 +101,28 @@ def swarm_deploy_platform(String stack_to_install) {
             parameters: parameters
 }
 
+def swarm_run_pytest(String passed_steps) {
+        // Run pytest tests
+        def common = new com.mirantis.mk.Common()
+        def parameters = [
+                string(name: 'ENV_NAME', value: "${ENV_NAME}"),
+                string(name: 'PASSED_STEPS', value: passed_steps),
+                string(name: 'RUN_TEST_OPTS', value: "${RUN_TEST_OPTS}"),
+                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
+                string(name: 'PARENT_WORKSPACE', value: pwd()),
+                string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
+                booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
+                string(name: 'LAB_CONFIG_NAME', value: "${LAB_CONFIG_NAME}"),
+                string(name: 'REPOSITORY_SUITE', value: "${MCP_VERSION}"),
+                string(name: 'MCP_IMAGE_PATH1604', value: "${MCP_IMAGE_PATH1604}"),
+                string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
+            ]
+        common.printMsg("Start building job 'swarm-run-pytest' with parameters:", "purple")
+        common.prettyPrint(parameters)
+        build job: 'swarm-run-pytest',
+            parameters: parameters
+}
+
 def generate_cookied_model() {
         def common = new com.mirantis.mk.Common()
         // do not fail if environment doesn't exists
@@ -219,11 +241,16 @@ def devops_snapshot(stack) {
         dos.py suspend ${ENV_NAME}
         dos.py snapshot ${ENV_NAME} ${stack}_deployed
         dos.py resume ${ENV_NAME}
-        dos.py time-sync ${ENV_NAME}
+        dos.py time-sync ${ENV_NAME} || dos.py time-sync ${ENV_NAME} # sometimes, timesync may fail. Need to update it in fuel-devops.
         if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi
     """)
+}
+
+def get_steps_list(steps) {
+    // Make a list from comma separated string
+    return steps.split(',').collect { it.split(':')[0] }
 }
 
 def report_deploy_result(deploy_expected_stacks) {
