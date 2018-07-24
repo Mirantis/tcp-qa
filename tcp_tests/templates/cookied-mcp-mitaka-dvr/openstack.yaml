@@ -212,14 +212,14 @@
 
 - description: Upload cirros image on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
+    'wget http://images.mirantis.com.s3.amazonaws.com/cirros-x64-20170828.qcow2'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 30}
   skip_fail: false
 
 - description: Register image in glance
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
+    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-x64-20170828.qcow2'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
