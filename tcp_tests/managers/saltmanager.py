@@ -116,11 +116,13 @@ class SaltManager(ExecuteCommandsMixin):
     def check_result(self, r):
         if len(r.get('return', [])) == 0:
             raise LookupError("Result is empty or absent")
-
+        LOG.debug("Current result comes in res check {}".format(r))
         result = r['return'][0]
         if len(result) == 0:
             raise LookupError("Result is empty or absent")
         LOG.info("Job has result for %s nodes", result.keys())
+        if isinstance(result, bool):
+            raise LookupError("Unexpected result, current data {}".format(r))
         fails = defaultdict(list)
         for h in result:
             host_result = result[h]
