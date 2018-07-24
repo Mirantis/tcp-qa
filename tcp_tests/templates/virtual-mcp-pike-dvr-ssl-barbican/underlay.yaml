@@ -44,7 +44,7 @@ template:
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX01 }}: +240
             default_{{ HOSTNAME_DNS01 }}: +111
             default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_SHARE01 }}: +130
@@ -64,7 +64,7 @@ template:
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX01 }}: +240
             default_{{ HOSTNAME_DNS01 }}: +111
             default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_SHARE01 }}: +130
@@ -84,7 +84,7 @@ template:
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX01 }}: +240
             default_{{ HOSTNAME_DNS01 }}: +111
             default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_SHARE01 }}: +130
@@ -104,7 +104,7 @@ template:
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX01 }}: +240
             default_{{ HOSTNAME_DNS01 }}: +111
             default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_SHARE01 }}: +130

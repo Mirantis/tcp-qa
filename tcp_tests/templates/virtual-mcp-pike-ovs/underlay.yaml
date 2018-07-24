@@ -48,7 +48,7 @@ template:
             default_{{ HOSTNAME_MDB02 }}: +46
             default_{{ HOSTNAME_MDB03 }}: +47
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX01 }}: +240
             default_{{ HOSTNAME_SHARE01 }}: +130
           ip_ranges:
             dhcp: [+90, -10]
@@ -69,7 +69,7 @@ template:
             default_{{ HOSTNAME_MDB02 }}: +46
             default_{{ HOSTNAME_MDB03 }}: +47
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX01 }}: +240
             default_{{ HOSTNAME_SHARE01 }}: +130
           ip_ranges:
             dhcp: [+90, -10]
@@ -90,7 +90,7 @@ template:
             default_{{ HOSTNAME_MDB02 }}: +46
             default_{{ HOSTNAME_MDB03 }}: +47
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX01 }}: +240
             default_{{ HOSTNAME_SHARE01 }}: +130
           ip_ranges:
             dhcp: [+10, -10]
@@ -111,7 +111,7 @@ template:
             default_{{ HOSTNAME_MDB02 }}: +46
             default_{{ HOSTNAME_MDB03 }}: +47
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX01 }}: +240
             default_{{ HOSTNAME_SHARE01 }}: +130
           ip_ranges:
             dhcp: [+10, -10]
