@@ -490,7 +490,8 @@ class UnderlaySSHManager(object):
             # dump files
             LOG.info("Archive artifacts on all nodes")
             master.check_call('salt "*" cmd.run "{0}"'.format(dump_commands),
-                              raise_on_err=False)
+                              raise_on_err=False,
+                              timeout=600)
 
             # create target dir for archives
             master.check_call("mkdir /root/dump/")
