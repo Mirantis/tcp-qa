@@ -10,7 +10,7 @@
 - description: Install docker swarm on master node
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker.swarm
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 3, delay: 10}
   skip_fail: false
 
 - description: Send grains to the swarm slave nodes
@@ -34,13 +34,13 @@
 - description:  Rerun swarm on slaves to proper token population
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker.swarm
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 - description:  Configure slave nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:manager' state.sls docker.swarm -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 3, delay: 10}
   skip_fail: false
 
 - description:  List registered Docker swarm nodes
@@ -73,7 +73,7 @@
       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb
     fi
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 30}
+  retry: {count: 4, delay: 40}
   skip_fail: false
 
 - description: Configure Alerta if it is exists
@@ -82,7 +82,7 @@
       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:alerta' state.sls prometheus.alerta
     fi
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 4, delay: 10}
   skip_fail: false
 
 - description: launch prometheus containers
