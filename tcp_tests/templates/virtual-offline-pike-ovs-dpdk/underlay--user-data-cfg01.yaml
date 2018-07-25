@@ -19,7 +19,7 @@
 
   bootcmd:
    # Block access to SSH while node is preparing
-   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
+   - cloud-init-per once sudo touch /is_cloud_init_started
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
    - service sshd restart
@@ -27,10 +27,14 @@
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
   runcmd:
+   - echo "******** MOUNT CONFIG DRIVE"
+   # Mount config drive
+   - mkdir /root/config-drive
+   - mount /dev/sr0 /root/config-drive
    # Prepare network connection
-   - sudo ifdown ens3
-   - sudo ip r d default || true  # remove existing default route to get it from dhcp
-   - sudo ifup ens3
+   #- sudo ifdown ens3
+   #- sudo ip r d default || true  # remove existing default route to get it from dhcp
+   #- sudo ifup ens3
 
    #- sudo route add default gw {gateway} {interface_name}
    - rm /etc/resolv.conf
@@ -41,6 +45,7 @@
    - echo "nameserver $LOCAL_IP.1" >> /etc/resolv.conf;
    - echo "supersede domain-name-servers $DNS_IP" >> /etc/dhcp/dhclient.conf
 
+   - update-grub
    # Create swap
    - fallocate -l 4G /swapfile
    - chmod 600 /swapfile
@@ -48,19 +53,34 @@
    - swapon /swapfile
    - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
 
-   ############## TCP Cloud cfg01 node ##################
-   - echo "Preparing base OS"
-   - sleep 160;
-   # find /etc/apt/ -type f -exec sed -i "s/ubuntu.com/ubuntu.local.test/g" {} +;
-   ########################################################
-   # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-   ########################################################
+   # Run user data script from config drive
+   - ifdown --force ens3; ifconfig ens3 down; ip a flush dev ens3; rm -f /var/run/network/ifstate.ens3; ip l set down ens3
+   - ifdown --force ens4; ifconfig ens4 down; ip a flush dev ens4; rm -f /var/run/network/ifstate.ens4; ip l set down ens4
+   - rm -f /etc/network/interfaces
+   - |
+     set -x
+     cd /root/config-drive
+     if /bin/bash -xe ./user-data; then
+         touch /is_cloud_init_finished
+     else
+         set +x
+         echo "bootstrap script /root/config-drive/user-data failed\n" > /is_cloud_init_failed
+     fi
+   # Enable root access (after reboot)
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
 
   write_files:
-   - path: /etc/network/interfaces
+   - path: /etc/default/grub.d/97-enable-grub-menu.cfg
      content: |
+         GRUB_RECORDFAIL_TIMEOUT=30
+         GRUB_TIMEOUT=3
+         GRUB_TIMEOUT_STYLE=menu
+
+   - path: /root/interfaces
+     content: |
+          auto lo
+          iface lo inet loopback
+
           auto ens3
           iface ens3 inet dhcp
 
@@ -69,7 +89,7 @@
      permissions: '0600'
      content: |
           Host *
-            ServerAliveInterval 300
-            ServerAliveCountMax 10
+            ServerAliveInterval 60
+            ServerAliveCountMax 0
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null
