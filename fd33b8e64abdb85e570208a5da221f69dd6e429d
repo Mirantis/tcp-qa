@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "34ef298e_774216ad",
+        "filename": "tcp_tests/fixtures/k8s_fixtures.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-25T23:48:33Z",
+      "side": 1,
+      "message": "Could you please move the \u0027testdata\u0027 into the tcp_tests/tests/system directory, and use the directory where tests are running instead of the current directory where pytest is started:\n\nimport pkg_resources\n\nsource_dir \u003d os.path.join(pkg_resources.resource_filename(__name__), \"testdata/k8s\")",
+      "range": {
+        "startLine": 206,
+        "startChar": 30,
+        "endLine": 206,
+        "endChar": 41
+      },
+      "revId": "fd33b8e64abdb85e570208a5da221f69dd6e429d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b03f9dd_a72eed11",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-25T23:48:33Z",
+      "side": 1,
+      "message": "Please add logging, like LOG.debug(\"curl result: {}\".format(result[\u0027stdout\u0027]))",
+      "range": {
+        "startLine": 412,
+        "startChar": 8,
+        "endLine": 412,
+        "endChar": 31
+      },
+      "revId": "fd33b8e64abdb85e570208a5da221f69dd6e429d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f176c8a5_6f8826d2",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 727,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-25T23:48:33Z",
+      "side": 1,
+      "message": "Why don\u0027t extend the K8sPodManager class and use API instead of CLI?",
+      "range": {
+        "startLine": 727,
+        "startChar": 15,
+        "endLine": 727,
+        "endChar": 31
+      },
+      "revId": "fd33b8e64abdb85e570208a5da221f69dd6e429d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9f9c4589_4a81279b",
+        "filename": "tcp_tests/tests/system/test_k8s_actions.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 247,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-25T23:48:33Z",
+      "side": 1,
+      "message": "This condition allows false-positive result if both IPs are in the same network and none in the other.\nI think it whould be better to iterate over networks instead of multicni_ips:\n\nfor net in [calico_network, flannel_network]:\n    assert netaddr.IPAddress(multicni_ips[0]) in net or netaddr.IPAddress(multicni_ips[1]) in net\n\nThis will ensure that at least one IP is in each network.",
+      "range": {
+        "startLine": 247,
+        "startChar": 59,
+        "endLine": 247,
+        "endChar": 61
+      },
+      "revId": "fd33b8e64abdb85e570208a5da221f69dd6e429d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
