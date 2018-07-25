@@ -19,7 +19,8 @@
  *   COOKIECUTTER_TEMPLATE_COMMIT  Commit/tag/branch for cookiecutter-templates repository. If empty, then takes ${MCP_VERSION} value
  *   SALT_MODELS_SYSTEM_COMMIT     Commit/tag/branch for reclass-system repository. If empty, then takes ${MCP_VERSION} value
  *   SHUTDOWN_ENV_ON_TEARDOWN      optional, shutdown fuel-devops environment at the end of the job
- *
+ *   STATIC_MODEL_URL              Repository with static models
+ *   USE_STATIC_MODEL              Default value False, if true model generation should be skipped
  */
 
 @Library('tcp-qa')_
