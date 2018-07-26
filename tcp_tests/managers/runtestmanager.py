@@ -129,16 +129,16 @@ class RuntestManager(object):
         return self.salt_api.local('cfg01*', 'state.sls', 'salt.minion')
 
     def create_networks(self):
-        return self.salt_api.enforce_state(self.master_tgt, 'neutron.client')
+        return self.salt_api.local('cfg01*', 'state.sls', 'neutron.client')
 
     def create_flavors(self):
-        return self.salt_api.enforce_state(self.master_tgt, 'nova.client')
+        return self.ssalt_api.local('cfg01*', 'state.sls', 'nova.client')
 
     def create_cirros(self):
-        return self.salt_api.enforce_state(self.master_tgt, 'glance.client')
+        return self.salt_api.local('cfg01*', 'state.sls', 'glance.client')
 
     def generate_config(self):
-        return self.salt_api.enforce_state(self.master_tgt, 'runtest')
+        return self.salt_api.local('cfg01*', 'state.sls', 'runtest')
 
     def fetch_arficats(self, username=None, file_format='xml'):
         target_name = next(node_name for node_name
