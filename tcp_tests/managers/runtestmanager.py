@@ -129,16 +129,16 @@ class RuntestManager(object):
         return self.salt_api.local('cfg01*', 'state.sls', 'salt.minion')
 
     def create_networks(self):
-        return self.salt_api.enforce_state(self.master_tgt, 'neutron.client')
+        return self.salt_api.local('cfg01*', 'state.sls', 'neutron.client')
 
     def create_flavors(self):
-        return self.salt_api.enforce_state(self.master_tgt, 'nova.client')
+        return self.salt_api.local('cfg01*', 'state.sls', 'nova.client')
 
     def create_cirros(self):
-        return self.salt_api.enforce_state(self.master_tgt, 'glance.client')
+        return self.salt_api.local('cfg01*', 'state.sls', 'glance.client')
 
     def generate_config(self):
-        return self.salt_api.enforce_state(self.master_tgt, 'runtest')
+        return self.salt_api.local('cfg01*', 'state.sls', 'runtest')
 
     def fetch_arficats(self, username=None, file_format='xml'):
         target_name = next(node_name for node_name
@@ -206,19 +206,23 @@ class RuntestManager(object):
 
         res = self.run_salt_minion_state()
         LOG.info(json.dumps(res, indent=4))
-        time.sleep(10)
+        time.sleep(20)
 
         res = self.create_networks()
         LOG.info(json.dumps(res, indent=4))
+        time.sleep(20)
 
         res = self.create_flavors()
         LOG.info(json.dumps(res, indent=4))
+        time.sleep(20)
 
         res = self.create_cirros()
         LOG.info(json.dumps(res, indent=4))
+        time.sleep(20)
 
         res = self.generate_config()
         LOG.info(json.dumps(res, indent=4))
+        time.sleep(20)
 
     def run_tempest(self, timeout=600):
         tgt = "{}*".format(self.target)
