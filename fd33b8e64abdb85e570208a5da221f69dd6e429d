@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "510978bc_3e19b961",
+        "filename": "tcp_tests/fixtures/k8s_fixtures.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1008378
+      },
+      "writtenOn": "2018-07-26T10:16:54Z",
+      "side": 1,
+      "message": "The idea is to have same sets of k8s yml files across all tests that use this fixture instead of specifying every single of required file in each test. Maybe we can left testdata directory in tcp_tests and use \nos.path.join(pkg_resources.resource_filename(__name__), \"../testdata/k8s\")\ninside this fixture?",
+      "parentUuid": "34ef298e_774216ad",
+      "range": {
+        "startLine": 206,
+        "startChar": 30,
+        "endLine": 206,
+        "endChar": 41
+      },
+      "revId": "fd33b8e64abdb85e570208a5da221f69dd6e429d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2b03f9dd_a72eed11",
         "filename": "tcp_tests/managers/k8smanager.py",
         "patchSetId": 10
@@ -59,6 +83,30 @@
       "writtenOn": "2018-07-25T23:48:33Z",
       "side": 1,
       "message": "Why don\u0027t extend the K8sPodManager class and use API instead of CLI?",
+      "range": {
+        "startLine": 727,
+        "startChar": 15,
+        "endLine": 727,
+        "endChar": 31
+      },
+      "revId": "fd33b8e64abdb85e570208a5da221f69dd6e429d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "18dfc2c0_3487c78b",
+        "filename": "tcp_tests/managers/k8smanager.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 727,
+      "author": {
+        "id": 1008378
+      },
+      "writtenOn": "2018-07-26T10:16:54Z",
+      "side": 1,
+      "message": "In case of genie-cni we need to check that interface truly created inside the container. Maybe its better to rename the method to reflect this situation.",
+      "parentUuid": "f176c8a5_6f8826d2",
       "range": {
         "startLine": 727,
         "startChar": 15,
