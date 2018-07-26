@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a35d3b7a_99401b18",
+        "filename": "jobs/pipelines/swarm-bootstrap-salt-cluster-devops.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-26T12:46:32Z",
+      "side": 1,
+      "message": "I think this flag is excess.\nif (! env.STATIC_MODEL_URL) {\n  stage(\"Generate the model\") {\n    shared.generate_cookied_model()\n  }\n\n  stage(\"Generate config drive ISO\") {\n    shared.generate_configdrive_iso(\"http://cz8133.bud.mirantis.net:8098/${LAB_CONFIG_NAME}.git\")\n  }\n\n\nelse\n  stage(\"Generate config drive ISO\") {\n    shared.generate_configdrive_iso(env.STATIC_MODEL_URL)\n  }  \n\n\n\nAnd in the SharedPipeline.groovy for generate_configdrive_iso():\n\ndef generate_configdrive_iso(MODEL_URL)\n...\nstring(name: \u0027MODEL_URL\u0027, value: MODEL_URL)",
+      "range": {
+        "startLine": 23,
+        "startChar": 5,
+        "endLine": 23,
+        "endChar": 21
+      },
+      "revId": "152cdcc6211b8d523700db906de5435fe4645416",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
