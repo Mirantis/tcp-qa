@@ -52,6 +52,7 @@ class SLManager(ExecuteCommandsMixin):
                          for item in sl_vip_address_pillars
                          for node, ip in item.items() if ip])
         if not sl_vip_ip:
+            tgt = 'I@prometheus:server:enabled:True and mon*'
             pillar = 'keepalived:cluster:instance:VIP:address'
             sl_vip_address_pillars = self._salt.get_pillar(tgt=tgt,
                                                            pillar=pillar)
