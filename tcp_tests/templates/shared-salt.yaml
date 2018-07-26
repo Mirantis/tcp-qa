@@ -1012,7 +1012,7 @@
       salt --hard-crash --state-output=mixed --state-verbose=False -C "I@auditd:service" state.sls auditd
     fi
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
+  retry: {count: 2, delay: 10}
   skip_fail: false
 
 {%- endmacro %}
