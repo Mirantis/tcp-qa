@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "58191d5d_9445c3a0",
+        "filename": "tcp_tests/fixtures/k8s_fixtures.py",
+        "patchSetId": 10
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-07-26T11:12:33Z",
+      "side": 1,
+      "message": "if it will be *only* fixture-related data, then put it in the ./fixture directory please",
+      "parentUuid": "510978bc_3e19b961",
+      "range": {
+        "startLine": 206,
+        "startChar": 30,
+        "endLine": 206,
+        "endChar": 41
+      },
+      "revId": "fd33b8e64abdb85e570208a5da221f69dd6e429d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2b03f9dd_a72eed11",
         "filename": "tcp_tests/managers/k8smanager.py",
         "patchSetId": 10
