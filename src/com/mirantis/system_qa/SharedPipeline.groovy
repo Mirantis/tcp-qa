@@ -241,6 +241,7 @@ def devops_snapshot(stack) {
         dos.py suspend ${ENV_NAME}
         dos.py snapshot ${ENV_NAME} ${stack}_deployed
         dos.py resume ${ENV_NAME}
+        sleep 20    # Wait for I/O on the host calms down
         dos.py time-sync ${ENV_NAME} || dos.py time-sync ${ENV_NAME} # sometimes, timesync may fail. Need to update it in fuel-devops.
         if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
