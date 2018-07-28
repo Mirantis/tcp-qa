@@ -715,6 +715,12 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
+
+- description: Sync all salt resources on salt-master minion
+  cmd: salt-call saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 {%- endmacro %}
 
 {%- macro MACRO_CONFIG_DAY01_SALT_MINION() %}
