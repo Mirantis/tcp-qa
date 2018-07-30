@@ -114,7 +114,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# isntall designate
+# install designate
 - description: Install bind
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@bind:server' state.sls bind
@@ -136,7 +136,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-
 - description: Install heat service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@heat:server' state.sls heat -b 1
@@ -151,7 +150,6 @@
   retry: {count: 5, delay: 10}
   skip_fail: false
 
-
 - description: Deploy horizon dashboard
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@horizon:server' state.sls horizon
@@ -165,7 +163,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
-
 
 # Install compute node
 
