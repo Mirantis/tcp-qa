@@ -172,7 +172,6 @@
   retry: {count: 5, delay: 10}
   skip_fail: false
 
-
 - description: Deploy horizon dashboard
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@horizon:server' state.sls horizon
@@ -186,7 +185,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
-
 
 # Install compute node
 
@@ -261,7 +259,7 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Set geteway
+- description: Set gateway
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
   node_name: {{ HOSTNAME_CFG01 }}
