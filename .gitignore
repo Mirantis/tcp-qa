@@ -45,6 +45,7 @@ example_local.py
 
 # Local settings
 local_settings.py
+id_rsa
 
 # Documentation
 doc/_build/
