@@ -173,8 +173,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
-    def test_k8s_genie_flannel(self, show_step, underlay, salt_deployed,
-                               k8s_deployed, k8s_copy_sample_testdata):
+    def test_k8s_genie_flannel(self, show_step, salt_deployed, k8s_deployed):
         """Test genie-cni+flannel cni setup
 
         Scenario:
