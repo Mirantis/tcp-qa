@@ -1,46 +1,128 @@
 package com.mirantis.system_qa
 
+import groovy.xml.XmlUtil
 
-def run_cmd(cmd, returnStdout=false) {
+def run_cmd(String cmd, Boolean returnStdout=false, Boolean exeption_with_logs=false) {
     def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
+    def stdout_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stdout.log"
+    def stderr_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stderr.log"
     script = """\
         set +x;
         echo 'activate python virtualenv ${VENV_PATH}';
         . ${VENV_PATH}/bin/activate;
-        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}'
+        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}' 1>${stdout_path} 2>${stderr_path}
     """
-    return sh(script: script, returnStdout: returnStdout)
+    def result
+    try {
+        result = sh(script: script)
+        if (returnStdout) {
+            def stdout = readFile("${stdout_path}")
+            return stdout
+        } else {
+            return result
+        }
+    } catch (e) {
+        if (exeption_with_logs) {
+            def stdout = readFile("${stdout_path}")
+            def stderr = readFile("${stderr_path}")
+            def error_message = e.message + "\n<<<<<< STDOUT: >>>>>>\n" + stdout + "\n<<<<<< STDERR: >>>>>>\n" + stderr
+            throw new Exception(error_message)
+        } else {
+            throw e
+        }
+    } finally {
+        sh(script: "rm ${stdout_path} ${stderr_path} || true")
+    }
 }
 
 def run_cmd_stdout(cmd) {
-    return run_cmd(cmd, true)
+    return run_cmd(cmd, true, true)
 }
 
+def build_pipeline_job(job_name, parameters) {
+    //Build a job, grab the results if failed and use the results in exception
+    def common = new com.mirantis.mk.Common()
+    common.printMsg("Start building job '${job_name}' with parameters:", "purple")
+    common.prettyPrint(parameters)
+
+    def job_info = build job: "${job_name}",
+        parameters: parameters,
+        propagate: false
+
+    if (job_info.getResult() != "SUCCESS") {
+        currentBuild.result = job_info.getResult()
+        def build_number = job_info.getNumber()
+        common.printMsg("Job '${job_name}' failed, getting details", "red")
+        def workflow_details=run_cmd_stdout("""\
+            export JOB_NAME=${job_name}
+            export BUILD_NUMBER=${build_number}
+            python ./tcp_tests/utils/get_jenkins_job_stages.py
+            """)
+        throw new Exception(workflow_details)
+    }
+}
+
+def build_shell_job(job_name, parameters, junit_report_source_dir='**/', junit_report_filename=null) {
+    //             filter: "tcp_tests/deploy_generate_model.xml",
+    //Build a job, grab the results if failed and use the results in exception
+    def common = new com.mirantis.mk.Common()
+    common.printMsg("Start building job '${job_name}' with parameters:", "purple")
+    common.prettyPrint(parameters)
+
+    def job_info = build job: "${job_name}",
+        parameters: parameters,
+        propagate: false
+
+    if (job_info.getResult() != "SUCCESS") {
+        def build_status = job_info.getResult()
+        def build_number = job_info.getNumber()
+        def build_url = job_info.getAbsoluteUrl()
+        def job_url = "${build_url}"
+        currentBuild.result = build_status
+        if (junit_report_filename) {
+            common.printMsg("Job '${job_url}' failed with status ${build_status}, getting details", "red")
+            step($class: 'hudson.plugins.copyartifact.CopyArtifact',
+                 projectName: job_name,
+                 selector: specific(build_number),
+                 filter: "${junit_report_source_dir}/${junit_report_filename}",
+                 target: '.',
+                 flatten: true,
+                 fingerprintArtifacts: true)
+
+            def String junit_report_xml = readFile("${junit_report_filename}")
+            def String junit_report_xml_pretty = new XmlUtil().serialize(templates_txt)
+            def String msg = "Job '${job_url}' failed with status ${build_status}, JUnit report:\n"
+            throw new Exception(msg + junit_report_xml_pretty)
+        } else {
+            throw new Exception("Job '${job_url}' failed with status ${build_status}, please check the console output.")
+        }
+    }
+}
 
 def prepare_working_dir() {
         println "Clean the working directory ${env.WORKSPACE}"
         deleteDir()
 
-        //// do not fail if environment doesn't exists
-        // println "Remove environment ${ENV_NAME}"
-        // run_cmd("""\
-        //     dos.py erase ${ENV_NAME} || true
-        // """)
-        // println "Remove config drive ISO"
-        // run_cmd("""\
-        //    rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
-        // """)
+        // do not fail if environment doesn't exists
+        println "Remove environment ${ENV_NAME}"
+        run_cmd("""\
+            dos.py erase ${ENV_NAME} || true
+        """)
+        println "Remove config drive ISO"
+        run_cmd("""\
+            rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
+        """)
 
         run_cmd("""\
-        git clone https://github.com/Mirantis/tcp-qa.git ${env.WORKSPACE}
-        if [ -n "$TCP_QA_REFS" ]; then
-            set -e
-            git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
-        fi
-        pip install --upgrade --upgrade-strategy=only-if-needed -r tcp_tests/requirements.txt
-        """)
+            git clone https://github.com/Mirantis/tcp-qa.git ${env.WORKSPACE}
+            if [ -n "$TCP_QA_REFS" ]; then
+                set -e
+                git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
+            fi
+            pip install --upgrade --upgrade-strategy=only-if-needed -r tcp_tests/requirements.txt
+        """, false, true)
 }
 
 def swarm_bootstrap_salt_cluster_devops() {
@@ -61,10 +143,8 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${SALT_MODELS_SYSTEM_COMMIT}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
-        common.printMsg("Start building job 'swarm-bootstrap-salt-cluster-devops' with parameters:", "purple")
-        common.prettyPrint(parameters)
-        build job: 'swarm-bootstrap-salt-cluster-devops',
-            parameters: parameters
+
+        build_pipeline_job('swarm-bootstrap-salt-cluster-devops', parameters)
 }
 
 def swarm_deploy_cicd(String stack_to_install='core,cicd') {
@@ -78,10 +158,7 @@ def swarm_deploy_cicd(String stack_to_install='core,cicd') {
                 string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
-        common.printMsg("Start building job 'swarm-deploy-cicd' with parameters:", "purple")
-        common.prettyPrint(parameters)
-        build job: 'swarm-deploy-cicd',
-            parameters: parameters
+        build_pipeline_job('swarm-deploy-cicd', parameters)
 }
 
 def swarm_deploy_platform(String stack_to_install) {
@@ -95,10 +172,7 @@ def swarm_deploy_platform(String stack_to_install) {
                 string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
-        common.printMsg("Start building job 'swarm-deploy-platform' with parameters:", "purple")
-        common.prettyPrint(parameters)
-        build job: 'swarm-deploy-platform',
-            parameters: parameters
+        build_pipeline_job('swarm-deploy-platform', parameters)
 }
 
 def swarm_run_pytest(String passed_steps) {
@@ -151,10 +225,12 @@ def generate_cookied_model() {
                 string(name: 'IPV4_NET_TENANT', value: IPV4_NET_TENANT),
                 string(name: 'IPV4_NET_EXTERNAL', value: IPV4_NET_EXTERNAL),
             ]
-        common.printMsg("Start building job 'swarm-cookied-model-generator' with parameters:", "purple")
-        common.prettyPrint(parameters)
-        build job: 'swarm-cookied-model-generator',
-            parameters: parameters
+
+        build_shell_job('swarm-cookied-model-generator', parameters, junit_report_filename="deploy_generate_model.xml")
+        //common.printMsg("Start building job 'swarm-cookied-model-generator' with parameters:", "purple")
+        //common.prettyPrint(parameters)
+        //build job: 'swarm-cookied-model-generator',
+        //    parameters: parameters
 }
 
 def generate_configdrive_iso() {
@@ -182,45 +258,66 @@ def generate_configdrive_iso() {
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${PIPELINE_LIBRARY_REF}"),
                 string(name: 'MK_PIPELINES_REF', value: "${MK_PIPELINES_REF}"),
             ]
-        common.printMsg("Start building job 'create-cfg-config-drive' with parameters:", "purple")
-        common.prettyPrint(parameters)
-        build job: 'create-cfg-config-drive',
-            parameters: parameters
+        build_pipeline_job('create-cfg-config-drive', parameters)
 }
 
 def run_job_on_day01_node(stack_to_install, timeout=1800) {
     // stack_to_install="core,cicd"
     def stack = "${stack_to_install}"
-    run_cmd("""\
-        export ENV_NAME=${ENV_NAME}
-        . ./tcp_tests/utils/env_salt
-        . ./tcp_tests/utils/env_jenkins_day01
-        export JENKINS_BUILD_TIMEOUT=${timeout}
-        JOB_PARAMETERS=\"{
-            \\\"SALT_MASTER_URL\\\": \\\"\${SALTAPI_URL}\\\",
-            \\\"STACK_INSTALL\\\": \\\"${stack}\\\"
-        }\"
-        JOB_PREFIX="[ {job_name}/{build_number}:${stack} {time} ] "
-        python ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="\$JOB_PARAMETERS" --job-output-prefix="\$JOB_PREFIX"
-    """)
+    try {
+        run_cmd("""\
+            export ENV_NAME=${ENV_NAME}
+            . ./tcp_tests/utils/env_salt
+            . ./tcp_tests/utils/env_jenkins_day01
+            export JENKINS_BUILD_TIMEOUT=${timeout}
+            JOB_PARAMETERS=\"{
+                \\\"SALT_MASTER_URL\\\": \\\"\${SALTAPI_URL}\\\",
+                \\\"STACK_INSTALL\\\": \\\"${stack}\\\"
+            }\"
+            JOB_PREFIX="[ ${ENV_NAME}/{build_number}:${stack} {time} ] "
+            python ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="\$JOB_PARAMETERS" --job-output-prefix="\$JOB_PREFIX"
+        """)
+    } catch (e) {
+        common.printMsg("Product job 'deploy_openstack' failed, getting details", "red")
+        def workflow_details=run_cmd_stdout("""\
+            . ./tcp_tests/utils/env_salt
+            . ./tcp_tests/utils/env_jenkins_day01
+            export JOB_NAME=deploy_openstack
+            export BUILD_NUMBER=lastBuild
+            python ./tcp_tests/utils/get_jenkins_job_stages.py
+            """)
+        throw new Exception(workflow_details)
+    }
 }
 
 def run_job_on_cicd_nodes(stack_to_install, timeout=1800) {
     // stack_to_install="k8s,calico,stacklight"
     def stack = "${stack_to_install}"
-    run_cmd("""\
-        export ENV_NAME=${ENV_NAME}
-        . ./tcp_tests/utils/env_salt
-        . ./tcp_tests/utils/env_jenkins_cicd
-        export JENKINS_BUILD_TIMEOUT=${timeout}
-        JOB_PARAMETERS=\"{
-            \\\"SALT_MASTER_URL\\\": \\\"\${SALTAPI_URL}\\\",
-            \\\"STACK_INSTALL\\\": \\\"${stack}\\\"
-        }\"
-        JOB_PREFIX="[ {job_name}/{build_number}:${stack} {time} ] "
-        python ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="\$JOB_PARAMETERS" --job-output-prefix="\$JOB_PREFIX"
-        sleep 60  # Wait for IO calm down on cluster nodes
-    """)
+    try {
+        run_cmd("""\
+            export ENV_NAME=${ENV_NAME}
+            . ./tcp_tests/utils/env_salt
+            . ./tcp_tests/utils/env_jenkins_cicd
+            export JENKINS_BUILD_TIMEOUT=${timeout}
+            JOB_PARAMETERS=\"{
+                \\\"SALT_MASTER_URL\\\": \\\"\${SALTAPI_URL}\\\",
+                \\\"STACK_INSTALL\\\": \\\"${stack}\\\"
+            }\"
+            JOB_PREFIX="[ ${ENV_NAME}/{build_number}:${stack} {time} ] "
+            python ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="\$JOB_PARAMETERS" --job-output-prefix="\$JOB_PREFIX"
+            sleep 60  # Wait for IO calm down on cluster nodes
+        """)
+    } catch (e) {
+        common.printMsg("Product job 'deploy_openstack' failed, getting details", "red")
+        def workflow_details=run_cmd_stdout("""\
+            . ./tcp_tests/utils/env_salt
+            . ./tcp_tests/utils/env_jenkins_cicd
+            export JOB_NAME=deploy_openstack
+            export BUILD_NUMBER=lastBuild
+            python ./tcp_tests/utils/get_jenkins_job_stages.py
+            """)
+        throw new Exception(workflow_details)
+    }
 }
 
 def sanity_check_component(stack) {
@@ -245,7 +342,7 @@ def devops_snapshot(stack) {
         if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi
-    """)
+    """, exeption_with_logs: true)
 }
 
 def get_steps_list(steps) {
