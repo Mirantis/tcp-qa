@@ -114,7 +114,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-  # install designate
+# install designate
 - description: Install powerdns
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@powerdns:server' state.sls powerdns.server
@@ -237,7 +237,7 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Set geteway
+- description: Set gateway
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
   node_name: {{ HOSTNAME_CFG01 }}
@@ -251,19 +251,19 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-#- description:  Allow all tcp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; openstack security group rule create --proto tcp --dst-port 22 default'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description:  Allow all icmp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; openstack security group rule create --proto icmp default'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
+- description:  Allow all tcp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack security group rule create --proto tcp --dst-port 22 default'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Allow all icmp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack security group rule create --proto icmp default'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 
 - description: sync time
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run

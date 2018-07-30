@@ -136,7 +136,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# isntall designate
+# install designate
 - description: Install powerdns
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@powerdns:server' state.sls powerdns.server
@@ -259,7 +259,7 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Set geteway
+- description: Set gateway
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
   node_name: {{ HOSTNAME_CFG01 }}
@@ -373,6 +373,12 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
+- description: Enable forward policy
+  cmd: iptables --policy FORWARD ACCEPT
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
 - description: Restart cinder volume
   cmd: |
     salt -C 'I@cinder:controller' service.restart cinder-volume;
@@ -389,11 +395,5 @@
 - description: Copy rc file
   cmd: scp /root/keystonercv3 gtw01:/root
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set floating ip address on br-floating
-  cmd: ifconfig br-floating {{ IPV4_NET_EXTERNAL_PREFIX }}.110/24
-  node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
