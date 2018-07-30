@@ -46,13 +46,13 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_MON01 }}: +71
-            default_{{ HOSTNAME_MON02 }}: +72
-            default_{{ HOSTNAME_MON03 }}: +73
-            default_{{ HOSTNAME_GTW01 }}: +109
-            default_{{ HOSTNAME_GTW02 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
+            default_{{ HOSTNAME_MON01 }}: +107
+            default_{{ HOSTNAME_MON02 }}: +108
+            default_{{ HOSTNAME_MON03 }}: +109
+            default_{{ HOSTNAME_GTW01 }}: +110
+            default_{{ HOSTNAME_GTW02 }}: +111
+            default_{{ HOSTNAME_DNS01 }}: +112
+            default_{{ HOSTNAME_DNS02 }}: +113
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
@@ -69,13 +69,13 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_MON01 }}: +71
-            default_{{ HOSTNAME_MON02 }}: +72
-            default_{{ HOSTNAME_MON03 }}: +73
-            default_{{ HOSTNAME_GTW01 }}: +109
-            default_{{ HOSTNAME_GTW02 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
+            default_{{ HOSTNAME_MON01 }}: +107
+            default_{{ HOSTNAME_MON02 }}: +108
+            default_{{ HOSTNAME_MON03 }}: +109
+            default_{{ HOSTNAME_GTW01 }}: +110
+            default_{{ HOSTNAME_GTW02 }}: +111
+            default_{{ HOSTNAME_DNS01 }}: +112
+            default_{{ HOSTNAME_DNS02 }}: +113
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
@@ -92,13 +92,13 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_MON01 }}: +71
-            default_{{ HOSTNAME_MON02 }}: +72
-            default_{{ HOSTNAME_MON03 }}: +73
-            default_{{ HOSTNAME_GTW01 }}: +109
-            default_{{ HOSTNAME_GTW02 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
+            default_{{ HOSTNAME_MON01 }}: +107
+            default_{{ HOSTNAME_MON02 }}: +108
+            default_{{ HOSTNAME_MON03 }}: +109
+            default_{{ HOSTNAME_GTW01 }}: +110
+            default_{{ HOSTNAME_GTW02 }}: +111
+            default_{{ HOSTNAME_DNS01 }}: +112
+            default_{{ HOSTNAME_DNS02 }}: +113
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+10, -10]
@@ -115,13 +115,13 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +103
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_MON01 }}: +71
-            default_{{ HOSTNAME_MON02 }}: +72
-            default_{{ HOSTNAME_MON03 }}: +73
-            default_{{ HOSTNAME_GTW01 }}: +109
-            default_{{ HOSTNAME_GTW02 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
+            default_{{ HOSTNAME_MON01 }}: +107
+            default_{{ HOSTNAME_MON02 }}: +108
+            default_{{ HOSTNAME_MON03 }}: +109
+            default_{{ HOSTNAME_GTW01 }}: +110
+            default_{{ HOSTNAME_GTW02 }}: +111
+            default_{{ HOSTNAME_DNS01 }}: +112
+            default_{{ HOSTNAME_DNS02 }}: +113
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+10, -10]
