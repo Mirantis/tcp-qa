@@ -2,6 +2,7 @@ from __future__ import print_function
 import time
 
 import jenkins
+import json
 import requests
 
 from devops.helpers import helpers
@@ -35,10 +36,8 @@ class JenkinsWrapper(jenkins.Jenkins):
 
 class JenkinsClient(object):
 
-    def __init__(self, host=None, username=None, password=None):
+    def __init__(self, host=None, username='admin', password='r00tme'):
         host = host or 'http://172.16.44.33:8081'
-        username = username or 'admin'
-        password = password or 'r00tme'
         # self.__client = jenkins.Jenkins(
         self.__client = JenkinsWrapper(
             host,
@@ -167,3 +166,27 @@ class JenkinsClient(object):
                 'GET',
                 self.__client._build_url(PROGRESSIVE_CONSOLE_OUTPUT, locals()))
         return(self.__client.jenkins_request(req))
+
+    def get_workflow(self, name, build_id, enode=None, mode='describe'):
+        '''Get workflow results from pipeline job
+
+        :param name: job name
+        :param build_id: str, build number or 'lastBuild'
+        :param enode: int, execution node in the workflow
+        :param mode: the stage or execution node description if 'describe',
+                     the execution node log if 'log'
+        '''
+        folder_url, short_name = self.__client._get_job_folder(name)
+
+        if enode:
+            WORKFLOW_DESCRIPTION = (
+                '%(folder_url)sjob/%(short_name)s/%(build_id)s/'
+                'execution/node/%(enode)d/wfapi/%(mode)s')
+        else:
+            WORKFLOW_DESCRIPTION = (
+                '%(folder_url)sjob/%(short_name)s/%(build_id)s/wfapi/%(mode)s')
+        req = requests.Request(
+                'GET',
+                self.__client._build_url(WORKFLOW_DESCRIPTION, locals()))
+        response = self.__client.jenkins_open(req)
+        return json.loads(response)
