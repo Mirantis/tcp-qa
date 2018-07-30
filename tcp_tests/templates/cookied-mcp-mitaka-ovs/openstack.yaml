@@ -114,7 +114,7 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-  # install designate
+# install designate
 - description: Install powerdns
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@powerdns:server' state.sls powerdns.server
@@ -143,6 +143,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Check heat service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack orchestration resource type list'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
 - description: Deploy horizon dashboard
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@horizon:server' state.sls horizon
@@ -156,13 +163,6 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
-
-- description: Check heat service
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; openstack orchestration resource type list'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 10}
-  skip_fail: false
 
 # Install compute node
 
@@ -251,19 +251,19 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-#- description:  Allow all tcp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; openstack security group rule create --proto tcp --dst-port 22 default'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
-#
-#- description:  Allow all icmp
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-#    '. /root/keystonercv3; openstack security group rule create --proto icmp default'
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 30}
-#  skip_fail: false
+- description:  Allow all tcp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack security group rule create --proto tcp --dst-port 22 default'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Allow all icmp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; openstack security group rule create --proto icmp default'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
 
 - description: sync time
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
