@@ -7,6 +7,11 @@
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_CMP02 with context %}
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_PRX01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_DNS01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_DNS02 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_MDB01 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_MDB02 with context %}
+{% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_MDB03 with context %}
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_VS with context %}
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import DOMAIN_NAME with context %}
@@ -42,6 +47,11 @@
 {{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CMP02) }}
 {{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_GTW01) }}
 {{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_PRX01) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_DNS01) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_DNS02) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_MDB01) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_MDB02) }}
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_MDB03) }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
@@ -55,7 +65,7 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "backupninja" "watchdog" "runtest" "auditd" "logrotate"') }}
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "backupninja" "watchdog" "runtest" "auditd" "logrotate" "gnocchi" "manila"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 

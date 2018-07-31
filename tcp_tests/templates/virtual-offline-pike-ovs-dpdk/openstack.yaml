@@ -113,21 +113,26 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+# isntall designate
+- description: Install powerdns
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@powerdns:server' state.sls powerdns.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install designate
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@designate:server' state.sls designate -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 10}
+  skip_fail: false
+
 - description: Install neutron on gtw node
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@neutron:gateway' state.sls neutron
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Install bind if pillars 'bind:server' exists on any server
-  cmd: |
-    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@bind:server' match.pillar 'bind:server' ; then
-      salt --hard-crash --state-output=mixed --state-verbose=False  -C 'I@bind:server' state.sls bind;
-      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@designate:server' state.sls designate -b 1
-    fi
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Check neutron agent-list
@@ -152,6 +157,46 @@
   retry: {count: 5, delay: 10}
   skip_fail: false
 
+# Install Telemetry services (mdb nodes)
+- description: Install redis service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@redis:cluster:role:master' state.sls redis &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@redis:server' state.sls redis
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install gnocchi server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:server and *01*' state.sls gnocchi.server &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:server' state.sls gnocchi.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install panko server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server and *01*' state.sls panko &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server' state.sls panko
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install ceilometer server on first node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server and *01*' state.sls ceilometer
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install ceilometer server on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server' state.sls ceilometer
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install aodh server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aodh:server and *01*' state.sls aodh &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aodh:server' state.sls aodh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 - description: Deploy horizon dashboard
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -190,86 +235,6 @@
   skip_fail: false
 
   # Upload cirros image
-# Configure cinder-volume salt-call
-- description: Set disks 01
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 02
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set disks 03
-  cmd: salt-call cmd.run 'echo -e "nn\np\n\n\n\nw" | fdisk /dev/vdb'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 01
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 02
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create partitions 03
-  cmd: salt-call cmd.run 'pvcreate /dev/vdb1'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create volume_group
-  cmd: salt "ctl*" cmd.run 'vgcreate cinder-volumes /dev/vdb1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install cinder-volume
-  cmd: salt 'ctl*' cmd.run 'apt-get install cinder-volume -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Install crudini
-  cmd: salt "ctl*" cmd.run 'apt-get install crudini -y'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 01
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 02
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL02 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Temporary WR set enabled backends value 03
-  cmd: salt-call cmd.run 'crudini --verbose --set /etc/cinder/cinder.conf DEFAULT enabled_backends lvm'
-  node_name: {{ HOSTNAME_CTL03 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Restart cinder volume
-  cmd: |
-    salt -C 'I@cinder:controller' service.restart cinder-volume;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
-  skip_fail: false
-
 - description: Upload cirros image on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
