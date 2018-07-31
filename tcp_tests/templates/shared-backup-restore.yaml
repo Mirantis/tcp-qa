@@ -50,7 +50,7 @@
 
 - description: Apply the salt.minion state
   cmd: |
-    salt -C 'I@xtrabackup:client or I@xtrabackup:server' state.sls salt.minion
+    salt -C 'I@xtrabackup:client or I@xtrabackup:server' state.sls salt.minion && sleep 10
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
