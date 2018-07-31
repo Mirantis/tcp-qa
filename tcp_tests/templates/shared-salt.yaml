@@ -710,7 +710,7 @@
     eatmydata apt-get install -y "${formula_services[@]/#/salt-formula-}";
     for formula_service in $(ls -1 ${FORMULA_PATH}/reclass/service); do
       echo -e "\nLink service metadata for formula ${formula_service} ...\n";
-      [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service};
+      [ ! -L "/srv/salt/reclass/classes/service/${formula_service}" ] && ln -s ${FORMULA_PATH}/reclass/service/${formula_service} /srv/salt/reclass/classes/service/${formula_service} || true;
     done;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
