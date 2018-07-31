@@ -2,43 +2,31 @@ package com.mirantis.system_qa
 
 import groovy.xml.XmlUtil
 
-def run_cmd(String cmd, Boolean returnStdout=false, Boolean exeption_with_logs=false) {
+def run_cmd(String cmd, Boolean returnStdout=false) {
     def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
-    def stdout_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stdout.log"
     def stderr_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stderr.log"
     script = """\
         set +x;
         echo 'activate python virtualenv ${VENV_PATH}';
         . ${VENV_PATH}/bin/activate;
-        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}' 1>${stdout_path} 2>${stderr_path}
+        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}' 2>${stderr_path}
     """
     def result
     try {
-        result = sh(script: script)
-        if (returnStdout) {
-            def stdout = readFile("${stdout_path}")
-            return stdout
-        } else {
-            return result
-        }
+        return sh(script: script, returnStdout: returnStdout)
     } catch (e) {
-        if (exeption_with_logs) {
-            def stdout = readFile("${stdout_path}")
-            def stderr = readFile("${stderr_path}")
-            def error_message = e.message + "\n<<<<<< STDOUT: >>>>>>\n" + stdout + "\n<<<<<< STDERR: >>>>>>\n" + stderr
-            throw new Exception(error_message)
-        } else {
-            throw e
-        }
+        def stderr = readFile("${stderr_path}")
+        def error_message = e.message + "\n<<<<<< STDERR: >>>>>>\n" + stderr
+        throw new Exception(error_message)
     } finally {
-        sh(script: "rm ${stdout_path} ${stderr_path} || true")
+        sh(script: "rm ${stderr_path} || true")
     }
 }
 
 def run_cmd_stdout(cmd) {
-    return run_cmd(cmd, true, true)
+    return run_cmd(cmd, true)
 }
 
 def build_pipeline_job(job_name, parameters) {
@@ -122,7 +110,7 @@ def prepare_working_dir() {
                 git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
             fi
             pip install --upgrade --upgrade-strategy=only-if-needed -r tcp_tests/requirements.txt
-        """, false, true)
+        """)
 }
 
 def swarm_bootstrap_salt_cluster_devops() {
@@ -274,6 +262,7 @@ def run_job_on_day01_node(stack_to_install, timeout=1800) {
             python ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="\$JOB_PARAMETERS" --job-output-prefix="\$JOB_PREFIX"
         """)
     } catch (e) {
+        def common = new com.mirantis.mk.Common()
         common.printMsg("Product job 'deploy_openstack' failed, getting details", "red")
         def workflow_details=run_cmd_stdout("""\
             . ./tcp_tests/utils/env_salt
@@ -304,6 +293,7 @@ def run_job_on_cicd_nodes(stack_to_install, timeout=1800) {
             sleep 60  # Wait for IO calm down on cluster nodes
         """)
     } catch (e) {
+        def common = new com.mirantis.mk.Common()
         common.printMsg("Product job 'deploy_openstack' failed, getting details", "red")
         def workflow_details=run_cmd_stdout("""\
             . ./tcp_tests/utils/env_salt
@@ -346,7 +336,7 @@ def devops_snapshot(stack) {
         if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi
-    """, false, true)
+    """)
 }
 
 def get_steps_list(steps) {
