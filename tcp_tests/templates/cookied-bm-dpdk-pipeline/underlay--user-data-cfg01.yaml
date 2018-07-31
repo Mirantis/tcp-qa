@@ -50,6 +50,14 @@
    #- sleep 120
    - echo "Preparing base OS"
 
+   # workaround to install 2018.4.0
+   - rm -f /etc/apt/sources.list.d/glusterfs-ppa*
+   - rm -f /etc/apt/sources.list.d/mcp_extra.list*  # this version shouldn't be installed here: http://apt.mirantis.com/xenial nightly/extra amd64 reclass all 1.5.4-1mir1
+   - rm -f /etc/apt/sources.list.d/saltstack.list*
+   - echo "deb [arch=amd64] http://mirror.mirantis.com/2018.4.0/glusterfs-3.8/xenial xenial main" > /etc/apt/sources.list.d/glusterfs-3.8.list
+   - apt-get clean
+   - apt-get update
+
    - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
    - which wget >/dev/null || (apt-get update; apt-get install -y wget);
 
