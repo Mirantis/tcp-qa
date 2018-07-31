@@ -12,7 +12,7 @@ def run_cmd(String cmd, Boolean returnStdout=false, Boolean exeption_with_logs=f
         set +x;
         echo 'activate python virtualenv ${VENV_PATH}';
         . ${VENV_PATH}/bin/activate;
-        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}' 1>${stdout_path} 2>${stderr_path}
+        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}' 2>${stderr_path} | tee ${stdout_path}
     """
     def result
     try {
