@@ -133,7 +133,7 @@ nodes:
       - opencontrail_analytics
       - linux_system_codename_trusty
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     nal02.cookied-bm-mcp-ocata-contrail.local:
@@ -142,7 +142,7 @@ nodes:
       - opencontrail_analytics
       - linux_system_codename_trusty
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     nal03.cookied-bm-mcp-ocata-contrail.local:
@@ -151,7 +151,7 @@ nodes:
       - opencontrail_analytics
       - linux_system_codename_trusty
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     ntw01.cookied-bm-mcp-ocata-contrail.local:
@@ -160,7 +160,7 @@ nodes:
       - opencontrail_control
       - linux_system_codename_trusty
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     ntw02.cookied-bm-mcp-ocata-contrail.local:
@@ -169,7 +169,7 @@ nodes:
       - opencontrail_control
       - linux_system_codename_trusty
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     ntw03.cookied-bm-mcp-ocata-contrail.local:
@@ -178,7 +178,7 @@ nodes:
       - opencontrail_control
       - linux_system_codename_trusty
       interfaces:
-        eth1:
+        ens3:
           role: single_ctl
 
     mtr01.cookied-bm-mcp-ocata-contrail.local:
