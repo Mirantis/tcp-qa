@@ -346,7 +346,7 @@ def devops_snapshot(stack) {
         if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi
-    """, exeption_with_logs: true)
+    """, false, true)
 }
 
 def get_steps_list(steps) {
