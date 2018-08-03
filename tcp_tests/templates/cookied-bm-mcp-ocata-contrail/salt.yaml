@@ -169,7 +169,7 @@
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
 
-{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
+#{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
 
 - description: "Lab04 workaround: Give each node root acces with key from cfg01"
   cmd: |
@@ -192,3 +192,21 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
