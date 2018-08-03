@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c74bf2bf_49f67542",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-bm-mcp-ocata-contrail.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-08-03T20:53:11Z",
+      "side": 1,
+      "message": "should config for pike_opencontrail and opencontrail _ocata+ nfv also be aligned with this ?",
+      "range": {
+        "startLine": 41,
+        "startChar": 16,
+        "endLine": 41,
+        "endChar": 30
+      },
+      "revId": "759f3233e79765d375c805e4ba1caee8fa5a9d1f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
