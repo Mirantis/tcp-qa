@@ -162,6 +162,52 @@
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: cat config
+  cmd: cat /etc/ssh/sshd_config
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Lab04 workaround: Give each node root acces with key from cfg01"
+  cmd: |
+    set -e;
+    set -x;
+    key=$(ssh-keygen -y -f /root/.ssh/id_rsa);
+    salt '*' cmd.run "echo $key >> /root/.ssh/authorized_keys";
+    salt '*' cmd.run "service sshd restart"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: "Lab04 workaround: Control network access from cfg01 node using sshuttle via kvm01"
+  cmd: |
+    set -e;
+    set -x;
+    KVM01_DEPLOY_ADDRESS=$(salt-call --out=newline_values_only pillar.get _param:infra_kvm_node01_deploy_address);
+    apt-get install -y sshuttle;
+    sshuttle -r ${KVM01_DEPLOY_ADDRESS} 10.167.8.0/24 -D >/dev/null;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
