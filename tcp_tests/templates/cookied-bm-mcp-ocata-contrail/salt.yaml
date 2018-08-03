@@ -104,6 +104,21 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Print ssh config
+  cmd: cat /etc/ssh/sshd_config
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Execute linux.network.host one more time after salt.minion to apply dynamically registered hosts on the cluster nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.network.host
   node_name: {{ HOSTNAME_CFG01 }}
@@ -167,10 +182,6 @@
 
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
-{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
-
-{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
-
 - description: "Lab04 workaround: Give each node root acces with key from cfg01"
   cmd: |
     set -e;
@@ -192,3 +203,25 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+#{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
