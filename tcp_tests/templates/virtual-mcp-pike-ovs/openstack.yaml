@@ -169,6 +169,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Setup gnocchi client
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:client and *01*' state.sls gnocchi.client &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:client' state.sls gnocchi.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Install panko server
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server and *01*' state.sls panko &&
        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server' state.sls panko
