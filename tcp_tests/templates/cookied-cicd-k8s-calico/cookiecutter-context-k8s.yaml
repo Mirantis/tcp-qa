@@ -126,7 +126,7 @@ default_context:
   kubernetes_control_node03_hostname: ctl03
   kubernetes_enabled: 'True'
   kubernetes_externaldns_enabled: 'False'
-  kubernetes_keepalived_vip_interface: ens4
+  kubernetes_keepalived_vip_interface: br_ctl
   kubernetes_network_calico_enabled: 'True'
   kubernetes_virtlet_enabled: 'False'
   local_repositories: 'False'
