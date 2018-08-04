@@ -22,6 +22,30 @@
       "revId": "759f3233e79765d375c805e4ba1caee8fa5a9d1f",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e5be47d3_eed84507",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-bm-mcp-ocata-contrail.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-04T00:06:23Z",
+      "side": 1,
+      "message": "Not sure. In this model and in cookied-bm-mcp-ocata-contrail-nfv there are other overrides (see below L60..66), so I shouldn\u0027t do this change for salt_cookied-bm-mcp-ocata-contrail.yaml",
+      "parentUuid": "c74bf2bf_49f67542",
+      "range": {
+        "startLine": 41,
+        "startChar": 16,
+        "endLine": 41,
+        "endChar": 30
+      },
+      "revId": "759f3233e79765d375c805e4ba1caee8fa5a9d1f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
