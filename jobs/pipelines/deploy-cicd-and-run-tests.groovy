@@ -4,6 +4,8 @@ def common = new com.mirantis.mk.Common()
 def shared = new com.mirantis.system_qa.SharedPipeline()
 def steps = "hardware,create_model,salt," + env.DRIVETRAIN_STACK_INSTALL + "," + env.PLATFORM_STACK_INSTALL
 
+currentBuild.description = "${NODE_NAME}:${ENV_NAME}"
+
 throttle(['fuel_devops_environment']) {
   node ("${NODE_NAME}") {
     try {
