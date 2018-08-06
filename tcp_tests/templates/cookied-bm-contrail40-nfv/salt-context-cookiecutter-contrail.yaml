@@ -1,0 +1,90 @@
+default_context:
+  alertmanager_notification_email_enabled: 'on'
+  alertmanager_notification_email_from: john.doe@example.org
+  alertmanager_notification_email_hostname: 127.0.0.1
+  alertmanager_notification_email_password: password
+  alertmanager_notification_email_port: '587'
+  alertmanager_notification_email_require_tls: 'on'
+  alertmanager_notification_email_to: jane.doe@example.org
+  auditd_enabled: 'False'
+  backup_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEowIBAAKCAQEAv33Wn8k2s94q9wo/Li8qxJ6BwmfaHfvgfNBUtzBqM+qJi1VQ
+    iZ2mIlGL9DbFB42DEKqM+qv3+29PBib8gkBjjmjlQS0zGRCmJLBS//1TUy6rJYm2
+    qKWA8L/BrTsqlBNJR0t4O190dB6BmcnJtppgCINyoSXJl/0LTG6iVxGm1L0Hxcbo
+    ORu6tdkz5xttzI7AfHkDZ+ajejJDjirN6LARFAayPe9gkiacD6IE37KgMOaqRZJ5
+    2ulZD9OINZXjtZlfzTVPmZJxnRKufG2tllcZbdlgoy0AmiowpxYiVbi75Q3QCLU1
+    mCdC/7Vk16w/58uZKdoqJzDRaWFNr4HCvz38uwIDAQABAoIBAFuT5MZ5xg1zHH0U
+    i26c5Akv/MJqRCe+w3ctcrZBEylM6waVgHSvzjnvYc0jPEsGZD3eMpnXEDtQ2iwJ
+    DQ2FmZcLl0f6Q8ui6LH3GVqPXgAT+4lyOMaij+2S5x7fgtdZ+dt8vj02w0ydIkHX
+    /P21CmRH6NQkbCqhu3uMFVsqd+yYvg5Z4d5GMAmxuCKgqVfb+u/r1co5uVvodiVf
+    EbvceKDUoGAdF6DNQk810Rh2vMkPshcz72EBYf+fS8VNq6hY7bCy8z9LlS3jcwjG
+    yjApS06nFHJUr98hrRVH/Dyr5vi8ftCQJRwdLjBq7sUXm/72oKA/QzYQrt4eMVjq
+    K1ayXzECgYEA7S+lsm6QJKQYcqvj7NzCZlEa5+hU9E4CVDowYqYtDasEQ2l62242
+    NjWrLbeLcy4xeOizZcg+9xuYMcuAS08AmtLUpaUxe9chH7HmwlH4u9wrsdI9/S0T
+    SF5MrlML2Ws1X1vZAfMR9j8o0em20A/0uzr2U8NV7s9zdJARKu41ar0CgYEAzq5O
+    r/+zrAaY9kE8/iWt+i4v+if/Ckwb7EZLjOd4V4u6uYtXCS80HhFPKoyi9YkVQUAS
+    LCDGB/e3k7wHovhO6hzTJXfooDn0wIg4lJjpQfpnoCKODuELokLEPvZfjavJ56QY
+    pbM2Hb2dps9kIu3ShmHD1v/+lnxaOZPJwJmoONcCgYBCJJtsmvCPh0NaFx1EnHuJ
+    1OxP57ZpOqfjnSaJHBZMTXiu4+di8eUkUOsfoKO+xw78zMfahnEosAVNPZbVaX6d
+    rlWmq96UznVqRU44umtG2CtHN34Z8EwETmfL5VTUmNUVdqOZq5NCvHJBt49HjmuN
+    GvA+g6afJjLoOpTPCAbVcQKBgGVj0So50FR1sBguDNPIfD6c5eBcOps8lv4jxfBL
+    pRedbm6TUpEo3PJbH3EKKO823nxyB/gp47wI47/PoBdspJnophRdbHsds1m3+bm8
+    AcHiK2+9Q988u05QXqFcj6eaPKQsNgMjlUqluG8akk8oR/ywfTg9wRDl1AUm4PRg
+    7MtlAoGBAJ6NJTJkK0ZXM5zhH3JFGDUhA10nXXDMtwC//3A4ruUE17SgT29A2e2z
+    psIiODAmN/hsUJvDfeYPKofrFrxRiYjagJNsX9mzhCUtpbokj5aJoV9emJC152Ld
+    ZxTzVSDv4XNRPfIULftaF7sLwBUZIHGOVCJPu3HhgnZ2DN/wb2Oj
+    -----END RSA PRIVATE KEY-----
+  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/fdafyTaz3ir3Cj8uLyrEnoHCZ9od++B80FS3MGoz6omLVVCJnaYiUYv0NsUHjYMQqoz6q/f7b08GJvyCQGOOaOVBLTMZEKYksFL//VNTLqslibaopYDwv8GtOyqUE0lHS3g7X3R0HoGZycm2mmAIg3KhJcmX/QtMbqJXEabUvQfFxug5G7q12TPnG23MjsB8eQNn5qN6MkOOKs3osBEUBrI972CSJpwPogTfsqAw5qpFknna6VkP04g1leO1mV/NNU+ZknGdEq58ba2WVxlt2WCjLQCaKjCnFiJVuLvlDdAItTWYJ0L/tWTXrD/ny5kp2ionMNFpYU2vgcK/Pfy7
+  bmk_enabled: 'False'
+  ceph_enabled: 'False'
+  cicd_enabled: 'False'
+  cluster_domain: deploy-name.local
+  cluster_name: deployment_name
+  context_seed: IGhQ3lmtWy4AR2Gy54wUaqA7KHXCbDT0b3q6EsFaBkLnDamyZYd9UuMkWPbtbNfq
+  control_network_netmask: ''
+  control_network_subnet: 10.167.8.0/24
+  control_vlan: '2422'
+  cookiecutter_template_branch: ''
+  cookiecutter_template_credentials: gerrit
+  cookiecutter_template_url: https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates.git
+  deploy_network_gateway: 172.16.49.126
+  deploy_network_netmask: ''
+  deploy_network_subnet: 172.16.49.64/26
+  deployment_type: physical
+  dns_server01: 172.18.208.44
+  dns_server02: 8.8.8.8
+  gainsight_service_enabled: 'False'
+  internal_proxy_enabled: 'False'
+  kubernetes_ctl_on_kvm: 'False'
+  kubernetes_enabled: 'False'
+  mcp_common_scripts_branch: ''
+  mcp_version: proposed
+  no_platform: 'False'
+  opencontrail_enabled: 'True'
+  openssh_groups: ''
+  openstack_enabled: 'True'
+  oss_enabled: 'False'
+  oss_node03_address: ${_param:stacklight_monitor_node03_address}
+  platform: openstack_enabled
+  public_host: ${_param:openstack_proxy_address}
+  publication_method: email
+  reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
+  salt_api_password: QjzYwbd15WFQQCf6r6QwFqurqSgvIS1R
+  salt_api_password_hash: ''
+  salt_master_address: ''
+  salt_master_hostname: cfg01
+  salt_master_management_address: ''
+  shared_reclass_branch: ''
+  shared_reclass_url: https://gerrit.mcp.mirantis.net/salt-models/reclass-system.git
+  sriov_network_subnet: 10.55.0.0/16
+  stacklight_enabled: 'True'
+  stacklight_version: '2'
+  static_ips_on_deploy_network_enabled: 'False'
+  tenant_network_gateway: 192.168.0.1
+  tenant_network_netmask: ''
+  tenant_network_subnet: 192.168.0.0/24
+  tenant_vlan: '2423'
+  upstream_proxy_enabled: 'False'
+  use_default_network_scheme: 'True'
+  vnf_onboarding_enabled: 'True'
