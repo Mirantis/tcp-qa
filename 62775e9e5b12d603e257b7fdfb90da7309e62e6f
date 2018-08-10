@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e3651ab0_26998177",
+        "filename": "tcp_tests/templates/cookied-mcp-mitaka-ovs/underlay.yaml",
+        "patchSetId": 17
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-10T07:34:32Z",
+      "side": 1,
+      "message": "Please actualize these addresses also in templates/cookied-mcp-mitaka-ovs/_context-cookiecutter-mcp-mitaka-ovs.yaml",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 52,
+        "endChar": 46
+      },
+      "revId": "62775e9e5b12d603e257b7fdfb90da7309e62e6f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
