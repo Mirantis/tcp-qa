@@ -45,24 +45,26 @@ class TestMCPK8sActions(object):
             pytest.skip("Test requires Externaldns and coredns addons enabled")
 
         show_step(1)
-        k8sclient = k8s_deployed.api
-        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
+        k8s_deployed.list_nodes()
 
         show_step(2)
-        name = 'test-nginx'
-        k8s_deployed.kubectl_run(name, 'nginx', '80')
+        deployment = k8s_deployed.get_sample_deployment('test-dep')
 
         show_step(3)
-        k8s_deployed.kubectl_expose('deployment', name, '80', 'ClusterIP')
+        svc = deployment.expose()
 
-        hostname = "test.{0}.local.".format(settings.LAB_CONFIG_NAME)
-        annotation = "\"external-dns.alpha.kubernetes.io/" \
-                     "hostname={0}\"".format(hostname)
         show_step(4)
-        k8s_deployed.kubectl_annotate('service', name, annotation)
+        hostname = "test.{0}.local.".format(settings.LAB_CONFIG_NAME)
+        svc.patch({
+            "metadata": {
+                "annotations": {
+                    "external-dns.alpha.kubernetes.io/hostname": hostname
+                }
+            }
+        })
 
         show_step(5)
-        dns_host = k8s_deployed.get_svc_ip('coredns')
+        dns_host = k8s_deployed.service('coredns').get_ip()
         k8s_deployed.nslookup(hostname, dns_host)
 
     @pytest.mark.grab_versions
@@ -101,10 +103,8 @@ class TestMCPK8sActions(object):
 
         show_step(5)
         sample = k8s_deployed.get_sample_deployment('test-dep-chain-upgrade')
-        sample.run()
         sample.expose()
-        sample.wait_for_ready()
-
+        sample.wait_ready()
         assert sample.is_service_available()
 
         show_step(6)
@@ -114,7 +114,7 @@ class TestMCPK8sActions(object):
         chain_versions = config.k8s.k8s_update_chain.split(" ")
         for version in chain_versions:
             LOG.info("Chain update to '{}' version".format(version))
-            k8s_deployed.update_k8s_images(version)
+            k8s_deployed.update_k8s_version(version)
 
             LOG.info("Checking test service availability")
             assert sample.is_service_available()
@@ -143,25 +143,23 @@ class TestMCPK8sActions(object):
 
         show_step(2)
         ns = "metallb-system"
-        assert k8s_deployed.is_pod_exists_with_prefix("controller", ns)
-        assert k8s_deployed.is_pod_exists_with_prefix("speaker", ns)
+        assert k8s_deployed.get_runned_pods_count(ns, 'contorller') > 0
+        assert k8s_deployed.get_runned_pods_count(ns, 'speaker') > 0
 
         show_step(3)
         samples = []
         for i in range(5):
             name = 'test-dep-metallb-{}'.format(i)
-            sample = k8s_deployed.get_sample_deployment(name)
-            sample.run()
-            samples.append(sample)
+            samples.append(k8s_deployed.get_sample_deployment(name))
 
         show_step(4)
         for sample in samples:
-            sample.expose('LoadBalancer')
-        for sample in samples:
-            sample.wait_for_ready()
+            sample.expose(service_type='LoadBalancer')
+            sample.wait_ready()
 
         show_step(5)
         for sample in samples:
+            assert sample.is_service_available(external=False)
             assert sample.is_service_available(external=True)
 
         show_step(6)
@@ -169,11 +167,13 @@ class TestMCPK8sActions(object):
 
         show_step(7)
         for sample in samples:
+            assert sample.is_service_available(external=False)
             assert sample.is_service_available(external=True)
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
-    def test_k8s_genie_flannel(self, show_step, salt_deployed, k8s_deployed):
+    def test_k8s_genie_flannel(self, show_step, config,
+                               salt_deployed, k8s_deployed):
         """Test genie-cni+flannel cni setup
 
         Scenario:
@@ -213,46 +213,45 @@ class TestMCPK8sActions(object):
         LOG.info("Calico network: {}".format(calico_network))
 
         show_step(2)
-        assert k8s_deployed.is_pod_exists_with_prefix("kube-flannel-",
-                                                      "kube-system")
+        assert k8s_deployed.get_runned_pods_count(
+            "kube-system", "kube-flannel-") > 0
 
         data_dir = os.path.join(os.path.dirname(__file__), 'testdata/k8s')
         show_step(3)
-        flannel_pod = k8s_deployed.create_pod_from_file(
-            os.path.join(data_dir, 'pod-sample-flannel.yaml'))
+        flannel_pod = k8s_deployed.pod().create(
+            file_path=os.path.join(data_dir, 'pod-sample-flannel.yaml'))
 
         show_step(4)
-        flannel_ips = k8s_deployed.get_pod_ips_from_container(flannel_pod.name)
+        flannel_ips = flannel_pod.get_ips_from_inside()
         assert len(flannel_ips) == 1
         assert netaddr.IPAddress(flannel_ips[0]) in flannel_network
 
         show_step(5)
-        calico_pod = k8s_deployed.create_pod_from_file(
-            os.path.join(data_dir, 'pod-sample-calico.yaml'))
+        calico_pod = k8s_deployed.pod().create(
+            file_path=os.path.join(data_dir, 'pod-sample-calico.yaml'))
 
         show_step(6)
-        calico_ips = k8s_deployed.get_pod_ips_from_container(calico_pod.name)
+        calico_ips = calico_pod.get_ips_from_inside()
         assert len(calico_ips) == 1
         assert netaddr.IPAddress(calico_ips[0]) in calico_network
 
         show_step(7)
-        multicni_pod = k8s_deployed.create_pod_from_file(
-            os.path.join(data_dir, 'pod-sample-multicni.yaml'))
+        multicni_pod = k8s_deployed.pod().create(
+            file_path=os.path.join(data_dir, 'pod-sample-multicni.yaml'))
 
         show_step(8)
-        multicni_ips = \
-            k8s_deployed.get_pod_ips_from_container(multicni_pod.name)
+        multicni_ips = multicni_pod.get_ips_from_inside()
         assert len(multicni_ips) == 2
         for net in [calico_network, flannel_network]:
             assert netaddr.IPAddress(multicni_ips[0]) in net or \
                    netaddr.IPAddress(multicni_ips[1]) in net
 
         show_step(9)
-        nocni_pod = k8s_deployed.create_pod_from_file(
-            os.path.join(data_dir, 'pod-sample.yaml'))
+        nocni_pod = k8s_deployed.pod().create(
+            file_path=os.path.join(data_dir, 'pod-sample.yaml'))
 
         show_step(10)
-        nocni_ips = k8s_deployed.get_pod_ips_from_container(nocni_pod.name)
+        nocni_ips = nocni_pod.get_ips_from_inside()
         assert len(nocni_ips) == 1
         assert (netaddr.IPAddress(nocni_ips[0]) in calico_network or
                 netaddr.IPAddress(nocni_ips[0]) in flannel_network)
