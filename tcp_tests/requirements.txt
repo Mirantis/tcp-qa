@@ -15,7 +15,7 @@ jinja2>=2.9
 jira
 testrail<=0.3.8
 functools32
-python-k8sclient==0.4.0
+kubernetes
 salt-pepper<=0.5.3
 setuptools<=36.2.0
 netaddr
