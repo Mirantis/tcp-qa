@@ -218,7 +218,7 @@ class TestMCPK8sActions(object):
 
         data_dir = os.path.join(os.path.dirname(__file__), 'testdata/k8s')
         show_step(3)
-        flannel_pod = k8s_deployed.create_pod_from_file(
+        flannel_pod = k8s_deployed.check_pod_create_from_file(
             os.path.join(data_dir, 'pod-sample-flannel.yaml'))
 
         show_step(4)
@@ -227,7 +227,7 @@ class TestMCPK8sActions(object):
         assert netaddr.IPAddress(flannel_ips[0]) in flannel_network
 
         show_step(5)
-        calico_pod = k8s_deployed.create_pod_from_file(
+        calico_pod = k8s_deployed.check_pod_create_from_file(
             os.path.join(data_dir, 'pod-sample-calico.yaml'))
 
         show_step(6)
@@ -236,7 +236,7 @@ class TestMCPK8sActions(object):
         assert netaddr.IPAddress(calico_ips[0]) in calico_network
 
         show_step(7)
-        multicni_pod = k8s_deployed.create_pod_from_file(
+        multicni_pod = k8s_deployed.check_pod_create_from_file(
             os.path.join(data_dir, 'pod-sample-multicni.yaml'))
 
         show_step(8)
@@ -248,7 +248,7 @@ class TestMCPK8sActions(object):
                    netaddr.IPAddress(multicni_ips[1]) in net
 
         show_step(9)
-        nocni_pod = k8s_deployed.create_pod_from_file(
+        nocni_pod = k8s_deployed.check_pod_create_from_file(
             os.path.join(data_dir, 'pod-sample.yaml'))
 
         show_step(10)

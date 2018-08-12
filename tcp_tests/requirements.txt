@@ -7,18 +7,18 @@ six
 requests>=2.2.0
 oslo.config>=6.2.1 # Apache-2.0
 pytest>=2.9,<=3.2.5
-docker-py
-docker-compose==1.7.1
 urllib3
 junit-xml
 jinja2>=2.9
 jira
 testrail<=0.3.8
 functools32
-python-k8sclient==0.4.0
 salt-pepper<=0.5.3
 setuptools<=36.2.0
 netaddr
 mock>=1.2
 python-jenkins
 cmd2<0.9
+kubernetes
+ipaddress # kubernetes workaround
+urllib3   # for https://github.com/kubernetes-client/python/blob/master/README.md#hostname-doesnt-match
