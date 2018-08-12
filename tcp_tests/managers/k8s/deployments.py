@@ -12,63 +12,54 @@
 #    License for the specific language governing permissions and limitations
 
 
+from kubernetes import client
+
+from devops.helpers import helpers
+
 from tcp_tests.managers.k8s.base import K8sBaseResource
 from tcp_tests.managers.k8s.base import K8sBaseManager
 
 
 class K8sDeployment(K8sBaseResource):
-    """docstring for K8sDeployment"""
+    def _read(self, **kwargs):
+        return self._manager.api.read_namespaced_deployment(
+            self.name, self.namespace, **kwargs)
 
-    def __repr__(self):
-        return "<K8sDeployment: %s>" % self.name
+    def _create(self, body, **kwargs):
+        return self._manager.api.create_namespaced_deployment(
+            self.namespace, body, **kwargs)
 
-    @property
-    def name(self):
-        return self.metadata.name
+    def _patch(self, body, **kwargs):
+        return self._manager.api.patch_namespaced_deployment(
+            self.name, self.namespace, body, **kwargs)
 
-    @property
-    def namespace(self):
-        return self.metadata.namespace
+    def _replace(self, body, **kwargs):
+        return self._manager.api.replace_namespaced_deployment(
+            self.name, self.namespace, body, **kwargs)
+
+    def _delete(self, **kwargs):
+        self._manager.api.delete_namespaced_deployment(
+            self.name, self.namespace, client.V1DeleteOptions(), **kwargs)
+
+    def is_ready(self):
+        dep = self.read()
+        return dep.status.available_replicas == dep.status.replicas
+
+    def wait_ready(self, timeout=120, interval=5):
+        helpers.wait(lambda: self.is_ready(),
+                     timeout=timeout, interval=interval)
+        return self
 
 
 class K8sDeploymentManager(K8sBaseManager):
-    """docstring for ClassName"""
-
     resource_class = K8sDeployment
 
-    def _get(self, name, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.read_namespaced_deployment(
-            name=name, namespace=namespace, **kwargs)
+    @property
+    def api(self):
+        return self.cluster.api_apps
 
-    def _list(self, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.list_namespaced_deployment(
-            namespace=namespace, **kwargs)
+    def _list(self, namespace, **kwargs):
+        return self.api.list_namespaced_deployment(namespace, **kwargs)
 
-    def _full_list(self, **kwargs):
-        return self.api.list_deployment(**kwargs)
-
-    def _create(self, body, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.create_namespaced_deployment(
-            body=body, namespace=namespace, **kwargs)
-
-    def _replace(self, body, name, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.replace_namespaced_deployment(
-            body=body, name=name, namespace=namespace, **kwargs)
-
-    def _delete(self, body, name, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.delete_namespaced_deployment(
-            body=body, name=name, namespace=namespace, **kwargs)
-
-    def _deletecollection(self, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.deletecollection_namespaced_deployment(
-            namespace=namespace, **kwargs)
-
-    def full_list(self, *args, **kwargs):
-        lst = self._full_list(*args, **kwargs)
-        return [self.resource_class(self, item) for item in lst.items]
+    def _list_all(self, **kwargs):
+        return self.api.list_deployment_for_all_namespaces(**kwargs)
