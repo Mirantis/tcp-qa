@@ -18,39 +18,39 @@ from tcp_tests.managers.k8s.base import K8sBaseResource
 from tcp_tests.managers.k8s.base import K8sBaseManager
 
 
-class K8sDaemonSet(K8sBaseResource):
-    resource_type = 'daemonset'
+class K8sNetworkPolicy(K8sBaseResource):
+    resource_type = 'networkpolicy'
 
     def _read(self, **kwargs):
-        return self._manager.api.read_namespaced_daemon_set(
+        return self._manager.api.read_namespaced_network_policy(
             self.name, self.namespace, **kwargs)
 
     def _create(self, body, **kwargs):
-        return self._manager.api.create_namespaced_daemon_set(
+        return self._manager.api.create_namespaced_network_policy(
             self.namespace, body, **kwargs)
 
     def _patch(self, body, **kwargs):
-        return self._manager.api.patch_namespaced_daemon_set(
+        return self._manager.api.patch_namespaced_network_policy(
             self.name, self.namespace, body, **kwargs)
 
     def _replace(self, body, **kwargs):
-        return self._manager.api.replace_namespaced_daemon_set(
+        return self._manager.api.replace_namespaced_network_policy(
             self.name, self.namespace, body, **kwargs)
 
     def _delete(self, **kwargs):
-        self._manager.api.delete_namespaced_daemon_set(
+        self._manager.api.delete_namespaced_network_policy(
             self.name, self.namespace, client.V1DeleteOptions(), **kwargs)
 
 
-class K8sDaemonSetManager(K8sBaseManager):
-    resource_class = K8sDaemonSet
+class K8sNetworkPolicyManager(K8sBaseManager):
+    resource_class = K8sNetworkPolicy
 
     @property
     def api(self):
-        return self._cluster.api_apps
+        return self._cluster.api_extensions
 
     def _list(self, namespace, **kwargs):
-        return self.api.list_namespaced_daemon_set(namespace, **kwargs)
+        return self.api.list_namespaced_network_policy(namespace, **kwargs)
 
     def _list_all(self, **kwargs):
-        return self.api.list_daemon_set_for_all_namespaces(**kwargs)
+        return self.api.list_network_policy_for_all_namespaces(**kwargs)
