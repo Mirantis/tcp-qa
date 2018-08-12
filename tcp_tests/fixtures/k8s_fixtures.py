@@ -144,7 +144,7 @@ def k8s_logs(request, func_name, underlay, k8s_deployed):
                 path = utils.extract_name_from_mark(merge_xunit, 'path')
                 output = utils.extract_name_from_mark(merge_xunit, 'output')
                 k8s_deployed.combine_xunit(path, output)
-            k8s_deployed.download_k8s_logs(files)
+            k8s_deployed.download_from_controller(files)
 
     request.addfinalizer(test_fin)
 
@@ -166,7 +166,7 @@ def cncf_log_helper(request, func_name, underlay, k8s_deployed):
                 pod_name='sonobuoy', pod_namespace='sonobuoy'
             )
             k8s_deployed.manage_cncf_archive()
-            k8s_deployed.download_k8s_logs(files)
+            k8s_deployed.download_from_controller(files)
 
     request.addfinalizer(test_fin)
 
@@ -191,7 +191,7 @@ def k8s_chain_update_log_helper(request, config, k8s_deployed):
                 k8s_deployed.combine_xunit(tmp_report_dir,
                                            '/root/{}'.format(report_path))
 
-                k8s_deployed.download_k8s_logs(
+                k8s_deployed.download_from_controller(
                     [report_path, conformance_log_path])
 
     request.addfinalizer(test_fin)
