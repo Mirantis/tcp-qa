@@ -11,69 +11,43 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 
+from kubernetes import client
 
 from tcp_tests.managers.k8s.base import K8sBaseResource
 from tcp_tests.managers.k8s.base import K8sBaseManager
 
 
 class K8sDaemonSet(K8sBaseResource):
-    """docstring for K8sDaemonSet"""
+    def _read(self, **kwargs):
+        return self._manager.api.read_namespaced_daemon_set(
+            self.name, self.namespace, **kwargs)
 
-    def __repr__(self):
-        return "<K8sDaemonSet: %s>" % self.name
+    def _create(self, body, **kwargs):
+        return self._manager.api.create_namespaced_daemon_set(
+            self.namespace, body, **kwargs)
 
-    @property
-    def name(self):
-        return self.metadata.name
+    def _patch(self, body, **kwargs):
+        return self._manager.api.patch_namespaced_daemon_set(
+            self.name, self.namespace, body, **kwargs)
 
-    @property
-    def namespace(self):
-        return self.metadata.namespace
+    def _replace(self, body, **kwargs):
+        return self._manager.api.replace_namespaced_daemon_set(
+            self.name, self.namespace, body, **kwargs)
+
+    def _delete(self, **kwargs):
+        self._manager.api.delete_namespaced_daemon_set(
+            self.name, self.namespace, client.V1DeleteOptions(), **kwargs)
 
 
 class K8sDaemonSetManager(K8sBaseManager):
-    """docstring for ClassName"""
-
     resource_class = K8sDaemonSet
 
-    def _get(self, name, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.read_namespaced_daemon_set(
-            name=name, namespace=namespace, **kwargs)
+    @property
+    def api(self):
+        return self.cluster.api_apps
 
-    def _list(self, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.list_namespaced_daemon_set(
-            namespace=namespace, **kwargs)
+    def _list(self, namespace, **kwargs):
+        return self.api.list_namespaced_daemon_set(namespace, **kwargs)
 
-    def _full_list(self, **kwargs):
-        return self.api.list_daemon_set(**kwargs)
-
-    def _create(self, body, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.create_namespaced_daemon_set(
-            body=body, namespace=namespace, **kwargs)
-
-    def _replace(self, body, name, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.replace_namespaced_daemon_set(
-            body=body, name=name, namespace=namespace, **kwargs)
-
-    def _delete(self, body, name, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.delete_namespaced_daemon_set(
-            body=body, name=name, namespace=namespace, **kwargs)
-
-    def _deletecollection(self, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.deletecollection_namespaced_daemon_set(
-            namespace=namespace, **kwargs)
-
-    def full_list(self, *args, **kwargs):
-        lst = self._full_list(*args, **kwargs)
-        return [self.resource_class(self, item) for item in lst.items]
-
-    def update(self, body, name, namespace=None, **kwargs):
-        namespace = namespace or self.namespace
-        return self.api.patch_namespaced_daemon_set(
-            body=body, name=name, namespace=namespace, **kwargs)
+    def _list_all(self, **kwargs):
+        return self.api.list_daemon_set_for_all_namespaces(**kwargs)

@@ -12,36 +12,19 @@
 #    License for the specific language governing permissions and limitations
 
 
-import base64
-import ssl
-
-from k8sclient.client import api_client
-from k8sclient.client.apis import apiv_api
-from k8sclient.client.apis import apisextensionsvbeta_api
-from k8sclient.client.apis import apisbatchv_api
+import kubernetes
+from kubernetes import client
 
 from tcp_tests.managers.k8s.componentstatuses import \
     K8sComponentStatusManager
 from tcp_tests.managers.k8s.daemonsets import K8sDaemonSetManager
 from tcp_tests.managers.k8s.deployments import K8sDeploymentManager
-from tcp_tests.managers.k8s.endpoints import K8sEndpointManager
 from tcp_tests.managers.k8s.events import K8sEventManager
-from tcp_tests.managers.k8s.horizontalpodautoscalers import \
-    K8sHorizontalPodAutoscalerManager
-from tcp_tests.managers.k8s.ingresses import K8sIngressManager
-from tcp_tests.managers.k8s.jobs import K8sJobManager
 from tcp_tests.managers.k8s.limitranges import K8sLimitRangeManager
 from tcp_tests.managers.k8s.namespaces import K8sNamespaceManager
 from tcp_tests.managers.k8s.nodes import K8sNodeManager
-from tcp_tests.managers.k8s.persistentvolumeclaims import \
-    K8sPersistentVolumeClaimManager
-from tcp_tests.managers.k8s.persistentvolumes import \
-    K8sPersistentVolumeManager
 from tcp_tests.managers.k8s.pods import K8sPodManager
-from tcp_tests.managers.k8s.replicationcontrollers import \
-    K8sReplicationControllerManager
 from tcp_tests.managers.k8s.resourcequotas import K8sResourceQuotaManager
-from tcp_tests.managers.k8s.secrets import K8sSecretManager
 from tcp_tests.managers.k8s.serviceaccounts import \
     K8sServiceAccountManager
 from tcp_tests.managers.k8s.services import K8sServiceManager
@@ -49,62 +32,58 @@ from tcp_tests.managers.k8s.replicasets import K8sReplicaSetManager
 
 
 class K8sCluster(object):
-    """docstring for K8sCluster"""
-
-    def __init__(self, schema="https", user=None, password=None,
+    def __init__(self, schema="https", user=None, password=None, ca=None,
                  host='localhost', port='443', default_namespace='default'):
-        if user and password:
-            auth_string = '%s:%s' % (user, password)
-            auth = base64.encodestring(auth_string.encode()).decode()[:-1]
-            auth = "Basic {}".format(auth)
-            self._client = api_client.ApiClient(
-                '{schema}://{host}:{port}'.format(
-                    schema=schema, host=host, port=port))
-            self._client.set_default_header('Authorization', auth)
-            restcli_impl = self._client.RESTClient.IMPL
-            restcli_impl.ssl_pool_manager.connection_pool_kw['cert_reqs'] = \
-                ssl.CERT_NONE
+        self.default_namespace = default_namespace
 
-        else:
-            self._client = api_client.ApiClient(
-                '{schema}://{host}:{port}'.format(
-                    schema=schema, host=host, port=port))
-        self._api = apiv_api.ApivApi(self._client)
-        self._bapi = apisbatchv_api.ApisbatchvApi(self._client)
-        self._eapi = apisextensionsvbeta_api.ApisextensionsvbetaApi(
-            self._client)
-        self._default_namespace = default_namespace
+        api_server = '{0}://{1}:{2}'.format(schema, host, port)
 
-        self.nodes = K8sNodeManager(self._api, self._default_namespace)
-        self.pods = K8sPodManager(self._api, self._default_namespace)
-        self.endpoints = K8sEndpointManager(self._api, self._default_namespace)
-        self.namespaces = K8sNamespaceManager(self._api,
-                                              self._default_namespace)
-        self.services = K8sServiceManager(self._api, self._default_namespace)
-        self.serviceaccounts = K8sServiceAccountManager(
-            self._api, self._default_namespace)
-        self.secrets = K8sSecretManager(self._api, self._default_namespace)
-        self.events = K8sEventManager(self._api, self._default_namespace)
-        self.limitranges = K8sLimitRangeManager(self._api,
-                                                self._default_namespace)
-        self.jobs = K8sJobManager(self._bapi, self._default_namespace)
-        self.daemonsets = K8sDaemonSetManager(self._eapi,
-                                              self._default_namespace)
-        self.ingresses = K8sIngressManager(self._eapi, self._default_namespace)
-        self.deployments = K8sDeploymentManager(self._eapi,
-                                                self._default_namespace)
-        self.horizontalpodautoscalers = K8sHorizontalPodAutoscalerManager(
-            self._eapi, self._default_namespace)
-        self.componentstatuses = K8sComponentStatusManager(
-            self._api, self._default_namespace)
-        self.resourcequotas = K8sResourceQuotaManager(
-            self._api, self._default_namespace)
-        self.replicationcontrollers = K8sReplicationControllerManager(
-            self._api, self._default_namespace)
-        self.pvolumeclaims = K8sPersistentVolumeClaimManager(
-            self._api, self._default_namespace)
-        self.pvolumes = K8sPersistentVolumeManager(
-            self._api, self._default_namespace)
-        self.replicasets = K8sReplicaSetManager(
-            self._eapi, self._default_namespace
-        )
+        config_data = {
+            'apiVersion': 'v1',
+            'kind': 'Config',
+            'preferences': {},
+            'current-context': 'cluster-remote',
+            'clusters': [{
+                'name': 'cluster',
+                'cluster': {
+                    'server': api_server,
+                    'certificate-authority-data': ca,
+                },
+            }],
+            'users': [{
+                'name': 'remote',
+                'user': {
+                    'password': password,
+                    'username': user,
+                },
+            }],
+            'contexts': [{
+                'name': 'cluster-remote',
+                'context': {
+                    'cluster': 'cluster',
+                    'user': 'remote',
+                },
+            }],
+        }
+
+        configuration = type.__call__(client.Configuration)
+        loader = kubernetes.config.kube_config.KubeConfigLoader(config_data)
+        loader.load_and_set(configuration)
+        api_client = client.ApiClient(configuration=configuration)
+
+        self.api_core = client.CoreV1Api(api_client)
+        self.api_apps = client.AppsV1Api(api_client)
+        self.api_extensions = client.ExtensionsV1beta1Api(api_client)
+
+        self.nodes = K8sNodeManager(self)
+        self.pods = K8sPodManager(self)
+        self.namespaces = K8sNamespaceManager(self)
+        self.services = K8sServiceManager(self)
+        self.serviceaccounts = K8sServiceAccountManager(self)
+        self.events = K8sEventManager(self)
+        self.limitranges = K8sLimitRangeManager(self)
+        self.daemonsets = K8sDaemonSetManager(self)
+        self.deployments = K8sDeploymentManager(self)
+        self.componentstatuses = K8sComponentStatusManager(self)
+        self.resourcequotas = K8sResourceQuotaManager(self)
+        self.replicasets = K8sReplicaSetManager(self)

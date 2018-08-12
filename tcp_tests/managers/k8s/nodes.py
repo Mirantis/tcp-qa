@@ -11,71 +11,39 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 
+from kubernetes import client
 
 from tcp_tests.managers.k8s.base import K8sBaseResource
 from tcp_tests.managers.k8s.base import K8sBaseManager
 
 
 class K8sNode(K8sBaseResource):
-    """docstring for ClassName"""
+    def _read(self, **kwargs):
+        return self._manager.api.read_node(self.name, **kwargs)
 
-    def __repr__(self):
-        return "<K8sNode: %s>" % self.name
+    def _create(self, body, **kwargs):
+        return self._manager.api.create_node(body, **kwargs)
 
-    @property
-    def name(self):
-        return self.metadata.name
+    def _patch(self, body, **kwargs):
+        return self._manager.api.patch_node(self.name, body, **kwargs)
 
-    @property
-    def labels(self):
-        return self.metadata.labels
+    def _replace(self, body, **kwargs):
+        return self._manager.api.replace_node(self.name, body, **kwargs)
 
-    @labels.setter
-    def labels(self, labels):
-        current_labels = {
-            label: None for label in self.labels
-        }
-        current_labels.update(labels)
-        self.add_labels(labels=current_labels)
-
-    def add_labels(self, labels):
-        if not isinstance(labels, dict):
-            raise TypeError("labels must be a dict!")
-        body = {
-            "metadata":
-            {
-                "labels": labels
-            }
-        }
-        self._add_details(self._manager.update(body=body, name=self.name))
-
-    def remove_labels(self, list_labels):
-        labels = {label: None for label in list_labels}
-        self.add_labels(labels=labels)
+    def _delete(self, **kwargs):
+        self._manager.api.delete_node(
+            self.name, client.V1DeleteOptions(), **kwargs)
 
 
 class K8sNodeManager(K8sBaseManager):
-    """docstring for ClassName"""
-
     resource_class = K8sNode
 
-    def _get(self, name, **kwargs):
-        return self.api.read_namespaced_node(name=name, **kwargs)
+    @property
+    def api(self):
+        return self.cluster.api_core
 
-    def _list(self, **kwargs):
-        return self.api.list_namespaced_node(**kwargs)
+    def _list(self, namespace, **kwargs):
+        return self.api.list_node(**kwargs)
 
-    def _create(self, body, **kwargs):
-        return self.api.create_namespaced_node(body=body, **kwargs)
-
-    def _replace(self, body, name, **kwargs):
-        return self.api.replace_namespaced_node(body=body, name=name, **kwargs)
-
-    def _delete(self, body, name, **kwargs):
-        return self.api.delete_namespaced_node(body=body, name=name, **kwargs)
-
-    def _deletecollection(self, **kwargs):
-        return self.api.deletecollection_namespaced_node(**kwargs)
-
-    def update(self, body, name, **kwargs):
-        return self.api.patch_namespaced_node(body=body, name=name, **kwargs)
+    def _list_all(self, **kwargs):
+        return self._list(None, **kwargs)

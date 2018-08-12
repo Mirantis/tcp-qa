@@ -11,29 +11,21 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 
-
 from tcp_tests.managers.k8s.base import K8sBaseResource
 from tcp_tests.managers.k8s.base import K8sBaseManager
 
 
 class K8sComponentStatus(K8sBaseResource):
-    """docstring for K8sComponentStatus"""
-
-    def __repr__(self):
-        return "<K8sComponentStatus: %s>" % self.name
-
-    @property
-    def name(self):
-        return self.metadata.name
+    def _read(self, **kwargs):
+        return self._manager.api.read_component_status(self.name, **kwargs)
 
 
 class K8sComponentStatusManager(K8sBaseManager):
-    """docstring for ClassName"""
-
     resource_class = K8sComponentStatus
 
-    def _get(self, name, **kwargs):
-        return self.api.read_namespaced_component_status(name=name, **kwargs)
+    @property
+    def api(self):
+        return self._cluster.api_core
 
     def _list(self, **kwargs):
-        return self.api.list_namespaced_component_status(**kwargs)
+        return self.api.list_component_status(**kwargs)
