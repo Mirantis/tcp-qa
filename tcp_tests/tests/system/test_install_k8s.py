@@ -29,8 +29,7 @@ class Testk8sInstall(object):
     @pytest.mark.cz8116
     @pytest.mark.k8s_calico_sl
     def test_k8s_install_calico_lma(self, config, show_step,
-                                    k8s_deployed,
-                                    stacklight_deployed):
+                                    k8s_deployed, stacklight_deployed):
         """Test for deploying MCP with k8s+stacklight_calico and check it
 
         Scenario:
@@ -51,25 +50,21 @@ class Testk8sInstall(object):
         # k8s_actions = k8s_deployed
         sl_actions = stacklight_deployed
         show_step(5)
-        k8sclient = k8s_deployed.api
-        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
-        netchecker_port = netchecker.get_service_port(k8sclient)
+        k8s_deployed.list_nodes()
+        nch = netchecker.Netchecker(k8s_deployed)
+
+        netchecker_port = nch.get_service_port()
         show_step(6)
-        netchecker.get_netchecker_pod_status(k8s=k8s_deployed,
-                                             namespace='netchecker')
+        nch.wait_netchecker_pods_running(netchecker.NETCHECKER_SERVER_PREFIX)
 
         show_step(7)
-        netchecker.get_netchecker_pod_status(k8s=k8s_deployed,
-                                             pod_name='netchecker-agent',
-                                             namespace='netchecker')
+        nch.wait_netchecker_pods_running(netchecker.NETCHECKER_AGENT_PREFIX)
 
-        # show_step(8)
-        netchecker.wait_check_network(k8sclient, namespace='netchecker',
-                                      netchecker_pod_port=netchecker_port)
+        show_step(8)
+        nch.wait_check_network(netchecker_port, works=True)
+
         show_step(9)
-        res = netchecker.get_metric(k8sclient,
-                                    netchecker_pod_port=netchecker_port,
-                                    namespace='netchecker')
+        res = nch.get_metric(netchecker_port=netchecker_port)
 
         assert res.status_code == 200, 'Unexpected response code {}'\
             .format(res)
@@ -144,12 +139,8 @@ class Testk8sInstall(object):
             7. Optionally run k8s e2e conformance
 
         """
-        k8s_actions = k8s_deployed
-        sl_actions = stacklight_deployed
-        # STEP #5
         show_step(5)
-        k8sclient = k8s_deployed.api
-        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
+        k8s_deployed.list_nodes()
 
         prometheus_client = stacklight_deployed.api
         try:
@@ -158,12 +149,12 @@ class Testk8sInstall(object):
                       .format(current_targets))
         except Exception:
             LOG.warning('Restarting keepalived service on mon nodes...')
-            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                                   args='systemctl restart keepalived')
+            stacklight_deployed._salt.local(
+                tgt='mon*', fun='cmd.run', args='systemctl restart keepalived')
             LOG.warning(
                 'Ip states after forset restart {0}'.format(
-                    sl_actions._salt.local(tgt='mon*',
-                                           fun='cmd.run', args='ip a')))
+                    stacklight_deployed._salt.local(
+                        tgt='mon*', fun='cmd.run', args='ip a')))
             current_targets = prometheus_client.get_targets()
             LOG.debug('Current targets after install {0}'
                       .format(current_targets))
@@ -186,7 +177,7 @@ class Testk8sInstall(object):
 
         if config.k8s.k8s_conformance_run:
             show_step(7)
-            k8s_actions.run_conformance()
+            k8s_deployed.run_conformance()
         LOG.info("*************** DONE **************")
 
     @pytest.mark.extract(container_system='docker', extract_from='conformance',
@@ -199,8 +190,7 @@ class Testk8sInstall(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8116
     @pytest.mark.k8s_calico
-    def test_only_k8s_install(self, config, show_step,
-                              k8s_deployed, k8s_logs):
+    def test_only_k8s_install(self, config, show_step, k8s_deployed, k8s_logs):
         """Test for deploying MCP environment with k8s and check it
 
         Scenario:
@@ -211,8 +201,7 @@ class Testk8sInstall(object):
             5. Run conformance if need
 
         """
-        k8s_actions = k8s_deployed
         if config.k8s.k8s_conformance_run:
             show_step(5)
-            k8s_actions.run_conformance()
+            k8s_deployed.run_conformance()
         LOG.info("*************** DONE **************")
