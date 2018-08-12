@@ -12,7 +12,9 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 import pytest
+import os
 
+from tcp_tests.managers.k8s import read_yaml_body
 from tcp_tests import logger
 
 LOG = logger.logger
@@ -35,16 +37,17 @@ class TestVirtletActions(object):
 
         if not config.k8s_deploy.kubernetes_virtlet_enabled:
             pytest.skip("Test requires Virtlet addon enabled")
+        data_dir = os.path.join(os.path.dirname(__file__), 'testdata/k8s')
 
-        k8s_deployed.git_clone('https://github.com/Mirantis/virtlet',
-                               '~/virtlet')
-        k8s_deployed.install_jq()
         show_step(1)
-        vm_name = k8s_deployed.run_vm()
+        vm_pod = k8s_deployed.api.pods.create(
+            file_path=os.path.join(data_dir, 'cirros-vm.yaml'))
+
         show_step(2)
-        k8s_deployed.wait_active_state(vm_name, timeout=360)
+        vm_pod.wait_running(timeout=600)
+
         show_step(3)
-        k8s_deployed.delete_vm(vm_name)
+        vm_pod.delete()
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
@@ -61,33 +64,28 @@ class TestVirtletActions(object):
 
         if not config.k8s_deploy.kubernetes_virtlet_enabled:
             pytest.skip("Test requires Virtlet addon enabled")
+        data_dir = os.path.join(os.path.dirname(__file__), 'testdata/k8s')
+        cpu = 2
+        memory_mb = 512
 
-        k8s_deployed.git_clone('https://github.com/Mirantis/virtlet',
-                               '~/virtlet')
-        k8s_deployed.install_jq()
         show_step(1)
-        target_cpu = 2  # Cores
-        target_memory = 256  # Size in MB
-        target_memory_kb = target_memory * 1024
-        target_yaml = 'virtlet/examples/cirros-vm-exp.yaml'
-        k8s_deployed.adjust_cirros_resources(cpu=target_cpu,
-                                             memory=target_memory,
-                                             target_yaml=target_yaml)
+        pod_body = read_yaml_body(
+            file_path=os.path.join(data_dir, 'cirros-vm.yaml'))
+        pod_body['metadata']['annotations']['VirtletVCPUCount'] = str(cpu)
+        pod_body['spec']['containers'][0]['resources']['limits']['memory'] = \
+            '{}Mi'.format(memory_mb)
+
         show_step(2)
-        vm_name = k8s_deployed.run_vm(target_yaml)
-        k8s_deployed.wait_active_state(vm_name, timeout=360)
+        vm_pod = k8s_deployed.api.pods.create(body=pod_body)
+        vm_pod.wait_running(timeout=600)
+
         show_step(3)
-        domain_name = k8s_deployed.get_domain_name(vm_name)
-        cpu = k8s_deployed.get_vm_cpu_count(domain_name)
-        mem = k8s_deployed.get_vm_memory_count(domain_name)
-        fail_msg = '{0} is not correct memory unit for VM. Correct is {1}'.\
-            format(mem, target_memory_kb)
-        assert target_memory_kb == mem, fail_msg
-        fail_msg = '{0} is not correct cpu cores count for VM. ' \
-                   'Correct is {1}'.format(cpu, target_cpu)
-        assert target_cpu == cpu, fail_msg
+        stats = k8s_deployed.virtlet.virsh_domstats(vm_pod)
+        assert int(stats['vcpu.current']) == cpu
+        assert int(stats['balloon.maximum'])/1024 == memory_mb
+
         show_step(4)
-        k8s_deployed.delete_vm(target_yaml)
+        vm_pod.delete()
 
     @pytest.mark.grab_versions
     @pytest.mark.grab_k8s_results(name=['virtlet_conformance.log',
@@ -104,30 +102,3 @@ class TestVirtletActions(object):
 
         show_step(1)
         k8s_deployed.run_virtlet_conformance()
-
-    @pytest.mark.skip(reason="No configuration with ceph and k8s")
-    def test_rbd_flexvolume_driver(self, show_step, config, k8s_deployed):
-        """Test for deploying a VM with Ceph RBD volume using flexvolumeDriver
-
-        Scenario:
-            1. Start VM with prepared yaml from run-ceph.sh scripts
-            2. Check that RBD volume is listed in virsh domblklist for VM
-            3. Destroy VM
-
-        """
-        # From:
-        # https://github.com/Mirantis/virtlet/blob/master/tests/e2e/run_ceph.sh
-        if not config.k8s_deploy.kubernetes_virtlet_enabled:
-            pytest.skip("Test requires Virtlet addon enabled")
-
-        k8s_deployed.git_clone('https://github.com/Mirantis/virtlet',
-                               '~/virtlet')
-        k8s_deployed.install_jq()
-
-        target_yaml = "virtlet/tests/e2e/cirros-vm-rbd-volume.yaml"
-        vm_name = k8s_deployed.run_vm(target_yaml)
-        k8s_deployed.wait_active_state(vm_name)
-        domain_name = k8s_deployed.get_domain_name(vm_name)
-        vm_volumes_list = k8s_deployed.list_vm_volumes(domain_name)
-        assert 'rbd' in vm_volumes_list
-        k8s_deployed.delete_vm(target_yaml)
