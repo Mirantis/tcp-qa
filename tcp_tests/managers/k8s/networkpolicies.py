@@ -18,33 +18,37 @@ from tcp_tests.managers.k8s.base import K8sBaseResource
 from tcp_tests.managers.k8s.base import K8sBaseManager
 
 
-class K8sNode(K8sBaseResource):
+class K8sNetworkPolicy(K8sBaseResource):
     def _read(self, **kwargs):
-        return self._manager.api.read_node(self.name, **kwargs)
+        return self._manager.api.read_namespaced_network_policy(
+            self.name, self.namespace, **kwargs)
 
     def _create(self, body, **kwargs):
-        return self._manager.api.create_node(body, **kwargs)
+        return self._manager.api.create_namespaced_network_policy(
+            self.namespace, body, **kwargs)
 
     def _patch(self, body, **kwargs):
-        return self._manager.api.patch_node(self.name, body, **kwargs)
+        return self._manager.api.patch_namespaced_network_policy(
+            self.name, self.namespace, body, **kwargs)
 
     def _replace(self, body, **kwargs):
-        return self._manager.api.replace_node(self.name, body, **kwargs)
+        return self._manager.api.replace_namespaced_network_policy(
+            self.name, self.namespace, body, **kwargs)
 
     def _delete(self, **kwargs):
-        self._manager.api.delete_node(
-            self.name, client.V1DeleteOptions(), **kwargs)
+        self._manager.api.delete_namespaced_network_policy(
+            self.name, self.namespace, client.V1DeleteOptions(), **kwargs)
 
 
-class K8sNodeManager(K8sBaseManager):
-    resource_class = K8sNode
+class K8sNetworkPolicyManager(K8sBaseManager):
+    resource_class = K8sNetworkPolicy
 
     @property
     def api(self):
-        return self._cluster.api_core
+        return self._cluster.api_extensions
 
     def _list(self, namespace, **kwargs):
-        return self.api.list_node(**kwargs)
+        return self.api.list_namespaced_network_policy(namespace, **kwargs)
 
     def _list_all(self, **kwargs):
-        return self._list(None, **kwargs)
+        return self.api.list_network_policy_for_all_namespaces(**kwargs)
