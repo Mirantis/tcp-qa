@@ -11,10 +11,6 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 
-import urllib3
-
 from tcp_tests.managers.k8s.cluster import K8sCluster
 
 __all__ = ['K8sCluster']
-
-urllib3.disable_warnings()  # Supress https insecure warning
