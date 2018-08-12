@@ -29,7 +29,7 @@ class TestMCPCalico(object):
     """
 
     @pytest.mark.fail_snapshot
-    def test_k8s_netchecker_calico(self, show_step, config, k8s_deployed):
+    def test_k8s_netchecker_calico(self, show_step, k8s_deployed):
         """Test for deploying k8s environment with Calico plugin and check
            network connectivity between different pods by k8s-netchecker
 
@@ -41,13 +41,11 @@ class TestMCPCalico(object):
         """
 
         show_step(1)
-        k8sclient = k8s_deployed.api
-        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
-        netchecker_port = netchecker.get_service_port(k8sclient)
+        k8s_deployed.list_nodes()
 
         show_step(2)
-        netchecker.wait_check_network(k8sclient, works=True, timeout=300,
-                                      netchecker_pod_port=netchecker_port)
+        nch = netchecker.Netchecker(k8s_deployed)
+        nch.wait_check_network(nch.get_service_port(), works=True, timeout=300)
 
     @pytest.mark.fail_snapshot
     @pytest.mark.calico_ci
@@ -72,27 +70,21 @@ class TestMCPCalico(object):
         """
 
         show_step(1)
-        k8sclient = k8s_deployed.api
-        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
-        netchecker_port = netchecker.get_service_port(k8sclient)
+
+        nch = netchecker.Netchecker(k8s_deployed)
+        netchecker_port = nch.get_service_port()
 
         show_step(2)
-        netchecker.get_netchecker_pod_status(k8s=k8s_deployed,
-                                             namespace='netchecker')
+        nch.wait_netchecker_pods_running(netchecker.NETCHECKER_SERVER_PREFIX)
 
         show_step(3)
-        netchecker.get_netchecker_pod_status(k8s=k8s_deployed,
-                                             pod_name='netchecker-agent',
-                                             namespace='netchecker')
+        nch.wait_netchecker_pods_running(netchecker.NETCHECKER_AGENT_PREFIX)
 
         show_step(4)
-        netchecker.wait_check_network(k8sclient, namespace='netchecker',
-                                      netchecker_pod_port=netchecker_port)
+        nch.wait_check_network(netchecker_pod_port=netchecker_port)
 
         show_step(5)
-        res = netchecker.get_metric(k8sclient,
-                                    netchecker_pod_port=netchecker_port,
-                                    namespace='netchecker')
+        res = nch.get_metric(netchecker_pod_port=netchecker_port)
 
         assert res.status_code == 200, 'Unexpected response code {}'\
             .format(res)
@@ -111,24 +103,30 @@ class TestMCPCalico(object):
                     metric, res.text)
 
         show_step(6)
-        first_node = k8sclient.nodes.list()[0]
+        first_node = k8s_deployed.node(k8s_deployed.list_nodes()[0]).read()
         first_node_ips = [addr.address for addr in first_node.status.addresses
                           if 'IP' in addr.type]
         assert len(first_node_ips) > 0, "Couldn't find first k8s node IP!"
         first_node_names = [name for name in underlay.node_names()
-                            if name.startswith(first_node.name)]
+                            if name.startswith(first_node.metadata.name)]
         assert len(first_node_names) == 1, "Couldn't find first k8s node " \
                                            "hostname in SSH config!"
         first_node_name = first_node_names.pop()
 
         target_pod_ip = None
 
-        for pod in k8sclient.pods.list(namespace='netchecker'):
-            LOG.debug('NC pod IP: {0}'.format(pod.status.pod_ip))
+        for pod_name in k8s_deployed.list_pods(
+                netchecker.NETCHECKER_NAMESPACE):
+            pod = k8s_deployed.pod(
+                netchecker.NETCHECKER_NAMESPACE, pod_name).read()
+
+            LOG.debug('NC pod IP: {}'.format(pod.status.pod_ip))
             if pod.status.host_ip not in first_node_ips:
                 continue
+
             # TODO: get pods by daemonset with name 'netchecker-agent'
-            if 'netchecker-agent-' in pod.name and 'hostnet' not in pod.name:
+            if 'netchecker-agent-' in pod.metadata.name \
+                    and 'hostnet' not in pod.metadata.name:
                 target_pod_ip = pod.status.pod_ip
 
         assert target_pod_ip is not None, "Could not find netchecker pod IP!"
@@ -154,14 +152,11 @@ class TestMCPCalico(object):
                   'recovered'.format(target_pod_ip, first_node.name))
 
         show_step(8)
-        netchecker.wait_check_network(k8sclient, namespace='netchecker',
-                                      netchecker_pod_port=netchecker_port,
-                                      works=True)
+        nch.wait_check_network(netchecker_pod_port=netchecker_port, works=True)
 
     @pytest.mark.fail_snapshot
     @pytest.mark.calico_ci
-    def test_calico_network_policies(self, show_step, config, underlay,
-                                     k8s_deployed):
+    def test_calico_network_policies(self, show_step, config, k8s_deployed):
         """Test for deploying k8s environment with Calico and check
            that network policies work as expected.
            Policy test additional requirement:
@@ -183,38 +178,25 @@ class TestMCPCalico(object):
         """
 
         show_step(1)
-        k8sclient = k8s_deployed.api
-        assert k8sclient.nodes.list() is not None, "Can not get nodes list"
-        kube_master_nodes = k8s_deployed.get_k8s_masters()
-        assert kube_master_nodes, "No k8s masters found in pillars!"
-        netchecker_port = netchecker.get_service_port(k8sclient)
+        k8s_deployed.list_nodes()
+
+        nch = netchecker.Netchecker(k8s_deployed)
+        netchecker_port = nch.get_service_port()
 
         show_step(2)
-        netchecker.wait_check_network(k8sclient, namespace='netchecker',
-                                      works=True, timeout=300,
-                                      netchecker_pod_port=netchecker_port)
+        nch.wait_check_network(netchecker_port, works=True)
 
         show_step(3)
-        netchecker.kubernetes_block_traffic_namespace(underlay,
-                                                      kube_master_nodes[0],
-                                                      'netchecker')
+        nch.kubernetes_block_traffic_namespace()
 
         show_step(4)
-        netchecker.calico_allow_netchecker_connections(underlay, k8sclient,
-                                                       kube_master_nodes[0],
-                                                       'netchecker')
+        nch.calico_allow_netchecker_connections()
 
         show_step(5)
-        netchecker.wait_check_network(k8sclient, namespace='netchecker',
-                                      works=False, timeout=500,
-                                      netchecker_pod_port=netchecker_port)
+        nch.wait_check_network(netchecker_port, works=False)
 
         show_step(6)
-        netchecker.kubernetes_allow_traffic_from_agents(underlay,
-                                                        kube_master_nodes[0],
-                                                        'netchecker')
+        nch.kubernetes_allow_traffic_from_agents()
 
         show_step(7)
-        netchecker.wait_check_network(k8sclient, namespace='netchecker',
-                                      works=True, timeout=300,
-                                      netchecker_pod_port=netchecker_port)
+        nch.wait_check_network(netchecker_port, works=True)
