@@ -142,6 +142,13 @@
   retry: {count: 3, delay: 30}
   skip_fail: true
 
+- description: Highstate analytics
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'nal*' state.sls highstate && sleep 15;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 - description: Check contrail status
   cmd: sleep 15; salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:database' cmd.run 'doctrail all contrail-status'
