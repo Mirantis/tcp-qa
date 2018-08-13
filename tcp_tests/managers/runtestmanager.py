@@ -126,19 +126,39 @@ class RuntestManager(object):
             'pip.install', 'docker'), None
 
     def run_salt_minion_state(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'salt.minion')
+        r = self.salt_api.enforce_state(self.master_tgt, 'salt.minion')
+        if r[1]:
+            time.sleep(60)
+            r = self.salt_api.enforce_state(self.master_tgt, 'salt.minion')
+        return r
 
     def create_networks(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'neutron.client')
+        r = self.salt_api.enforce_state(self.master_tgt, 'neutron.client')
+        if r[1]:
+            time.sleep(60)
+            r = self.salt_api.enforce_state(self.master_tgt, 'neutron.client')
+        return r
 
     def create_flavors(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'nova.client')
+        r = self.salt_api.enforce_state(self.master_tgt, 'nova.client')
+        if r[1]:
+            time.sleep(60)
+            r = self.salt_api.enforce_state(self.master_tgt, 'nova.client')
+        return r
 
     def create_cirros(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'glance.client')
+        r = self.salt_api.enforce_state(self.master_tgt, 'glance.client')
+        if r[1]:
+            time.sleep(60)
+            r = self.salt_api.enforce_state(self.master_tgt, 'glance.client')
+        return r
 
     def generate_config(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'runtest')
+        r = self.salt_api.enforce_state(self.master_tgt, 'runtest')
+        if r[1]:
+            time.sleep(60)
+            r = self.salt_api.enforce_state(self.master_tgt, 'runtest')
+        return r
 
     def fetch_arficats(self, username=None, file_format='xml'):
         target_name = next(node_name for node_name
