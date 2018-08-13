@@ -18,6 +18,7 @@ from collections import defaultdict
 
 from datetime import datetime
 from pepper import libpepper
+from time import sleep
 from tcp_tests.helpers import utils
 from tcp_tests import logger
 from tcp_tests import settings
@@ -140,6 +141,18 @@ class SaltManager(ExecuteCommandsMixin):
 
     def enforce_state(self, tgt, state, args=None, kwargs=None):
         r = self.local(tgt=tgt, fun='state.sls', args=state)
+        f = self.check_result(r)
+        return r, f
+
+    def enforce_state_with_retry(self, tgt, state, tries=2,
+                                 args=None, kwargs=None):
+        for i in range(tries):
+            r = self.local(tgt=tgt, fun='state.sls', args=state)
+            if r[1]:
+                sleep(60)
+                r = self.local(tgt=tgt, fun='state.sls', args=state)
+            else:
+                break
         f = self.check_result(r)
         return r, f
 
