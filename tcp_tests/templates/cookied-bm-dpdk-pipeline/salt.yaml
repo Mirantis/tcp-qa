@@ -14,6 +14,19 @@
 
 {{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
 
+- description: "Workaround for PROD-22201 (remove after switching to reclass 1.5.x) - Remove linux.network.interface object from the system models and use fixed 'environment' model instead"
+  cmd: |
+    set -e;
+    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    . /root/venv-reclass-tools/bin/activate;
+    pip install git+https://github.com/dis-xcom/reclass-tools;
+    reclass-tools del-key parameters.linux.network.interface /srv/salt/reclass/classes/system/;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "fluentd" "runtest" "maas" "jenkins" "glusterfs" "backupninja" "auditd" "logrotate"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}

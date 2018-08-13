@@ -62,6 +62,8 @@ nodes:
         enp3s0f1:
           role: bond_dpdk_prv_lacp
           dpdk_pci: "0000:03:00.1"
+        # Remove this interface after switching to reclass 1.5.x
+        # in favor to system.nova.compute.nfv.sriov
         enp5s0f1:
           role: sriov
 
@@ -83,6 +85,8 @@ nodes:
         enp3s0f1:
           role: bond_dpdk_prv_lacp
           dpdk_pci: "0000:03:00.1"
+        # Remove this interface after switching to reclass 1.5.x
+        # in favor to system.nova.compute.nfv.sriov
         enp5s0f1:
           role: sriov
 
