@@ -44,6 +44,13 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+- description: Rerun openssh after env model is generated
+  cmd: |
+    salt-call state.sls openssh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+  
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 ########################################
