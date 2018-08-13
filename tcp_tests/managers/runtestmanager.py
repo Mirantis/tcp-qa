@@ -17,7 +17,6 @@ import os
 import time
 
 from devops.helpers import helpers
-
 from tcp_tests import logger
 from tcp_tests import settings
 
@@ -126,19 +125,24 @@ class RuntestManager(object):
             'pip.install', 'docker'), None
 
     def run_salt_minion_state(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'salt.minion')
+        return self.salt_api.enforce_state(
+            self.master_tgt, 'salt.minion')
 
     def create_networks(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'neutron.client')
+        return self.salt_api.enforce_state_with_retry(
+            self.master_tgt, 'neutron.client')
 
     def create_flavors(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'nova.client')
+        return self.salt_api.enforce_state_with_retry(
+            self.master_tgt, 'nova.client')
 
     def create_cirros(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'glance.client')
+        return self.salt_api.enforce_state_with_retry(
+            self.master_tgt, 'glance.client')
 
     def generate_config(self):
-        return self.salt_api.local('cfg01*', 'state.sls', 'runtest')
+        return self.salt_api.enforce_state_with_retry(
+            self.master_tgt, 'runtest')
 
     def fetch_arficats(self, username=None, file_format='xml'):
         target_name = next(node_name for node_name
