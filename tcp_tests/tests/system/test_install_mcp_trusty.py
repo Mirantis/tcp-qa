@@ -42,7 +42,8 @@ class TestMcpInstallStacklightOpenstackTrusty(object):
 
         if settings.RUN_TEMPEST:
             openstack_actions.run_tempest(pattern=settings.PATTERN,
-                                          target='cfg01')
+                                          target='cfg01',
+                                          conf_name='lvm_mcp_mitaka.conf')
             openstack_actions.download_tempest_report(stored_node='cfg01')
         LOG.info("*************** DONE **************")
 
