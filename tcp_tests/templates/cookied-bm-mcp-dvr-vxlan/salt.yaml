@@ -33,6 +33,7 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
 
@@ -44,6 +45,21 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+- description: Temporary workaround for removing virtual gtw nodes
+  cmd: |
+    sed -i 's/\-\ system\.salt\.control\.sizes\.ovs\.compact//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/\-\ system\.salt\.control\.placement\.ovs\.compact//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Rerun openssh after env model is generated
+  cmd: |
+    salt-call state.sls openssh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+  
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 ########################################
