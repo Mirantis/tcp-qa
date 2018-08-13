@@ -13,6 +13,7 @@
 #    under the License.
 
 import netaddr
+import time
 
 from collections import defaultdict
 
@@ -140,6 +141,14 @@ class SaltManager(ExecuteCommandsMixin):
 
     def enforce_state(self, tgt, state, args=None, kwargs=None):
         r = self.local(tgt=tgt, fun='state.sls', args=state)
+        f = self.check_result(r)
+        return r, f
+
+    def enforce_state_with_retry(self, tgt, state, args=None, kwargs=None):
+        r = self.local(tgt=tgt, fun='state.sls', args=state)
+        if r[1]:
+            time.sleep(60)
+            r = self.local(tgt=tgt, fun='state.sls', args=state)
         f = self.check_result(r)
         return r, f
 
