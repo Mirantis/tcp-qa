@@ -368,6 +368,7 @@
 - description: Create cluster model from cookiecutter templates
   cmd: |
     set -e;
+    set -x;
     sudo apt-get install python-setuptools -y
     pip install cookiecutter
     export GIT_SSL_NO_VERIFY=true; git clone {{ COOKIECUTTER_TEMPLATES_REPOSITORY }} /root/cookiecutter-templates
@@ -445,6 +446,7 @@
 - description: Modify generated model and reclass-system if necessary
   cmd: |
     set -e;
+    set -x;
     {%- if SALT_MODELS_SYSTEM_COMMIT != '' %}
     pushd /srv/salt/reclass/classes/system/
     git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
@@ -499,6 +501,7 @@
 - description: Fetch changes for environment templates
   cmd: |
     set -e;
+    set -x;
     pushd /root/environment/environment_template &&
     git fetch https://github.com/Mirantis/environment-template {{ ENVIRONMENT_TEMPLATE_REF_CHANGE }} &&
     git checkout FETCH_HEAD &&
@@ -519,6 +522,7 @@
 - description: "[EXPERIMENTAL] Remove linux.network.interface object from the cluster/system models and use fixed 'environment' model instead"
   cmd: |
     set -e;
+    set -x;
     apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
     [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
     . /root/venv-reclass-tools/bin/activate;
@@ -548,6 +552,7 @@
 - description: "[EXPERIMENTAL] Create environment model for virtual environment"
   cmd: |
     set -e;
+    set -x;
     . /root/venv-reclass-tools/bin/activate;
     reclass-tools render --template-dir /root/environment/environment_template/ \
                          --output-dir /srv/salt/reclass/classes/environment/ \
@@ -573,6 +578,7 @@
 - description: Configure reclass
   cmd: |
     set -e;
+    set -x;
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
     which wget > /dev/null || (apt-get update; apt-get install -y wget);
     . /etc/lsb-release;  # Get DISTRIB_CODENAME variable
@@ -644,6 +650,7 @@
   {%- if salt_roles %}
 - description: Configure salt-minion on {{ ssh['node_name'] }}
   cmd: |
+    set -ex;
     [ ! -d /etc/salt/minion.d ] && mkdir -p /etc/salt/minion.d;
     cat << EOF > /etc/salt/minion.d/minion.conf
     id: $(hostname -s).{{ DOMAIN_NAME }}
@@ -698,6 +705,7 @@
 - description: Install salt formulas
   cmd: |
     set -e;
+    set -x;
     FORMULA_PATH=${FORMULA_PATH:-/usr/share/salt-formulas};
     which wget > /dev/null || (apt-get update; apt-get install -y wget);
     . /etc/lsb-release;  # Get DISTRIB_CODENAME variable
@@ -727,6 +735,7 @@
 {#######################################}
 - description: Configure salt-minion on {{ HOSTNAME_CFG01 }}
   cmd: |
+    set -ex;
     export SALT_MASTER_MINION_ID={{ HOSTNAME_CFG01 }}
     envsubst < /root/minion.conf > /etc/salt/minion.d/minion.conf
     service salt-minion restart
@@ -791,6 +800,7 @@
 - description: Replace needed formulas to desired version
   cmd: |
     set -e;
+    set -x;
     {%- for formula_set in SALT_FORMULAS_REFS.split(' ') %}
     {% set formula = formula_set.split(':') %}
     {% set formula_name = formula[0] %}
@@ -873,6 +883,7 @@
 - description: Validate pillar on salt master node
   cmd: |
     set -e
+    set -x;
     if salt-call sys.doc reclass.validate_node_params | grep -q reclass.validate_node_params ; then salt-call reclass.validate_nodes_params ; fi
     if salt-call sys.doc reclass.validate_pillar | grep -q reclass.validate_pillar ; then salt-call reclass.validate_pillar ; fi
   node_name: {{ HOSTNAME_CFG01 }}
@@ -906,6 +917,7 @@
 - description: Show reclass-salt --top for all generated nodes
   cmd: |
     set -e
+    set -x;
     if salt-call sys.doc reclass.validate_node_params | grep -q reclass.validate_node_params ; then salt-call reclass.validate_nodes_params ; fi
     if salt-call sys.doc reclass.validate_pillar | grep -q reclass.validate_pillar ; then salt-call reclass.validate_pillar ; fi
     reclass-salt --top
