@@ -185,6 +185,23 @@ def swarm_run_pytest(String passed_steps) {
             parameters: parameters
 }
 
+def swarm_testrail_report(String passed_steps) {
+        // Run pytest tests
+        def common = new com.mirantis.mk.Common()
+        def parameters = [
+                string(name: 'ENV_NAME', value: "${ENV_NAME}"),
+                string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
+                string(name: 'PASSED_STEPS', value: passed_steps),
+                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
+                string(name: 'PARENT_WORKSPACE', value: pwd()),
+                string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
+            ]
+        common.printMsg("Start building job 'swarm-testrail-report' with parameters:", "purple")
+        common.prettyPrint(parameters)
+        build job: 'swarm-testrail-report',
+            parameters: parameters
+}
+
 def generate_cookied_model() {
         def common = new com.mirantis.mk.Common()
         // do not fail if environment doesn't exists
@@ -344,8 +361,79 @@ def get_steps_list(steps) {
     return steps.split(',').collect { it.split(':')[0] }
 }
 
-def report_deploy_result(deploy_expected_stacks) {
+def create_xml_report(String filename, String classname, String name, String status='success', String status_message='', String text='', String stdout='', String stderr='') {
+    // <filename> is name of the XML report file that will be created
+    // <status> is one of the 'success', 'skipped', 'failure' or 'error'
+    // 'error' status is assumed as 'Blocker' in TestRail reporter
+    def report_str = """\
+<?xml version='1.0' encoding='utf-8'?>
+  <testsuite>
+    <testcase classname='${classname}' name='${name}' time='0'>
+      <${status} message='${status_message}'>${text}</${status}>
+      <system-out>${stdout}</system-out>
+      <system-err>${stderr}</system-err>
+    </testcase>
+  </testsuite>
+"""
+    run_cmd("""\
+cat << EOF > ${filename}
+${report_str}
+EOF
+""")
 }
 
-def report_test_result() {
+def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
+  def venvPath = '/home/jenkins/venv_testrail_reporter'
+  def testPlanDesc = env.ENV_NAME
+  def testrailURL = "https://mirantis.testrail.com"
+  def testrailProject = "Mirantis Cloud Platform"
+  def testPlanName = "[MCP-Q2]System-${MCP_VERSION}-${new Date().format('yyyy-MM-dd')}"
+  def testrailMilestone = "MCP1.1"
+  def jobURL = env.BUILD_URL
+
+  def reporterOptions = [
+    "--verbose",
+    "--env-description \"${testPlanDesc}\"",
+    "--testrail-run-update",
+    "--testrail-url \"${testrailURL}\"",
+    "--testrail-user \"\${TESTRAIL_USER}\"",
+    "--testrail-password \"\${TESTRAIL_PASSWORD}\"",
+    "--testrail-project \"${testrailProject}\"",
+    "--testrail-plan-name \"${testPlanName}\"",
+    "--testrail-milestone \"${testrailMilestone}\"",
+    "--testrail-suite \"${testSuiteName}\"",
+    "--xunit-name-template \"${methodname}\"",
+    "--testrail-name-template \"${testrail_name_template}\"",
+    "--test-results-link \"${jobURL}\"",
+  ] + reporter_extra_options
+
+  def script = """
+    . ${venvPath}/bin/activate
+    set -ex
+    report_xml=\$(find \$(pwd) -name "${report_name}")
+    if [ -n "\${report_xml}" ]; then
+        report ${reporterOptions.join(' ')} \${report_xml}
+    fi
+  """
+
+  def testrail_cred_id = params.TESTRAIL_CRED ?: 'testrail_system_tests'
+
+  withCredentials([
+             [$class          : 'UsernamePasswordMultiBinding',
+             credentialsId   : testrail_cred_id,
+             passwordVariable: 'TESTRAIL_PASSWORD',
+             usernameVariable: 'TESTRAIL_USER']
+  ]) {
+    return run_cmd(script)
+  }
+}
+
+
+def create_deploy_result_report(deploy_expected_stacks, result, text) {
+    def STATUS_MAP = ['SUCCESS': 'success', 'FAILURE': 'failure', 'UNSTABLE': 'failure', 'ABORTED': 'error']
+    def classname = "Deploy"
+    def name = "deployment_${ENV_NAME}"
+    def filename = "\$(pwd)/${name}.xml"
+    def status = STATUS_MAP[result ?: 'FAILURE']   // currentBuild.result *must* be set at the finish of the try/catch
+    create_xml_report(filename, classname, name, status, "Deploy components: ${deploy_expected_stacks}", text, '', '')
 }
