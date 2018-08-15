@@ -344,8 +344,120 @@ def get_steps_list(steps) {
     return steps.split(',').collect { it.split(':')[0] }
 }
 
-def report_deploy_result(deploy_expected_stacks) {
+def create_xml_report(String filename, String classname, String name, String status='success', String status_message='', String text='', String stdout='', String stderr='') {
+    // <filename> is name of the XML report file that will be created
+    // <status> is one of the 'success', 'skipped', 'failure' or 'error'
+    // 'error' status is assumed as 'Blocker' in TestRail reporter
+    def report_str = """\
+<?xml version='1.0' encoding='utf-8'?>
+  <testsuite>
+    <testcase classname='${classname}' name='${name}'>
+      <${status} message=${status_message}>${text}</${status}>
+      <system-out>${stdout}</system-out>
+      <system-err>${stderr}</system-err>
+    </testcase>
+  </testsuite>
+"""
+    run_cmd("""\
+cat << EOF > ${filename}
+${report_str}
+EOF
+""")
 }
 
-def report_test_result() {
+def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template) {
+  def venvPath = '/home/jenkins/venv_testrail_reporter'
+  def testPlanDesc = env.ENV_NAME
+  def testrailURL = "https://mirantis.testrail.com"
+  def testrailProject = "Mirantis Cloud Platform"
+  def testPlanName = "[MCP-Q2]System-${MCP_VERSION}-${new Date().format('yyyy-MM-dd')}"
+  def testrailMilestone = "MCP1.1"
+  def jobURL = env.BUILD_URL
+
+  def reporterOptions = [
+    "--verbose",
+    "--env-description '${testPlanDesc}'",
+    "--testrail-run-update",
+    "--testrail-url '${testrailURL}'",
+    "--testrail-user \"\${TESTRAIL_USER}\"",
+    "--testrail-password \"\${TESTRAIL_PASSWORD}\"",
+    "--testrail-project '${testrailProject}'",
+    "--testrail-plan-name '${testPlanName}'",
+    "--testrail-milestone '${testrailMilestone}'",
+    "--testrail-suite '${testSuiteName}'",
+    "--xunit-name-template '${methodname}'",
+    "--testrail-name-template '${testrail_name_template}'",
+    "--test-results-link '${jobURL}'",
+  ]
+
+  def script = """
+    . ${venvPath}/bin/activate
+    set -ex
+    report_xml=$(find $(pwd) -name "${report_name}")
+    if [ -n "\${report_xml}" ]; then
+        echo report ${reporterOptions.join(' ')} \${report_xml}
+    fi
+  """
+
+  def testrail_cred_id = params.TESTRAIL_CRED ?: 'testrail_system_tests'
+
+  withCredentials([
+             [$class          : 'UsernamePasswordMultiBinding',
+             credentialsId   : testrail_cred_id,
+             passwordVariable: 'TESTRAIL_PASSWORD',
+             usernameVariable: 'TESTRAIL_USER']
+  ]) {
+    return sh(script: script, returnStdout: true)
+  }
+}
+
+def STATUS_MAP = ['SUCCESS': 'success', 'FAILURE': 'failure', 'UNSTABLE': 'failure', 'ABORTED', 'error']
+
+def report_deploy_result(deploy_expected_stacks, result, text) {
+    def cassname = "Deploy"
+    def name = "deployment_${ENV_NAME}"
+    def filename = "\$(pwd)/${name}.xml"
+    def status = STATUS_MAP[result ?: 'FAILURE']   // currentBuild.result *must* be set at the finish of the try/catch
+
+    create_xml_report(filename, classname, name, status, "Deploy components: ${deploy_expected_stacks}", text, '', '')
+    report_name = "${name}.xml"
+    testSuiteName = "[MCP_X] integration cases"
+    methodname = '{methodname}'
+    testrail_name_template = '{title}'
+    upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template)
+}
+
+def report_test_result(deploy_expected_stacks) {
+    stacks = get_steps_list(deploy_expected_stacks)
+    def report_name = ''
+    def testSuiteName = ''
+    def methodname = ''
+    def testrail_name_template = ''
+
+
+    if ('openstack' in stacks) {
+        report_name = 'report_*.xml'
+        testSuiteName = "[MCP1.1_PIKE]Tempest"
+        methodname = '{classname}.{methodname}'
+        testrail_name_template = '{title}'
+        upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template)
+    }
+
+    if ('k8s' in stacks) {
+    }
+
+    if ('stacklight' in stacks) {
+        report_name = "report.xml"
+        testSuiteName = "LMA2.0_Automated"
+        methodname = '{methodname}'
+        testrail_name_template = '{title}'
+        upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template)
+    }
+
+    // tcp-qa cases report
+    report_name = "nosetests.xml"
+    testSuiteName = "[MCP_X] integration cases"
+    methodname = '{methodname}'
+    testrail_name_template = '{title}'
+    upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template)
 }

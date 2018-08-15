@@ -8,6 +8,12 @@ currentBuild.description = "${NODE_NAME}:${ENV_NAME}"
 
 throttle(['fuel_devops_environment']) {
   node ("${NODE_NAME}") {
+
+    ///////////////////////////////////////////
+    // Deployment
+    ///////////////////////////////////////////
+    def report_text = ''
+
     try {
 
         stage("Clean the environment and clone tcp-qa") {
@@ -29,20 +35,14 @@ throttle(['fuel_devops_environment']) {
             shared.swarm_deploy_platform(env.PLATFORM_STACK_INSTALL)
         }
 
-        stage("Run tests") {
-            shared.swarm_run_pytest(steps)
-        }
+        currentBuild.result = 'SUCCESS'
 
     } catch (e) {
         common.printMsg("Job failed", "red")
         shared.run_cmd("""\
             dos.py suspend ${ENV_NAME} || true
-            dos.py snapshot ${ENV_NAME} test_failed || true
+            dos.py snapshot ${ENV_NAME} deploy_failed || true
         """)
-        throw e
-    } finally {
-        // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
-        // and report appropriate data to TestRail
         if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
             shared.run_cmd("""\
                 dos.py resume ${ENV_NAME} || true
@@ -54,8 +54,43 @@ throttle(['fuel_devops_environment']) {
                 dos.py destroy ${ENV_NAME} || true
             """)
         }
-        shared.report_deploy_result(steps)
-        shared.report_test_result()
+        currentBuild.result = 'FAILURE'
+        report_text = e.message
+        throw e
+    } finally {
+        shared.report_deploy_result(steps, currentBuild.result, report_text)
     }
+
+    ///////////////////////////////////////////
+    // Testing
+    ///////////////////////////////////////////
+
+    try {
+        stage("Run tests") {
+            shared.swarm_run_pytest(steps)
+        }
+
+    } catch (e) {
+        common.printMsg("Job failed", "red")
+        shared.run_cmd("""\
+            dos.py suspend ${ENV_NAME} || true
+            dos.py snapshot ${ENV_NAME} tests_failed || true
+        """)
+        throw e
+    } finally {
+        if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
+            shared.run_cmd("""\
+                dos.py resume ${ENV_NAME} || true
+                sleep 20    # Wait for I/O on the host calms down
+                dos.py time-sync ${ENV_NAME} || true
+            """)
+        } else {
+            shared.run_cmd("""\
+                dos.py destroy ${ENV_NAME} || true
+            """)
+        }
+        shared.report_test_result(steps)
+    }
+
   }
 }
