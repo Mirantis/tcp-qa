@@ -181,14 +181,14 @@
 
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
+    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type vlan --provider:segmentation_id 2403'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
 - description: Create subnet_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04_ext 172.17.42.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start=172.17.42.10,end=172.17.42.60 --gateway 172.17.42.1'
+    '. /root/keystonercv3; neutron subnet-create net04_ext 172.17.42.0/26 --name net04_ext__subnet --disable-dhcp --allocation-pool start=172.17.42.10,end=172.17.42.60 --gateway 172.17.42.1'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
