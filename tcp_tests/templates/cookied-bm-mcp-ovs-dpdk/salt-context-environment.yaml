@@ -100,7 +100,7 @@ nodes:
           role: single_mgm
           deploy_address: 172.16.49.5
         enp3s0f1:
-          role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+          role: bond0_ab_dvr_vlan_ctl_prv_floating
 
     gtw02.cookied-bm-mcp-ovs-dpdk.local:
       reclass_storage_name: openstack_gateway_node02
@@ -112,4 +112,4 @@ nodes:
           role: single_mgm
           deploy_address: 172.16.49.4
         enp3s0f1:
-          role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+          role: bond0_ab_dvr_vlan_ctl_prv_floating
