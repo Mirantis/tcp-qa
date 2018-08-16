@@ -20,8 +20,8 @@ default_context:
   context_seed: Psupdi5ne1kCk31iDWV7fhbHnBALIr3SWhce7Z01jCaMwlAhGKxeLPFPQ9CgYzJD
   control_network_netmask: 255.255.255.0
   control_network_subnet: 10.167.4.0/24
-  control_vlan: '2403'
-  cookiecutter_template_branch: master
+  control_vlan: '2405'
+  cookiecutter_template_branch: proposed
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/mk/cookiecutter-templates.git
   deploy_network_gateway: 172.16.164.1
@@ -193,3 +193,5 @@ default_context:
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
   vnf_onboarding_enabled: 'False'
+  ext_vlan: '2403'
+  ext_network_netmask: 255.255.255.192
