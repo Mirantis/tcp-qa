@@ -77,7 +77,7 @@ default_context:
   control_network_netmask: 255.255.255.0
   control_network_subnet: 10.167.11.0/24
   control_vlan: '2416'
-  cookiecutter_template_branch: master
+  cookiecutter_template_branch: proposed
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates.git
   deploy_network_gateway: 172.16.49.62
@@ -161,12 +161,13 @@ default_context:
   openstack_nfv_sriov_enabled: 'True'
   openstack_nova_compute_hugepages_count: '16'
   openstack_nova_compute_nfv_req_enabled: 'True'
-  openstack_nfv_sriov_network: physnet1
+  openstack_nfv_sriov_network: physnet2
   openstack_nfv_sriov_numvfs: '7'
   openstack_nfv_sriov_pf_nic: enp5s0f1
   openstack_nova_cpu_pinning: 6,7,8,9,10,11
   openstack_ovs_dvr_enabled: 'False'
-  openstack_ovs_encapsulation_type: vxlan
+  openstack_ovs_encapsulation_type: vlan
+  openstack_ovs_encapsulation_vlan_range: 2418:2420
   openstack_proxy_address: 10.167.11.80
   openstack_proxy_hostname: prx
   openstack_proxy_node01_address: 10.167.11.81
@@ -187,7 +188,7 @@ default_context:
   salt_master_address: 10.167.11.2
   salt_master_hostname: cfg01
   salt_master_management_address: 172.16.49.2
-  shared_reclass_branch: master
+  shared_reclass_branch: proposed
   shared_reclass_url: https://gerrit.mcp.mirantis.net/salt-models/reclass-system.git
   stacklight_enabled: 'False'
   stacklight_version: '2'
@@ -198,3 +199,4 @@ default_context:
   tenant_vlan: '2417'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
+  sriov_network_subnet: 192.168.10.0/24
