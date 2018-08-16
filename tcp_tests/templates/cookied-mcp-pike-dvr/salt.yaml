@@ -20,6 +20,24 @@
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
+- description: "[EXPERIMENTAL] Add cinder volume class with loop0 on the compute nodes"
+  cmd: |
+      set -e;
+      set -x;
+      apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev python-setuptools;
+      export LC_ALL=C;
+      [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+      . /root/venv-reclass-tools/bin/activate;
+      pip install git+https://github.com/dis-xcom/reclass-tools;
+      reclass-tools add-key 'classes' 'system.cinder.volume.single' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute/init.yml --merge ;
+      reclass-tools add-key 'classes' 'system.cinder.volume.backend.lvm' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute/init.yml --merge ;
+      reclass-tools add-key 'classes' 'system.linux.storage.loopback' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute/init.yml --merge ;
+      reclass-tools add-key parameters._param.loopback_device_size '20' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/init.yml;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
