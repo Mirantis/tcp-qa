@@ -13,9 +13,16 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install glance on all controllers
+- description: Install glance on primary controller
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@glance:server' state.sls glance -b 1
+     -C 'I@glance:server:role:primary' state.sls glance -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install glance on other controllers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@glance:server:role:secondary' state.sls glance -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
