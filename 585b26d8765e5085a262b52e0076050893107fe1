@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5439418f_0ab37561",
+        "filename": "tcp_tests/templates/cookied-mcp-pike-dvr/openstack.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-20T10:01:31Z",
+      "side": 1,
+      "message": "Please remove this if not needed",
+      "range": {
+        "startLine": 272,
+        "startChar": 0,
+        "endLine": 350,
+        "endChar": 19
+      },
+      "revId": "585b26d8765e5085a262b52e0076050893107fe1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ec6c1da_5a5e96a2",
+        "filename": "tcp_tests/templates/cookied-mcp-pike-dvr/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-20T10:01:31Z",
+      "side": 1,
+      "message": "Please move this to the model generator https://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/templates/cookied-model-generator/salt_cookied-mcp-pike-dvr.yaml",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 147
+      },
+      "revId": "585b26d8765e5085a262b52e0076050893107fe1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "30da629a_5eca3542",
+        "filename": "tcp_tests/templates/cookied-mcp-pike-ovs/openstack.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 329,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-20T10:01:31Z",
+      "side": 1,
+      "message": "Please remove this if not needed",
+      "range": {
+        "startLine": 251,
+        "startChar": 0,
+        "endLine": 329,
+        "endChar": 19
+      },
+      "revId": "585b26d8765e5085a262b52e0076050893107fe1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a873e98_cd9cdca6",
+        "filename": "tcp_tests/templates/cookied-mcp-pike-ovs/salt.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-20T10:01:31Z",
+      "side": 1,
+      "message": "Please move this to the model generator https://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/templates/cookied-model-generator/salt_cookied-mcp-pike-ovs.yaml",
+      "range": {
+        "startLine": 32,
+        "startChar": 1,
+        "endLine": 35,
+        "endChar": 147
+      },
+      "revId": "585b26d8765e5085a262b52e0076050893107fe1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
