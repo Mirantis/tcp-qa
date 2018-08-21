@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "9f094f22_7e403306",
+        "filename": "tcp_tests/managers/k8s/base.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-21T08:48:06Z",
+      "side": 1,
+      "message": "Exactly. Please make separate methods for each data type.\nUnless the caller don\u0027t know what kind of data it provides and must somehow figure out which parameter should be used. But it will be a bad design pattern where I\u0027d ask to rewrite the caller.",
+      "parentUuid": "a38cdce0_0d47908c",
+      "range": {
+        "startLine": 143,
+        "startChar": 0,
+        "endLine": 150,
+        "endChar": 53
+      },
+      "revId": "47a83de93fa7cdfdfb41459814304d2a9292c006",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f95c84b0_5eb644b4",
         "filename": "tcp_tests/managers/k8s/cluster.py",
         "patchSetId": 18
