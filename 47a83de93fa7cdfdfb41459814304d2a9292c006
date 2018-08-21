@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "a38cdce0_0d47908c",
+        "filename": "tcp_tests/managers/k8s/base.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1008378
+      },
+      "writtenOn": "2018-08-21T08:29:01Z",
+      "side": 1,
+      "message": "\u003e There are three different methods: read_yaml_str, read_yaml_file,\n \u003e read_yaml_url.\n \u003e No need to manage it with variables, caller functions must know\n \u003e which method should be used.\n\nThis method used as helper for \u0027create\u0027 methods above. So you wanna to make 4 create methods: create, create_str, create_file, create_url (btw last one not used for now)?",
+      "parentUuid": "1c6064fe_cd561fd9",
+      "range": {
+        "startLine": 143,
+        "startChar": 0,
+        "endLine": 150,
+        "endChar": 53
+      },
+      "revId": "47a83de93fa7cdfdfb41459814304d2a9292c006",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f95c84b0_5eb644b4",
         "filename": "tcp_tests/managers/k8s/cluster.py",
         "patchSetId": 18
@@ -36,6 +60,30 @@
       "writtenOn": "2018-08-17T09:45:17Z",
       "side": 1,
       "message": "Please add this lib to the requirements.txt",
+      "range": {
+        "startLine": 15,
+        "startChar": 7,
+        "endLine": 15,
+        "endChar": 17
+      },
+      "revId": "47a83de93fa7cdfdfb41459814304d2a9292c006",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1b88d13a_c1c9cbbe",
+        "filename": "tcp_tests/managers/k8s/cluster.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 15,
+      "author": {
+        "id": 1008378
+      },
+      "writtenOn": "2018-08-21T08:29:01Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f95c84b0_5eb644b4",
       "range": {
         "startLine": 15,
         "startChar": 7,
