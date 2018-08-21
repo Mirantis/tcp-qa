@@ -41,12 +41,12 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: "WR for changing VCP images path to internal storage"
+- description: "Change path to internal storage for salt.control images"
   cmd: |
     set -e;
     . /root/venv-reclass-tools/bin/activate;
-    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcp{{ SHARED.REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
-    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://ci.mcp.mirantis.net:8085/images/ubuntu-14-04-x64-mcp{{ SHARED.REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_xenial_image 'https://apt.mcp.mirantis.net/images/ubuntu-16-04-x64-mcp{{ SHARED.REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
+    reclass-tools add-key parameters._param.salt_control_trusty_image 'https://apt.mcp.mirantis.net/images/ubuntu-14-04-x64-mcp{{ SHARED.REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -85,6 +85,15 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+
+- description: WR for mounting 1G hugepages before linux.state
+  cmd: |
+    salt 'cmp*' state.sls linux.system.hugepages;
+    salt 'cmp*' cmd.run "mount -o mode=775,pagesize=1G -t hugetlbfs Hugetlbfs-kvm /mnt/hugepages_1G";
+    salt 'cmp*' cmd.run "echo 16 | sudo  tee  /sys/kernel/mm/hugepages/hugepages-1048576kB/nr_hugepages";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
 - description: Temporary WR for correct bridge name according to envoronment templates
   cmd: |

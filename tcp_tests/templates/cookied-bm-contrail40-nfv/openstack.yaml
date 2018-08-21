@@ -140,7 +140,7 @@
     -C 'I@opencontrail:database and *01*' state.sls opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 30}
-  skip_fail: true
+  skip_fail: false
 
 - description: Check contrail status
   cmd: sleep 15; salt --hard-crash --state-output=mixed --state-verbose=False
