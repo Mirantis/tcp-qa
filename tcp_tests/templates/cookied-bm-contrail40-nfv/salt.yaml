@@ -8,7 +8,7 @@
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','physical-cookied-bm-contrail40-nfv') %}
 # Path to the context files used to render Cluster and Environment models
-{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-contrail.yaml' %}
+{%- set CLUSTER_CONTEXT_NAME = os_env('CLUSTER_CONTEXT_NAME', 'salt-context-cookiecutter-contrail.yaml') %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-physical-inventory.yaml'] %}
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2422') %}
 {%- set TENANT_VLAN = os_env('TENANT_VLAN', '2423') %}
