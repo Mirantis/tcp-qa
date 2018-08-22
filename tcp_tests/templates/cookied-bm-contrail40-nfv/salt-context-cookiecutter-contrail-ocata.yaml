@@ -30,6 +30,7 @@ default_context:
   backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCmrlbGRqC+Q1Y7zkW1LUHIcMqQ1aGYV2lj0Pj11mtLC4T1cZD5Zbv0XYAbAqSLY3aPWLJ+kwQpEgQhv/lxuXp9nNMZOd2F3snGTHrEZ2FmRf1Uzo2qi1o7hySPs2x+JkpPCnnz9hJGTPciLVc+m3Q1Cpku40DC6zgGX17VaTl03D6Ac3ebgmYBzMltDzWWtBRELt/d3bGOgWRdZcLYUqQxLoA6XWPzsBN55Ib3F4cts68jIHDsjA/0wUDm9S0eXwPOx2bNaZVFpt7ZUy0ZrVhrklNOArydea1hbd28RD8O2DNwo8nZ87fVzN70tGkNJLQTp39whIGDOw98Em5QIYdN
   bmk_enabled: 'False'
   ceph_enabled: 'False'
+  opencontrail_compute_iface: enp5s0f0
   openstack_nfv_dpdk_enabled: 'True'
   openstack_nfv_sriov_enabled: 'True'
   openstack_nfv_sriov_network: physnet1
@@ -153,7 +154,6 @@ default_context:
   opencontrail_router01_hostname: rtr01
   opencontrail_router02_address: 10.167.8.101
   opencontrail_router02_hostname: rtr02
-  openldap_enabled: 'False'
   openssh_groups: ''
   openstack_benchmark_node01_address: 10.167.8.95
   openstack_benchmark_node01_hostname: bmk01
@@ -190,9 +190,6 @@ default_context:
   openstack_network_engine: opencontrail
   openstack_neutron_bgp_vpn: 'False'
   openstack_neutron_bgp_vpn_driver: bagpipe
-  openstack_nfv_dpdk_enabled: 'False'
-  openstack_nfv_sriov_enabled: 'False'
-  openstack_nova_compute_nfv_req_enabled: 'False'
   openstack_nova_compute_reserved_host_memory_mb: '900'
   openstack_proxy_address: 10.167.8.80
   openstack_proxy_hostname: prx
@@ -201,7 +198,7 @@ default_context:
   openstack_proxy_node02_address: 10.167.8.82
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: 10.167.8.19
-  openstack_version: pike
+  openstack_version: ocata
   oss_enabled: 'False'
   oss_node03_address: ${_param:stacklight_monitor_node03_address}
   oss_webhook_app_id: '24'
