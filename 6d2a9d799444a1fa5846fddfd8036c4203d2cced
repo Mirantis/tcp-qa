@@ -1,0 +1,84 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d8e6ace4_196e62a9",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 47,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-22T14:11:09Z",
+      "side": 1,
+      "message": "missing glance.client",
+      "revId": "6d2a9d799444a1fa5846fddfd8036c4203d2cced",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "73037174_15ff6f5f",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 77,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-22T14:11:09Z",
+      "side": 1,
+      "message": "missing nova.client",
+      "revId": "6d2a9d799444a1fa5846fddfd8036c4203d2cced",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a55c848f_ecc2e290",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-22T14:11:09Z",
+      "side": 1,
+      "message": "must be heat, not neutron",
+      "range": {
+        "startLine": 150,
+        "startChar": 4,
+        "endLine": 150,
+        "endChar": 59
+      },
+      "revId": "6d2a9d799444a1fa5846fddfd8036c4203d2cced",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e75abb91_91dee395",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-22T14:11:09Z",
+      "side": 1,
+      "message": "-//-",
+      "range": {
+        "startLine": 157,
+        "startChar": 1,
+        "endLine": 157,
+        "endChar": 50
+      },
+      "revId": "6d2a9d799444a1fa5846fddfd8036c4203d2cced",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
