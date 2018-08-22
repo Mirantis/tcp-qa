@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c56fb794_9de27fee",
+        "filename": "tcp_tests/templates/cookied-mcp-newton-ovs/core.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1011059
+      },
+      "writtenOn": "2018-08-22T06:44:12Z",
+      "side": 1,
+      "message": "Pls fix",
+      "revId": "2f72275cb50dbf617dd026e698ff98e881dc4710",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
