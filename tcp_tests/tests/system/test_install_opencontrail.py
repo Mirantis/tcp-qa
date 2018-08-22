@@ -45,6 +45,7 @@ class TestOpenContrail(object):
         if settings.RUN_TEMPEST:
             tempest_conf_name = '/var/lib/contrail_fixed_mcp.conf'
             openstack_deployed.run_tempest(target='ctl01',
+                                           node_name='ctl01',
                                            pattern=settings.PATTERN,
                                            conf_name=tempest_conf_name)
             openstack_deployed.download_tempest_report(stored_node='ctl01')
