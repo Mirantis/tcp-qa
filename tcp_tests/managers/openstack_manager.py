@@ -97,7 +97,13 @@ class OpenstackManager(ExecuteCommandsMixin):
         if not registry:
             registry = ('{0}/{1}'.format(settings.DOCKER_REGISTRY,
                                          settings.DOCKER_NAME))
+        LOG.info("TARGET IS: {}".format(target))
         if node_name is None and target is not None:
+            underlay_node_names = self.__underlay.node_names()
+            LOG.info("UNDERLAY NODE NAMES: {}".format(underlay_node_names))
+            target_name_test = [name for name in self.__underlay.node_names()]
+            LOG.info("TARGET NAMES TEST: {}".format(target_name_test))
+
             target_name = next(
                 name for name in self.__underlay.node_names()
                 if target in name)
