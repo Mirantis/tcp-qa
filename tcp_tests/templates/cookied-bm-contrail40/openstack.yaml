@@ -16,7 +16,14 @@
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NOVA() }}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER(INSTALL_VOLUME=true) }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER(INSTALL_VOLUME=false) }}
+
+- description: WR Install cinder volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:volume' state.sls cinder
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON(INSTALL_GATEWAY=false) }}
 
