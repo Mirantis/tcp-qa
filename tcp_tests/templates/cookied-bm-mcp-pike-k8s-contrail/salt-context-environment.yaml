@@ -1,58 +1,5 @@
 nodes:
-    # Virtual Control Plane nodes
-# commented as ctl is bm
-#    ctl01.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: kubernetes_control_node01
-#      roles:
-#      - kubernetes_control_contrail
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-#
-#    ctl02.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: kubernetes_control_node02
-#      roles:
-#      - kubernetes_control_contrail
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-#
-#    ctl03.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: kubernetes_control_node03
-#      roles:
-#      - kubernetes_control_contrail
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-
-#    commented as there is no k8s proxy nodes in this setup
-#    prx01.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: kubernetes_proxy_node01
-#      roles:
-#      - kubernetes_proxy
-#      # - infra_proxy
-#      # - stacklight_proxy
-#      - salt_master_host
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-
-#    prx02.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: kubernetes_proxy_node02
-#      roles:
-#      - kubernetes_proxy
-#      # - infra_proxy
-#      # - stacklight_proxy
-#      - salt_master_host
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-
+    # Stacklight
     mon01.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: stacklight_server_node01
       roles:
@@ -79,73 +26,6 @@ nodes:
       interfaces:
         ens3:
           role: single_ctl
-
-#   commented as shpuld be in pod
-#   nal01.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: opencontrail_analytics_node01
-#      roles:
-#      - opencontrail_analytics
-#      - linux_system_codename_xenial
-#      - salt_master_host
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-#          single_address: 10.167.8.31
-#
-#    nal02.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: opencontrail_analytics_node02
-#      roles:
-#      - opencontrail_analytics
-#      - linux_system_codename_xenial
-#      - salt_master_host
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-#          single_address: 10.167.8.32
-#
-#    nal03.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: opencontrail_analytics_node03
-#      roles:
-#      - opencontrail_analytics
-#      - linux_system_codename_xenial
-#      - salt_master_host
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-#          single_address: 10.167.8.33
-#
-#    ntw01.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: opencontrail_control_node01
-#      roles:
-#      - opencontrail_control
-#      - linux_system_codename_xenial
-#      - salt_master_host
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-#          single_address: 10.167.8.21
-#
-#    ntw02.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: opencontrail_control_node02
-#      roles:
-#      - opencontrail_control
-#      - linux_system_codename_xenial
-#      - salt_master_host
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-#          single_address: 10.167.8.22
-#
-#    ntw03.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: opencontrail_control_node03
-#      roles:
-#      - opencontrail_control
-#      - linux_system_codename_xenial
-#      - salt_master_host
-#      interfaces:
-#        ens3:
-#          role: single_ctl
-#          single_address: 10.167.8.23
 
     mtr01.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: stacklight_telemetry_node01
@@ -200,12 +80,3 @@ nodes:
       interfaces:
         ens3:
           role: single_ctl
-
-#    bmk01.cookied-bm-mcp-ocata-contrail.local:
-#      reclass_storage_name: openstack_benchmark_node01
-#      roles:
-#      - openstack_benchmark
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_ctl

@@ -32,6 +32,8 @@ default_context:
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   auditd_enabled: 'False'
+  kubernetes_coredns_enabled: False
+  kubernetes_kubedns_enabled: True
   cicd_control_node01_address: 10.167.8.91
   cicd_control_node01_hostname: cid01
   cicd_control_node02_address: 10.167.8.92
@@ -85,7 +87,7 @@ default_context:
   cookiecutter_template_url: https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates.git
   deploy_network_gateway: 172.17.41.2
   deploy_network_netmask: 255.255.255.192
-  deploy_network_subnet: 172.16.49.64/26
+  deploy_network_subnet: 172.17.41.0/26
   deployment_type: physical
   dns_server01: 172.17.41.2
   dns_server02: 172.17.41.2
@@ -108,7 +110,7 @@ default_context:
   kubernetes_enabled: 'True'
   kubernetes_compute_count: 2
   kubernetes_compute_rack01_single_subnet: 10.167.8
-  kubernetes_compute_rack01_tenant_subnet: 192.168.0
+  kubernetes_compute_rack01_tenant_subnet: 10.167.8
   kubernetes_network_opencontrail_enabled: 'True'
   local_repositories: 'False'
   maas_deploy_address: 172.16.49.66
@@ -131,15 +133,16 @@ default_context:
   kubernetes_control_node03_address: 10.167.8.237
   kubernetes_control_node03_hostname: ctl03
   linux_repo_contrail_component: oc40
-  opencontrail_analytics_address: 10.167.8.30
   opencontrail_analytics_hostname: ctl
-  opencontrail_analytics_node01_address: 10.167.8.31
   opencontrail_analytics_node01_hostname: ctl01
-  opencontrail_analytics_node02_address: 10.167.8.32
   opencontrail_analytics_node02_hostname: ctl02
-  opencontrail_analytics_node03_address: 10.167.8.33
   opencontrail_analytics_node03_hostname: ctl03
+  opencontrail_analytics_address: ${_param:opencontrail_control_address}
+  opencontrail_analytics_node01_address: ${_param:opencontrail_control_node01_address}
+  opencontrail_analytics_node02_address: ${_param:opencontrail_control_node02_address}
+  opencontrail_analytics_node03_address: ${_param:opencontrail_control_node03_address}
   opencontrail_compute_iface_mask: '24'
+  opencontrail_compute_iface: ens11f1
   opencontrail_control_address: 10.167.8.236
   opencontrail_control_hostname: ctl
   opencontrail_control_node01_address: 10.167.8.239
@@ -153,6 +156,7 @@ default_context:
   opencontrail_router01_hostname: rtr01
   opencontrail_router02_address: 10.167.8.101
   opencontrail_router02_hostname: rtr02
+  opencontrail_public_ip_range: 172.17.41.128/26
   opencontrail_version: '4.0'
   openstack_enabled: 'False'
   openssh_groups: ''
@@ -204,10 +208,10 @@ default_context:
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: 192.168.0.1
+  tenant_network_gateway: 10.167.8.1
   tenant_network_netmask: 255.255.255.0
-  tenant_network_subnet: 192.168.0.0/24
-  tenant_vlan: '2411'
+  tenant_network_subnet: 10.167.8.0/24
+  tenant_vlan: '2410'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
   vnf_onboarding_enabled: 'False'
