@@ -79,7 +79,7 @@ default_context:
   context_seed: GAZbu3hguubkeYMg15AQ1J6UuY60TAh8h0EVpNUrHWhjRS2SxRYBuxxLvVURv82m
   control_network_netmask: 255.255.255.0
   control_network_subnet: 10.167.8.0/24
-  control_vlan: '2410'
+  control_vlan: '2405'
   cookiecutter_template_branch: ''
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates.git
