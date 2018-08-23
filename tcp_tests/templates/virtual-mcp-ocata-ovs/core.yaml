@@ -1,5 +1,7 @@
 {% from 'virtual-mcp-ocata-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
+{% import 'shared-core.yaml' as SHARED_CORE with context %}
+
 # Install support services
 - description: Install keepalived on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -15,26 +17,7 @@
   retry: {count: 1, delay: 10}
   skip_fail: true
 
-- description: Install glusterfs
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:server' state.sls glusterfs.server.service
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Setup glusterfs on primary controller
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:server' state.sls glusterfs.server.setup -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
-  skip_fail: false
-
-- description: Check the gluster status
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:server' cmd.run 'gluster peer status; gluster volume status' -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+{{ SHARED_CORE.MACRO_INSTALL_GLUSTERFS() }}
 
 - description: Install RabbitMQ on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
