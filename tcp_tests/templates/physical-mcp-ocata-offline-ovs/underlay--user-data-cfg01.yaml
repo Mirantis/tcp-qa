@@ -41,16 +41,20 @@
    - ifdown --force ens3; ifconfig ens3 down; ip a flush dev ens3; rm -f /var/run/network/ifstate.ens3
    - ifdown --force ens4; ifconfig ens4 down; ip a flush dev ens4; rm -f /var/run/network/ifstate.ens4
    - ifdown --force ens5; ifconfig ens5 down; ip a flush dev ens5; rm -f /var/run/network/ifstate.ens5
-   - cd /root/config-drive && /bin/bash -xe ./user-data
+   - cp /root/config-drive/user-data /root/config.sh && chmod 664 /root/config.sh
+   - sed -i '/^reboot$/d' /root/config.sh
+   - cd /root && /bin/bash -xe ./config.sh
 
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - systemctl reload sshd
 
    ########################################################
-   # Node is ready, allow SSH access
+   # Node is ready, allow SSH access and reboot
    - echo "Allow SSH access ..."
    - "sed -i -e '/sshd:ALL/d' /etc/hosts.deny"
    - touch /is_cloud_init_finish
+   - reboot
    ########################################################
 
   write_files:

@@ -26,7 +26,7 @@
   skip_fail: false
 
 - description: MaaS auth
-  cmd: maas logout mirantis && maas login mirantis http://localhost:5240/MAAS/api/2.0/ 'FTvqwe7ybBp68gPar2:5mcctTAXVL8mns4ef4:zrA9LZwu2tMc8BAZpsPUfwWwTyQnAtDN'
+  cmd: bash -x  /var/lib/maas/.maas_login.sh
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
