@@ -79,7 +79,7 @@ default_context:
   context_seed: GAZbu3hguubkeYMg15AQ1J6UuY60TAh8h0EVpNUrHWhjRS2SxRYBuxxLvVURv82m
   control_network_netmask: 255.255.255.0
   control_network_subnet: 10.167.8.0/24
-  control_vlan: '2410'
+  control_vlan: '2405'
   cookiecutter_template_branch: ''
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates.git
@@ -131,14 +131,14 @@ default_context:
   kubernetes_control_node03_address: 10.167.8.237
   kubernetes_control_node03_hostname: ctl03
   linux_repo_contrail_component: oc40
-  opencontrail_analytics_address: 10.167.8.30
   opencontrail_analytics_hostname: ctl
-  opencontrail_analytics_node01_address: 10.167.8.31
   opencontrail_analytics_node01_hostname: ctl01
-  opencontrail_analytics_node02_address: 10.167.8.32
   opencontrail_analytics_node02_hostname: ctl02
-  opencontrail_analytics_node03_address: 10.167.8.33
   opencontrail_analytics_node03_hostname: ctl03
+  opencontrail_analytics_address: ${_param:opencontrail_control_address}
+  opencontrail_analytics_node01_address: ${_param:opencontrail_control_node01_address}
+  opencontrail_analytics_node02_address: ${_param:opencontrail_control_node02_address}
+  opencontrail_analytics_node03_address: ${_param:opencontrail_control_node03_address}
   opencontrail_compute_iface_mask: '24'
   opencontrail_control_address: 10.167.8.236
   opencontrail_control_hostname: ctl
@@ -153,6 +153,7 @@ default_context:
   opencontrail_router01_hostname: rtr01
   opencontrail_router02_address: 10.167.8.101
   opencontrail_router02_hostname: rtr02
+  opencontrail_public_ip_range: 172.17.41.128/26
   opencontrail_version: '4.0'
   openstack_enabled: 'False'
   openssh_groups: ''
