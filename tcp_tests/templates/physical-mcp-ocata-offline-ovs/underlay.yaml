@@ -19,6 +19,8 @@
 {% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM06', 'kvm06.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP001 = os_env('HOSTNAME_CMP001', 'cmp001.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP002 = os_env('HOSTNAME_CMP002', 'cmp002.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP003 = os_env('HOSTNAME_CMP002', 'cmp003.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP004 = os_env('HOSTNAME_CMP002', 'cmp004.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW03 = os_env('HOSTNAME_GTW03', 'gtw03.' + DOMAIN_NAME) %}
@@ -50,8 +52,16 @@
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX02 = os_env('HOSTNAME_PRX02', 'prx02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX03 = os_env('HOSTNAME_PRX03', 'prx03.' + DOMAIN_NAME) %}
-
-
+{% set HOSTNAME_RGW = os_env('HOSTNAME_RGW', 'rgw.' + DOMAIN_NAME) %}
+{% set HOSTNAME_RGW01 = os_env('HOSTNAME_RGW01', 'rgw01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_RGW02 = os_env('HOSTNAME_RGW02', 'rgw02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_RGW03 = os_env('HOSTNAME_RGW03', 'rgw03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMN01 = os_env('HOSTNAME_CMN01', 'cmn01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMN02 = os_env('HOSTNAME_CMN02', 'cmn02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMN03 = os_env('HOSTNAME_CMN03', 'cmn03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_OSD01 = os_env('HOSTNAME_OSD01', 'osd01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_OSD02 = os_env('HOSTNAME_OSD02', 'osd02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_OSD03 = os_env('HOSTNAME_OSD03', 'osd03.' + DOMAIN_NAME) %}
 
 {% set ETH0_IP_ADDRESS_APT = os_env('ETH0_IP_ADDRESS_ATP', '10.10.0.14') %}
 {% set ETH0_IP_ADDRESS_CFG01 = os_env('ETH0_IP_ADDRESS_CFG01', '10.10.0.15') %}
@@ -78,10 +88,21 @@
 {% set ETH0_IP_ADDRESS_KVM06 = os_env('ETH0_IP_ADDRESS_KVM06', '10.10.0.246') %}
 {% set ETH0_IP_ADDRESS_CMP001 = os_env('ETH0_IP_ADDRESS_CMP001', '10.10.0.101') %}
 {% set ETH0_IP_ADDRESS_CMP002 = os_env('ETH0_IP_ADDRESS_CMP002', '10.10.0.102') %}
+{% set ETH0_IP_ADDRESS_CMP003 = os_env('ETH0_IP_ADDRESS_CMP003', '10.10.0.103') %}
+{% set ETH0_IP_ADDRESS_CMP004 = os_env('ETH0_IP_ADDRESS_CMP004', '10.10.0.104') %}
 {% set ETH0_IP_ADDRESS_GTW01 = os_env('ETH0_IP_ADDRESS_GTW01', '10.10.0.224') %}
 {% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '10.10.0.225') %}
 {% set ETH0_IP_ADDRESS_GTW02 = os_env('ETH0_IP_ADDRESS_GTW02', '10.10.0.226') %}
-
+{% set ETH0_IP_ADDRESS_RGW = os_env('ETH0_IP_ADDRESS_RGW', '10.10.0.75') %}
+{% set ETH0_IP_ADDRESS_RGW01 = os_env('ETH0_IP_ADDRESS_RGW01', '10.10.0.76') %}
+{% set ETH0_IP_ADDRESS_RGW02 = os_env('ETH0_IP_ADDRESS_RGW02', '10.10.0.77') %}
+{% set ETH0_IP_ADDRESS_RGW03 = os_env('ETH0_IP_ADDRESS_RGW03', '10.10.0.78') %}
+{% set ETH0_IP_ADDRESS_CMN01 = os_env('ETH0_IP_ADDRESS_CMN01', '10.10.0.66') %}
+{% set ETH0_IP_ADDRESS_CMN02 = os_env('ETH0_IP_ADDRESS_CMN02', '10.10.0.67') %}
+{% set ETH0_IP_ADDRESS_CMN03 = os_env('ETH0_IP_ADDRESS_CMN03', '10.10.0.68') %}
+{% set ETH0_IP_ADDRESS_OSD01 = os_env('ETH0_IP_ADDRESS_OSD01', '10.10.0.201') %}
+{% set ETH0_IP_ADDRESS_OSD02 = os_env('ETH0_IP_ADDRESS_OSD02', '10.10.0.202') %}
+{% set ETH0_IP_ADDRESS_OSD03 = os_env('ETH0_IP_ADDRESS_OSD03', '10.10.0.203') %}
 
 {% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '10.11.0.15') %}
 {% set ETH1_IP_ADDRESS_PRX01 = os_env('ETH1_IP_ADDRESS_PRX01', '10.11.0.11') %}
@@ -110,6 +131,16 @@
 {% set ETH1_IP_ADDRESS_GTW01 = os_env('ETH1_IP_ADDRESS_GTW01', '10.11.0.224') %}
 {% set ETH1_IP_ADDRESS_GTW02 = os_env('ETH1_IP_ADDRESS_GTW02', '10.11.0.225') %}
 {% set ETH1_IP_ADDRESS_GTW02 = os_env('ETH1_IP_ADDRESS_GTW02', '10.11.0.226') %}
+{% set ETH1_IP_ADDRESS_RGW = os_env('ETH1_IP_ADDRESS_RGW', '10.11.0.75') %}
+{% set ETH1_IP_ADDRESS_RGW01 = os_env('ETH1_IP_ADDRESS_RGW01', '10.11.0.76') %}
+{% set ETH1_IP_ADDRESS_RGW02 = os_env('ETH1_IP_ADDRESS_RGW02', '10.11.0.77') %}
+{% set ETH1_IP_ADDRESS_RGW03 = os_env('ETH1_IP_ADDRESS_RGW03', '10.11.0.78') %}
+{% set ETH1_IP_ADDRESS_CMN01 = os_env('ETH1_IP_ADDRESS_CMN01', '10.11.0.66') %}
+{% set ETH1_IP_ADDRESS_CMN02 = os_env('ETH1_IP_ADDRESS_CMN02', '10.11.0.67') %}
+{% set ETH1_IP_ADDRESS_CMN03 = os_env('ETH1_IP_ADDRESS_CMN03', '10.11.0.68') %}
+{% set ETH1_IP_ADDRESS_OSD01 = os_env('ETH1_IP_ADDRESS_OSD01', '10.11.0.201') %}
+{% set ETH1_IP_ADDRESS_OSD02 = os_env('ETH1_IP_ADDRESS_OSD02', '10.11.0.202') %}
+{% set ETH1_IP_ADDRESS_OSD03 = os_env('ETH1_IP_ADDRESS_OSD03', '10.11.0.203') %}
 
 {% set ETH2_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.44.33') %}
 
@@ -145,12 +176,14 @@ template:
             default_{{ HOSTNAME_KVM06 }}: {{ ETH1_IP_ADDRESS_KVM06 }}
             default_{{ HOSTNAME_CMP001 }}: {{ ETH1_IP_ADDRESS_CMP001 }}
             default_{{ HOSTNAME_CMP002 }}: {{ ETH1_IP_ADDRESS_CMP002 }}
+            default_{{ HOSTNAME_CMP003 }}: {{ ETH1_IP_ADDRESS_CMP003 }}
+            default_{{ HOSTNAME_CMP004 }}: {{ ETH1_IP_ADDRESS_CMP004 }}
             default_{{ HOSTNAME_GTW01 }}: {{ ETH1_IP_ADDRESS_GTW01 }}
             default_{{ HOSTNAME_GTW02 }}: {{ ETH1_IP_ADDRESS_GTW02 }}
             default_{{ HOSTNAME_CTL }}: {{ ETH1_IP_ADDRESS_CTL }}
-            default_{{ HOSTNAME_CTL01 }}: {{ ETH1_IP_ADDRESS_CTL02 }}
-            default_{{ HOSTNAME_CTL02 }}: {{ ETH1_IP_ADDRESS_CTL03 }}
-            default_{{ HOSTNAME_CTL03 }}: {{ ETH1_IP_ADDRESS_CTL04 }}
+            default_{{ HOSTNAME_CTL01 }}: {{ ETH1_IP_ADDRESS_CTL01 }}
+            default_{{ HOSTNAME_CTL02 }}: {{ ETH1_IP_ADDRESS_CTL02 }}
+            default_{{ HOSTNAME_CTL03 }}: {{ ETH1_IP_ADDRESS_CTL03 }}
             default_{{ HOSTNAME_MSG }}: {{ ETH1_IP_ADDRESS_MSG }}
             default_{{ HOSTNAME_MSG01 }}: {{ ETH1_IP_ADDRESS_MSG02 }}
             default_{{ HOSTNAME_MSG02 }}: {{ ETH1_IP_ADDRESS_MSG03 }}
@@ -160,17 +193,27 @@ template:
             default_{{ HOSTNAME_MON02 }}: {{ ETH1_IP_ADDRESS_MON02 }}
             default_{{ HOSTNAME_MON03 }}: {{ ETH1_IP_ADDRESS_MON03 }}
             default_{{ HOSTNAME_DBS }}: {{ ETH1_IP_ADDRESS_DBS }}
-            default_{{ HOSTNAME_DBS01 }}: {{ ETH1_IP_ADDRESS_DBS02 }}
-            default_{{ HOSTNAME_DBS02 }}: {{ ETH1_IP_ADDRESS_DBS03 }}
-            default_{{ HOSTNAME_DBS03 }}: {{ ETH1_IP_ADDRESS_DBS04 }}
+            default_{{ HOSTNAME_DBS01 }}: {{ ETH1_IP_ADDRESS_DBS01 }}
+            default_{{ HOSTNAME_DBS02 }}: {{ ETH1_IP_ADDRESS_DBS02 }}
+            default_{{ HOSTNAME_DBS03 }}: {{ ETH1_IP_ADDRESS_DBS03 }}
             default_{{ HOSTNAME_LOG }}: {{ ETH1_IP_ADDRESS_LOG }}
-            default_{{ HOSTNAME_LOG01 }}: {{ ETH1_IP_ADDRESS_LOG02 }}
-            default_{{ HOSTNAME_LOG02 }}: {{ ETH1_IP_ADDRESS_LOG03 }}
-            default_{{ HOSTNAME_LOG03 }}: {{ ETH1_IP_ADDRESS_LOG04 }}
+            default_{{ HOSTNAME_LOG01 }}: {{ ETH1_IP_ADDRESS_LOG01 }}
+            default_{{ HOSTNAME_LOG02 }}: {{ ETH1_IP_ADDRESS_LOG02 }}
+            default_{{ HOSTNAME_LOG03 }}: {{ ETH1_IP_ADDRESS_LOG03 }}
             default_{{ HOSTNAME_MTR }}: {{ ETH1_IP_ADDRESS_MTR }}
-            default_{{ HOSTNAME_MTR01 }}: {{ ETH1_IP_ADDRESS_MTR02 }}
-            default_{{ HOSTNAME_MTR02 }}: {{ ETH1_IP_ADDRESS_MTR03 }}
-            default_{{ HOSTNAME_MTR03 }}: {{ ETH1_IP_ADDRESS_MTR04 }}
+            default_{{ HOSTNAME_MTR01 }}: {{ ETH1_IP_ADDRESS_MTR01 }}
+            default_{{ HOSTNAME_MTR02 }}: {{ ETH1_IP_ADDRESS_MTR02 }}
+            default_{{ HOSTNAME_MTR03 }}: {{ ETH1_IP_ADDRESS_MTR03 }}
+            default_{{ HOSTNAME_RGW }}: {{ ETH1_IP_ADDRESS_RGW }}
+            default_{{ HOSTNAME_RGW01 }}: {{ ETH1_IP_ADDRESS_RGW01 }}
+            default_{{ HOSTNAME_RGW02 }}: {{ ETH1_IP_ADDRESS_RGW02 }}
+            default_{{ HOSTNAME_RGW03 }}: {{ ETH1_IP_ADDRESS_RGW03 }}
+            default_{{ HOSTNAME_CMN01 }}: {{ ETH1_IP_ADDRESS_CMN01 }}
+            default_{{ HOSTNAME_CMN02 }}: {{ ETH1_IP_ADDRESS_CMN02 }}
+            default_{{ HOSTNAME_CMN03 }}: {{ ETH1_IP_ADDRESS_CMN03 }}
+            default_{{ HOSTNAME_OSD01 }}: {{ ETH1_IP_ADDRESS_OSD01 }}
+            default_{{ HOSTNAME_OSD02 }}: {{ ETH1_IP_ADDRESS_OSD02 }}
+            default_{{ HOSTNAME_OSD03 }}: {{ ETH1_IP_ADDRESS_OSD03 }}
 
       admin-pool01:
         net: {{ os_env('DEPLOY_ADDRESS_POOL01', '10.10.0.0/16:16') }}
@@ -214,7 +257,16 @@ template:
             default_{{ HOSTNAME_MTR01 }}: {{ ETH0_IP_ADDRESS_MTR02 }}
             default_{{ HOSTNAME_MTR02 }}: {{ ETH0_IP_ADDRESS_MTR03 }}
             default_{{ HOSTNAME_MTR03 }}: {{ ETH0_IP_ADDRESS_MTR04 }}
-
+            default_{{ HOSTNAME_RGW }}: {{ ETH0_IP_ADDRESS_RGW }}
+            default_{{ HOSTNAME_RGW01 }}: {{ ETH0_IP_ADDRESS_RGW01 }}
+            default_{{ HOSTNAME_RGW02 }}: {{ ETH0_IP_ADDRESS_RGW02 }}
+            default_{{ HOSTNAME_RGW03 }}: {{ ETH0_IP_ADDRESS_RGW03 }}
+            default_{{ HOSTNAME_CMN01 }}: {{ ETH0_IP_ADDRESS_CMN01 }}
+            default_{{ HOSTNAME_CMN02 }}: {{ ETH0_IP_ADDRESS_CMN02 }}
+            default_{{ HOSTNAME_CMN03 }}: {{ ETH0_IP_ADDRESS_CMN03 }}
+            default_{{ HOSTNAME_OSD01 }}: {{ ETH0_IP_ADDRESS_OSD01 }}
+            default_{{ HOSTNAME_OSD02 }}: {{ ETH0_IP_ADDRESS_OSD02 }}
+            default_{{ HOSTNAME_OSD03 }}: {{ ETH0_IP_ADDRESS_OSD03 }}
 
       public-pool01:
         net: {{ os_env('PUBLIC_ADDRESS_POOL01', '172.16.44.0/22:22') }}
