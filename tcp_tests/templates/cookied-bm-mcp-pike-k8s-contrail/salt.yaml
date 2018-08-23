@@ -21,7 +21,7 @@
 
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
-{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN, CLUSTER_PRODUCT_MODELS='cicd infra kubernetes opencontrail stacklight2') }}
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
@@ -50,10 +50,35 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: Delete proxy inclusion from kvm
+  cmd: |
+    sed -i 's/- system.salt.control.cluster.kubernetes_proxy_cluster//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Temporary WR for correct bridge name according to envoronment templates
   cmd: |
     sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
     sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Excluding tenant network from cluster"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_address '${_param:single_address}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/compute.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Use correct compute interface"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_iface 'ens11f1.${_param:control_vlan}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -80,7 +105,7 @@
 
 - description: Update minion information
   cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_grains &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' mine.update &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar && sleep 10
   node_name: {{ HOSTNAME_CFG01 }}
@@ -155,6 +180,16 @@
   cmd: reclass-salt --top -u /srv/salt/reclass/nodes/_generated/
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Add user/password for mysql for SL tests"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.mysql_admin_user 'root' /srv/salt/reclass/nodes/_generated/mtr01.{{ DOMAIN_NAME }}.yml;
+    reclass-tools add-key parameters._param.mysql_admin_password 'password' /srv/salt/reclass/nodes/_generated/mtr01.{{ DOMAIN_NAME }}.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
