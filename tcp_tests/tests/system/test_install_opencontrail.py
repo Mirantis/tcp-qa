@@ -123,3 +123,22 @@ class TestOpenContrail(object):
                 '/root/stacklight-pytest/stacklight_tests/report.xml')
 
         LOG.info("*************** DONE **************")
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    def test_install_opencontrail4_k8s(self, config, show_step,
+                              k8s_deployed, k8s_logs):
+        """Test for deploying MCP environment with k8s and check it
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Setup Kubernetes cluster
+            5. Run conformance if need
+
+        """
+
+#        if config.k8s.k8s_conformance_run:
+#            show_step(5)
+#            k8s_deployed.run_conformance()
+        LOG.info("*************** DONE **************")
