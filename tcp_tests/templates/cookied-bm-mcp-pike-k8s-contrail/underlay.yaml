@@ -591,12 +591,6 @@ template:
                 enp9s0f0:
                   networks:
                    - admin
-                bond0:
-                  networks:
-                   - control
-                  aggregation: active-backup
-                  parents:
-                   - enp9s0f1
 
           - name: {{ HOSTNAME_CMP002 }}
             role: salt_minion
@@ -638,9 +632,3 @@ template:
                 enp9s0f0:
                   networks:
                    - admin
-                bond0:
-                  networks:
-                   - control
-                  aggregation: active-backup
-                  parents:
-                   - enp9s0f1
