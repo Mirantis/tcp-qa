@@ -90,11 +90,19 @@ class TestOfflineDeployment(object):
         LOG.info(f)
 
         # show_step(8)
-        nodes_amount = len(hardware.slave_nodes)
-        cmd = """   timeout 1800s bash -c 'hosts=$(maas mirantis nodes read | jq -r ".[] | select(.node_type_name==\\"Machine\\") | select(.status_name==\\"Ready\\") | .hostname "); while ! [ $(echo "$hosts" | wc -w) -eq {amount} ]; do echo "Ready hosts:\n$hosts"; sleep 30; hosts=$(maas mirantis nodes read | jq -r ".[] | select(.node_type_name==\\"Machine\\") | select(.status_name==\\"Ready\\") | .hostname "); done '   """.format(amount=nodes_amount)  # noqa
+        # nodes_amount = len(hardware.slave_nodes)
+        # cmd = """   timeout 600s bash -c 'hosts=$(maas mirantis nodes read | jq -r ".[] | select(.node_type_name==\\"Machine\\") | select(.status_name==\\"Ready\\") | .hostname "); while ! [ $(echo "$hosts" | wc -w) -eq {amount} ]; do echo "Ready hosts:\n$hosts"; sleep 30; hosts=$(maas mirantis nodes read | jq -r ".[] | select(.node_type_name==\\"Machine\\") | select(.status_name==\\"Ready\\") | .hostname "); done '   """.format(amount=nodes_amount)  # noqa
+        cmd = """salt-call state.sls maas.machines.wait_for_ready"""
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
         underlay.check_call(node_name=cfg_node, verbose=verbose,
                             cmd='salt-key')
+
+        r, f = day1_cfg_config.salt.enforce_state(
+            'cfg01*',
+            'maas.machines.assign_ip')
+        LOG.info(r)
+        LOG.info(f)
+
         # show_step(9)
         underlay.check_call(
             node_name=cfg_node, verbose=verbose,
@@ -220,24 +228,24 @@ class TestOfflineDeployment(object):
             cmd='salt "*" ssh.set_auth_key ubuntu '
                 '"$(ssh-keygen -y -f ~/.ssh/id_rsa | cut -d " " -f 2)"')
 
-        underlay.check_call(
-            node_name=cfg_node,
-            verbose=verbose,
-            cmd='salt-call state.sls maas.region')
-        underlay.check_call(
-            node_name=cfg_node,
-            verbose=verbose,
-            cmd='maas logout mirantis && '
-            'maas login mirantis '
-            'http://localhost:5240/MAAS/api/2.0/ '
-            'FTvqwe7ybBp68gPar2:5mcctTAXVL8mns4ef4:zrA9LZwu2tMc8BAZpsPUfwWwTyQnAtDN'  # noqa
-        )
+        # underlay.check_call(
+        #     node_name=cfg_node,
+        #     verbose=verbose,
+        #     cmd='salt-call state.sls maas.region')
+        # underlay.check_call(
+        #     node_name=cfg_node,
+        #     verbose=verbose,
+        #     cmd='maas logout mirantis && '
+        #     'maas login mirantis '
+        #     'http://localhost:5240/MAAS/api/2.0/ '
+        #     'FTvqwe7ybBp68gPar2:5mcctTAXVL8mns4ef4:zrA9LZwu2tMc8BAZpsPUfwWwTyQnAtDN'  # noqa
+        # )
 
-        underlay.check_call(
-            node_name=cfg_node,
-            verbose=verbose,
-            cmd="maas mirantis maas set-config "
-                "name=upstream_dns value='10.10.0.15 8.8.8.8 8.8.4.4'")
+        # underlay.check_call(
+        #     node_name=cfg_node,
+        #     verbose=verbose,
+        #     cmd="maas mirantis maas set-config "
+        #         "name=upstream_dns value='10.10.0.15 8.8.8.8 8.8.4.4'")
 
         # underlay.check_call(
         #     node_name=cfg_node,
@@ -247,13 +255,13 @@ class TestOfflineDeployment(object):
         #         "subnet=$(maas mirantis subnets read | jq '.[] | "
         #         "select(.name==\"10.10.0.0/16\") | .id')")
 
-        underlay.check_call(
-            node_name=cfg_node,
-            verbose=verbose,
-            cmd="maas mirantis vlan update "
-                "$(maas mirantis subnets read | jq '.[] | "
-                "select(.name==\"10.10.0.0/16\") | .vlan.fabric_id') "
-                "0 dhcp_on=True primary_rack='cfg01'")
+        # underlay.check_call(
+        #     node_name=cfg_node,
+        #     verbose=verbose,
+        #     cmd="maas mirantis vlan update "
+        #         "$(maas mirantis subnets read | jq '.[] | "
+        #         "select(.name==\"10.10.0.0/16\") | .vlan.fabric_id') "
+        #         "0 dhcp_on=True primary_rack='cfg01'")
 
         underlay.check_call(
             node_name=cfg_node,
@@ -278,7 +286,8 @@ class TestOfflineDeployment(object):
             verbose=verbose,
             cmd='salt-call state.sls maas.machines')
         show_step(5)
-        cmd = """   timeout 600s bash -c 'hosts=$(maas mirantis nodes read | jq -r ".[] | select(.node_type_name==\\"Machine\\") | select(.status_name==\\"Ready\\") | .hostname "); while ! [ $(echo "$hosts" | wc -w) -eq 10 ]; do echo "Ready hosts:\n$hosts"; sleep 30; hosts=$(maas mirantis nodes read | jq -r ".[] | select(.node_type_name==\\"Machine\\") | select(.status_name==\\"Ready\\") | .hostname "); done '   """  # noqa
+        # cmd = """   timeout 1200s bash -c 'hosts=$(maas mirantis nodes read | jq -r ".[] | select(.node_type_name==\\"Machine\\") | select(.status_name==\\"Ready\\") | .hostname "); while ! [ $(echo "$hosts" | wc -w) -eq 10 ]; do echo "Ready hosts:\n$hosts"; sleep 30; hosts=$(maas mirantis nodes read | jq -r ".[] | select(.node_type_name==\\"Machine\\") | select(.status_name==\\"Ready\\") | .hostname "); done '   """  # noqa
+        cmd = """salt-call state.sls maas.machines.wait_for_ready"""
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
         underlay.check_call(
             node_name=cfg_node, verbose=verbose, cmd='salt-key')
@@ -318,7 +327,7 @@ class TestOfflineDeployment(object):
             node_name=cfg_node, verbose=verbose, cmd="reclass-salt --top")
 
         cmd = "salt -C " \
-              "'I@salt:control or I@nova:compute or I@neutron:gateway' " \
+              "'I@salt:control or I@nova:compute or I@ceph:osd' " \
               "cmd.run 'touch /run/is_rebooted'"
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
@@ -333,25 +342,25 @@ class TestOfflineDeployment(object):
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         cmd = "salt --async -C " \
-              "'I@neutron:gateway' cmd.run 'salt-call state.sls " \
+              "'I@ceph:osd' cmd.run 'salt-call state.sls " \
               "linux.system.user,openssh,linux.network;reboot'"
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         time.sleep(360)  # TODO: Add ssh waiter
 
         cmd = "salt -C " \
-              "'I@salt:control or I@nova:compute or I@neutron:gateway'" \
+              "'I@salt:control or I@nova:compute or I@ceph:osd'" \
               " test.ping"
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         cmd = """salt -C """ \
-              """'I@salt:control or I@nova:compute or I@neutron:gateway' """ \
+              """'I@salt:control or I@nova:compute or I@ceph:osd' """ \
               """cmd.run '[ -f "/run/is_rebooted" ] && """ \
               """echo "Has not been rebooted!" || echo "Rebooted"' """
         ret = underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
         count = Counter(ret['stdout_str'].split())
 
-        assert count['Rebooted'] == 10, "Should be rebooted 10 baremetal nodes"
+        assert count['Rebooted'] == 13, "Should be rebooted 13 baremetal nodes"
 
         underlay.check_call(
             node_name=cfg_node,
@@ -383,10 +392,12 @@ class TestOfflineDeployment(object):
             password='r00tme')
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
+        params['STACK_INSTALL'] = \
+            'core,kvm,ceph,cicd,openstack,stacklight,finalize'
         build = jenkins.run_build('deploy_openstack', params)
 
         jenkins.wait_end_of_build(
-            name=build[0], build_id=build[1], timeout=60 * 60 * 2)
+            name=build[0], build_id=build[1], timeout=60 * 60 * 4)
 
         with open("{path}/cfg01_jenkins_deploy_openstack_console.log".format(
                 path=settings.LOGS_DIR), 'w') as f:
