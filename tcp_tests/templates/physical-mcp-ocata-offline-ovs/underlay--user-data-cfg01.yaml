@@ -45,6 +45,7 @@
 
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - systemctl reload sshd
 
    ########################################################
    # Node is ready, allow SSH access
