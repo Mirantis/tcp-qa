@@ -1,4 +1,5 @@
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CTL01 with context %}
 
 - description:  Install keepalived on primary controller
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -56,6 +57,20 @@
   retry: {count: 5, delay: 60}
   skip_fail: false
 
+- description: Configure OpenContrail as an add-on for Kubernetes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Run Kubernetes master without setup
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
 # Opencontrail Control Plane
 
 - description: Create configuration files for OpenContrail
@@ -70,14 +85,34 @@
     -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
-- description: Verify the status of the OpenContrail service
+- description: Run Kubernetes master setup
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:database' cmd.run 'doctrail all contrail-status'
+     -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
+
+- description: Waiting for contrail-containers up
+  cmd: |
+    for i in `seq 1 10`; do
+      ready_pods=`kubectl get pods --all-namespaces | awk '/opencontrail/ {print $3}' | awk 'NR==1' | cut -d "/" -f1`
+      if [ "$ready_pods" == "$total_pods" ];then
+        echo "containers are ready. Going to the next step"
+        break
+      elif [ "$i" -ne "10" ]; then
+        echo "Opencontrail containers is not ready. $ready_pods from $total_pods is ready."
+        sleep 12
+        continue
+      else
+        echo "Failed to up contrail containers"
+        exit 1
+      fi
+    done
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 - description: Set up the OpenContrail resources
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -126,28 +161,28 @@
      -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
 - description: Run Kubernetes master setup
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
      -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
 - description: Restart Kubelet
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@kubernetes:pool' service.restart 'kubelet'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
 - description: Check nodes registrations
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@kubernetes:pool' cmd.run 'sleep 60; kubectl get nodes'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
 - description: Renew hosts file on a whole cluster
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '*' state.sls linux.network.host;
