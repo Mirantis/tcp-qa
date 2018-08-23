@@ -21,7 +21,7 @@
 
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
-{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN, CLUSTER_PRODUCT_MODELS='cicd infra kubernetes opencontrail stacklight2') }}
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
@@ -29,6 +29,16 @@
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+- description: "WR for PROD-22649"
+  cmd: |
+    set -e;
+    git clone https://gerrit.mcp.mirantis.net/salt-formulas/kubernetes /root/kubernetes
+    cp /root/kubernetes/kubernetes/master/kube-addons.sls /usr/share/salt-formulas/env/kubernetes/master/;
+    cp /root/kubernetes/kubernetes/master/opencontrail.sls /usr/share/salt-formulas/env/kubernetes/master/;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
 - description: "Workaround for rack01 compute generator"
   cmd: |
@@ -50,10 +60,35 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: Delete proxy inclusion from kvm
+  cmd: |
+    sed -i 's/- system.salt.control.cluster.kubernetes_proxy_cluster//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Temporary WR for correct bridge name according to envoronment templates
   cmd: |
     sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
     sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Excluding tenant network from cluster"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_address '${_param:single_address}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/compute.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Use correct compute interface"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_iface 'ens11f1.${_param:control_vlan}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -80,7 +115,7 @@
 
 - description: Update minion information
   cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_grains &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' mine.update &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar && sleep 10
   node_name: {{ HOSTNAME_CFG01 }}
