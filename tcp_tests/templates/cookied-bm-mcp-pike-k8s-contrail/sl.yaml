@@ -65,36 +65,31 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Install keepalived on mon nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:client' state.sls glusterfs.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 15}
+  skip_fail: false
+
 # Install slv2 infra
 #Launch containers
 - description: Install Mongo if target matches
   cmd: |
     if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' match.pillar 'mongodb:server' ; then
-      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb.server
     fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Configure Alerta if it is exists
+- description: Install Mongo if target matches
   cmd: |
-    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:alerta' match.pillar 'prometheus:alerta' ; then
-      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:alerta' state.sls prometheus.alerta
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' match.pillar 'mongodb:server' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@mongodb:server' state.sls mongodb.cluster
     fi
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: launch prometheus containers
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and I@prometheus:server' state.sls docker.client
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 10}
-  skip_fail: false
-
-- description: Check docker ps
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' cmd.run "docker ps"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 10}
+  retry: {count: 5, delay: 20}
   skip_fail: false
 
 - description: Install telegraf
@@ -113,19 +108,31 @@
   skip_fail: false
 
 - description: Install elasticsearch server
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:server' state.sls elasticsearch.server -b 1
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:server:enabled:true and *01*' state.sls elasticsearch.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install elasticsearch server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:server:enabled:true' state.sls elasticsearch.server
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Install kibana server
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kibana:server' state.sls kibana.server -b 1
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kibana:server:enabled:true and *01*' state.sls kibana.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install kibana server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@kibana:server:enabled:true' state.sls kibana.server
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
 - description: Install elasticsearch client
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
+  cmd: sleep 30; salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@elasticsearch:client' state.sls elasticsearch.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 30}
   skip_fail: false
@@ -141,23 +148,12 @@
     INFLUXDB_SERVICE=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@influxdb:server' test.ping 1>/dev/null 2>&1 && echo true`;
     echo "Influxdb service presence: ${INFLUXDB_SERVICE}";
     if [[ "$INFLUXDB_SERVICE" == "true" ]]; then
-        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@influxdb:server' state.sls influxdb
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@influxdb:server and *01*' state.sls influxdb;
+        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@influxdb:server' state.sls influxdb;
     fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
-
-# Install Prometheus LTS(optional if set in model)
-- description: Prometheus LTS(optional if set in model)
-  cmd: |
-    PROMETHEUS_SERVICE=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:relay' test.ping 1>/dev/null 2>&1 && echo true`;
-    echo "PROMETHEUS rely service presence: ${PROMETHEUS_SERVICE}";
-    if [[ "$PROMETHEUS_SERVICE" == "true" ]]; then
-        salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:relay' state.sls prometheus
-    fi
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
 # Install service for the log collection
 - description: Configure fluentd
@@ -186,35 +182,76 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-# Collect grains needed to configure the services
+  ######################################
+  ######################################
+  ######################################
 
-- description: Get grains
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:minion' state.sls salt.minion.grains
+- description: Install Galera on first server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@galera:master' state.sls galera
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install Galera on other servers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@galera:slave' state.sls galera -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install Galera on first server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@galera:master' mysql.status
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Install Galera on other servers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@galera:slave' mysql.status
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Collect Grains
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:minion' state.sls salt.minion.grains;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:minion' saltutil.refresh_modules;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:minion' mine.update
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Sync modules
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:minion' saltutil.refresh_modules
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: Update mine
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:minion' mine.update; sleep 5;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 15}
-  skip_fail: false
-
-# Configure the services running in Docker Swarm
-- description: Configure prometheus in docker swarm
+- description: Check docker ps
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' state.sls prometheus
   node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+- description: launch prometheus containers
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and I@prometheus:server' state.sls docker.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+- description: Check docker ps
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' cmd.run "docker ps"
+  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: Configure Remote Collector in Docker Swarm for Openstack deployments
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' state.sls heka.remote_collector
+- description: Configure Grafana dashboards and datasources
+  cmd: sleep 60;  salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@grafana:client' state.sls grafana.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Configure Alerta if it is exists
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:alerta' match.pillar 'prometheus:alerta' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:alerta' state.sls prometheus.alerta
+    fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -226,32 +263,8 @@
   skip_fail: false
 
 
-#- description: Install prometheus alertmanager
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
-#- description: run docker state
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-#
-#- description: docker ps
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' dockerng.ps
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
-- description: Configure Grafana dashboards and datasources
-  cmd: sleep 30;  salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@grafana:client' state.sls grafana.client
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 10}
-  skip_fail: false
-
 - description: Run salt minion to create cert files
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False "*" state.sls salt.minion
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False "*" state.sls salt.minion.cert
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
-  skip_fail: false
+  skip_fail: true

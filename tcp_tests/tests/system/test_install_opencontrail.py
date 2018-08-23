@@ -121,5 +121,101 @@ class TestOpenContrail(object):
             stacklight_deployed.download_sl_test_report(
                 'ctl01',
                 '/root/stacklight-pytest/stacklight_tests/report.xml')
+        LOG.info("*************** DONE **************")
 
+    @pytest.mark.extract(container_system='docker', extract_from='myimage',
+                         files_to_extract=['report'])
+    @pytest.mark.merge_xunit(path='/root/report',
+                             output='/root/conformance_result.xml')
+    @pytest.mark.grab_k8s_results(name=['k8s_conformance.log',
+                                        'conformance_result.xml'])
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    def test_install_opencontrail4_k8s(self, config, show_step,
+                                       k8s_deployed, k8s_logs):
+        """Test for deploying MCP environment with k8s and check it
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Setup Kubernetes cluster
+            5. Run conformance if need
+
+        """
+
+        if config.k8s.k8s_conformance_run:
+            show_step(5)
+            k8s_deployed.run_conformance(raise_on_err=False)
+        LOG.info("*************** DONE **************")
+
+    @pytest.mark.extract(container_system='docker', extract_from='myimage',
+                         files_to_extract=['report'])
+    @pytest.mark.merge_xunit(path='/root/report',
+                             output='/root/conformance_result.xml')
+    @pytest.mark.grab_k8s_results(name=['k8s_conformance.log',
+                                        'conformance_result.xml'])
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    def test_install_opencontrail4_k8s_lma(self, config, show_step,
+                                           k8s_deployed,
+                                           stacklight_deployed,
+                                           k8s_logs):
+        """Test for deploying MCP environment with k8s and check it
+
+        Scenario:
+            1. Prepare salt on hosts
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Setup Kubernetes cluster
+            5. Check targets
+            6. Check docker services
+            7. Run SL tests
+            8. Download SL report
+            9. Run conformance if need
+        """
+        show_step(5)
+        sl_actions = stacklight_deployed
+
+        prometheus_client = stacklight_deployed.api
+        try:
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'
+                      .format(current_targets))
+        except Exception:
+            LOG.warning('Restarting keepalived service on mon nodes...')
+            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
+                                   args='systemctl restart keepalived')
+            LOG.warning(
+                'Ip states after forset restart {0}'.format(
+                    sl_actions._salt.local(tgt='mon*',
+                                           fun='cmd.run', args='ip a')))
+            current_targets = prometheus_client.get_targets()
+            LOG.debug('Current targets after install {0}'
+                      .format(current_targets))
+        mon_nodes = stacklight_deployed.get_monitoring_nodes()
+        LOG.debug('Mon nodes list {0}'.format(mon_nodes))
+
+        stacklight_deployed.check_prometheus_targets(mon_nodes)
+
+        show_step(6)
+        stacklight_deployed.check_docker_services(mon_nodes,
+                                                  expected_service_list)
+        # Run SL component tetsts
+        if settings.RUN_SL_TESTS:
+            show_step(7)
+            stacklight_deployed.run_sl_functional_tests(
+                'cfg01',
+                '/root/stacklight-pytest/stacklight_tests/',
+                'tests/prometheus',
+                'test_alerts.py')
+            show_step(8)
+            # Download report
+            stacklight_deployed.download_sl_test_report(
+                'cfg01',
+                '/root/stacklight-pytest/stacklight_tests/report.xml')
+
+        if config.k8s.k8s_conformance_run:
+            show_step(9)
+            k8s_deployed.run_conformance(raise_on_err=False)
         LOG.info("*************** DONE **************")
