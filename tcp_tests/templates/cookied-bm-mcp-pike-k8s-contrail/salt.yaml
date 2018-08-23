@@ -23,13 +23,48 @@
 
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
 
+- description: "WR for PROD-22538. Remove ASAP"
+  cmd: |
+    set -e;
+    git clone https://gerrit.mcp.mirantis.net/salt-models/reclass-system /root/reclass-system;
+    cp /root/reclass-system/kubernetes/control/opencontrail.yml /srv/salt/reclass/classes/system/kubernetes/control/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "glusterfs" "xtrabackup" "maas" "backupninja" "jenkins" "fluentd" "auditd" "logrotate"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
+- description: "Fix CA_SERT failure"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters.salt.master.worker_threads '60' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    reclass-tools add-key parameters.salt.master.command_timeout '900' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    salt-call saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+- description: "WR for PROD-22649"
+  cmd: |
+    set -e;
+    git clone https://gerrit.mcp.mirantis.net/salt-formulas/kubernetes /root/kubernetes
+    pushd /root/kubernetes;
+    git fetch https://gerrit.mcp.mirantis.net/salt-formulas/kubernetes refs/changes/92/25392/1 && git checkout FETCH_HEAD;
+    popd;
+    cp /root/kubernetes/kubernetes/files/kube-addons/netchecker/netchecker-agent.yml /usr/share/salt-formulas/env/kubernetes/files/kube-addons/netchecker/;
+    cp /root/kubernetes/kubernetes/files/kube-addons/netchecker/netchecker-server.yml /usr/share/salt-formulas/env/kubernetes/files/kube-addons/netchecker/;
+    cp /root/kubernetes/kubernetes/files/kube-addons/dashboard/dashboard-deployment.yaml /usr/share/salt-formulas/env/kubernetes/files/kube-addons/dashboard/;
+    cp /root/kubernetes/kubernetes/files/opencontrail/4.0/contrail-kubernetes.conf /usr/share/salt-formulas/env/kubernetes/files/opencontrail/4.0/;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
 
 - description: "Workaround for rack01 compute generator"
   cmd: |
@@ -59,6 +94,24 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: "Excluding tenant network from cluster"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_address '${_param:single_address}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/compute.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Use correct compute interface"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_iface 'ens11f1.${_param:control_vlan}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Rerun openssh after env model is generated
   cmd: |
     salt-call state.sls openssh
@@ -79,9 +132,20 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: "WR for PROD-22538. Remove ASAP"
+  cmd: |
+    set -e;
+    git clone https://gerrit.mcp.mirantis.net/salt-models/reclass-system /root/reclass-system;
+    cp 
+    . /root/venv-reclass-tools/bin/activate;
+    
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Update minion information
   cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_grains &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' mine.update &&
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar && sleep 10
   node_name: {{ HOSTNAME_CFG01 }}
