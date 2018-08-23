@@ -1,4 +1,17 @@
 {% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CTL01 with context %}
+
+{%- macro MACRO_CHECK_SYSTEMCTL() %}
+{#######################################}
+- description: Check systemctl on compute
+  cmd: |
+    set -ex;
+    salt 'cmp*' cmd.run "systemctl --version";
+    salt 'cmp*' cmd.run "journalctl -u dbus";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: true
+{%- endmacro %}
 
 - description:  Install keepalived on primary controller
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -25,21 +38,86 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@etcd:server' state.sls etcd.server.service
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Install certs
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@etcd:server' salt.minion -b 1
+    -C 'I@etcd:server' state.sls salt.minion -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-- description: Install etcd
+# Install opencontrail database services
+- description: Install opencontrail database services for 01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@etcd:server' state.sls etcd.server.service
+    -C 'I@opencontrail:database and *01*' state.sls opencontrail.database
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Install opencontrail database services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database' state.sls opencontrail.database
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+# Install opencontrail control services
+- description: Install opencontrail services for 01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control and *01*' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Install opencontrail services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Install docker host
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master' state.sls salt.minion.cert
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Install docker host
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@docker:host' state.sls docker.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+  #- description: Configure OpenContrail as an add-on for Kubernetes
+  #  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+  #    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
+  #  node_name: {{ HOSTNAME_CFG01 }}
+  #  retry: {count: 1, delay: 5}
+  #  skip_fail: false
+
+- description: Install Kubernetes components
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:master' state.sls kubernetes.pool
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: "Run k8s master at *01* to simplify namespaces creation"
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master and *01*' state.sls kubernetes.master exclude=kubernetes.master.setup,kubernetes.master.kube-addons
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 15}
+  skip_fail: false
+
+- description: Run k8s without master.setup
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+     -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup,kubernetes.master.kube-addons
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 15}
   skip_fail: false
 
 - description: Check the etcd health
@@ -49,51 +127,88 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install Kubernetes Addons
+{{ MACRO_CHECK_SYSTEMCTL() }}
+
+- description: Run Kubernetes master setup
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
+     -C 'I@kubernetes:master and *01*' state.sls kubernetes.master.setup
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Install Kubernetes components
+- description: Restart Kubelet
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:pool' state.sls kubernetes.pool
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 60}
-  skip_fail: false
-
-# Opencontrail Control Plane
-
-- description: Create configuration files for OpenContrail
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
+    -C 'I@kubernetes:master' service.restart 'kubelet'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Configure OpenContrail as an add-on for Kubernetes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
-  node_name: {{ HOSTNAME_CFG01 }}
+- description: Waiting for contrail-containers up. opencontrail.client state should be run only after that
+  cmd: |
+    sleep 30;
+    total_pods=`kubectl get pods --all-namespaces | awk '/opencontrail/ {print $3}' | cut -d "/" -f2`
+    for i in `seq 1 10`; do
+      ready_pods=`kubectl get pods --all-namespaces | awk '/opencontrail/ {print $3}' | cut -d "/" -f1`
+      if [ "$ready_pods" == "$total_pods" ];then
+        echo "containers are ready. Going to the next step"
+        break
+      elif [ "$i" -ne "10" ]; then
+        echo "Opencontrail containers is not ready. $ready_pods from $total_pods is ready."
+        sleep 60
+        continue
+      else
+        echo "Failed to up contrail containers in 10 minutes"
+        exit 1
+      fi
+    done
+  node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-- description: Verify the status of the OpenContrail service
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:database' cmd.run 'doctrail all contrail-status'
+- description: Check all pods
+  cmd: |
+     salt 'ctl*' cmd.run "kubectl -o wide get pods --all-namespaces";
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
+# Install contrail computes
 - description: Set up the OpenContrail resources
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@opencontrail:database:id:1' state.sls opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 60}
+  skip_fail: false
+
+- description: Apply opencontrail.client on contrail computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Reboot contrail computes
+  cmd: |
+    salt --async -C 'I@opencontrail:compute' system.reboot;
+    sleep 450;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Apply opencontrail.client on contrail computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Apply opencontrail.client on contrail computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls opencontrail
+  node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-# OpenContrail vrouters
 - description: Refresh pillars on cmp*
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'cmp*' saltutil.refresh_pillar
@@ -108,56 +223,56 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Apply highstate on contrail computes
+- description: Install docker host
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:compute' state.highstate exclude=opencontrail.client
+    -C 'I@kubernetes:master' state.sls salt.minion.cert
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 30}
   skip_fail: false
 
-- description: Reboot contrail computes
-  cmd: salt --timeout=600 -C 'I@opencontrail:compute' system.reboot
+- description: Install Kubernetes components
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@kubernetes:pool and not I@kubernetes:master' state.sls kubernetes.pool
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
-  skip_fail: true
-
-- description: Apply opencontrail.client on contrail computes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:compute' state.sls opencontrail.client
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
   skip_fail: false
-
-- description: Run Kubernetes master without setup
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master' state.sls kubernetes exclude=kubernetes.master.setup
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 3, delay: 5}
-  skip_fail: true
-
-- description: Run Kubernetes master setup
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master' --subset 1 state.sls kubernetes.master.setup
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
 
 - description: Restart Kubelet
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:pool' service.restart 'kubelet'
+    -C 'I@kubernetes:pool and not I@kubernetes:master' service.restart 'kubelet'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
-- description: Check nodes registrations
+- description: Configure OpenContrail as an add-on for Kubernetes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@kubernetes:pool' cmd.run 'sleep 60; kubectl get nodes'
+    -C 'I@kubernetes:master' state.sls kubernetes.master.kube-addons
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
 
 - description: Renew hosts file on a whole cluster
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C '*' state.sls linux.network.host;
   node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Final check all pods
+  cmd: |
+     sleep 60;
+     salt 'ctl*' cmd.run "kubectl -o wide get pods --all-namespaces";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check contrail status on all pods
+  cmd: |
+     pods=`kubectl get pods --all-namespaces | awk '/opencontrail/ {print $2}'`
+     for i in $pods; do
+       kubectl exec $i -c opencontrail-controller -n kube-system contrail-status;
+       kubectl exec $i -c opencontrail-analytics -n kube-system contrail-status;
+       kubectl exec $i -c opencontrail-analyticsdb -n kube-system contrail-status;
+     done
+  node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false

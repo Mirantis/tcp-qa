@@ -179,96 +179,6 @@ template:
 
         nodes:
 
-        #  - name: {{ HOSTNAME_CFG01 }}
-        #    role: salt_master
-        #    params:
-        #      ipmi_user: !os_env IPMI_USER
-        #      ipmi_password: !os_env IPMI_PASSWORD
-        #      ipmi_previlegies: OPERATOR
-        #      ipmi_host: !os_env IPMI_HOST_CFG01  # hostname or IP address
-        #      ipmi_lan_interface: lanplus
-        #      ipmi_port: 623
-
-        #      root_volume_name: system     # see 'volumes' below
-        #      cloud_init_volume_name: iso  # see 'volumes' below
-        #      cloud_init_iface_up: enp3s0f1  # see 'interfaces' below.
-        #      volumes:
-        #        - name: system
-        #          capacity: !os_env NODE_VOLUME_SIZE, 200
-
-        #          # The same as for agent URL, here is an URL to the image that should be
-        #          # used for deploy the node. It should also be accessible from deploying
-        #          # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
-        #          source_image: !os_env IRONIC_SOURCE_IMAGE_URL
-        #          source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
-
-        #        - name: iso  # Volume with name 'iso' will be used
-        #                     # for store image with cloud-init metadata.
-
-        #          cloudinit_meta_data: *cloudinit_meta_data
-        #          cloudinit_user_data: *cloudinit_user_data_cfg01
-
-        #      interfaces:
-        #        - label: enp3s0f0  # Infra interface
-        #          mac_address: !os_env ETH0_MAC_ADDRESS_CFG01
-        #        - label: enp3s0f1
-        #          l2_network_device: admin
-        #          mac_address: !os_env ETH1_MAC_ADDRESS_CFG01
-
-        #      network_config:
-        #        enp3s0f0:
-        #          networks:
-        #           - infra
-        #        enp3s0f1:
-        #          networks:
-        #           - admin
-          # - name: {{ HOSTNAME_PRX01 }}
-          #   role: salt_minion
-          #   params:
-          #     ipmi_user: !os_env IPMI_USER
-          #     ipmi_password: !os_env IPMI_PASSWORD
-          #     ipmi_previlegies: OPERATOR
-          #     ipmi_host: !os_env IPMI_HOST_PRX01  # hostname or IP address
-          #     ipmi_lan_interface: lanplus
-          #     ipmi_port: 623
-
-          #     root_volume_name: system     # see 'volumes' below
-          #     cloud_init_volume_name: iso  # see 'volumes' below
-          #     cloud_init_iface_up: enp9s0f0  # see 'interfaces' below.
-          #     volumes:
-          #       - name: system
-          #         capacity: !os_env NODE_VOLUME_SIZE, 200
-
-          #         # The same as for agent URL, here is an URL to the image that should be
-          #         # used for deploy the node. It should also be accessible from deploying
-          #         # node when nodes are provisioned by agent. Usually PXE/provision network address is used.
-          #         source_image: !os_env IRONIC_SOURCE_IMAGE_URL
-          #         source_image_checksum: !os_env IRONIC_SOURCE_IMAGE_CHECKSUM
-
-          #       - name: iso  # Volume with name 'iso' will be used
-          #                    # for store image with cloud-init metadata.
-
-          #         cloudinit_meta_data: *cloudinit_meta_data
-          #         cloudinit_user_data: *cloudinit_user_data
-
-          #     interfaces:
-          #       - label: enp9s0f0
-          #         l2_network_device: admin
-          #         mac_address: !os_env ETH0_MAC_ADDRESS_PRX01
-          #       - label: enp9s0f1
-          #         mac_address: !os_env ETH1_MAC_ADDRESS_PRX01
-
-          #     network_config:
-          #       enp9s0f0:
-          #         networks:
-          #          - admin
-          #       bond0:
-          #         networks:
-          #          - control
-          #         aggregation: active-backup
-          #         parents:
-          #          - enp9s0f1
-
           - name: {{ HOSTNAME_KVM01 }}
             role: salt_minion
             params:
@@ -415,7 +325,7 @@ template:
                    - enp9s0f1
 
           - name: {{ HOSTNAME_CTL01 }}
-            role: salt_minion
+            role: k8s_controller
             params:
               ipmi_user: !os_env IPMI_USER
               ipmi_password: !os_env IPMI_PASSWORD
@@ -591,12 +501,6 @@ template:
                 enp9s0f0:
                   networks:
                    - admin
-                bond0:
-                  networks:
-                   - control
-                  aggregation: active-backup
-                  parents:
-                   - enp9s0f1
 
           - name: {{ HOSTNAME_CMP002 }}
             role: salt_minion
@@ -638,9 +542,3 @@ template:
                 enp9s0f0:
                   networks:
                    - admin
-                bond0:
-                  networks:
-                   - control
-                  aggregation: active-backup
-                  parents:
-                   - enp9s0f1

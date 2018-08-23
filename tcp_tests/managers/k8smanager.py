@@ -286,7 +286,8 @@ class K8SManager(ExecuteCommandsMixin):
                 if result['stdout']:
                     container_id = result['stdout'][0].strip()
                 else:
-                    LOG.info('No container found, skipping extraction...')
+                    LOG.info('No {d_container} container found, skipping \
+                             extraction...'.rormat(d_container=container))
                     return
                 cmd = "docker start {}".format(container_id)
                 remote.check_call(cmd, raise_on_err=False)
