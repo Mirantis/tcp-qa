@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c6d63ad3_7ae38920",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-23T08:07:21Z",
+      "side": 1,
+      "message": "heat?",
+      "range": {
+        "startLine": 150,
+        "startChar": 42,
+        "endLine": 150,
+        "endChar": 56
+      },
+      "revId": "96bd72d2d14bda205258289056ccf800ab1fd164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7f65b631_bb987eb1",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 157,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-23T08:07:21Z",
+      "side": 1,
+      "message": "heat?",
+      "range": {
+        "startLine": 157,
+        "startChar": 33,
+        "endLine": 157,
+        "endChar": 47
+      },
+      "revId": "96bd72d2d14bda205258289056ccf800ab1fd164",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
