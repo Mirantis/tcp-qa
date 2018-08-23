@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e64ca9cb_0a926e6d",
+        "filename": "tcp_tests/templates/virtual-mcp-ocata-ovs/openstack.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-23T11:43:54Z",
+      "side": 1,
+      "message": "This can be removed",
+      "range": {
+        "startLine": 15,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 18
+      },
+      "revId": "893617d71ecffd3b49c07dbfae251782c27b6f75",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
