@@ -1,5 +1,6 @@
-{% import 'shared-core.yaml' as SHARED_CORE with context %}
 {% from 'virtual-mcp-ocata-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+{% import 'shared-core.yaml' as SHARED_CORE with context %}
 
 # Install support services
 - description: Install keepalived on ctl01
