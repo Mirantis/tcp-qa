@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "80a49dd2_8990fc88",
+        "filename": "tcp_tests/templates/shared-core.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-23T10:56:50Z",
+      "side": 1,
+      "message": "\u0026\u0026",
+      "range": {
+        "startLine": 68,
+        "startChar": 56,
+        "endLine": 68,
+        "endChar": 57
+      },
+      "revId": "e60c2b272790478b8660f23a32e017b4060f3f2b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
