@@ -18,7 +18,7 @@ nodes:
         enp9s0f0:
           role: single_mgm
         enp9s0f1:
-          role: single_ctl
+          role: single_vlan_ctl
 
     kvm02.bm-mcp-pike-k8s-contrail.local:
       reclass_storage_name: infra_kvm_node02
@@ -29,7 +29,7 @@ nodes:
         enp9s0f0:
           role: single_mgm
         enp9s0f1:
-          role: single_ctl
+          role: single_vlan_ctl
 
     kvm03.bm-mcp-pike-k8s-contrail.local:
       reclass_storage_name: infra_kvm_node03
@@ -40,7 +40,7 @@ nodes:
         enp9s0f0:
           role: single_mgm
         enp9s0f1:
-          role: single_ctl
+          role: single_vlan_ctl
 
     ctl01.bm-mcp-pike-k8s-contrail.local:
       reclass_storage_name: kubernetes_control_node01
@@ -52,7 +52,7 @@ nodes:
           role: single_mgm
           deploy_address: 172.17.41.9
         enp2s0f1:
-          role: single_ctl
+          role: single_vlan_ctl
           single_address: 10.167.8.239
 
     ctl02.bm-mcp-pike-k8s-contrail.local:
@@ -65,7 +65,7 @@ nodes:
           role: single_mgm
           deploy_address: 172.17.41.10
         enp2s0f1:
-          role: single_ctl
+          role: single_vlan_ctl
           single_address: 10.167.8.238
 
     ctl03.bm-mcp-pike-k8s-contrail.local:
@@ -78,24 +78,8 @@ nodes:
           role: single_mgm
           deploy_address: 172.17.41.11
         enp2s0f1:
-          role: single_ctl
+          role: single_vlan_ctl
           single_address: 10.167.8.237
-
-    # prx01.bm-mcp-pike-k8s-contrail.local:
-    #   reclass_storage_name: kubernetes_proxy_node01
-    #   roles:
-    #   - kubernetes_proxy
-    #   # - infra_proxy
-    #   # - stacklight_proxy
-    #   - salt_master_host
-    #   - linux_system_codename_xenial
-    #   interfaces:
-    #     enp9s0f0:
-    #       role: single_mgm
-    #       deploy_address: 172.17.41.8
-    #     enp9s0f1:
-    #       role: single_ctl
-    #       single_address: 10.167.8.81
 
     cmp001.bm-mcp-pike-k8s-contrail.local:
       reclass_storage_name: kubernetes_compute_node001
@@ -103,16 +87,12 @@ nodes:
       - linux_system_codename_xenial
       - kubernetes_compute_contrail
       - salt_master_host
-        #- features_lvm_backend
       interfaces:
         enp9s0f0:
           role: single_dhcp
-        ens11f0:
-          role: bond0_ab_contrail
-          tenant_address: 192.168.0.101
         ens11f1:
-          role: single_ctl
-          single_address: 10.167.8.101
+          role: k8s_oc40_only_vhost_on_control_vlan
+          single_address: 10.167.8.103
 
     cmp002.bm-mcp-pike-k8s-contrail.local:
       reclass_storage_name: kubernetes_compute_node002
@@ -120,30 +100,9 @@ nodes:
       - linux_system_codename_xenial
       - kubernetes_compute_contrail
       - salt_master_host
-        #- features_lvm_backend
       interfaces:
         enp9s0f0:
           role: single_dhcp
-        ens11f0:
-          role: bond0_ab_contrail
-          tenant_address: 192.168.0.102
         ens11f1:
-          role: single_ctl
-          single_address: 10.167.8.102
-
-    # cmp002.bm-mcp-pike-k8s-contrail.local:
-    #   reclass_storage_name: kubernetes_compute_node02
-    #   roles:
-    #   - features_lvm_backend
-    #   - linux_system_codename_xenial
-    #   - kubernetes_compute_contrail
-    #   interfaces:
-    #     enp2s0f1:
-    #       role: single_mgm
-    #       deploy_address: 172.16.49.74
-    #     enp5s0f0:
-    #       role: bond0_ab_contrail
-    #       tenant_address: 192.168.0.102
-    #     enp5s0f1:
-    #       role: single_vlan_ctl
-    #       single_address: 10.167.8.102
+          role: k8s_oc40_only_vhost_on_control_vlan
+          single_address: 10.167.8.104
