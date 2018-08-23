@@ -187,7 +187,11 @@ class K8SManager(ExecuteCommandsMixin):
         if node_name is None:
             node_name = self.controller_name
         cmd = "set -o pipefail; docker run --net=host " \
-              "-e API_SERVER='{api}' {image} | tee '{log}'".format(
+              "-e API_SERVER='{api}' {image} /bin/bash " \
+              "-c 'sed -i 's/get deployment -n kube-system " \
+              "opencontrail/get daemonset -n kube-system " \
+              "opencontrail/g' /entrypoint.sh && cat /entrypoint.sh " \
+              "&& /entrypoint.sh' | tee '{log}'".format(
                api=api_server, log=log_out,
                image=self.__config.k8s.k8s_conformance_image)
         return self.__underlay.check_call(
