@@ -8,7 +8,10 @@
 
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
+# Dploy nginx before openstack services (PROD-22740)
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=false) }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
 
@@ -16,7 +19,7 @@
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER() }}
 
-#{{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON() }}
+# SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON
 
 - description: Install neutron service on primary node
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -61,7 +64,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@keystone:server' cmd.run '. /root/keystonerc; neutron agent-list'
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 20}
   skip_fail: false
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
@@ -75,8 +78,6 @@
   skip_fail: false
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_DESIGNATE() }}
-
-{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
 # Install compute node
 
