@@ -681,7 +681,7 @@
     service salt-minion restart
   node_name: {{ ssh['node_name'] }}
   retry: {count: 1, delay: 1}
-  skip_fail: false
+  skip_fail: true
   {%- else %}
 - description: Check SSH connectivity to non-salt-minion node {{ ssh['node_name'] }}
   cmd: echo "SSH to $(hostname -f) passed"
@@ -752,7 +752,7 @@
     done
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
-  skip_fail: false
+  skip_fail: true
 {%- endmacro %}
 
 
