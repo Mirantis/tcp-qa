@@ -70,12 +70,4 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Mount glusterfs.client volumes (requires created 'keystone' and
-    'glusterfs' system users)
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:client' state.sls glusterfs.client
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 {%- endmacro %}
