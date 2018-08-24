@@ -32,7 +32,15 @@
   node_name: {{ HOSTNAME_CFG01 }}
 {%- endif %}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
+# WORKAROUND PROD-21071
+- description: Set correct pin for openstack repository
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    "sed -i -e 's/Pin: release l=ocata/Pin: release l=xenial\/openstack\/ocata testing/g' /etc/apt/preferences.d/mirantis_openstack"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=false) }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
 
