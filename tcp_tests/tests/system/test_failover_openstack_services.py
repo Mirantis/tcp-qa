@@ -488,7 +488,9 @@ class TestFailoverOpenStackServices(object):
         LOG.info("Scheduling to kill rabbitmq on the minion {0}"
                  .format(ctl_minion))
         underlay.delayed_call(
-            "salt '{0}' cmd.run 'killall -9 -u rabbitmq'".format(ctl_minion),
+            "salt '{0}' cmd.run 'chmod -x "
+            "/usr/lib/rabbitmq/bin/rabbitmq-server "
+            "&& killall -9 -u rabbitmq'".format(ctl_minion),
             host=config.salt.salt_master_host,
             delay_min=2,
             delay_max=3)
@@ -519,7 +521,7 @@ class TestFailoverOpenStackServices(object):
                 # Check that rabbitmq_server on other ctl nodes
                 # was not restarted
                 assert ps == ps_after[node_name], (
-                   "'rabbitmq_server' was restarted while it shouldn't!")
+                    "'rabbitmq_server' was restarted while it shouldn't!")
 
         # Mysql case
         # STEP #5
@@ -552,7 +554,9 @@ class TestFailoverOpenStackServices(object):
         LOG.info("Scheduling to kill mysqld on the minion {0}"
                  .format(ctl_minion))
         underlay.delayed_call(
-            "salt '{0}' cmd.run 'killall -9 -u mysql'".format(mysql_tgt),
+            "salt '{0}' cmd.run 'chmod -x /usr/bin/mysqld_safe && "
+            "chmod -x /usr/sbin/mysqld && "
+            "killall -9 -u mysql'".format(mysql_tgt),
             host=config.salt.salt_master_host,
             delay_min=2,
             delay_max=3)
@@ -582,8 +586,8 @@ class TestFailoverOpenStackServices(object):
             else:
                 # Check that Mysql on other ctl nodes was not restarted
                 assert ps == ps_after[node_name], (
-                   "Mysql was restarted while it shouldn't on node {0}"
-                   .format(node_name))
+                    "Mysql was restarted while it shouldn't on node {0}"
+                    .format(node_name))
 
         # STEP #9
         show_step(9)
