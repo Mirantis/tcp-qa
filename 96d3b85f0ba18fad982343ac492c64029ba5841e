@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "71f8dc56_2f4963ff",
+        "filename": "tcp_tests/fixtures/k8s_fixtures.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-28T18:43:58Z",
+      "side": 1,
+      "message": "You will lose connectivity to management network in 15 minutes after lease is expired.",
+      "revId": "96d3b85f0ba18fad982343ac492c64029ba5841e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
