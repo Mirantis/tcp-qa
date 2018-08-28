@@ -76,8 +76,11 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
         salt_deployed.sync_time()
 
     # Workaround for keepalived hang issue after env revert from snapshot
-    # see https://mirantis.jira.com/browse/PROD-12038
-    LOG.warning('Restarting keepalived service on controllers...')
+    # see https://mirantis.jira.com/browse/PROD-22473
+    LOG.warning('Killing dhclient and applying linux.network.interface state')
+    k8s_actions._salt.local(tgt='ctl*', fun='cmd.run', args='pkill dhclient')
+    k8s_actions._salt.local(tgt='ctl*', fun='state.sls', args='linux.network')
+    LOG.warning('Restarting keepalived service')
     k8s_actions._salt.local(tgt='ctl*', fun='cmd.run',
                             args='systemctl restart keepalived.service')
     # give some time to keepalived to enter in MASTER state
