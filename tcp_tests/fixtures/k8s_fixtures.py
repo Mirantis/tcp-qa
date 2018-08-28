@@ -69,19 +69,40 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
 
     # Deploy Kubernetes cluster
     if not config.k8s.k8s_installed:
+        # Workaround for dhclient not killed on non-dhcp interfaces
+        # see https://mirantis.jira.com/browse/PROD-22473
+        tgt = 'I@kubernetes:pool'
+        LOG.warning('Killing dhclient on every non-dhcp interface '
+                    'on nodes with target={}'.format(tgt))
+        interfaces_pillar = k8s_actions._salt.get_pillar(
+            tgt=tgt, pillar='linux:network:interface')[0]
+
+        for node_name, interfaces in interfaces_pillar.items():
+            for iface_name, iface in interfaces.items():
+                iface_name = iface.get('name', iface_name)
+                default_proto = 'static' if 'address' in iface else 'dhcp'
+                if iface.get('proto', default_proto) != 'dhcp':
+                    LOG.warning('Trying to kill dhclient for iface {0} '
+                                'on node {1}'.format(iface_name, node_name))
+                    underlay.check_call(
+                        cmd='pkill -f "dhclient.*{}"'.format(iface_name),
+                        node_name=node_name, raise_on_err=False)
+
+        LOG.warning('Restarting keepalived service on controllers...')
+        k8s_actions._salt.local(tgt='ctl*', fun='cmd.run',
+                                args='systemctl restart keepalived.service')
+        # give some time to keepalived to enter in MASTER state
+        time.sleep(3)
+        # --- end of workaround
+
+        # install k8s
         steps_path = config.k8s_deploy.k8s_steps_path
         commands = underlay.read_template(steps_path)
         k8s_actions.install(commands)
+
         hardware.create_snapshot(ext.SNAPSHOT.k8s_deployed)
         salt_deployed.sync_time()
 
-    # Workaround for keepalived hang issue after env revert from snapshot
-    # see https://mirantis.jira.com/browse/PROD-12038
-    LOG.warning('Restarting keepalived service on controllers...')
-    k8s_actions._salt.local(tgt='ctl*', fun='cmd.run',
-                            args='systemctl restart keepalived.service')
-    # give some time to keepalived to enter in MASTER state
-    time.sleep(5)
     return k8s_actions
 
 
