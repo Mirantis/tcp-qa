@@ -14,6 +14,7 @@
 
 import os
 import requests
+import yaml
 
 from devops.helpers import helpers
 from devops.error import DevopsCalledProcessError
@@ -227,24 +228,36 @@ class K8SManager(ExecuteCommandsMixin):
         return result
 
     def start_k8s_cncf_verification(self, timeout=60 * 90):
-        cncf_cmd = ("curl -L https://raw.githubusercontent.com/cncf/"
-                    "k8s-conformance/master/sonobuoy-conformance.yaml"
-                    " | kubectl apply -f -")
-        with self.__underlay.remote(
-                node_name=self.controller_name) as remote:
-            remote.check_call(cncf_cmd, timeout=60)
-            self.wait_pod_phase('sonobuoy', 'Running',
-                                namespace='sonobuoy', timeout=120)
-            wait_cmd = ('kubectl logs -n sonobuoy sonobuoy | '
-                        'grep "sonobuoy is now blocking"')
+        """
+            Build sonobuoy using golang docker image and install it in system
+            Then generate sonobuoy verification manifest using gen command
+            and wait for it to end using status annotation
+            TODO (vjigulin): All sonobuoy methods can be improved if we define
+            correct KUBECONFIG env variable
+        """
+        cncf_cmd =\
+            'docker run --network host --name sonobuoy golang:1.11 bash -c ' \
+            '"go get -d -v github.com/heptio/sonobuoy && ' \
+            'go install -v github.com/heptio/sonobuoy" && ' \
+            'docker cp sonobuoy:/go/bin/sonobuoy /usr/local/bin/ && ' \
+            'docker rm sonobuoy && ' \
+            'sonobuoy gen | kubectl apply -f -'
 
-            expected = [0, 1]
-            helpers.wait(
-                lambda: remote.check_call(
-                    wait_cmd, expected=expected).exit_code == 0,
-                interval=30, timeout=timeout,
-                timeout_msg="Timeout for CNCF reached."
-            )
+        self.controller_check_call(cncf_cmd, timeout=900)
+
+        sonobuoy_pod = self.api.pods.get('sonobuoy', 'sonobuoy').wait_running()
+
+        def sonobuoy_status():
+            annotations = sonobuoy_pod.read()['metadata']['annotations']
+            json_status = annotations['sonobuoy.hept.io/status']
+            LOG.info("CNCF status: {}".json_status)
+            return yaml.safe_load(json_status)['status']
+
+        helpers.wait(
+            lambda: sonobuoy_status() == 'complete',
+            interval=30, timeout=timeout,
+            timeout_msg="Timeout for CNCF reached."
+        )
 
     def extract_file_to_node(self, system='docker',
                              container='virtlet',
@@ -261,8 +274,7 @@ class K8SManager(ExecuteCommandsMixin):
         :param out_dir: Output directory
         :return:
         """
-        with self.__underlay.remote(
-                node_name=self.controller_name) as remote:
+        with self.__underlay.remote(node_name=self.controller_name) as remote:
             if system is 'docker':
                 cmd = ("docker ps --all | grep \"{0}\" |"
                        " awk '{{print $1}}'".format(container))
@@ -324,35 +336,23 @@ class K8SManager(ExecuteCommandsMixin):
 
     def manage_cncf_archive(self):
         """
-        Function to untar archive, move files, that we are needs to the
-        home folder, prepare it to downloading and clean the trash.
-        Will generate files: e2e.log, junit_01.xml, cncf_results.tar.gz
-        and version.txt
+        Function to untar archive, move files that we are needs to the
+        home folder, prepare it to downloading.
+        Will generate files on controller node:
+            e2e.log, junit_01.xml, cncf_results.tar.gz, version.txt
         :return:
         """
 
-        # Namespace and pod name may be hardcoded since this function is
-        # very specific for cncf and cncf is not going to change
-        # those launch pod name and namespace.
-        get_tar_name_cmd = ("kubectl logs -n sonobuoy sonobuoy | "
-                            "grep 'Results available' | "
-                            "sed 's/.*\///' | tr -d '\"'")
+        cmd =\
+            "rm -rf cncf_results.tar.gz result && " \
+            "mkdir result && " \
+            "mv *_sonobuoy_*.tar.gz cncf_results.tar.gz && " \
+            "tar -C result -xzf cncf_results.tar.gz && " \
+            "mv result/plugins/e2e/results/e2e.log . ; " \
+            "mv result/plugins/e2e/results/junit_01.xml . ; " \
+            "kubectl version > version.txt"
 
-        with self.__underlay.remote(
-                node_name=self.controller_name) as remote:
-            tar_name = remote.check_call(get_tar_name_cmd)['stdout'][0].strip()
-            untar = "mkdir result && tar -C result -xzf {0}".format(tar_name)
-            remote.check_call(untar, raise_on_err=False)
-            manage_results = ("mv result/plugins/e2e/results/e2e.log . && "
-                              "mv result/plugins/e2e/results/junit_01.xml . ;"
-                              "kubectl version > version.txt")
-            remote.check_call(manage_results, raise_on_err=False)
-            cleanup_host = "rm -rf result"
-            remote.check_call(cleanup_host, raise_on_err=False)
-            # This one needed to use download fixture, since I don't know
-            # how possible apply fixture arg dynamically from test.
-            rename_tar = "mv {0} cncf_results.tar.gz".format(tar_name)
-            remote.check_call(rename_tar, raise_on_err=False)
+        self.controller_check_call(cmd, raise_on_err=False)
 
     @retry(300, exception=DevopsCalledProcessError)
     def nslookup(self, host, src):
