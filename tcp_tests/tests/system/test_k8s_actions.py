@@ -75,7 +75,7 @@ class TestMCPK8sActions(object):
                                       'cncf_results.tar.gz'])
     @pytest.mark.fail_snapshot
     def test_k8s_cncf_certification(self, show_step, config, k8s_deployed,
-                                    cncf_log_helper):
+                                    k8s_cncf_log_helper):
         """Run cncf e2e suite and provide files needed for pull request
         to the CNCF repo
 

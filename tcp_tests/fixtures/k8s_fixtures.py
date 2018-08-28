@@ -150,7 +150,7 @@ def k8s_logs(request, func_name, underlay, k8s_deployed):
 
 
 @pytest.fixture(scope='function')
-def cncf_log_helper(request, func_name, underlay, k8s_deployed):
+def k8s_cncf_log_helper(request, func_name, underlay, k8s_deployed):
     """Finalizer to prepare cncf tar.gz and save results from archive"""
 
     cncf_publisher = request.keywords.get('cncf_publisher', None)
@@ -163,7 +163,7 @@ def cncf_log_helper(request, func_name, underlay, k8s_deployed):
                     or "{}".format(func_name)
             k8s_deployed.extract_file_to_node(
                 system='k8s', file_path='tmp/sonobuoy',
-                pod_name='sonobuoy', pod_namespace='sonobuoy'
+                pod_name='sonobuoy', pod_namespace='heptio-sonobuoy'
             )
             k8s_deployed.manage_cncf_archive()
             k8s_deployed.download_k8s_logs(files)
