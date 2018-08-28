@@ -46,6 +46,7 @@ class RallyManager(object):
         cmd = ("docker images | grep {0}| grep {1}| awk '{{print $3}}'"
                .format(self.image_name, self.image_version))
         res = self._underlay.check_call(cmd, node_name=self._node_name)
+        LOG.debug(res['stdout'])
         image_id = res['stdout'][0].strip()
         LOG.info("Image ID is {}".format(image_id))
         return image_id
