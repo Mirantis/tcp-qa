@@ -8,7 +8,7 @@
 # Path to the context files used to render Cluster and Environment models
 {% set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs_dvr_vxlan.yaml' %}
 {% set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-lab03-environment.yaml'] %}
-{% set CONTROL_VLAN = os_env('CONTROL_VLAN', '2403') %}
+{% set CONTROL_VLAN = os_env('CONTROL_VLAN', '2404') %}
 {% set TENANT_VLAN = os_env('TENANT_VLAN', '2406') %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'proposed') %}
 {% set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/saltstack-2016.3/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}

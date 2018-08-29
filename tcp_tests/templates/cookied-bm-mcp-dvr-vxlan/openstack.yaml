@@ -16,51 +16,28 @@
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NOVA() }}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER(INSTALL_VOLUME=true) }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER(INSTALL_VOLUME=false) }}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON() }}
+- description: Install cinder volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:volume' state.sls cinder
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON(INSTALL_GATEWAY=true) }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
 
-- description: Deploy horizon dashboard
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@horizon:server' state.sls horizon
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
-- description: Deploy nginx proxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+{{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE() }}
 
-
-# Install compute node
-
-- description: Apply formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Re-apply(as in doc) formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check IP on computes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
-    'ip a'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 10, delay: 30}
-  skip_fail: false
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
 
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type vlan --provider:segmentation_id 2403'
+    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -106,5 +83,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
-
-{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
