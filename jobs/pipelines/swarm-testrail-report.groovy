@@ -37,6 +37,10 @@ node ("${PARENT_NODE_NAME}") {
             def testrail_name_template = ''
             def reporter_extra_options = []
 
+            stage("Archive all xml reports") {
+                archiveArtifacts artifacts: "${PARENT_WORKSPACE}/*.xml"
+            }
+
             stage("Deployment report") {
                 report_name = "deployment_${ENV_NAME}.xml"
                 testSuiteName = "[MCP] Integration automation"
