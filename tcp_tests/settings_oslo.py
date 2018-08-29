@@ -53,6 +53,9 @@ _default_decapod_steps = pkg_resources.resource_filename(
 _default_openstack_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/openstack.yaml'.format(
         settings.LAB_CONFIG_NAME))
+_default_openstack_resources_steps = pkg_resources.resource_filename(
+    __name__, 'templates/{0}/post_openstack.yaml'.format(
+        settings.LAB_CONFIG_NAME))
 _default_opencontrail_prepare_tests_steps_path = \
     pkg_resources.resource_filename(
         __name__, 'templates/{0}/opencontrail.yaml'.format(
@@ -203,6 +206,9 @@ openstack_deploy_opts = [
     ct.Cfg('openstack_steps_path', ct.String(),
            help="Path to YAML with steps to deploy openstack",
            default=_default_openstack_steps),
+    ct.Cfg('openstack_resources_steps_path', ct.String(),
+           help="Path to YAML with steps to deploy openstack",
+           default=_default_openstack_resources_steps),
     ct.Cfg('horizon_host', ct.IPAddress(),
            help="", default='0.0.0.0'),
     ct.Cfg('horizon_port', ct.String(),
