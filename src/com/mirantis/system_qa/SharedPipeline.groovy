@@ -81,8 +81,9 @@ def build_shell_job(job_name, parameters, junit_report_filename=null, junit_repo
 
             def String junit_report_xml = readFile("${junit_report_filename}")
             def String junit_report_xml_pretty = new XmlUtil().serialize(junit_report_xml)
+            def String junit_report_xml_headless = junit_report_xml_pretty.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>","");
             def String msg = "Job '${job_url}' failed with status ${build_status}, JUnit report:\n"
-            throw new Exception(msg + junit_report_xml_pretty)
+            throw new Exception(msg + junit_report_xml_headless)
         } else {
             throw new Exception("Job '${job_url}' failed with status ${build_status}, please check the console output.")
         }
@@ -365,8 +366,7 @@ def create_xml_report(String filename, String classname, String name, String sta
     // <filename> is name of the XML report file that will be created
     // <status> is one of the 'success', 'skipped', 'failure' or 'error'
     // 'error' status is assumed as 'Blocker' in TestRail reporter
-    run_cmd("""\
-cat << \'EOF\' > ${filename}
+    def script = """\
 <?xml version=\"1.0\" encoding=\"utf-8\"?>
   <testsuite>
     <testcase classname=\"${classname}\" name=\"${name}\" time=\"0\">
@@ -375,8 +375,8 @@ cat << \'EOF\' > ${filename}
       <system-err>${stderr}</system-err>
     </testcase>
   </testsuite>
-EOF
-""")
+"""
+    writeFile(file: filename, text: script, encoding: "UTF-8")
 }
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
@@ -430,7 +430,7 @@ def create_deploy_result_report(deploy_expected_stacks, result, text) {
     def STATUS_MAP = ['SUCCESS': 'success', 'FAILURE': 'failure', 'UNSTABLE': 'failure', 'ABORTED': 'error']
     def classname = "Deploy"
     def name = "deployment_${ENV_NAME}"
-    def filename = "\$(pwd)/${name}.xml"
+    def filename = "${PARENT_WORKSPACE}/${name}.xml"
     def status = STATUS_MAP[result ?: 'FAILURE']   // currentBuild.result *must* be set at the finish of the try/catch
     create_xml_report(filename, classname, name, status, "Deploy components: ${deploy_expected_stacks}", text, '', '')
 }
