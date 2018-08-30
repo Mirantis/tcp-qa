@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9dd9a567_83da9a43",
+        "filename": "tcp_tests/templates/cookied-mcp-mitaka-dvr/openstack.yaml",
+        "patchSetId": 13
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-30T09:00:07Z",
+      "side": 1,
+      "message": "Workaround of which bug?\nWhere is the check?",
+      "range": {
+        "startLine": 46,
+        "startChar": 0,
+        "endLine": 46,
+        "endChar": 50
+      },
+      "revId": "c95d9dbe8eeb638835780b730f400790fb7c5c68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c49e9262_25bc3805",
+        "filename": "tcp_tests/templates/cookied-mcp-mitaka-dvr/openstack.yaml",
+        "patchSetId": 13
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-30T09:00:07Z",
+      "side": 1,
+      "message": "Why don\u0027t use MACRO_INSTALL_HEAT() to install heat?",
+      "range": {
+        "startLine": 47,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 18
+      },
+      "revId": "c95d9dbe8eeb638835780b730f400790fb7c5c68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
