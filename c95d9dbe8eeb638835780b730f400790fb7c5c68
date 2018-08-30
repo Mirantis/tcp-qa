@@ -45,6 +45,29 @@
       "revId": "c95d9dbe8eeb638835780b730f400790fb7c5c68",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "116114bb_45eb2b3c",
+        "filename": "tcp_tests/templates/cookied-mcp-mitaka-dvr/openstack.yaml",
+        "patchSetId": 13
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-08-30T09:04:17Z",
+      "side": 1,
+      "message": "You can move this macro in the head, and use MACRO_INSTALL_HORIZON() without workarounds.",
+      "range": {
+        "startLine": 71,
+        "startChar": 0,
+        "endLine": 71,
+        "endChar": 46
+      },
+      "revId": "c95d9dbe8eeb638835780b730f400790fb7c5c68",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
