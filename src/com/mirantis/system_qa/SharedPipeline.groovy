@@ -81,8 +81,9 @@ def build_shell_job(job_name, parameters, junit_report_filename=null, junit_repo
 
             def String junit_report_xml = readFile("${junit_report_filename}")
             def String junit_report_xml_pretty = new XmlUtil().serialize(junit_report_xml)
-            def String junit_report_xml_headless = junit_report_xml_pretty.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>","");
-            def String junit_report_xml_filtered = junit_report_xml_headless.replaceAll("<","&lt;").replaceAll(">", "&gt;")
+            //def String junit_report_xml_headless = junit_report_xml_pretty.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>","");
+            //def String junit_report_xml_filtered = junit_report_xml_headless.replaceAll("<","&lt;").replaceAll(">", "&gt;")
+            def String junit_report_xml_filtered = junit_report_xml_pretty.replaceAll("<","&lt;").replaceAll(">", "&gt;")
             def String msg = "Job '${job_url}' failed with status ${build_status}, JUnit report:\n"
             throw new Exception(msg + junit_report_xml_filtered)
         } else {
