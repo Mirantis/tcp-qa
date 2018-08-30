@@ -234,7 +234,7 @@ class TestFailoverOpenStackServices(object):
             else:
                 # Check that keepalived on other ctl nodes was not restarted
                 assert ps == ps_after[node_name], (
-                   "Keepalived was restarted while it shouldn't!")
+                    "Keepalived was restarted while it shouldn't!")
 
         # STEP #5
         show_step(5)
@@ -337,7 +337,7 @@ class TestFailoverOpenStackServices(object):
             else:
                 # Check that keepalived on other ctl nodes was not restarted
                 assert ps == ps_after[node_name], (
-                   "Keepalived was restarted while it shouldn't!")
+                    "Keepalived was restarted while it shouldn't!")
         # STEP #5
         show_step(5)
         # TODO(ddmitriev):
@@ -412,8 +412,8 @@ class TestFailoverOpenStackServices(object):
             else:
                 # Check that haproxy on other ctl nodes was not restarted
                 assert ps == ps_after[node_name], (
-                   "Haproxy was restarted while it shouldn't on node {0}"
-                   .format(node_name))
+                    "Haproxy was restarted while it shouldn't on node {0}"
+                    .format(node_name))
 
         # STEP #11
         show_step(11)
@@ -488,7 +488,9 @@ class TestFailoverOpenStackServices(object):
         LOG.info("Scheduling to kill rabbitmq on the minion {0}"
                  .format(ctl_minion))
         underlay.delayed_call(
-            "salt '{0}' cmd.run 'killall -9 -u rabbitmq'".format(ctl_minion),
+            "salt '{0}' cmd.run 'chmod -x "
+            "/usr/lib/rabbitmq/bin/rabbitmq-server "
+            "&& killall -9 -u rabbitmq'".format(ctl_minion),
             host=config.salt.salt_master_host,
             delay_min=2,
             delay_max=3)
@@ -499,6 +501,8 @@ class TestFailoverOpenStackServices(object):
         # STEP #3
         show_step(3)
         # Run rally task with created task file
+        rally.prepare_rally_task()
+        rally.run_container()
         self.create_and_run_rally_load_task(
             rally, times=60, concurrency=4, timeout=900)
 
@@ -519,7 +523,7 @@ class TestFailoverOpenStackServices(object):
                 # Check that rabbitmq_server on other ctl nodes
                 # was not restarted
                 assert ps == ps_after[node_name], (
-                   "'rabbitmq_server' was restarted while it shouldn't!")
+                    "'rabbitmq_server' was restarted while it shouldn't!")
 
         # Mysql case
         # STEP #5
@@ -582,8 +586,8 @@ class TestFailoverOpenStackServices(object):
             else:
                 # Check that Mysql on other ctl nodes was not restarted
                 assert ps == ps_after[node_name], (
-                   "Mysql was restarted while it shouldn't on node {0}"
-                   .format(node_name))
+                    "Mysql was restarted while it shouldn't on node {0}"
+                    .format(node_name))
 
         # STEP #9
         show_step(9)
