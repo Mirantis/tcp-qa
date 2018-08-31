@@ -22,14 +22,14 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def salt_actions(config, underlay):
+def salt_actions(config, underlay_actions):
     """Fixture that provides various actions for salt
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :rtype: SaltManager
     """
-    return saltmanager.SaltManager(config, underlay)
+    return saltmanager.SaltManager(config, underlay_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.salt_deployed)
