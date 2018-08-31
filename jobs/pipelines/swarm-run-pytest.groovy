@@ -53,6 +53,7 @@ node ("${PARENT_NODE_NAME}") {
                     export ${it}_installed=true"""}.join("\n")
 
                 shared.run_cmd(sources + installed + """
+                    export TESTS_CONFIGS=${ENV_NAME}_salt_deployed.ini
                     export MANAGER=devops  # use 'hardware' fixture to manage fuel-devops environment
                     export salt_master_host=\$SALT_MASTER_IP  # skip salt_deployed fixture
                     export salt_master_port=6969
