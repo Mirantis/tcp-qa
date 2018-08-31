@@ -37,38 +37,48 @@ node ("${PARENT_NODE_NAME}") {
             def testrail_name_template = ''
             def reporter_extra_options = []
 
-            //stage("Archive all xml reports") {
-            //    archiveArtifacts artifacts: "${PARENT_WORKSPACE}/*.xml"
-            //}
-
-            stage("Deployment report") {
-                report_name = "deployment_${ENV_NAME}.xml"
-                testSuiteName = "[MCP] Integration automation"
-                methodname = '{methodname}'
-                testrail_name_template = '{title}'
-                reporter_extra_options = [
-                  "--testrail-add-missing-cases",
-                  "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
-                  "--testrail-case-section-name \'All\'",
-                ]
-                shared.upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+            stage("Archive all xml reports") {
+                archiveArtifacts artifacts: "**/*.xml"
             }
 
-            stage("tcp-qa cases report") {
-                report_name = "nosetests.xml"
-                testSuiteName = "[MCP_X] integration cases"
-                methodname = "{methodname}"
-                testrail_name_template = "{title}"
-                shared.upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template)
+            def deployment_report_name = run_cmd_stdout("find ${PARENT_WORKSPACE} -name \"deployment_${ENV_NAME}.xml\"")
+            def tcpqa_report_name = run_cmd_stdout("find ${PARENT_WORKSPACE} -name \"nosetests.xml\"")
+            def tempest_report_name = run_cmd_stdout("find ${PARENT_WORKSPACE} -name \"report_*.xml\"")
+//            def k8s_conformance_report_name = run_cmd_stdout("find ${PARENT_WORKSPACE} -name \"report_*.xml\"")
+            def stacklight_report_name = run_cmd_stdout("find ${PARENT_WORKSPACE} -name \"report_*.xml\"")
+
+            if (deployment_report_name) {
+                stage("Deployment report") {
+//                    report_name = "deployment_${ENV_NAME}.xml"
+                    testSuiteName = "[MCP] Integration automation"
+                    methodname = '{methodname}'
+                    testrail_name_template = '{title}'
+                    reporter_extra_options = [
+                      "--testrail-add-missing-cases",
+                      "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
+                      "--testrail-case-section-name \'All\'",
+                    ]
+                    shared.upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                }
             }
 
-            if ('openstack' in stacks) {
+            if (tcpqa_report_name) {
+                stage("tcp-qa cases report") {
+//                    report_name = "nosetests.xml"
+                    testSuiteName = "[MCP_X] integration cases"
+                    methodname = "{methodname}"
+                    testrail_name_template = "{title}"
+                    shared.upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template)
+                }
+            }
+
+            if ('openstack' in stacks && tempest_report_name) {
                 stage("Tempest report") {
-                    report_name = "report_*.xml"
+//                    report_name = "report_*.xml"
                     testSuiteName = "[MCP1.1_PIKE]Tempest"
                     methodname = "{classname}.{methodname}"
                     testrail_name_template = "{title}"
-                    shared.upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template)
+                    shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
                 }
             }
 
@@ -79,13 +89,13 @@ node ("${PARENT_NODE_NAME}") {
                 }
             }
 
-            if ('stacklight' in stacks) {
+            if ('stacklight' in stacks && stacklight_report_name) {
                 stage("stacklight-pytest report") {
-                    report_name = "report.xml"
+//                    report_name = "stacklight_report.xml"
                     testSuiteName = "LMA2.0_Automated"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
-                    shared.upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template)
+                    shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template)
                 }
             }
 
