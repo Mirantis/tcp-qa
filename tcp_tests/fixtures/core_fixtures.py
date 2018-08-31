@@ -22,14 +22,14 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def core_actions(config, underlay, salt_actions):
+def core_actions(config, underlay_actions, salt_actions):
     """Fixture that provides various actions for Core
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :rtype: CoreManager
     """
-    return core_manager.CoreManager(config, underlay, salt_actions)
+    return core_manager.CoreManager(config, underlay_actions, salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.core_deployed)

@@ -24,7 +24,7 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def k8s_actions(config, underlay, salt_deployed):
+def k8s_actions(config, underlay_actions, salt_actions):
     """Fixture that provides various actions for K8S
 
     :param config: fixture provides oslo.config
@@ -34,7 +34,7 @@ def k8s_actions(config, underlay, salt_deployed):
 
     For use in tests or fixtures to deploy a custom K8S
     """
-    return k8smanager.K8SManager(config, underlay, salt_deployed)
+    return k8smanager.K8SManager(config, underlay_actions, salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.k8s_deployed)
@@ -86,7 +86,7 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
 
 
 @pytest.fixture(scope='function')
-def k8s_logs(request, func_name, underlay, k8s_deployed):
+def k8s_logs(request, func_name, k8s_actions):
     """Finalizer to extract conformance logs
 
     Usage:
@@ -135,16 +135,16 @@ def k8s_logs(request, func_name, underlay, k8s_deployed):
                 files_to_extract = utils.extract_name_from_mark(
                     extract, 'files_to_extract')
                 for path in files_to_extract:
-                    k8s_deployed.extract_file_to_node(
+                    k8s_actions.extract_file_to_node(
                         system=container_system, container=extract_from,
                         file_path=path)
             else:
-                k8s_deployed.extract_file_to_node()
+                k8s_actions.extract_file_to_node()
             if merge_xunit:
                 path = utils.extract_name_from_mark(merge_xunit, 'path')
                 output = utils.extract_name_from_mark(merge_xunit, 'output')
-                k8s_deployed.combine_xunit(path, output)
-            k8s_deployed.download_k8s_logs(files)
+                k8s_actions.combine_xunit(path, output)
+            k8s_actions.download_k8s_logs(files)
 
     request.addfinalizer(test_fin)
 
