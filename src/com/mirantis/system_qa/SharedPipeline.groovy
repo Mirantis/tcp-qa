@@ -351,7 +351,13 @@ def devops_snapshot(stack) {
         dos.py snapshot ${ENV_NAME} ${stack}_deployed
         dos.py resume ${ENV_NAME}
         sleep 20    # Wait for I/O on the host calms down
-        dos.py time-sync ${ENV_NAME} || dos.py time-sync ${ENV_NAME} # sometimes, timesync may fail. Need to update it in fuel-devops.
+        . ./tcp_tests/utils/env_salt
+
+        # ntpd is controlled by MAAS on cfg01 service, so temporary disable maas-regiond
+        pepper \\'cfg01*\\' cmd.run \\'service maas-regiond stop\\'
+        dos.py time-sync ${ENV_NAME}
+        pepper \\'cfg01*\\' cmd.run \\'service maas-regiond start\\'
+
         if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi

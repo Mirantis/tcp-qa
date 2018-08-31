@@ -40,8 +40,6 @@ def deploy(shared, common, steps) {
         if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
             shared.run_cmd("""\
                 dos.py resume ${ENV_NAME} || true
-                sleep 20    # Wait for I/O on the host calms down
-                dos.py time-sync ${ENV_NAME} || true
             """)
         } else {
             shared.run_cmd("""\
@@ -72,8 +70,6 @@ def test(shared, common, steps) {
         if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
             shared.run_cmd("""\
                 dos.py resume ${ENV_NAME} || true
-                sleep 20    # Wait for I/O on the host calms down
-                dos.py time-sync ${ENV_NAME} || true
             """)
         } else {
             shared.run_cmd("""\
