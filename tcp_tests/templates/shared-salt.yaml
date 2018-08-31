@@ -241,15 +241,15 @@
     git checkout {{ SALT_MODELS_COMMIT }};
     {%- endif %}
 
-    {%- if SALT_MODELS_SYSTEM_COMMIT != '' %}
-    pushd classes/system/;
-    git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
-    popd;
-    {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
+    {%- if SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
     pushd classes/system/ && \
     {%- for item in SALT_MODELS_SYSTEM_REF_CHANGE.split(" ") %}
     git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD;
     {%- endfor %}
+    popd;
+    {%- elif SALT_MODELS_SYSTEM_COMMIT != '' %}
+    pushd classes/system/;
+    git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
     popd;
     {%- elif SALT_MODELS_SYSTEM_TAG != '' %}
     pushd classes/system/;
@@ -345,18 +345,18 @@
       {%- if CLUSTER_PRODUCT_MODELS != '' %}
         echo "CLUSTER_PRODUCT_MODELS={{ CLUSTER_PRODUCT_MODELS }}"
       {%- endif %}
-      {%- if COOKIECUTTER_TEMPLATE_COMMIT != '' %}
-        echo "COOKIECUTTER_TEMPLATE_COMMIT={{ COOKIECUTTER_TEMPLATE_COMMIT }}"
-      {%- elif COOKIECUTTER_REF_CHANGE != '' %}
+      {%- if COOKIECUTTER_REF_CHANGE != '' %}
         echo "COOKIECUTTER_REF_CHANGE={{ COOKIECUTTER_REF_CHANGE }}"
+      {%- elif COOKIECUTTER_TEMPLATE_COMMIT != '' %}
+        echo "COOKIECUTTER_TEMPLATE_COMMIT={{ COOKIECUTTER_TEMPLATE_COMMIT }}"
       {%- elif COOKIECUTTER_TAG != '' %}
         echo "COOKIECUTTER_TAG={{ COOKIECUTTER_TAG }}"
       {%- endif %}
       echo "SALT_MODELS_SYSTEM_REPOSITORY={{ SALT_MODELS_SYSTEM_REPOSITORY }}"
-      {%- if SALT_MODELS_SYSTEM_COMMIT != '' %}
-        echo "SALT_MODELS_SYSTEM_COMMIT={{ SALT_MODELS_SYSTEM_COMMIT }}"
-      {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
+      {%- if SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
         echo "SALT_MODELS_SYSTEM_REF_CHANGE={{ SALT_MODELS_SYSTEM_REF_CHANGE }}"
+      {%- elif SALT_MODELS_SYSTEM_COMMIT != '' %}
+        echo "SALT_MODELS_SYSTEM_COMMIT={{ SALT_MODELS_SYSTEM_COMMIT }}"
       {%- elif SALT_MODELS_SYSTEM_TAG != '' %}
         echo "SALT_MODELS_SYSTEM_TAG={{ SALT_MODELS_SYSTEM_TAG }}"
       {%- endif %}
@@ -373,13 +373,13 @@
     pip install cookiecutter
     export GIT_SSL_NO_VERIFY=true; git clone {{ COOKIECUTTER_TEMPLATES_REPOSITORY }} /root/cookiecutter-templates
 
-    {%- if COOKIECUTTER_TEMPLATE_COMMIT != '' %}
-    pushd /root/cookiecutter-templates
-    git checkout {{ COOKIECUTTER_TEMPLATE_COMMIT }}
-    popd
-    {%- elif COOKIECUTTER_REF_CHANGE != '' %}
+    {%- if COOKIECUTTER_REF_CHANGE != '' %}
     pushd /root/cookiecutter-templates
     git fetch {{ COOKIECUTTER_TEMPLATES_REPOSITORY }} {{ COOKIECUTTER_REF_CHANGE }} && git checkout FETCH_HEAD
+    popd
+    {%- elif COOKIECUTTER_TEMPLATE_COMMIT != '' %}
+    pushd /root/cookiecutter-templates
+    git checkout {{ COOKIECUTTER_TEMPLATE_COMMIT }}
     popd
     {%- elif COOKIECUTTER_TAG != '' %}
     pushd /root/cookiecutter-templates
@@ -447,15 +447,15 @@
   cmd: |
     set -e;
     set -x;
-    {%- if SALT_MODELS_SYSTEM_COMMIT != '' %}
-    pushd /srv/salt/reclass/classes/system/
-    git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
-    popd;
-    {%- elif SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
+    {%- if SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
     pushd /srv/salt/reclass/classes/system/ && \
     {%- for item in SALT_MODELS_SYSTEM_REF_CHANGE.split(" ") %}
     git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD;
     {%- endfor %}
+    popd;
+    {%- elif SALT_MODELS_SYSTEM_COMMIT != '' %}
+    pushd /srv/salt/reclass/classes/system/
+    git checkout {{ SALT_MODELS_SYSTEM_COMMIT }};
     popd;
     {%- elif SALT_MODELS_SYSTEM_TAG != '' %}
     pushd /srv/salt/reclass/classes/system/

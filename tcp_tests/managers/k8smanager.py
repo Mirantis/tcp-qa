@@ -332,7 +332,7 @@ class K8SManager(ExecuteCommandsMixin):
             LOG.debug('Installing xunitmerge')
             r.check_call(cmd, raise_on_err=False)
             LOG.debug('Merging xunit')
-            cmd = ("cd {0}; arg = ''; "
+            cmd = ("cd {0}; arg=''; "
                    "for i in $(ls | grep xml); "
                    "do arg=\"$arg $i\"; done && "
                    "xunitmerge $arg {1}".format(path, output))
