@@ -23,7 +23,7 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def sl_actions(config, underlay, salt_deployed):
+def sl_actions(config, underlay_actions, salt_actions):
     """Fixture that provides various actions for K8S
 
     :param config: fixture provides oslo.config
@@ -32,14 +32,14 @@ def sl_actions(config, underlay, salt_deployed):
 
     For use in tests or fixtures to deploy a custom K8S
     """
-    return sl_manager.SLManager(config, underlay, salt_deployed)
+    return sl_manager.SLManager(config, underlay_actions, salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.stacklight_deployed)
 @pytest.fixture(scope='function')
 def stacklight_deployed(revert_snapshot, request, config,
-                        hardware, underlay, core_deployed,
-                        salt_deployed, sl_actions):
+                        hardware, underlay, salt_deployed,
+                        sl_actions, core_deployed):
     """Fixture to get or install SL services on environment
 
     :param revert_snapshot: fixture that reverts snapshot that is specified
