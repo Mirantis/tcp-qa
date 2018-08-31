@@ -81,7 +81,7 @@ node ("${PARENT_NODE_NAME}") {
 
             if ('stacklight' in stacks) {
                 stage("stacklight-pytest report") {
-                    report_name = "report.xml"
+                    report_name = "stacklight_report.xml"
                     testSuiteName = "LMA2.0_Automated"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"

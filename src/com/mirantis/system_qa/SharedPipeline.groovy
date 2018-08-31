@@ -117,6 +117,13 @@ def prepare_working_dir() {
 
 def swarm_bootstrap_salt_cluster_devops() {
         def common = new com.mirantis.mk.Common()
+        def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: env.MCP_VERSION
+        def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: env.MCP_VERSION
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
+        def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
+        def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
+        def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
+        def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
         def parameters = [
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
@@ -126,11 +133,13 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'MCP_IMAGE_PATH1604', value: "${MCP_IMAGE_PATH1604}"),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
                 string(name: 'CFG01_CONFIG_IMAGE_NAME', value: "${CFG01_CONFIG_IMAGE_NAME}"),
-                string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
-                string(name: 'PIPELINE_LIBRARY_REF', value: "${PIPELINE_LIBRARY_REF}"),
-                string(name: 'MK_PIPELINES_REF', value: "${MK_PIPELINES_REF}"),
-                string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${COOKIECUTTER_TEMPLATE_COMMIT}"),
-                string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${SALT_MODELS_SYSTEM_COMMIT}"),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
+                string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
+                string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
+                string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecutter_template_commit}"),
+                string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
+                string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
+                string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
@@ -140,12 +149,13 @@ def swarm_bootstrap_salt_cluster_devops() {
 def swarm_deploy_cicd(String stack_to_install='core,cicd') {
         // Run openstack_deploy job on cfg01 Jenkins for specified stacks
         def common = new com.mirantis.mk.Common()
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def parameters = [
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'STACK_INSTALL', value: stack_to_install),
-                string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
         build_pipeline_job('swarm-deploy-cicd', parameters)
@@ -154,12 +164,13 @@ def swarm_deploy_cicd(String stack_to_install='core,cicd') {
 def swarm_deploy_platform(String stack_to_install) {
         // Run openstack_deploy job on CICD Jenkins for specified stacks
         def common = new com.mirantis.mk.Common()
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def parameters = [
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'STACK_INSTALL', value: stack_to_install),
-                string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
         build_pipeline_job('swarm-deploy-platform', parameters)
@@ -168,13 +179,14 @@ def swarm_deploy_platform(String stack_to_install) {
 def swarm_run_pytest(String passed_steps) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def parameters = [
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
                 string(name: 'RUN_TEST_OPTS', value: "${RUN_TEST_OPTS}"),
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
-                string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
                 string(name: 'LAB_CONFIG_NAME', value: "${LAB_CONFIG_NAME}"),
                 string(name: 'REPOSITORY_SUITE', value: "${MCP_VERSION}"),
@@ -190,13 +202,14 @@ def swarm_run_pytest(String passed_steps) {
 def swarm_testrail_report(String passed_steps) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def parameters = [
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
-                string(name: 'TCP_QA_REFS', value: "${TCP_QA_REFS}"),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
             ]
         common.printMsg("Start building job 'swarm-testrail-report' with parameters:", "purple")
         common.prettyPrint(parameters)
@@ -218,6 +231,9 @@ def generate_cookied_model() {
 
         def cookiecuttertemplate_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: env.MCP_VERSION
         def saltmodels_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: env.MCP_VERSION
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
+        def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
+        def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
 
         def parameters = [
                 string(name: 'LAB_CONTEXT_NAME', value: "${LAB_CONFIG_NAME}"),
@@ -226,7 +242,9 @@ def generate_cookied_model() {
                 string(name: 'REPOSITORY_SUITE', value: "${env.MCP_VERSION}"),
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${saltmodels_system_commit}"),
                 string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecuttertemplate_commit}"),
-                string(name: 'TCP_QA_REVIEW', value: "${TCP_QA_REFS}"),
+                string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
+                string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
+                string(name: 'TCP_QA_REVIEW', value: "${tcp_qa_refs}"),
                 string(name: 'IPV4_NET_ADMIN', value: IPV4_NET_ADMIN),
                 string(name: 'IPV4_NET_CONTROL', value: IPV4_NET_CONTROL),
                 string(name: 'IPV4_NET_TENANT', value: IPV4_NET_TENANT),
@@ -244,6 +262,10 @@ def generate_configdrive_iso() {
             echo \$SALT_MASTER_IP
             """).trim().split().last()
         println("SALT_MASTER_IP=" + SALT_MASTER_IP)
+
+        def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
+        def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
+
         def parameters = [
                 string(name: 'CLUSTER_NAME', value: "${LAB_CONFIG_NAME}"),
                 string(name: 'MODEL_URL', value: "http://cz8133.bud.mirantis.net:8098/${LAB_CONFIG_NAME}.git"),
@@ -258,8 +280,8 @@ def generate_configdrive_iso() {
                 booleanParam(name: 'PIPELINES_FROM_ISO', value: true),
                 string(name: 'MCP_SALT_REPO_URL', value: "http://apt.mirantis.com/xenial"),
                 string(name: 'MCP_SALT_REPO_KEY', value: "http://apt.mirantis.com/public.gpg"),
-                string(name: 'PIPELINE_LIBRARY_REF', value: "${PIPELINE_LIBRARY_REF}"),
-                string(name: 'MK_PIPELINES_REF', value: "${MK_PIPELINES_REF}"),
+                string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
+                string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
             ]
         build_pipeline_job('create-cfg-config-drive', parameters)
 }
@@ -347,11 +369,15 @@ def devops_snapshot(stack) {
     // then make a copy for the created snapshot to allow the system
     // tests to revert this snapshot along with the metadata from the INI file.
     run_cmd("""\
+        set -ex
         dos.py suspend ${ENV_NAME}
         dos.py snapshot ${ENV_NAME} ${stack}_deployed
         dos.py resume ${ENV_NAME}
         sleep 20    # Wait for I/O on the host calms down
-        dos.py time-sync ${ENV_NAME} || dos.py time-sync ${ENV_NAME} # sometimes, timesync may fail. Need to update it in fuel-devops.
+
+        CFG01_NAME=\$(dos.py show-resources ${ENV_NAME} | grep ^cfg01 | cut -d" " -f1)
+        dos.py time-sync ${ENV_NAME} --skip-sync \${CFG01_NAME}
+
         if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi
