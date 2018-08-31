@@ -24,7 +24,7 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def k8s_actions(config, underlay, salt_deployed):
+def k8s_actions(config, underlay_actions, salt_actions):
     """Fixture that provides various actions for K8S
 
     :param config: fixture provides oslo.config
@@ -34,7 +34,7 @@ def k8s_actions(config, underlay, salt_deployed):
 
     For use in tests or fixtures to deploy a custom K8S
     """
-    return k8smanager.K8SManager(config, underlay, salt_deployed)
+    return k8smanager.K8SManager(config, underlay_actions, salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.k8s_deployed)
