@@ -22,7 +22,7 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def ceph_actions(config, underlay, salt_deployed):
+def ceph_actions(config, underlay_actions, salt_actions):
     """Fixture that provides various actions for OpenStack
 
     :param config: fixture provides oslo.config
@@ -32,7 +32,7 @@ def ceph_actions(config, underlay, salt_deployed):
 
     For use in tests or fixtures to deploy a custom OpenStack
     """
-    return ceph_manager.CephManager(config, underlay, salt_deployed)
+    return ceph_manager.CephManager(config, underlay_actions, salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.ceph_deployed)
