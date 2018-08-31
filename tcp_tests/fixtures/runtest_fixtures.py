@@ -18,7 +18,7 @@ from tcp_tests.managers.runtestmanager import RuntestManager
 
 
 @pytest.fixture(scope='function')
-def tempest_actions(underlay, salt_actions):
+def tempest_actions(underlay_actions, salt_actions):
     """
     Run tempest tests
     """
@@ -29,7 +29,7 @@ def tempest_actions(underlay, salt_actions):
     domain_name = settings.DOMAIN_NAME
     target = settings.TEMPEST_TARGET
     runtest = RuntestManager(
-        underlay, salt_actions,
+        underlay_actions, salt_actions,
         cluster_name=cluster_name,
         domain_name=domain_name,
         tempest_threads=tempest_threads,
