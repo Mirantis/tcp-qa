@@ -19,6 +19,7 @@ from devops.helpers import decorators
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 from tcp_tests.managers.clients.prometheus import prometheus_client
 from tcp_tests import logger
+from tcp_tests import settings
 
 LOG = logger.logger
 
@@ -97,17 +98,65 @@ class SLManager(ExecuteCommandsMixin):
                 service_stat_dict.update({tmp[0]: tmp[1]})
         return service_stat_dict
 
-    def run_sl_functional_tests(self, node_to_run, tests_path,
-                                test_to_run, skip_tests,
-                                reruns=5, reruns_delay=60):
+    def setup_sl_functional_tests(self, node_to_run,
+                                  repo_path='/root/stacklight-pytest',
+                                  sl_test_repo=settings.SL_TEST_REPO,
+                                  sl_test_commit=settings.SL_TEST_COMMIT):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
-        cmd = (". venv-stacklight-pytest/bin/activate;"
+        cmd_install = (
+            "set -ex;"
+            "apt-get install -y  build-essential python-dev "
+            "    virtualenv;"
+            "[ -d venv-stacklight-pytest ] || "
+            "    virtualenv --system-site-packages venv-stacklight-pytest;"
+            ". venv-stacklight-pytest/bin/activate;"
+            "if [ ! -d {repo_path} ]; then"
+            "    git clone {sl_test_repo} {repo_path};"
+            "fi;"
+            "pushd {repo_path};"
+            "git checkout {sl_test_commit};"
+            "popd;"
+            "pip install {repo_path};"
+            .format(repo_path=repo_path,
+                    sl_test_repo=sl_test_repo,
+                    sl_test_commit=sl_test_commit)
+        )
+
+        cmd_configure = (
+            "set -ex;"
+            ". venv-stacklight-pytest/bin/activate;"
+            "stl-tests gen-config-mk;"
+            "cp venv-stacklight-pytest/lib/python2.7/site-packages/"
+            "stacklight_tests/fixtures/config.yaml "
+            "{repo_path}/stacklight_tests/fixtures/config.yaml;"
+            .format(repo_path=repo_path)
+        )
+
+        with self.__underlay.remote(node_name=target_node_name[0]) \
+                as node_remote:
+            LOG.info("Install stacklight-pytest on the node {0}".format(
+                target_node_name[0]))
+            node_remote.check_call(cmd_install, verbose=True)
+
+            LOG.info("Configure stacklight-pytest on the node {0}".format(
+                target_node_name[0]))
+            node_remote.check_call(cmd_configure, verbose=True)
+
+    def run_sl_functional_tests(self, node_to_run, tests_path,
+                                test_to_run, skip_tests,
+                                reruns=5, reruns_delay=60,
+                                junit_report_name='report.xml'):
+        target_node_name = [node_name for node_name
+                            in self.__underlay.node_names()
+                            if node_to_run in node_name]
+        cmd = ("set -ex;"
+               ". venv-stacklight-pytest/bin/activate;"
                "cd {tests_path}; "
                "export VOLUME_STATUS='available';"
-               "pytest {reruns} {reruns_delay} "
-               "-k {skip_tests} {test_to_run}".format(**{
+               "pytest {reruns} {reruns_delay} --junit-xml={junit_report_name}"
+               " -k {skip_tests} {test_to_run}".format(**{
                    "tests_path": tests_path,
                    "skip_tests": ("'not " + skip_tests + "'"
                                   if skip_tests else ''),
@@ -116,6 +165,7 @@ class SLManager(ExecuteCommandsMixin):
                               if reruns > 1 else ""),
                    "reruns_delay": ("--reruns-delay {}".format(reruns_delay)
                                     if reruns_delay > 0 else ""),
+                   "junit_report_name": junit_report_name,
                    }))
 
         with self.__underlay.remote(node_name=target_node_name[0]) \
@@ -131,7 +181,8 @@ class SLManager(ExecuteCommandsMixin):
         target_node_name = [node_name for node_name
                             in self.__underlay.node_names()
                             if node_to_run in node_name]
-        cmd = (". venv-stacklight-pytest/bin/activate;"
+        cmd = ("set -ex;"
+               ". venv-stacklight-pytest/bin/activate;"
                "cd {tests_path}; "
                "export VOLUME_STATUS='available';"
                "pip install pytest-json;"

@@ -22,14 +22,15 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def decapod_actions(config, underlay, salt_actions):
+def decapod_actions(config, underlay_actions, salt_actions):
     """Fixture that provides various actions for Decapod
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :rtype: DecapodManager
     """
-    return decapod_manager.DecapodManager(config, underlay, salt_actions)
+    return decapod_manager.DecapodManager(config, underlay_actions,
+                                          salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.decapod_deployed)
