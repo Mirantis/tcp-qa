@@ -131,6 +131,8 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'MK_PIPELINES_REF', value: "${MK_PIPELINES_REF}"),
                 string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${COOKIECUTTER_TEMPLATE_COMMIT}"),
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${SALT_MODELS_SYSTEM_COMMIT}"),
+                string(name: 'COOKIECUTTER_REF_CHANGE', value: "${COOKIECUTTER_REF_CHANGE}"),
+                string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${ENVIRONMENT_TEMPLATE_REF_CHANGE}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
@@ -226,6 +228,8 @@ def generate_cookied_model() {
                 string(name: 'REPOSITORY_SUITE', value: "${env.MCP_VERSION}"),
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${saltmodels_system_commit}"),
                 string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecuttertemplate_commit}"),
+                string(name: 'COOKIECUTTER_REF_CHANGE', value: "${COOKIECUTTER_REF_CHANGE}"),
+                string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${ENVIRONMENT_TEMPLATE_REF_CHANGE}"),
                 string(name: 'TCP_QA_REVIEW', value: "${TCP_QA_REFS}"),
                 string(name: 'IPV4_NET_ADMIN', value: IPV4_NET_ADMIN),
                 string(name: 'IPV4_NET_CONTROL', value: IPV4_NET_CONTROL),
@@ -347,11 +351,15 @@ def devops_snapshot(stack) {
     // then make a copy for the created snapshot to allow the system
     // tests to revert this snapshot along with the metadata from the INI file.
     run_cmd("""\
+        set -ex
         dos.py suspend ${ENV_NAME}
         dos.py snapshot ${ENV_NAME} ${stack}_deployed
         dos.py resume ${ENV_NAME}
         sleep 20    # Wait for I/O on the host calms down
-        dos.py time-sync ${ENV_NAME} || dos.py time-sync ${ENV_NAME} # sometimes, timesync may fail. Need to update it in fuel-devops.
+
+        CFG01_NAME=\$(dos.py show-resources ${ENV_NAME} | grep ^cfg01 | cut -d" " -f1)
+        dos.py time-sync ${ENV_NAME} --skip-sync \${CFG01_NAME}
+
         if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi
