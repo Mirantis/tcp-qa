@@ -19,6 +19,7 @@ import pytest
 
 from tcp_tests import logger
 from tcp_tests.helpers import log_step
+from tcp_tests import settings
 
 
 LOG = logger.logger
@@ -31,7 +32,7 @@ def pytest_runtest_makereport(item, call):
     setattr(item, "rep_" + rep.when, rep)
 
 
-def pytest_runtest_setup(item):
+def pytest_runtest_setup(item, record_xml_attribute):
     if item.cls is not None:
         item.cls._current_test = item.function
     item._start_time = time.time()
@@ -39,6 +40,7 @@ def pytest_runtest_setup(item):
     head = head.format(item.function.__name__)
     start_step = "\n{head}".format(head=head)
     LOG.info(start_step)
+    record_xml_attribute("classname", settings.ENV_NAME)
 
 
 def pytest_runtest_teardown(item):
