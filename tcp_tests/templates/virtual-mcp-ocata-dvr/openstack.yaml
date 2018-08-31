@@ -32,6 +32,14 @@
   node_name: {{ HOSTNAME_CFG01 }}
 {%- endif %}
 
+# Dirty hack to install glance on nightly vcp image with proposed repos
+- description: Downgrade libxml2
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "ctl*" cmd.run 'apt install libxml2=2.9.3+dfsg1-1ubuntu0.5 -y --allow-downgrades'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 # Deploy nginx before openstack services (PROD-22740)
 - description: Deploy nginx proxy
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
