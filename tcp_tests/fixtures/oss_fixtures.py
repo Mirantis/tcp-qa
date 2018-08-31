@@ -22,14 +22,14 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def oss_actions(config, underlay, salt_actions):
+def oss_actions(config, underlay_actions, salt_actions):
     """Fixture that provides various actions for OSS
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :rtype: OSSManager
     """
-    return oss_manager.OSSManager(config, underlay, salt_actions)
+    return oss_manager.OSSManager(config, underlay_actions, salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.oss_deployed)
