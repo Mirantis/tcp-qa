@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "357c037c_229a1112",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt-context-lab03-environment.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 87,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-09-03T15:35:26Z",
+      "side": 1,
+      "message": "Please merge the patch to environment-templates first",
+      "range": {
+        "startLine": 86,
+        "startChar": 0,
+        "endLine": 87,
+        "endChar": 51
+      },
+      "revId": "4cec6f618b184bcf9214a71793834be74a9cc9f6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
