@@ -144,7 +144,7 @@
 
 - description: Highstate analytics
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'nal*' state.sls highstate && sleep 15;
+    -C 'nal*' state.highstate && sleep 15;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
