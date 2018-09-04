@@ -16,6 +16,24 @@
       "revId": "96d3b85f0ba18fad982343ac492c64029ba5841e",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be430f97_764f9095",
+        "filename": "tcp_tests/fixtures/k8s_fixtures.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1008378
+      },
+      "writtenOn": "2018-09-04T17:49:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "71f8dc56_2f4963ff",
+      "revId": "96d3b85f0ba18fad982343ac492c64029ba5841e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
