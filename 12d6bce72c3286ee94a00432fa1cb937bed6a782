@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c5249f1c_f4a58a52",
+        "filename": "tcp_tests/tests/system/test_calico.py",
+        "patchSetId": 24
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-09-05T13:04:53Z",
+      "side": 1,
+      "message": "AttributeError: \u0027module\u0027 object has no attribute \u0027kubernetes_allow_traffic_from_agents\u0027",
+      "revId": "12d6bce72c3286ee94a00432fa1cb937bed6a782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
