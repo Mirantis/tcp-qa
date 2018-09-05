@@ -22,6 +22,30 @@
       "revId": "fbe2e5c8b8f0f57b92b5b3e81a9c3833cb86c2c8",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2a3ecaf3_d31fb4e5",
+        "filename": "tcp_tests/fixtures/k8s_fixtures.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-09-05T15:14:45Z",
+      "side": 1,
+      "message": "Yes, this is a workaround of something missing in the product (linux formula).\nI think it\u0027s Ok to merge the workaround if there is a bug for the formula.",
+      "parentUuid": "bb059522_82e6c9a0",
+      "range": {
+        "startLine": 80,
+        "startChar": 1,
+        "endLine": 89,
+        "endChar": 64
+      },
+      "revId": "fbe2e5c8b8f0f57b92b5b3e81a9c3833cb86c2c8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
