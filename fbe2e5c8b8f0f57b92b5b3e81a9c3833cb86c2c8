@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bb059522_82e6c9a0",
+        "filename": "tcp_tests/fixtures/k8s_fixtures.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-09-05T13:15:50Z",
+      "side": 1,
+      "message": "Not sure if it\u0027s a good idea to use tests for that procedure. IMO it should be possible to do this via formula functionality",
+      "range": {
+        "startLine": 80,
+        "startChar": 1,
+        "endLine": 89,
+        "endChar": 64
+      },
+      "revId": "fbe2e5c8b8f0f57b92b5b3e81a9c3833cb86c2c8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
