@@ -16,7 +16,14 @@
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NOVA() }}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER(INSTALL_VOLUME=true) }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER(INSTALL_VOLUME=false) }}
+
+- description: WR Install cinder volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:volume' state.sls cinder
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON(INSTALL_GATEWAY=false) }}
 
@@ -44,7 +51,7 @@
 
 - description: Finalize opencontrail services
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@opencontrail:database and *01*' state.sls opencontrail.client
+    -C 'I@opencontrail:client and not cmp*' state.sls opencontrail.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 30}
   skip_fail: false
@@ -65,20 +72,7 @@
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
 
-- description: Deploy horizon dashboard
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@horizon:server' state.sls horizon
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Deploy nginx proxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
 # Install compute node
 
@@ -192,6 +186,12 @@
 
 - description: Finalize contrail
   cmd: salt -C 'I@opencontrail:compute' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Tempotary WR Restart analytics-apis
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'nal0*' docker.restart opencontrail_analytics_1 -b1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
