@@ -42,6 +42,8 @@ from tcp_tests.managers.k8s.serviceaccounts import \
 from tcp_tests.managers.k8s.services import K8sServiceManager
 from tcp_tests.managers.k8s.replicasets import K8sReplicaSetManager
 from tcp_tests.managers.k8s.networkpolicies import K8sNetworkPolicyManager
+from tcp_tests.managers.k8s.clusterrolebindings import \
+    K8sClusterRoleBindingManager
 
 
 class K8sCluster(object):
@@ -89,6 +91,7 @@ class K8sCluster(object):
         self.api_extensions = client.ExtensionsV1beta1Api(api_client)
         self.api_autoscaling = client.AutoscalingV1Api(api_client)
         self.api_batch = client.BatchV1Api(api_client)
+        self.api_rbac_auth = client.RbacAuthorizationV1Api(api_client)
 
         self.nodes = K8sNodeManager(self)
         self.pods = K8sPodManager(self)
@@ -111,3 +114,4 @@ class K8sCluster(object):
         self.pvolumes = K8sPersistentVolumeManager(self)
         self.replicasets = K8sReplicaSetManager(self)
         self.networkpolicies = K8sNetworkPolicyManager(self)
+        self.clusterrolebindings = K8sClusterRoleBindingManager(self)
