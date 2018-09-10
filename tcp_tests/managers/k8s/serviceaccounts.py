@@ -14,6 +14,8 @@
 
 from kubernetes import client
 
+from devops.helpers import helpers
+
 from tcp_tests.managers.k8s.base import K8sBaseResource
 from tcp_tests.managers.k8s.base import K8sBaseManager
 
@@ -40,6 +42,10 @@ class K8sServiceAccount(K8sBaseResource):
     def _delete(self, **kwargs):
         self._manager.api.delete_namespaced_service_account(
             self.name, self.namespace, client.V1DeleteOptions(), **kwargs)
+
+    def wait_secret_generation(self, timeout=90, interval=2):
+        helpers.wait(lambda: len(self.read().secrets) > 0,
+                     timeout=timeout, interval=interval)
 
 
 class K8sServiceAccountManager(K8sBaseManager):
