@@ -17,16 +17,16 @@ aliases:
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp1.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp2.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMN01 = os_env('HOSTNAME_CMN01', 'cmn01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMN02 = os_env('HOSTNAME_CMN02', 'cmn02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMN03 = os_env('HOSTNAME_CMN03', 'cmn03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_RGW01 = os_env('HOSTNAME_CMN01', 'rgw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_RGW02 = os_env('HOSTNAME_CMN02', 'rgw02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_RGW03 = os_env('HOSTNAME_CMN03', 'rgw03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_OSD1 = os_env('HOSTNAME_OSD1', 'osd1.' + DOMAIN_NAME) %}
-{% set HOSTNAME_OSD2 = os_env('HOSTNAME_OSD2', 'osd2.' + DOMAIN_NAME) %}
+{% set HOSTNAME_OSD01 = os_env('HOSTNAME_OSD01', 'osd1.' + DOMAIN_NAME) %}
+{% set HOSTNAME_OSD02 = os_env('HOSTNAME_OSD02', 'osd2.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
 
@@ -47,8 +47,8 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +13
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_OSD1 }}: +94
-            default_{{ HOSTNAME_OSD2 }}: +95
+            default_{{ HOSTNAME_OSD01 }}: +94
+            default_{{ HOSTNAME_OSD02 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
             default_{{ HOSTNAME_CMN02 }}: +97
             default_{{ HOSTNAME_CMN03 }}: +98
@@ -72,8 +72,8 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +13
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_OSD1 }}: +94
-            default_{{ HOSTNAME_OSD2 }}: +95
+            default_{{ HOSTNAME_OSD01 }}: +94
+            default_{{ HOSTNAME_OSD02 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
             default_{{ HOSTNAME_CMN02 }}: +97
             default_{{ HOSTNAME_CMN03 }}: +98
@@ -97,8 +97,8 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +13
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_OSD1 }}: +94
-            default_{{ HOSTNAME_OSD2 }}: +95
+            default_{{ HOSTNAME_OSD01 }}: +94
+            default_{{ HOSTNAME_OSD02 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
             default_{{ HOSTNAME_CMN02 }}: +97
             default_{{ HOSTNAME_CMN03 }}: +98
@@ -122,8 +122,8 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +13
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
-            default_{{ HOSTNAME_OSD1 }}: +94
-            default_{{ HOSTNAME_OSD2 }}: +95
+            default_{{ HOSTNAME_OSD01 }}: +94
+            default_{{ HOSTNAME_OSD02 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
             default_{{ HOSTNAME_CMN02 }}: +97
             default_{{ HOSTNAME_CMN03 }}: +98
@@ -135,31 +135,12 @@ template:
           ip_ranges:
             dhcp: [+10, -10]
 
-      storage-pool01:
-        net: {{ os_env('STORAGE_ADDRESS_POOL01', '10.100.0.0/16:24') }}
-        params:
-          ip_reserved:
-            gateway: +1
-            l2_network_device: +1
-            default_{{ HOSTNAME_OSD1 }}: +94
-            default_{{ HOSTNAME_OSD2 }}: +95
-            default_{{ HOSTNAME_CMN01 }}: +96
-            default_{{ HOSTNAME_CMN02 }}: +97
-            default_{{ HOSTNAME_CMN03 }}: +98
-            default_{{ HOSTNAME_RGW01 }}: +76
-            default_{{ HOSTNAME_RGW02 }}: +77
-            default_{{ HOSTNAME_RGW03 }}: +78
-          ip_ranges:
-            dhcp: [+10, -10]
-
-
     groups:
       - name: default
         driver:
           name: devops.driver.libvirt
           params:
             connection_string: !os_env CONNECTION_STRING, qemu:///system
-            storage_pool_name: !os_env STORAGE_POOL_NAME, default
             stp: False
             hpet: False
             enable_acpi: true
@@ -171,7 +152,6 @@ template:
           private: private-pool01
           tenant: tenant-pool01
           external: external-pool01
-          storage: storage-pool01
 
         l2_network_devices:
           private:
@@ -195,13 +175,6 @@ template:
             dhcp: true
             forward:
               mode: route
-
-          storage:
-            address_pool: storage-pool01
-            dhcp: true
-            forward:
-              mode: route
-
 
         group_volumes:
          - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
@@ -430,7 +403,7 @@ template:
               interfaces: *interfaces
               network_config: *network_config
 
-          - name: {{ HOSTNAME_OSD1 }}
+          - name: {{ HOSTNAME_OSD01 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
@@ -462,7 +435,7 @@ template:
               interfaces: *interfaces
               network_config: *network_config
 
-          - name: {{ HOSTNAME_OSD2 }}
+          - name: {{ HOSTNAME_OSD02 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
