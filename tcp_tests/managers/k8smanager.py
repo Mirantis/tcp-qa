@@ -364,15 +364,18 @@ class K8SManager(ExecuteCommandsMixin):
         return self.controller_check_call("nslookup {0} {1}".format(host, src))
 
     @retry(300, exception=DevopsCalledProcessError)
-    def curl(self, url):
+    def curl(self, url, *args):
         """
         Run curl on controller and return stdout
 
         :param url: url to curl
         :return: response string
         """
-        result = self.controller_check_call("curl -s -S \"{}\"".format(url))
-        LOG.debug("curl \"{0}\" result: {1}".format(url, result['stdout']))
+        args.append(url)
+        cmd = "curl -s -S {}".format(
+            " ".join(["'{}'".format(a.replace("'", "\\'")) for a in args]))
+        result = self.controller_check_call(cmd)
+        LOG.debug("{0}\nresult:\n{1}".format(cmd, result['stdout']))
         return result['stdout']
 
 

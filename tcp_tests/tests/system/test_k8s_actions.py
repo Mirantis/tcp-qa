@@ -15,6 +15,7 @@
 import pytest
 import netaddr
 import os
+import yaml
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -305,3 +306,65 @@ class TestMCPK8sActions(object):
         calico_pod.delete()
         multicni_pod.delete()
         nocni_pod.delete()
+
+    @pytest.mark.grap_versions
+    #@pytest.mark.fail_snapshot
+    def test_k8s_dashboard(self, show_step, config,
+                           salt_deployed, k8s_deployed):
+        """Test dashboard setup
+
+        Scenario:
+            1. Setup Kubernetes cluster
+            2. Try to curl login status page of dashboard
+            3. Create a test-admin-user account
+            4. Try to login in dashboard using test-admin-user account
+            5. Get and check list of namespaces using dashboard api
+        """
+        show_step(1)
+
+        show_step(2)
+        ns = 'kube-system'
+        dashboard_service =\
+            k8s_deployed.api.services.get('kubernetes-dashboard', ns)
+        dashboard_url = 'https://{}'.format(dashboard_service.get_ip())
+
+        def dashboard_curl(url, data=None, headers=None):
+            """ Why using curl from controller node:
+                - connect_{get,post}_namespaced_service_proxy_with_path -
+                  k8s lib does not provide way to pass headers or POST data
+                - rest k8s api - need to auth
+                - new load-balancer svc for dashboard + requests python lib -
+                  requires working metallb or other load-balancer
+            """
+            args = ['--insecure']
+            for name in headers or {}:
+                args.append('--header')
+                args.append("{0}: {1}".format(name, headers[name]))
+            if data is not None:
+                args.append('--data')
+                args.append(data)
+            result = k8s_deployed.curl(dashboard_url, *args)
+            return yaml.safe_load(result)
+
+        assert 'tokenPresent' in dashboard_curl('/api/v1/login/status')
+
+        show_step(3)
+        account = k8s_deployed.api.serviceaccounts.create(
+            namespace=ns,
+            body=read_yaml_file(os.path.join(
+                os.path.dirname(__file__),
+                'testdata/k8s/pod-sample-calico.yaml')))
+
+        account_token = k8s_deployed.api.secrets.get(
+            namespace=ns, name=account.read().secrets[0]).read().data['token']
+
+        show_step(4)
+        csrf_token = dashboard_curl('/api/v1/csrftoken/login')['token']
+        headers = {'X-CSRF-TOKEN': csrf_token}
+        headers['jweToken'] = dashboard_curl(
+            '/api/v1/login', headers=headers,
+            data=yaml.safe_dump({'token': account_token}))['jweToken']
+
+        show_step(5)
+        from pprint import pprint
+        pprint(dashboard_curl('/api/v1/namespace', headers=headers))
