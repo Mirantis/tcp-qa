@@ -17,8 +17,8 @@ aliases:
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP1 = os_env('HOSTNAME_CMP1', 'cmp1.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP2 = os_env('HOSTNAME_CMP2', 'cmp2.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMN01 = os_env('HOSTNAME_CMN01', 'cmn01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMN02 = os_env('HOSTNAME_CMN02', 'cmn02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMN03 = os_env('HOSTNAME_CMN03', 'cmn03.' + DOMAIN_NAME) %}
@@ -45,8 +45,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +11
             default_{{ HOSTNAME_CTL02 }}: +12
             default_{{ HOSTNAME_CTL03 }}: +13
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_OSD1 }}: +94
             default_{{ HOSTNAME_OSD2 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
@@ -70,8 +70,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +11
             default_{{ HOSTNAME_CTL02 }}: +12
             default_{{ HOSTNAME_CTL03 }}: +13
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_OSD1 }}: +94
             default_{{ HOSTNAME_OSD2 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
@@ -95,8 +95,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +11
             default_{{ HOSTNAME_CTL02 }}: +12
             default_{{ HOSTNAME_CTL03 }}: +13
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_OSD1 }}: +94
             default_{{ HOSTNAME_OSD2 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
@@ -120,8 +120,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +11
             default_{{ HOSTNAME_CTL02 }}: +12
             default_{{ HOSTNAME_CTL03 }}: +13
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_OSD1 }}: +94
             default_{{ HOSTNAME_OSD2 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
@@ -141,6 +141,12 @@ template:
           ip_reserved:
             gateway: +1
             l2_network_device: +1
+            default_{{ HOSTNAME_CFG01 }}: +15
+            default_{{ HOSTNAME_CTL01 }}: +11
+            default_{{ HOSTNAME_CTL02 }}: +12
+            default_{{ HOSTNAME_CTL03 }}: +13
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_OSD1 }}: +94
             default_{{ HOSTNAME_OSD2 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
@@ -149,6 +155,8 @@ template:
             default_{{ HOSTNAME_RGW01 }}: +76
             default_{{ HOSTNAME_RGW02 }}: +77
             default_{{ HOSTNAME_RGW03 }}: +78
+            default_{{ HOSTNAME_GTW01 }}: +110
+            default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+10, -10]
 
@@ -245,6 +253,9 @@ template:
                 - label: ens4
                   l2_network_device: private
                   interface_model: *interface_model
+                - label: ens5
+                  l2_network_device: storage
+                  interface_model: *interface_model
               network_config:
                 ens3:
                   networks:
@@ -252,6 +263,8 @@ template:
                 ens4:
                   networks:
                     - private
+                ens5:
+                    - storage
 
           - name: {{ HOSTNAME_CTL01 }}
             role: salt_minion
@@ -597,7 +610,7 @@ template:
               interfaces: *interfaces
               network_config: *network_config
 
-          - name: {{ HOSTNAME_CMP01 }}
+          - name: {{ HOSTNAME_CMP1 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 3
@@ -648,7 +661,7 @@ template:
                   networks:
                     - external
 
-          - name: {{ HOSTNAME_CMP02 }}
+          - name: {{ HOSTNAME_CMP2 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 3
