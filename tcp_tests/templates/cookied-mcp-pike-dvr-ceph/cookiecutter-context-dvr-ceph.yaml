@@ -1,7 +1,7 @@
 default_context:
   auditd_enabled: 'False'
   backend_network_netmask: 255.255.255.0
-  backend_network_subnet: 10.167.7.0/24
+  backend_network_subnet: 10.167.6.0/24
   backend_vlan: '30'
   backup_private_key: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -33,7 +33,7 @@ default_context:
     -----END RSA PRIVATE KEY-----
   backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5ju/76bNrh7vl/zQZgTaIh1nfR3vK9PpfKbTSIP87FFY21d6siHszRffRDQXYPeFW8/PntrFOF44rfEVFW8+ghmObd9WDA3NCZPJ8BnPhM51O1bH1zJ7wGjbSqVGmrzAVAxIOGBG/QnWJfouMmyvykzUDyrd7gZie/QOssFnUirv5P+SrPOxPs+68a8Qrrcn8NoToEjvdAb7RbQy9uV13OfBe9cuj9WUFdqNY6/ftgeIwUxNlqnuVO8ZUTLEHJUQzTgGjsAEXY8Q/AasYv2c6knUtLEEJyvI1XJlu94UX97wDUKPXvysP5bgfmnYCCvkD/LctmlOTKGdO1ZfPBPdj
   bmk_enabled: 'False'
-  ceph_cluster_network: 10.167.7.0/24
+  ceph_cluster_network: 10.167.6.0/24
   ceph_enabled: 'True'
   ceph_hyper_converged: 'False'
   ceph_mon_node01_address: 10.167.4.66
@@ -47,11 +47,11 @@ default_context:
   ceph_osd_bond_mode: active-backup
   ceph_osd_count: '2'
   ceph_osd_data_disks: /dev/vdb,/dev/vdc
-  ceph_osd_journal_or_block_db_disks: /dev/vdd,/dev/vde
+  ceph_osd_journal_or_block_db_disks: /dev/vdb,/dev/vdc
   ceph_osd_node_count: '2'
   ceph_osd_primary_first_nic: eth1
   ceph_osd_primary_second_nic: eth2
-  ceph_osd_rack01_backend_subnet: 10.167.7
+  ceph_osd_rack01_backend_subnet: 10.167.6
   ceph_osd_rack01_hostname: osd
   ceph_osd_rack01_single_subnet: 10.167.4
   ceph_public_network: 10.167.4.0/24

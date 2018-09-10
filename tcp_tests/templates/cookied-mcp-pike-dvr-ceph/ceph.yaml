@@ -4,8 +4,6 @@
 {% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import DOMAIN_NAME with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
-{% import 'shared-backup-restore.yaml' as BACKUP with context %}
-
 # Install ceph mons
 - description: Update grains
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -167,5 +165,4 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-{{ BACKUP.MACRO_BACKUP_CEPH() }}
 {{ SHARED.INSTALL_DOCKER_ON_GTW() }}
