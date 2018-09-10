@@ -80,7 +80,6 @@ TEMPEST_PATTERN = os.environ.get('TEMPEST_PATTERN', 'tempest')
 TEMPEST_TIMEOUT = int(os.environ.get('TEMPEST_TIMEOUT', 60 * 60 * 5))
 TEMPEST_THREADS = int(os.environ.get('TEMPEST_THREADS', 2))
 TEMPEST_EXCLUDE_TEST_ARGS = os.environ.get(
-    'TEMPEST_EXCLUDE_TEST_ARGS',
-    '--blacklist-file mcp_pike_lvm_skip.list')
+    'TEMPEST_EXCLUDE_TEST_ARGS')
 TEMPEST_TARGET = os.environ.get('TEMPEST_TARGET', 'gtw01')
 SALT_VERSION = os.environ.get('SALT_VERSION', '2017.7')
