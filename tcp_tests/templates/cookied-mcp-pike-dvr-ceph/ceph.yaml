@@ -167,5 +167,5 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-{{ BACKUP.MACRO_BACKUP_CEPH() }}
+# {{ BACKUP.MACRO_BACKUP_CEPH() }}
 {{ SHARED.INSTALL_DOCKER_ON_GTW() }}
