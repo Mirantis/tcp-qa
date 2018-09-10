@@ -1,6 +1,6 @@
 {% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import HOSTNAME_CMP01 with context %}
-{% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import HOSTNAME_CMP1 with context %}
+{% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import HOSTNAME_CMP2 with context %}
 {% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import DOMAIN_NAME with context %}
