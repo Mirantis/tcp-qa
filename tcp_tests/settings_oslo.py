@@ -305,10 +305,10 @@ k8s_deploy_opts = [
            default='sbPfel23ZigJF3Bm'),
     ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
     ct.Cfg('kubernetes_hyperkube_image', ct.String(),
-           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.10.4-4'.format(
+           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.11.2-1'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_pause_image', ct.String(),
-           default='{}/mirantis/kubernetes/pause-amd64:v1.10.4-4'.format(
+           default='{}/mirantis/kubernetes/pause-amd64:v1.11.2-1'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/node:v3.1.3'.format(
@@ -343,7 +343,7 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_externaldns_provider', ct.String(),
            help="", default='coredns'),
     ct.Cfg('kubernetes_coredns_enabled', ct.Boolean(),
-           help="", default=False),
+           help="", default=True),
     ct.Cfg('kubernetes_metallb_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubelet_fail_on_swap', ct.Boolean(),
@@ -363,7 +363,7 @@ k8s_opts = [
            default=False),
     ct.Cfg('k8s_conformance_image', ct.String(),
            default='docker-prod-virtual.docker.mirantis.net/mirantis/'
-                   'kubernetes/k8s-conformance:v1.10.4-4'),
+                   'kubernetes/k8s-conformance:v1.11.2-1'),
     ct.Cfg('k8s_update_chain', ct.String(),
            default='v1.9.8-4 v1.10.4-4')
 ]
