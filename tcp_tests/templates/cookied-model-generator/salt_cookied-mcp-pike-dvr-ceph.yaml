@@ -43,6 +43,14 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Temporary workaround !! Fix or debug
+  cmd: |
+    sed -i 's/pg_num: 128/pg_num: 4/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/ceph/setup.yml;
+    sed -i 's/pgp_num: 128/pgp_num: 4/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/ceph/setup.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
 
 
