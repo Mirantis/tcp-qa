@@ -15,6 +15,7 @@
 import pytest
 import netaddr
 import os
+import yaml
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -26,6 +27,10 @@ LOG = logger.logger
 
 class TestMCPK8sActions(object):
     """Test class for different k8s actions"""
+
+    def __read_testdata_yaml(self, name):
+        dir = os.path.join(os.path.dirname(__file__), 'testdata/k8s')
+        return read_yaml_file(dir, name)
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
@@ -235,9 +240,8 @@ class TestMCPK8sActions(object):
             namespace="kube-system", name_prefix="kube-flannel-") > 0
 
         show_step(3)
-        data_dir = os.path.join(os.path.dirname(__file__), 'testdata/k8s')
         flannel_pod = k8s_deployed.api.pods.create(
-            body=read_yaml_file(data_dir, 'pod-sample-flannel.yaml'))
+            body=self.__read_testdata_yaml('pod-sample-flannel.yaml'))
         flannel_pod.wait_running()
 
         show_step(4)
@@ -247,7 +251,7 @@ class TestMCPK8sActions(object):
 
         show_step(5)
         calico_pod = k8s_deployed.api.pods.create(
-            body=read_yaml_file(data_dir, 'pod-sample-calico.yaml'))
+            body=self.__read_testdata_yaml('pod-sample-calico.yaml'))
         calico_pod.wait_running()
 
         show_step(6)
@@ -257,7 +261,7 @@ class TestMCPK8sActions(object):
 
         show_step(7)
         multicni_pod = k8s_deployed.api.pods.create(
-            body=read_yaml_file(data_dir, 'pod-sample-multicni.yaml'))
+            body=self.__read_testdata_yaml('pod-sample-multicni.yaml'))
         multicni_pod.wait_running()
 
         show_step(8)
@@ -270,7 +274,7 @@ class TestMCPK8sActions(object):
 
         show_step(9)
         nocni_pod = k8s_deployed.api.pods.create(
-            body=read_yaml_file(data_dir, 'pod-sample.yaml'))
+            body=self.__read_testdata_yaml('pod-sample.yaml'))
         nocni_pod.wait_running()
 
         show_step(10)
@@ -305,3 +309,73 @@ class TestMCPK8sActions(object):
         calico_pod.delete()
         multicni_pod.delete()
         nocni_pod.delete()
+
+    @pytest.mark.grap_versions
+    # @pytest.mark.fail_snapshot
+    def test_k8s_dashboard(self, show_step, config,
+                           salt_deployed, k8s_deployed):
+        """Test dashboard setup
+
+        Scenario:
+            1. Setup Kubernetes cluster
+            2. Try to curl login status page of dashboard
+            3. Create a test-admin-user account
+            4. Try to login in dashboard using test-admin-user account
+            5. Get and check list of namespaces using dashboard api
+        """
+        show_step(1)
+
+        show_step(2)
+        ns = 'kube-system'
+        dashboard_service =\
+            k8s_deployed.api.services.get('kubernetes-dashboard', ns)
+        dashboard_url = 'https://{}'.format(dashboard_service.get_ip())
+
+        def dashboard_curl(url, data=None, headers=None):
+            """ Why using curl from controller node:
+                - connect_{get,post}_namespaced_service_proxy_with_path -
+                  k8s lib does not provide way to pass headers or POST data
+                - rest k8s api - need to auth
+                - new load-balancer svc for dashboard + requests python lib -
+                  requires working metallb or other load-balancer
+            """
+            args = ['--insecure']
+            for name in headers or {}:
+                args.append('--header')
+                args.append("{0}: {1}".format(name, headers[name]))
+            if data is not None:
+                args.append('--data')
+                args.append(data)
+            result = k8s_deployed.curl(dashboard_url + url, *args)
+            from pprint import pprint
+            pprint(result)
+            return ''.join(result)
+
+        assert 'tokenPresent' in dashboard_curl('/api/v1/login/status')
+
+        show_step(3)
+        account = k8s_deployed.api.serviceaccounts.create(
+            namespace=ns,
+            body=self.__read_testdata_yaml('test-admin-user-account.yaml'))
+
+        k8s_deployed.api.clusterrolebindings.create(
+            body=self.__read_testdata_yaml(
+                'test-admin-user-cluster-role-bind.yaml'))
+
+        account.wait_secret_generation()
+        account_secret = account.read().secrets[0]
+        account_token = k8s_deployed.api.secrets.get(
+            namespace=ns, name=account_secret.name).read().data['token']
+
+        show_step(4)
+        csrf_token = yaml.safe_load(dashboard_curl(
+            '/api/v1/csrftoken/login'))['token']
+        headers = {'X-CSRF-TOKEN': csrf_token,
+                   'Content-Type': 'application/json'}
+        headers['jweToken'] = yaml.safe_load(dashboard_curl(
+            '/api/v1/login', headers=headers,
+            data=yaml.safe_dump({'token': account_token})))['jweToken']
+
+        show_step(5)
+        from pprint import pprint
+        pprint(dashboard_curl('/api/v1/namespace', headers=headers))
