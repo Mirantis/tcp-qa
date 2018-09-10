@@ -105,7 +105,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_storage_dhcp
+          role: bond0_ab_ovs_vxlan_mesh
 
     cmn01.cookied-mcp-pike-dvr-ceph.local:
       reclass_storage_name: ceph_mon_node01
@@ -118,7 +118,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_storage_dhcp
+          role: bond0_ab_ovs_vxlan_mesh
 
     cmn02.cookied-mcp-pike-dvr-ceph.local:
       reclass_storage_name: ceph_mon_node02
@@ -131,7 +131,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_storage_dhcp
+          role: bond0_ab_ovs_vxlan_mesh
 
     cmn03.cookied-mcp-pike-dvr-ceph.local:
       reclass_storage_name: ceph_mon_node03
@@ -144,7 +144,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_storage_dhcp
+          role: bond0_ab_ovs_vxlan_mesh
 
     rgw01.cookied-mcp-pike-dvr-ceph.local:
       reclass_storage_name: ceph_rgw_node01
@@ -157,7 +157,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_storage_dhcp
+          role: bond0_ab_ovs_vxlan_mesh
 
     rgw02.cookied-mcp-pike-dvr-ceph.local:
       reclass_storage_name: ceph_rgw_node02
@@ -170,7 +170,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_storage_dhcp
+          role: bond0_ab_ovs_vxlan_mesh
 
     rgw03.cookied-mcp-pike-dvr-ceph.local:
       reclass_storage_name: ceph_rgw_node03
@@ -183,4 +183,4 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_storage_dhcp
+          role: bond0_ab_ovs_vxlan_mesh
