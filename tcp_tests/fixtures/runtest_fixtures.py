@@ -23,7 +23,6 @@ def tempest_actions(underlay, salt_actions):
     Run tempest tests
     """
     tempest_threads = settings.TEMPEST_THREADS
-    tempest_exclude_test_args = settings.TEMPEST_EXCLUDE_TEST_ARGS
     tempest_pattern = settings.TEMPEST_PATTERN
     cluster_name = settings.LAB_CONFIG_NAME
     domain_name = settings.DOMAIN_NAME
@@ -33,7 +32,6 @@ def tempest_actions(underlay, salt_actions):
         cluster_name=cluster_name,
         domain_name=domain_name,
         tempest_threads=tempest_threads,
-        tempest_exclude_test_args=tempest_exclude_test_args,
         tempest_pattern=tempest_pattern,
         target=target)
     return runtest
