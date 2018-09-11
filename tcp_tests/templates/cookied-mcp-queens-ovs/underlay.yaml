@@ -18,8 +18,8 @@ aliases:
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP1 = os_env('HOSTNAME_CMP1', 'cmp1.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP2 = os_env('HOSTNAME_CMP2', 'cmp2.' + DOMAIN_NAME) %}
 {% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.' + DOMAIN_NAME) %}
@@ -47,8 +47,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_MON01 }}: +71
             default_{{ HOSTNAME_MON02 }}: +72
             default_{{ HOSTNAME_MON03 }}: +73
@@ -73,8 +73,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_MON01 }}: +71
             default_{{ HOSTNAME_MON02 }}: +72
             default_{{ HOSTNAME_MON03 }}: +73
@@ -99,8 +99,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_MON01 }}: +71
             default_{{ HOSTNAME_MON02 }}: +72
             default_{{ HOSTNAME_MON03 }}: +73
@@ -125,8 +125,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CMP1 }}: +105
+            default_{{ HOSTNAME_CMP2 }}: +106
             default_{{ HOSTNAME_MON01 }}: +71
             default_{{ HOSTNAME_MON02 }}: +72
             default_{{ HOSTNAME_MON03 }}: +73
@@ -597,7 +597,7 @@ template:
               interfaces: *interfaces
               network_config: *network_config
 
-          - name: {{ HOSTNAME_CMP01 }}
+          - name: {{ HOSTNAME_CMP1 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 3
@@ -648,7 +648,7 @@ template:
                   networks:
                     - external
 
-          - name: {{ HOSTNAME_CMP02 }}
+          - name: {{ HOSTNAME_CMP2 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 3
