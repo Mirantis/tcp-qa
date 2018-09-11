@@ -336,6 +336,8 @@ k8s_deploy_opts = [
            help="", default=False),
     ct.Cfg('kubernetes_virtlet_image', ct.String(),
            help="", default='mirantis/virtlet:v1.1.0'),
+    ct.Cfg('kubernetes_dns', ct.Boolean(),
+           help="", default=True),
     ct.Cfg('kubernetes_externaldns_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_externaldns_image', ct.String(),
