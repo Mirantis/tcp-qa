@@ -24,6 +24,13 @@
 
 {{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
 
+- description: Temporary workaround
+  cmd: |
+    apt install -y python-netaddr;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 {{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
