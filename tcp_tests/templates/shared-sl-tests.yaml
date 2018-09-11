@@ -11,7 +11,7 @@
     set -e;
     apt-get install -y  build-essential python-dev;
     apt-get -y install python-virtualenv;
-    virtualenv --system-site-packages venv-stacklight-pytest;
+    virtualenv -p python3 --system-site-packages venv-stacklight-pytest;
     . venv-stacklight-pytest/bin/activate;
     git clone -b {{ SL_TEST_BRANCH }} {{ SL_TEST_REPO }} /root/stacklight-pytest;
     pip install /root/stacklight-pytest;
@@ -28,7 +28,7 @@
     set -e;
     . venv-stacklight-pytest/bin/activate;
     stl-tests gen-config-mk;
-    cp venv-stacklight-pytest/lib/python2.7/site-packages/stacklight_tests/fixtures/config.yaml /root/stacklight-pytest/stacklight_tests/fixtures/config.yaml;
+    cp venv-stacklight-pytest/lib/python3.5/site-packages/stacklight_tests/fixtures/config.yaml /root/stacklight-pytest/stacklight_tests/fixtures/config.yaml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
