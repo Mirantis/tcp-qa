@@ -41,6 +41,7 @@ default_context:
   local_repositories: 'False'
   maas_deploy_address: 192.168.10.90
   maas_hostname: cfg01
+  maas_enabled: 'False'
   mcp_version: stable
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
@@ -147,7 +148,7 @@ default_context:
   salt_master_management_address: 192.168.10.90
   shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
   fluentd_enabled: 'True'
-  stacklight_enabled: 'True'
+  stacklight_enabled: 'False'
   stacklight_log_address: 172.16.10.60
   stacklight_log_hostname: log
   stacklight_log_node01_address: 172.16.10.61
@@ -181,3 +182,5 @@ default_context:
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
+  rsync_fernet_rotation: 'True'
+  compute_padding_with_zeros: False
