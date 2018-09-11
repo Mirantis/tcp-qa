@@ -67,7 +67,7 @@ default_context:
   openstack_database_node02_hostname: ctl02
   openstack_database_node03_address: 172.16.10.103
   openstack_database_node03_hostname: ctl03
-  openstack_enabled: 'True'
+  openstack_enabled: 'False'
   openstack_gateway_node01_address: 172.16.10.110
   openstack_gateway_node01_hostname: gtw01
   openstack_gateway_node01_tenant_address: 10.1.0.6
@@ -181,3 +181,5 @@ default_context:
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
+  rsync_fernet_rotation: 'True'
+  compute_padding_with_zeros: False
