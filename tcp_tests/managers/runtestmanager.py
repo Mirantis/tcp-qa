@@ -102,8 +102,8 @@ class RuntestManager(object):
     class_name = "runtest"
     run_cmd = '/bin/bash -c "run-tempest"'
 
-    def __init__(self, underlay, salt_api, cluster_name, domain_name,
-                 tempest_threads, tempest_exclude_test_args,
+    def __init__(self, underlay, salt_api, cluster_name,
+                 domain_name, tempest_threads,
                  tempest_pattern=settings.TEMPEST_PATTERN,
                  run_cmd=None, target='gtw01'):
         self.underlay = underlay
@@ -112,7 +112,6 @@ class RuntestManager(object):
         self.cluster_name = cluster_name
         self.domain_name = domain_name
         self.tempest_threads = tempest_threads
-        self.tempest_exclude_test_args = tempest_exclude_test_args
         self.tempest_pattern = tempest_pattern
         self.run_cmd = run_cmd or self.run_cmd
 
@@ -244,11 +243,9 @@ class RuntestManager(object):
             "image": "{}:{}".format(self.image_name, self.image_version),
             "environment": {
                 "ARGS": "-r {tempest_pattern} -w "
-                        "{tempest_threads} "
-                        "{tempest_exclude_test_args}".format(
+                        "{tempest_threads} ".format(
                             tempest_pattern=self.tempest_pattern,
-                            tempest_threads=self.tempest_threads,
-                            tempest_exclude_test_args=self.tempest_exclude_test_args)  # noqa
+                            tempest_threads=self.tempest_threads)  # noqa
             },
             "binds": [
                 "{cfg_dir}/tempest.conf:/etc/tempest/tempest.conf".format(cfg_dir=TEMPEST_CFG_DIR),  # noqa
