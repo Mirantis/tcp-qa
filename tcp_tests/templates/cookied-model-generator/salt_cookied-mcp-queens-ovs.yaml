@@ -64,4 +64,11 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
+- description: Temporary workaround
+  cmd: |
+    apt install -y python-netaddr;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
