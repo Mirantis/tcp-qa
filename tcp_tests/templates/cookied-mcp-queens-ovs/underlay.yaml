@@ -47,8 +47,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_cmp01 }}: +105
+            default_{{ HOSTNAME_cmp02 }}: +106
             default_{{ HOSTNAME_MON01 }}: +71
             default_{{ HOSTNAME_MON02 }}: +72
             default_{{ HOSTNAME_MON03 }}: +73
@@ -73,8 +73,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_cmp01 }}: +105
+            default_{{ HOSTNAME_cmp02 }}: +106
             default_{{ HOSTNAME_MON01 }}: +71
             default_{{ HOSTNAME_MON02 }}: +72
             default_{{ HOSTNAME_MON03 }}: +73
@@ -99,8 +99,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_cmp01 }}: +105
+            default_{{ HOSTNAME_cmp02 }}: +106
             default_{{ HOSTNAME_MON01 }}: +71
             default_{{ HOSTNAME_MON02 }}: +72
             default_{{ HOSTNAME_MON03 }}: +73
@@ -125,8 +125,8 @@ template:
             default_{{ HOSTNAME_CTL01 }}: +101
             default_{{ HOSTNAME_CTL02 }}: +102
             default_{{ HOSTNAME_CTL03 }}: +103
-            default_{{ HOSTNAME_CMP01 }}: +105
-            default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_cmp01 }}: +105
+            default_{{ HOSTNAME_cmp02 }}: +106
             default_{{ HOSTNAME_MON01 }}: +71
             default_{{ HOSTNAME_MON02 }}: +72
             default_{{ HOSTNAME_MON03 }}: +73
@@ -597,7 +597,7 @@ template:
               interfaces: *interfaces
               network_config: *network_config
 
-          - name: {{ HOSTNAME_CMP01 }}
+          - name: {{ HOSTNAME_cmp01 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 3
@@ -648,7 +648,7 @@ template:
                   networks:
                     - external
 
-          - name: {{ HOSTNAME_CMP02 }}
+          - name: {{ HOSTNAME_cmp02 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 3
