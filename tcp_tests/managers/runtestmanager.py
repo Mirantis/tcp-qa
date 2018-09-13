@@ -133,13 +133,13 @@ class RuntestManager(object):
     def create_flavors(self):
         return self.salt_api.local('cfg01*', 'state.sls', 'nova.client')
 
-    def set_property(self):
+    def set_property(self, huge_size='small'):
         return self.salt_api.local(
             tgt='ctl01*',
             fun='cmd.run',
             args='. /root/keystonercv3; openstack '
-                 'flavor set m1.tiny_test  '
-                 '--property hw:mem_page_size=small')
+                 'flavor set m1.extra_tiny_test  '
+                 '--property hw:mem_page_size={size}'.format(size=huge_size))
 
     def create_cirros(self):
         return self.salt_api.local('cfg01*', 'state.sls', 'glance.client')
@@ -205,7 +205,7 @@ class RuntestManager(object):
                                                indent=4, sort_keys=True)
                 f.write(container_inspect)
 
-    def prepare(self, dpdk=None):
+    def prepare(self, nfv=None, huge_size='small'):
         self.store_runtest_model()
 
         res = self.install_python_lib()
@@ -222,8 +222,8 @@ class RuntestManager(object):
         res = self.create_flavors()
         LOG.info(json.dumps(res, indent=4))
         time.sleep(20)
-        if dpdk:
-            res = self.set_property()
+        if nfv:
+            res = self.set_property(huge_size=huge_size)
             LOG.info('Update flavor property')
             LOG.info(json.dumps(res, indent=4))
             time.sleep(20)
@@ -314,12 +314,13 @@ class RuntestManager(object):
         return {'inspect': inspect,
                 'logs': logs}
 
-    def prepare_and_run_tempest(self, username='root', dpdk=None):
+    def prepare_and_run_tempest(self, username='root', nfv=None,
+                                huge_size='small'):
         """
         Run tempest tests
         """
         tempest_timeout = settings.TEMPEST_TIMEOUT
-        self.prepare(dpdk=dpdk)
+        self.prepare(nfv=nfv, huge_size=huge_size)
         test_res = self.run_tempest(tempest_timeout)
         self.fetch_arficats(username=username)
         self.save_runtime_logs(**test_res)
