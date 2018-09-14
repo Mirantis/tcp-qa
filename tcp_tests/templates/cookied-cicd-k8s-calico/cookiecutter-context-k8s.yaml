@@ -1,34 +1,34 @@
 default_context:
   auditd_enabled: 'False'
-  backup_private_key: |-
-    -----BEGIN RSA PRIVATE KEY-----
-    MIIEpAIBAAKCAQEA3ufjR+Eh/CJp84JZPKosMNL7ydXidfe9qdAnQIGGOsS/TBnc
-    RyY+hy4Mg5Or//VBpY53frcrEEnm1CzEeIfGALiQtsMWOwEEiEHIDzbxN7xyYK1u
-    9fpcRHZy16VJx2gQOxbeAIyct9jrQeQuSbN0k7Tr+bfWLVPoGL4SZiBC+dxRjrmT
-    2pMIdqa8kAcd5cakuyENXT31ZI/ffVscl7TJBat7tUbgD+48GK4LqMBL/eC6v2bQ
-    ohmo6ZqWLh9uT+/l/rRdIiBhI+kmPpUDRLnjkd/gH4GQh/r/PPlxu11JNwPgY4Kx
-    IAk5hq9uPRn3pqBKPg+WHgWmQvpHqVVDDnf7XQIDAQABAoIBAQDCEtuL5bQVNlFR
-    NphDfVZkXA3lOVempkB37Ud/nkYkPNDhjVKAkAe44pr6pEQI4px5bIUVypyv3egf
-    q6qT1oLKdedpeImObeBoUf3BYXC7ulNLYTVO7OAQq6BpqPuHpk8bY1l+2O5KE48h
-    G25BtQE26TrbfPf5FyjpAfQ6/rPRniURu1ZMFK1Do18wf7lGxa6RN4jPbfGfEvlf
-    q6GWGtsOB2kLXnUDjuDeUrgS8HgxBSMH+lwxrkdX0Qb4VN+cBOp8TC30rHXdLAmn
-    mWUDQhaao+zZpZsAAxGbM2BAFUQAicd/OS6FJn6xkH0KN6+Rp1Iiy3Sa97wMsMti
-    aHAyVwkBAoGBAPf1gcRmKTHaUVb7XgS3acytBm7LM2GCQfgPDvQIp8rf8bmnAko6
-    MzxPdq2WXzWY75JiNxQSsmemcJyBRJm1sscp0txAnZS5SSycWlHy0zP5LJDtU7jW
-    Z7dXtRYzdDL0sH6KVQCOmfDmGowLs3eO0F7MyCbDIwdkIQ4LCs+TWcYxAoGBAOYi
-    ZUR7vXFbmXQQUEHxeft3sF6v8epFhnMuvwHgmHIzSCDDKoIMoLlqDOV8KynggyqQ
-    /YpvzqfCuP4aDpriU1glTZB0R9WdkKwk+GW13U9LfDw86u/XfGkMtT2QP6PmIQaI
-    1MJlX2b0rihnUy6zqRFH+mU4+9I66Gg1s8O9s4DtAoGAbiUol82pzvNj3neatA2l
-    eb4CdYTeNhpeo4pM4ipWHtCL2CRP6BkiWVATL9j0QiLFiQkH3mrPxSsyKtNhXcZQ
-    vBfgCubJGR+VWbO6i1yKZTPykA5cemcDe3YCgvIoU9pN7GgWikDOMSyF7l/kQN+3
-    v+THpDBahxX7ePl+u+aAooECgYBOoigJ+2HirtLDJqPVtGXit6XK5MF7M+BZ0Pow
-    8QYF12Ho1+bZYuk0EXlwnDm/aFhJHhuTxtpM1isRn+Onpnel4bEcD69P3TPGric1
-    0atZ4cgEaSg5ZV68Ijx3Wad1IDfenLhd5/duHWK4qX1xsq+tGPQEzDC3R6uLl/Xh
-    hxsjjQKBgQC53W+e4N6pOK8oCA2tlDw8Nu733FRrxNP4emdTzYyKJbNxBP2LI/ts
-    K/fgcD9aWeo0zt3Y/0UzzijqrWMCG2NdAlHwEShcXUt1525O4H64mH50MeylTGcj
-    t6ZFlhArriIXlejxuU9Jxe/HEKMh/1iBdlnD0rCOfhJaY/HO9dWtRw==
-    -----END RSA PRIVATE KEY-----
-  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDe5+NH4SH8Imnzglk8qiww0vvJ1eJ1972p0CdAgYY6xL9MGdxHJj6HLgyDk6v/9UGljnd+tysQSebULMR4h8YAuJC2wxY7AQSIQcgPNvE3vHJgrW71+lxEdnLXpUnHaBA7Ft4AjJy32OtB5C5Js3STtOv5t9YtU+gYvhJmIEL53FGOuZPakwh2pryQBx3lxqS7IQ1dPfVkj999WxyXtMkFq3u1RuAP7jwYrguowEv94Lq/ZtCiGajpmpYuH25P7+X+tF0iIGEj6SY+lQNEueOR3+AfgZCH+v88+XG7XUk3A+BjgrEgCTmGr249GfemoEo+D5YeBaZC+kepVUMOd/td
+  backup_private_key: |
+      -----BEGIN RSA PRIVATE KEY-----
+      MIIEowIBAAKCAQEAxL6/rVgCetsETpZaUmXmkj8cZ1WN0eubH1FvMDOi/La9ZJyT
+      k0C6AYpJnIyEm93pMj5cLm08qRqMW+2pdOhYjcH69yg5MrX5SkRk8jCmIHIYoIbh
+      Qnwbnj3dd3I39ZdfU2FO7u2vlbglVou6ZoQxlJDItuLNtzq6EG+w9eF19e7+OsC6
+      6iUItp618zfw1l3J/8nKvCGe2RYDf7mJW6XwCl/DwryJmwwzvPgYJ3QMuDD8/HFj
+      lrJ3xjFTXj4b4Ws1XIoy78fFbtiLr4OwqCYkho03u2E5rOOP1qZxZB63sivHMLMO
+      MM5bOAQKbulFNoyALADGYfc7sf0bZ4u9XXDXxQIDAQABAoIBAQCfmc2MJRT97KW1
+      yqpCpX9BrAiymuiNHf+cjEcSZxEUyHkjIRFmJt+9WB0W7ba1anM92vCUiPDojSzH
+      dig9Oi578JxR20NrK8uqv4jUHzrknynzLveVI3CUEcOSnglfJQijbxDFKfOCFPvV
+      FUyE1UATMNBh6+LNfMprgu+exuMWOPnDyUiYQ+WZ0JfuZY8fuaZte4woJJOb9LUu
+      5rsMG/smIzjpgZ0Z9ZVDMurfq565qhpaXRAqKeIuyht8pacTo31iMQdHB78AvY/3
+      g0z21Gk8k3z0Kr/YFKr2r4FmXY5m/gAUvZly2ZrVQM5XsbTVCzq/JpI5fssNvSbU
+      AKmXzf4RAoGBAOO3d4/cstxERzW6hyOTjZIN1ppR52CsnZTsVPbfd0pCtmzmVZce
+      CtHKdcXSbTwZvvkK09QSWAp3MoSpd0gIOiLU8Wx/R/RIZsu9BlhTS3r3EQLnk72d
+      H/1TTA+j4T/LIYLSojQ1RxvIrHetAD44j732aTwKAHj/SybEAVqNkOB/AoGBAN0u
+      gLcrgqIHGrk4VjWSvlCGymfF40equcx+ud7XhfZDGETUOSahW4dPZ52cjPAkrCBQ
+      MMfcDwSVGsOAjd+mNt11BHUKobnhXwFaWWuyqyn9NmWFbjMbICVh7E3Of5aVN38o
+      lrmo/7LuKMVG7XRwphCv5NkaJmQG4njDyUQWlaW7AoGADCd8wDb9bPhP/LQqBmIX
+      ylXmwHHisaxE9O/wUQT4bwREjGd25gv6c9wkkRx8LBsLsGs9hzI7dMOL9Ly+2x9l
+      SvqmsC3S/1zl77X1Ir2/Z57MT6Vgo1xBmtnZU3Rhz2/eKAdqFPNLClaZrgGT475N
+      HcyLLWMzR0IJFtabY+Puea0CgYA8Zb5wRkldxWLewSuJZZDinGwY+kieAVjLJq/K
+      0j+ah6fQ48LXcah0wpIgz+cMjHcUO9GWQdk3/x9X03rqX5EL2DBnZYfUIl63F9zj
+      M97ZkHOSNWVqPzX//0Vv2butewG0j3jZKfTo/2/SrxOYgEpYtC9huWpSVi7xm0US
+      erhSkQKBgFIf9JEsfgE57ANhvITZ3ZI0uZXNxZkXQaVg8jvScDi79IIhy9iPzhKC
+      aIIQoDNIlWv1ftCRZ5AlBvVXgvQ/QNrwy48JiQTzWZlb9Ezg8w+olQmSbG6fq7Y+
+      7r3i+QUZ7RBdOb24QcQ618q54ozNTCB7OywY78ptFzeoBeptiNr1
+      -----END RSA PRIVATE KEY-----
+  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvr+tWAJ62wROllpSZeaSPxxnVY3R65sfUW8wM6L8tr1knJOTQLoBikmcjISb3ekyPlwubTypGoxb7al06FiNwfr3KDkytflKRGTyMKYgchighuFCfBuePd13cjf1l19TYU7u7a+VuCVWi7pmhDGUkMi24s23OroQb7D14XX17v46wLrqJQi2nrXzN/DWXcn/ycq8IZ7ZFgN/uYlbpfAKX8PCvImbDDO8+BgndAy4MPz8cWOWsnfGMVNePhvhazVcijLvx8Vu2Iuvg7CoJiSGjTe7YTms44/WpnFkHreyK8cwsw4wzls4BApu6UU2jIAsAMZh9zux/Rtni71dcNfF
   bmk_enabled: 'False'
   calico_cni_image: docker-prod-local.artifactory.mirantis.com/mirantis/projectcalico/calico/cni:latest
   calico_enable_nat: 'True'

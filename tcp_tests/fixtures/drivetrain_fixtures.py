@@ -22,14 +22,15 @@ LOG = logger.logger
 
 
 @pytest.fixture(scope='function')
-def drivetrain_actions(config, underlay, salt_actions):
+def drivetrain_actions(config, underlay_actions, salt_actions):
     """Fixture that provides various actions for Drivetrain
 
     :param config: fixture provides oslo.config
     :param underlay: fixture provides underlay manager
     :rtype: DrivetrainManager
     """
-    return drivetrain_manager.DrivetrainManager(config, underlay, salt_actions)
+    return drivetrain_manager.DrivetrainManager(config, underlay_actions,
+                                                salt_actions)
 
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.drivetrain_deployed)

@@ -24,7 +24,7 @@ def deploy(shared, common, steps) {
             shared.swarm_deploy_cicd(env.DRIVETRAIN_STACK_INSTALL)
         }
 
-        stage("Install core infrastructure and deploy CICD nodes") {
+        stage("Deploy platform components") {
             // steps: env.PLATFORM_STACK_INSTALL
             shared.swarm_deploy_platform(env.PLATFORM_STACK_INSTALL)
         }
@@ -40,8 +40,6 @@ def deploy(shared, common, steps) {
         if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
             shared.run_cmd("""\
                 dos.py resume ${ENV_NAME} || true
-                sleep 20    # Wait for I/O on the host calms down
-                dos.py time-sync ${ENV_NAME} || true
             """)
         } else {
             shared.run_cmd("""\
@@ -72,8 +70,6 @@ def test(shared, common, steps) {
         if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
             shared.run_cmd("""\
                 dos.py resume ${ENV_NAME} || true
-                sleep 20    # Wait for I/O on the host calms down
-                dos.py time-sync ${ENV_NAME} || true
             """)
         } else {
             shared.run_cmd("""\
