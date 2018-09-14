@@ -167,7 +167,7 @@ def underlay_actions(config):
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.underlay)
 @pytest.fixture(scope="function")
-def underlay(request, revert_snapshot, config, hardware):
+def underlay(request, revert_snapshot, config, hardware, underlay_actions):
     """Fixture that bootstraps the environment underlay.
 
     - Starts the 'hardware' environment and creates 'underlay' with required
@@ -198,7 +198,7 @@ def underlay(request, revert_snapshot, config, hardware):
             roles=config.underlay.roles)
 
         LOG.info("Config - {}".format(config))
-        underlay = underlay_actions(config)
+        underlay = underlay_actions
 
         if not config.underlay.lvm:
             underlay.enable_lvm(hardware.lvm_storages())
@@ -216,7 +216,7 @@ def underlay(request, revert_snapshot, config, hardware):
         config.underlay.ssh = hardware.get_ssh_data(
             roles=config.underlay.roles)
 
-        underlay = underlay_actions(config)
+        underlay = underlay_actions
 
         LOG.info("Generate MACs for MaaS")
         macs = {
@@ -257,7 +257,7 @@ def underlay(request, revert_snapshot, config, hardware):
         # 1. hardware environment created and powered on
         # 2. config.underlay.ssh contains SSH access to provisioned nodes
         #    (can be passed from external config with TESTS_CONFIGS variable)
-        underlay = underlay_actions(config)
+        underlay = underlay_actions
 
     return underlay
 
