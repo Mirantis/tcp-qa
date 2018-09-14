@@ -52,14 +52,14 @@ class TestOpenContrail(object):
         if settings.RUN_SL_TESTS:
             show_step(5)
             stacklight_deployed.run_sl_functional_tests(
-                'ctl01',
+                'cfg01',
                 '/root/stacklight-pytest/stacklight_tests/',
                 'tests/prometheus',
                 'test_alerts.py')
             show_step(8)
             # Download report
             stacklight_deployed.download_sl_test_report(
-                'ctl01',
+                'cfg01',
                 '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
