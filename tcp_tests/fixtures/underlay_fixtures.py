@@ -167,7 +167,7 @@ def underlay_actions(config):
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.underlay)
 @pytest.fixture(scope="function")
-def underlay(request, revert_snapshot, config, hardware):
+def underlay(request, revert_snapshot, config, hardware, underlay_actions):
     """Fixture that bootstraps the environment underlay.
 
     - Starts the 'hardware' environment and creates 'underlay' with required
