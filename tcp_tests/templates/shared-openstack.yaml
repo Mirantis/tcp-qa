@@ -168,7 +168,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@cinder:volume' state.sls cinder
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 2, delay: 5}
   skip_fail: false
   {%- endif %}
 
