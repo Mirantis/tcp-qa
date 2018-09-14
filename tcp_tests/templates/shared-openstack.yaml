@@ -162,7 +162,7 @@
   {%- if INSTALL_VOLUME %}
 - description: Install cinder volume
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@cinder:volume' state.sls cinder
+    -C 'I@cinder:volume' state.sls cinder.volume
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
