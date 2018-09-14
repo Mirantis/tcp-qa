@@ -7,6 +7,7 @@ nodes:
       interfaces:
         ens3:
           role: single_dhcp
+
     # Physical nodes
 
     kvm01.cookied-bm-mcp-ocata-contrail.local:
