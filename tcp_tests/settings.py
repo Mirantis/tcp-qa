@@ -85,3 +85,6 @@ SALT_VERSION = os.environ.get('SALT_VERSION', '2017.7')
 SL_TEST_REPO = os.environ.get('SL_TEST_REPO',
                               'https://github.com/Mirantis/stacklight-pytest')
 SL_TEST_COMMIT = os.environ.get('SL_TEST_COMMIT', 'master')
+
+EXTERNAL_ADDRESS_POOL_NAME = os.environ.get('EXTERNAL_ADDRESS_POOL_NAME',
+                                            'external-pool01')
