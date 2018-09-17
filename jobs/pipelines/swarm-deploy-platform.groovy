@@ -35,6 +35,12 @@ node ("${PARENT_NODE_NAME}") {
                 error "'STACK_INSTALL' must contain one or more comma separated stack names for [deploy_openstack] pipeline"
             }
 
+            if (env.TCP_QA_REFS) {
+                stage("Update working dir to patch ${TCP_QA_REFS}") {
+                    shared.update_working_dir()
+                }
+            }
+
             // Install the cluster
             def stack
             def timeout
