@@ -18,77 +18,13 @@ import time
 
 from devops.helpers import helpers
 
+from tcp_tests.helpers import ext
 from tcp_tests import logger
 from tcp_tests import settings
 
 LOG = logger.logger
 
 TEMPEST_CFG_DIR = '/tmp/test'
-
-CONFIG = {
-    'classes': ['service.runtest.tempest',
-                'service.runtest.tempest.services.manila.glance'],
-    'parameters': {
-        '_param': {
-            'runtest_tempest_cfg_dir': TEMPEST_CFG_DIR,
-            'runtest_tempest_cfg_name': 'tempest.conf',
-            'runtest_tempest_public_net': 'net04_ext',
-            'tempest_test_target': 'gtw01*'
-        },
-        'neutron': {
-            'client': {
-                'enabled': True
-            }
-        },
-        'runtest': {
-            'enabled': True,
-            'keystonerc_node': 'ctl01*',
-            'tempest': {
-                'enabled': True,
-                'cfg_dir': '${_param:runtest_tempest_cfg_dir}',
-                'cfg_name': '${_param:runtest_tempest_cfg_name}',
-                'DEFAULT': {
-                    'log_file': 'tempest.log'
-                },
-                'compute': {
-                    'build_timeout': 600,
-                    'max_microversion': 2.53,
-                    'min_compute_nodes': 2,
-                    'min_microversion': 2.1,
-                    'volume_device_name': 'vdc'
-                },
-                'convert_to_uuid': {
-                    'network': {
-                        'public_network_id':
-                        '${_param:runtest_tempest_public_net}'
-                    }
-                },
-                'dns_feature_enabled': {
-                    'api_admin': False,
-                    'api_v1': False,
-                    'api_v2': True,
-                    'api_v2_quotas': True,
-                    'api_v2_root_recordsets': True,
-                    'bug_1573141_fixed': True
-                },
-                'heat_plugin': {
-                    'floating_network_name':
-                    '${_param:runtest_tempest_public_net}'
-                },
-                'network': {
-                    'floating_network_name':
-                    '${_param:runtest_tempest_public_net}'
-                },
-                'share': {
-                    'capability_snapshot_support': True,
-                    'run_driver_assisted_migration_tests': False,
-                    'run_manage_unmanage_snapshot_tests': False,
-                    'run_manage_unmanage_tests': False,
-                    'run_migration_with_preserve_snapshots_tests': False,
-                    'run_quota_tests': True,
-                    'run_replication_tests': False,
-                    'run_snapshot_tests': True,
-                }}}}}
 
 
 class RuntestManager(object):
@@ -102,10 +38,11 @@ class RuntestManager(object):
     class_name = "runtest"
     run_cmd = '/bin/bash -c "run-tempest"'
 
-    def __init__(self, underlay, salt_api, cluster_name,
+    def __init__(self, config, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
                  tempest_pattern=settings.TEMPEST_PATTERN,
                  run_cmd=None, target='gtw01'):
+        self.__config = config
         self.underlay = underlay
         self.__salt_api = salt_api
         self.target = target
@@ -119,10 +56,110 @@ class RuntestManager(object):
     def salt_api(self):
         return self.__salt_api
 
-    def install_python_lib(self):
-        return self.salt_api.local(
+    @property
+    def runtest_pillar(self):
+        public_net = self.__config.underlay.dhcp_ranges[
+            ext.NETWORK_TYPE.external]
+        public_gateway = public_net["gateway"]
+        public_cidr = public_net["cidr"]
+        public_allocation_start = public_net["start"]
+        public_allocation_end = public_net["end"]
+
+        return {
+            'classes': ['service.runtest.tempest',
+                        'service.runtest.tempest.public_net',
+                        'service.runtest.tempest.services.manila.glance'],
+            'parameters': {
+                '_param': {
+                    'runtest_tempest_cfg_dir': TEMPEST_CFG_DIR,
+                    'runtest_tempest_cfg_name': 'tempest.conf',
+                    'runtest_tempest_public_net': 'public',
+                    'openstack_public_neutron_subnet_gateway': public_gateway,
+                    'openstack_public_neutron_subnet_cidr': public_cidr,
+                    'openstack_public_neutron_subnet_allocation_start':
+                        public_allocation_start,
+                    'openstack_public_neutron_subnet_allocation_end':
+                        public_allocation_end,
+                    'tempest_test_target': 'gtw01*'
+                },
+                'neutron': {
+                    'client': {
+                        'enabled': True
+                    }
+                },
+                'runtest': {
+                    'enabled': True,
+                    'keystonerc_node': 'ctl01*',
+                    'tempest': {
+                        'enabled': True,
+                        'cfg_dir': '${_param:runtest_tempest_cfg_dir}',
+                        'cfg_name': '${_param:runtest_tempest_cfg_name}',
+                        'DEFAULT': {
+                            'log_file': 'tempest.log'
+                        },
+                        'compute': {
+                            'build_timeout': 600,
+                            'max_microversion': 2.53,
+                            'min_compute_nodes': 2,
+                            'min_microversion': 2.1,
+                            'volume_device_name': 'vdc'
+                        },
+                        'convert_to_uuid': {
+                            'network': {
+                                'public_network_id':
+                                '${_param:runtest_tempest_public_net}'
+                            }
+                        },
+                        'dns_feature_enabled': {
+                            'api_admin': False,
+                            'api_v1': False,
+                            'api_v2': True,
+                            'api_v2_quotas': True,
+                            'api_v2_root_recordsets': True,
+                            'bug_1573141_fixed': True
+                        },
+                        'heat_plugin': {
+                            'floating_network_name':
+                            '${_param:runtest_tempest_public_net}'
+                        },
+                        'network': {
+                            'floating_network_name':
+                            '${_param:runtest_tempest_public_net}'
+                        },
+                        'share': {
+                            'capability_snapshot_support': True,
+                            'run_driver_assisted_migration_tests': False,
+                            'run_manage_unmanage_snapshot_tests': False,
+                            'run_manage_unmanage_tests': False,
+                            'run_migration_with_preserve_snapshots_tests':
+                                False,
+                            'run_quota_tests': True,
+                            'run_replication_tests': False,
+                            'run_snapshot_tests': True,
+                        }}}}}
+
+    def install_docker(self):
+        # Install system package 'docker.io'
+        res = self.salt_api.local(
+            "{}*".format(self.target),
+            'pkg.install', 'docker.io'), None
+        LOG.info(json.dumps(res, indent=4))
+
+        # Allow forwarding in iptables
+        res = self.salt_api.local(
+            "{}*".format(self.target),
+            'cmd.run', 'iptables --policy FORWARD ACCEPT'), None
+        LOG.info(json.dumps(res, indent=4))
+
+        # Install PyPI 'docker' library. 'setuptools' must be installed first.
+        res = self.salt_api.local(
+            "{}*".format(self.target),
+            'pip.install', 'setuptools'), None
+        LOG.info(json.dumps(res, indent=4))
+        res = self.salt_api.local(
             "{}*".format(self.target),
             'pip.install', 'docker'), None
+        LOG.info(json.dumps(res, indent=4))
 
     def run_salt_minion_state(self):
         return self.salt_api.local('cfg01*', 'state.sls', 'salt.minion')
@@ -163,7 +200,7 @@ class RuntestManager(object):
                 destination=report,  # noqa
                 target=os.getcwd())
 
-    def store_runtest_model(self, config=CONFIG):
+    def store_runtest_model(self, runtest_pillar=None):
         master_name = next(node_name for node_name
                            in self.underlay.node_names() if
                            self.master_host in node_name)
@@ -174,7 +211,7 @@ class RuntestManager(object):
                               cluster_name=self.cluster_name,
                               class_name=self.class_name),
                 node_name=master_name) as editor:
-            editor.content = config
+            editor.content = runtest_pillar or self.runtest_pillar
         with self.underlay.yaml_editor(
                 file_path="/srv/salt/reclass/nodes/_generated/"
                           "cfg01.{domain_name}.yml".format(
@@ -208,7 +245,7 @@ class RuntestManager(object):
     def prepare(self, dpdk=None):
         self.store_runtest_model()
 
-        res = self.install_python_lib()
+        res = self.install_docker()
         LOG.info(json.dumps(res, indent=4))
 
         res = self.run_salt_minion_state()
@@ -257,22 +294,22 @@ class RuntestManager(object):
             "cmd": self.run_cmd
         }
 
-        res = self.salt_api.local(tgt, 'dockerng.pull', "{}:{}".format(
+        res = self.salt_api.local(tgt, 'docker.pull', "{}:{}".format(
             self.image_name, self.image_version))
         LOG.info("Tempest image has beed pulled- \n{}".format(
             json.dumps(res, indent=4)))
 
-        res = self.salt_api.local(tgt, 'dockerng.create', kwargs=params)
+        res = self.salt_api.local(tgt, 'docker.create', kwargs=params)
         LOG.info("Tempest container has been created - \n{}".format(
             json.dumps(res, indent=4)))
 
-        res = self.salt_api.local(tgt, 'dockerng.start', self.container_name)
+        res = self.salt_api.local(tgt, 'docker.start', self.container_name)
         LOG.info("Tempest container has been started - \n{}".format(
             json.dumps(res, indent=4)))
 
         def wait_status(s):
             inspect_res = self.salt_api.local(tgt,
-                                              'dockerng.inspect',
+                                              'docker.inspect',
                                               self.container_name)
             if 'return' in inspect_res:
                 inspect = inspect_res['return']
@@ -290,7 +327,7 @@ class RuntestManager(object):
                                   'in {}'.format(timeout)))
 
         inspect_res = self.salt_api.local(tgt,
-                                          'dockerng.inspect',
+                                          'docker.inspect',
                                           self.container_name)
         inspect = inspect_res['return'][0]
         inspect = next(inspect.iteritems())[1]
@@ -300,14 +337,14 @@ class RuntestManager(object):
             json.dumps(res, indent=4)))
 
         logs_res = self.salt_api.local(tgt,
-                                       'dockerng.logs',
+                                       'docker.logs',
                                        self.container_name)
         logs = logs_res['return'][0]
         logs = next(logs.iteritems())[1]
         LOG.info("Tempest result - \n{}".format(
             logs.encode('ascii', 'ignore')))
 
-        res = self.salt_api.local(tgt, 'dockerng.rm', self.container_name)
+        res = self.salt_api.local(tgt, 'docker.rm', self.container_name)
         LOG.info("Tempest container was removed".format(
             json.dumps(res, indent=4)))
 
