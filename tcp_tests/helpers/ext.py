@@ -34,8 +34,11 @@ UNDERLAY_NODE_ROLES = enum(
 
 
 NETWORK_TYPE = enum(
-    'private',
-    'admin'
+    'admin',
+    'control',
+    'tenant',
+    'storage',
+    'external',
 )
 
 
