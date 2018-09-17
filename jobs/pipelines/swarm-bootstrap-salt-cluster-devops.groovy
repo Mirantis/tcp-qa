@@ -50,6 +50,12 @@ node ("${PARENT_NODE_NAME}") {
                 """)
             }
 
+            if (env.TCP_QA_REFS) {
+                stage("Update working dir to patch ${TCP_QA_REFS}") {
+                    shared.update_working_dir()
+                }
+            }
+
             stage("Create an environment ${ENV_NAME} in disabled state") {
                 // deploy_hardware.xml
                 shared.run_cmd("""\

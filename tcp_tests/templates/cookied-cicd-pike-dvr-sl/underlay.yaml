@@ -141,7 +141,7 @@ template:
         net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '10.90.0.0/16:24') }}
         params:
           ip_reserved:
-            gateway: +1
+            gateway: +2
             l2_network_device: +1
             default_{{ HOSTNAME_CFG01 }}: +15
             default_{{ HOSTNAME_CTL01 }}: +101
@@ -161,8 +161,7 @@ template:
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
-            dhcp: [+10, -10]
-
+            dhcp: [+180, +220]
 
     groups:
       - name: default
