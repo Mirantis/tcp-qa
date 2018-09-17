@@ -119,10 +119,27 @@ class RuntestManager(object):
     def salt_api(self):
         return self.__salt_api
 
-    def install_python_lib(self):
-        return self.salt_api.local(
+    def install_docker(self):
+        # Install system package 'docker.io'
+        res = self.salt_api.local(
             "{}*".format(self.target),
-            'pip.install', 'docker'), None
+            'pkg.install', 'docker.io'), None
+        LOG.info(json.dumps(res, indent=4))
+
+        # Allow forwarding in iptables
+        res = self.salt_api.local(
+            "{}*".format(self.target),
+            'cmd.run', 'iptables --policy FORWARD ACCEPT'), None
+        LOG.info(json.dumps(res, indent=4))
+
+        # Install PyPI 'docker' library
+        params = {
+            "pkgs": ["setuptools", "docker"]
+        }
+        res = self.salt_api.local(
+            "{}*".format(self.target),
+            'pip.install', kwargs=params), None
+        LOG.info(json.dumps(res, indent=4))
 
     def run_salt_minion_state(self):
         return self.salt_api.local('cfg01*', 'state.sls', 'salt.minion')
@@ -208,7 +225,7 @@ class RuntestManager(object):
     def prepare(self, dpdk=None):
         self.store_runtest_model()
 
-        res = self.install_python_lib()
+        res = self.install_docker()
         LOG.info(json.dumps(res, indent=4))
 
         res = self.run_salt_minion_state()
@@ -257,22 +274,22 @@ class RuntestManager(object):
             "cmd": self.run_cmd
         }
 
-        res = self.salt_api.local(tgt, 'dockerng.pull', "{}:{}".format(
+        res = self.salt_api.local(tgt, 'docker.pull', "{}:{}".format(
             self.image_name, self.image_version))
         LOG.info("Tempest image has beed pulled- \n{}".format(
             json.dumps(res, indent=4)))
 
-        res = self.salt_api.local(tgt, 'dockerng.create', kwargs=params)
+        res = self.salt_api.local(tgt, 'docker.create', kwargs=params)
         LOG.info("Tempest container has been created - \n{}".format(
             json.dumps(res, indent=4)))
 
-        res = self.salt_api.local(tgt, 'dockerng.start', self.container_name)
+        res = self.salt_api.local(tgt, 'docker.start', self.container_name)
         LOG.info("Tempest container has been started - \n{}".format(
             json.dumps(res, indent=4)))
 
         def wait_status(s):
             inspect_res = self.salt_api.local(tgt,
-                                              'dockerng.inspect',
+                                              'docker.inspect',
                                               self.container_name)
             if 'return' in inspect_res:
                 inspect = inspect_res['return']
@@ -290,7 +307,7 @@ class RuntestManager(object):
                                   'in {}'.format(timeout)))
 
         inspect_res = self.salt_api.local(tgt,
-                                          'dockerng.inspect',
+                                          'docker.inspect',
                                           self.container_name)
         inspect = inspect_res['return'][0]
         inspect = next(inspect.iteritems())[1]
@@ -300,14 +317,14 @@ class RuntestManager(object):
             json.dumps(res, indent=4)))
 
         logs_res = self.salt_api.local(tgt,
-                                       'dockerng.logs',
+                                       'docker.logs',
                                        self.container_name)
         logs = logs_res['return'][0]
         logs = next(logs.iteritems())[1]
         LOG.info("Tempest result - \n{}".format(
             logs.encode('ascii', 'ignore')))
 
-        res = self.salt_api.local(tgt, 'dockerng.rm', self.container_name)
+        res = self.salt_api.local(tgt, 'docker.rm', self.container_name)
         LOG.info("Tempest container was removed".format(
             json.dumps(res, indent=4)))
 
