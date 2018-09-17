@@ -36,6 +36,12 @@ node ("${PARENT_NODE_NAME}") {
     dir("${PARENT_WORKSPACE}") {
         try {
 
+            if (env.TCP_QA_REFS) {
+                stage("Update working dir to patch ${TCP_QA_REFS}") {
+                    shared.update_working_dir()
+                }
+            }
+
             stage("Run tests") {
                 def steps = shared.get_steps_list(PASSED_STEPS)
                 def sources = """\
