@@ -35,6 +35,12 @@ node ("${PARENT_NODE_NAME}") {
                 error "'STACK_INSTALL' must contain one or more comma separated stack names for [deploy_openstack] pipeline"
             }
 
+            if (env.TCP_QA_REFS) {
+                stage("Update working dir to patch ${TCP_QA_REFS}") {
+                    shared.update_working_dir()
+                }
+            }
+
             // Install core and cicd
             def stack
             def timeout
@@ -60,7 +66,7 @@ node ("${PARENT_NODE_NAME}") {
             }
 
         } catch (e) {
-            common.printMsg("Job is failed: " + e.message, "red")
+            common.printMsg("Job is failed", "red")
             throw e
         } finally {
             // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
