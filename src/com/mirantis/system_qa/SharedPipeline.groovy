@@ -115,6 +115,17 @@ def prepare_working_dir() {
         """)
 }
 
+def update_working_dir() {
+        // Use to fetch a patchset from gerrit to the working dir
+        run_cmd("""\
+            if [ -n "$TCP_QA_REFS" ]; then
+                set -e
+                git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
+            fi
+            pip install -r tcp_tests/requirements.txt
+        """)
+}
+
 def swarm_bootstrap_salt_cluster_devops() {
         def common = new com.mirantis.mk.Common()
         def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: env.MCP_VERSION
