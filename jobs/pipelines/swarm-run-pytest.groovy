@@ -36,9 +36,16 @@ node ("${PARENT_NODE_NAME}") {
     dir("${PARENT_WORKSPACE}") {
         try {
 
+            if (env.TCP_QA_REFS) {
+                stage("Update working dir to patch ${TCP_QA_REFS}") {
+                    shared.update_working_dir()
+                }
+            }
+
             stage("Run tests") {
                 def steps = shared.get_steps_list(PASSED_STEPS)
                 def sources = """\
+                    cd ${PARENT_WORKSPACE}
                     export ENV_NAME=${ENV_NAME}
                     . ./tcp_tests/utils/env_salt"""
                 if (steps.contains('k8s')) {
@@ -52,7 +59,7 @@ node ("${PARENT_NODE_NAME}") {
                 def installed = steps.collect {"""\
                     export ${it}_installed=true"""}.join("\n")
 
-                shared.run_cmd(sources + installed + """
+                shared.run_sh(sources + installed + """
                     export TESTS_CONFIGS=${ENV_NAME}_salt_deployed.ini
                     export MANAGER=devops  # use 'hardware' fixture to manage fuel-devops environment
                     export salt_master_host=\$SALT_MASTER_IP  # skip salt_deployed fixture
@@ -68,7 +75,7 @@ node ("${PARENT_NODE_NAME}") {
             }
 
         } catch (e) {
-            common.printMsg("Job is failed" + e.message, "red")
+            common.printMsg("Job is failed", "red")
             throw e
         } finally {
             // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
