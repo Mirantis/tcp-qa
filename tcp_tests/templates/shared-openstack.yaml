@@ -100,7 +100,7 @@
 
 - description: Check glance image-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; glance image-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; glance image-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -154,7 +154,7 @@
 
 - description: Check cinder list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; cinder list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; cinder list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -195,7 +195,7 @@
 
 - description: Check neutron agent-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' cmd.run '. /root/keystonerc; neutron agent-list'
+    -C 'I@keystone:server' cmd.run '. /root/keystonercv3; neutron agent-list'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
