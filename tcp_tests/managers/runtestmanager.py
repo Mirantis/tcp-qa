@@ -24,6 +24,7 @@ from tcp_tests import settings
 LOG = logger.logger
 
 TEMPEST_CFG_DIR = '/tmp/test'
+tempest_test_target = settings.TEMPEST_TARGET + '*'
 
 CONFIG = {
     'classes': ['service.runtest.tempest',
@@ -33,7 +34,7 @@ CONFIG = {
             'runtest_tempest_cfg_dir': TEMPEST_CFG_DIR,
             'runtest_tempest_cfg_name': 'tempest.conf',
             'runtest_tempest_public_net': 'net04_ext',
-            'tempest_test_target': 'gtw01*'
+            'tempest_test_target': tempest_test_target
         },
         'neutron': {
             'client': {
@@ -105,7 +106,7 @@ class RuntestManager(object):
     def __init__(self, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
                  tempest_pattern=settings.TEMPEST_PATTERN,
-                 run_cmd=None, target='gtw01'):
+                 run_cmd=None, target=settings.TEMPEST_TARGET):
         self.underlay = underlay
         self.__salt_api = salt_api
         self.target = target
