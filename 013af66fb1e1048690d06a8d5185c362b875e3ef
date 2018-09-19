@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fda8580f_74977cfd",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1011059
+      },
+      "writtenOn": "2018-09-19T12:02:50Z",
+      "side": 1,
+      "message": "Mitaka openstack cli doesn\u0027t contain \"agent list\"",
+      "revId": "013af66fb1e1048690d06a8d5185c362b875e3ef",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
