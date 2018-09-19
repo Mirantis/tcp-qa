@@ -16,6 +16,24 @@
       "revId": "013af66fb1e1048690d06a8d5185c362b875e3ef",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fdc62622_7668bedd",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-09-19T12:24:39Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fda8580f_74977cfd",
+      "revId": "013af66fb1e1048690d06a8d5185c362b875e3ef",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
     }
   ]
 }
