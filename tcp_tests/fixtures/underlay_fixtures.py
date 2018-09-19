@@ -167,7 +167,7 @@ def underlay_actions(config):
 
 @pytest.mark.revert_snapshot(ext.SNAPSHOT.underlay)
 @pytest.fixture(scope="function")
-def underlay(request, revert_snapshot, config, hardware):
+def underlay(request, revert_snapshot, config, hardware, underlay_actions):
     """Fixture that bootstraps the environment underlay.
 
     - Starts the 'hardware' environment and creates 'underlay' with required
@@ -198,15 +198,15 @@ def underlay(request, revert_snapshot, config, hardware):
             roles=config.underlay.roles)
 
         LOG.info("Config - {}".format(config))
-        underlay = underlay_actions(config)
+        underlay_actions.add_config_ssh(config.underlay.ssh)
 
         if not config.underlay.lvm:
-            underlay.enable_lvm(hardware.lvm_storages())
-            config.underlay.lvm = underlay.config_lvm
+            underlay_actions.enable_lvm(hardware.lvm_storages())
+            config.underlay.lvm = underlay_actions.config_lvm
 
         hardware.create_snapshot(ext.SNAPSHOT.underlay)
 
-        return underlay
+        return underlay_actions
 
     def day1_underlay():
         hardware.start(
@@ -215,8 +215,7 @@ def underlay(request, revert_snapshot, config, hardware):
 
         config.underlay.ssh = hardware.get_ssh_data(
             roles=config.underlay.roles)
-
-        underlay = underlay_actions(config)
+        underlay_actions.add_config_ssh(config.underlay.ssh)
 
         LOG.info("Generate MACs for MaaS")
         macs = {
@@ -236,8 +235,8 @@ def underlay(request, revert_snapshot, config, hardware):
                         "machines": macs}}}}
 
         if not config.underlay.lvm:
-            underlay.enable_lvm(hardware.lvm_storages())
-            config.underlay.lvm = underlay.config_lvm
+            underlay_actions.enable_lvm(hardware.lvm_storages())
+            config.underlay.lvm = underlay_actions.config_lvm
 
         for node in hardware.slave_nodes:
             # For correct comissioning by MaaS nodes should be powered off
@@ -245,21 +244,18 @@ def underlay(request, revert_snapshot, config, hardware):
 
         hardware.create_snapshot(ext.SNAPSHOT.underlay)
 
-        return underlay
+        return underlay_actions
 
     if not config.underlay.ssh:
         if request.node.get_marker('day1_underlay'):
-            underlay = day1_underlay()
+            return day1_underlay()
         else:
-            underlay = basic_underlay()
-
+            return basic_underlay()
     else:
         # 1. hardware environment created and powered on
         # 2. config.underlay.ssh contains SSH access to provisioned nodes
         #    (can be passed from external config with TESTS_CONFIGS variable)
-        underlay = underlay_actions(config)
-
-    return underlay
+        return underlay_actions
 
 
 @pytest.fixture(scope='function')
