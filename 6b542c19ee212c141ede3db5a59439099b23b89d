@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5627f1af_2f944470",
+        "filename": "tcp_tests/templates/cookied-mcp-pike-dvr-ceph/underlay.yaml",
+        "patchSetId": 18
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-09-19T12:01:32Z",
+      "side": 1,
+      "message": "Please return the *variable* names CMP01, CMP02",
+      "range": {
+        "startLine": 20,
+        "startChar": 7,
+        "endLine": 20,
+        "endChar": 45
+      },
+      "revId": "6b542c19ee212c141ede3db5a59439099b23b89d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
