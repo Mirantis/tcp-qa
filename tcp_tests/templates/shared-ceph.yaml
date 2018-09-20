@@ -1,0 +1,129 @@
+{# Collection of common macroses shared across ceph and radosgw #}
+
+{%- macro MACRO_INSTALL_CEPH_MONS() %}
+
+- description: Update grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:common' state.sls salt.minion.grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Generate keyrings
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:mon:keyring:mon or I@ceph:common:keyring:admin' state.sls ceph.mon
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Sync grains on ceph mon nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:mon' saltutil.sync_grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Update mine on ceph mons
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:mon:keyring:mon or I@ceph:common:keyring:admin' mine.update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install ceph mon
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:mon' state.sls ceph.mon
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_CEPH_MGR() %}
+
+- description: Install ceph mgr if defined(needed only for Luminious)
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:mgr' match.pillar 'ceph:mgr' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:mgr' state.sls ceph.mgr
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_CEPH_OSD_AND_RADOSGW() %}
+
+- description: Install ceph osd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' state.sls ceph.osd
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' saltutil.sync_grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install ceph osd nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' state.sls ceph.osd.custom
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Sync grains
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' saltutil.sync_grains
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update mine on ceph osd
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:osd' mine.update
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Setup pools, keyrings and maybe crush
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:setup' state.sls ceph.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install ceph clinet
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@ceph:setup' state.sls ceph.setup
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Install radosgw if exists
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:radosgw' saltutil.sync_grains;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:radosgw' state.sls ceph.radosgw;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+{%- endmacro %}
+
+{%- macro CONNECT_CEPH_TO_SERVICES() %}
+- description: Connect ceph to glance
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Connect ceph to cinder and nova
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' state.sls ceph.common,ceph.setup.keyring;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' saltutil.sync_grains;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+{%- endmacro %}
