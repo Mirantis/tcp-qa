@@ -47,3 +47,26 @@ class TestInstallOvsPikeCeph(object):
         if settings.RUN_TEMPEST:
             tempest_actions.prepare_and_run_tempest()
         LOG.info("*************** DONE **************")
+
+    @pytest.mark.grab_versions
+    @pytest.mark.fail_snapshot
+    def test_mcp_ceph_openstack_install(self, underlay,
+                                        ceph_deployed,
+                                        openstack_deployed,
+                                        openstack_actions,
+                                        tempest_actions):
+        """Test for deploying ceph, openstack
+        Scenario:
+        1. Prepare salt on hosts
+        2. Setup Ceph
+        3. Setup openstack
+        5. Run tempest
+
+        """
+        openstack_actions._salt.local(
+                tgt='*', fun='cmd.run',
+                args='service ntp stop; ntpd -gq; service ntp start')
+
+        if settings.RUN_TEMPEST:
+            tempest_actions.prepare_and_run_tempest()
+        LOG.info("*************** DONE **************")
