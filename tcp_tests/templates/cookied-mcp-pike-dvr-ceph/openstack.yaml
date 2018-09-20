@@ -8,21 +8,19 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
+{% import 'shared-ceph.yaml' as SHARED_CEPH with context %}
 
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_MONS() }}
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_MGR() }}
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_OSD_AND_RADOSGW() }}
+{{ SHARED_CEPH.CONNECT_CEPH_TO_SERVICES() }}
 {{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=false) }}
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NOVA() }}
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER() }}
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON() }}
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE() }}
 
 - description: Create net04_external
@@ -80,3 +78,5 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
