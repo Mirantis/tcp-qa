@@ -1,10 +1,7 @@
-{% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import HOSTNAME_GTW01 with context %}
-{% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'cookied-mcp-pike-dvr-ceph/underlay.yaml' import DOMAIN_NAME with context %}
-{% import 'shared-salt.yaml' as SHARED with context %}
+{# Collection of common macroses shared across ceph and radosgw #}
 
-# Install ceph mons
+{%- macro MACRO_INSTALL_CEPH_MONS() %}
+
 - description: Update grains
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@ceph:common' state.sls salt.minion.grains
@@ -39,6 +36,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_CEPH_MGR() %}
 
 - description: Install ceph mgr if defined(needed only for Luminious)
   cmd: |
@@ -48,6 +48,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_CEPH_OSD_AND_RADOSGW() %}
 
 - description: Install ceph osd
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -102,67 +105,25 @@
   cmd: |
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:radosgw' saltutil.sync_grains;
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:radosgw' state.sls ceph.radosgw;
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@keystone:client' state.sls keystone.client;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
+{%- endmacro %}
 
-- description: Install ceph clinet
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@ceph:setup' state.sls ceph.setup
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-{%- for ssh in config.underlay.ssh %}
-  {%- set salt_roles = [] %}
-  {%- for role in ssh['roles'] %}
-    {%- if role in config.salt_deploy.salt_roles %}
-      {%- set _ = salt_roles.append(role) %}
-    {%- endif %}
-  {%- endfor %}
-
-  {%- if salt_roles %}
-- description: Restart salt-minion as workaround of PROD-16970
-  cmd: |
-    service salt-minion restart;  # For case if salt-minion was already installed
-  node_name: {{ ssh['node_name'] }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-  {%- endif %}
-{%- endfor %}
-
+{%- macro CONNECT_CEPH_TO_SERVICES() %}
 - description: Connect ceph to glance
   cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring,glance;
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' service.restart glance-api;
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' service.restart glance-registry;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
 - description: Connect ceph to cinder and nova
   cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring,cinder;
+    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring;
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' state.sls ceph.common,ceph.setup.keyring;
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' saltutil.sync_grains;
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' state.sls nova;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
-
-- description: Restart cinder volume
-  cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@cinder:controller' service.restart cinder-volume;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
-  skip_fail: false
-
-- description: Restart nova-compute
-  cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@nova:compute' service.restart nova-compute;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
-  skip_fail: false
-
-{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
+{%- endmacro %}
