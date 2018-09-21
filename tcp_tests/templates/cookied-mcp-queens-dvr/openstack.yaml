@@ -15,27 +15,7 @@
 
 # Install OpenStack control services
 
-{%- if OVERRIDE_POLICY != '' %}
-- description: Upload policy override
-  upload:
-    local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
-    local_filename: overrides-policy.yml
-    remote_path: /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/
-  node_name: {{ HOSTNAME_CFG01 }}
-
-- description: Create custom cluster control class
-  cmd: echo -e "classes:\n- cluster.{{ LAB_CONFIG_NAME }}.openstack.control_orig\n$(cat /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml)" > /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml
-  node_name: {{ HOSTNAME_CFG01 }}
-
-- description: Rename control classes
-  cmd: mv /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control_orig.yml &&
-    ln -s /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml &&
-    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
-    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
-  node_name: {{ HOSTNAME_CFG01 }}
-{%- endif %}
-
-{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=false) }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=true) }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
 
@@ -45,113 +25,8 @@
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON() }}
 
-# isntall designate
-#- description: Install powerdns
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@powerdns:server' state.sls powerdns.server
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
-#- description: Install designate
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@designate:server' state.sls designate -b 1
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 5, delay: 10}
-#  skip_fail: false
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
 
-- description: Deploy horizon dashboard
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@horizon:server' state.sls horizon
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
-- description: Deploy nginx proxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-
-# Install compute node
-
-- description: Apply formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Re-apply(as in doc) formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check IP on computes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
-    'ip a'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 10, delay: 30}
-  skip_fail: false
-
-- description: Create net04_external
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create subnet_external
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create net04
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create subnet_net04
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04 {{ IPV4_NET_TENANT_PREFIX }}.0/24 --name net04__subnet --allocation-pool start={{ IPV4_NET_TENANT_PREFIX }}.120,end={{ IPV4_NET_TENANT_PREFIX }}.240'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create router
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-create net04_router01'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set geteway
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description:  Add interface
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: sync time
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-    'service ntp stop; ntpd -gq;  service ntp start'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE(CELL_MAPPING=true) }}
