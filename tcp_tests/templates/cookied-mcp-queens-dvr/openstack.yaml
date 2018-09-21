@@ -8,34 +8,13 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
-{% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', '') %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 
 # Install OpenStack control services
 
-{%- if OVERRIDE_POLICY != '' %}
-- description: Upload policy override
-  upload:
-    local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
-    local_filename: overrides-policy.yml
-    remote_path: /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/
-  node_name: {{ HOSTNAME_CFG01 }}
-
-- description: Create custom cluster control class
-  cmd: echo -e "classes:\n- cluster.{{ LAB_CONFIG_NAME }}.openstack.control_orig\n$(cat /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml)" > /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml
-  node_name: {{ HOSTNAME_CFG01 }}
-
-- description: Rename control classes
-  cmd: mv /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control_orig.yml &&
-    ln -s /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/overrides-policy.yml /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control.yml &&
-    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
-    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
-  node_name: {{ HOSTNAME_CFG01 }}
-{%- endif %}
-
-{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=false) }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=true) }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
 
@@ -45,58 +24,11 @@
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON() }}
 
-# isntall designate
-#- description: Install powerdns
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@powerdns:server' state.sls powerdns.server
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
-#- description: Install designate
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@designate:server' state.sls designate -b 1
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 5, delay: 10}
-#  skip_fail: false
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
 
-- description: Deploy horizon dashboard
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@horizon:server' state.sls horizon
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
-- description: Deploy nginx proxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-
-# Install compute node
-
-- description: Apply formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Re-apply(as in doc) formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check IP on computes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
-    'ip a'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 10, delay: 30}
-  skip_fail: false
+{{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE() }}
 
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run

@@ -253,6 +253,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
-#{{  SHARED_SL_TESTS.MACRO_CLONE_SL_TESTS() }}
-#{{  SHARED_SL_TESTS.MACRO_CONFIGURE_TESTS() }}
