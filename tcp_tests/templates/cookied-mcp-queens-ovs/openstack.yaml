@@ -8,6 +8,7 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
+{% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', '') %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
@@ -28,7 +29,7 @@
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE() }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE(CELL_MAPPING=true) }}
 
 - description: Create net04_external
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
