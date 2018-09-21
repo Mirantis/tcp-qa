@@ -92,13 +92,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-#- description: Setup glance.client
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@glance:client' state.sls glance.client
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
 - description: Check glance image-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C "I@keystone:server" cmd.run ". /root/keystonercv3;

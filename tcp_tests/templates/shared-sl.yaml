@@ -1,5 +1,8 @@
-{% from 'cookied-mcp-queens-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% import 'shared-sl-tests.yaml' as SHARED_SL_TESTS with context %}
+{# Collection of sl macroses #}
+
+{% from 'cookied-mcp-queens-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+{%- macro MACRO_INSTALL_DOCKER_SWARM() %}
 # Install docker swarm
 - description: Configure docker service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls docker.host
@@ -64,7 +67,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+{%- endmacro %}
 
+{%- macro MACRO_INSTALL_MONGODB() %}
 # Install slv2 infra
 # Install MongoDB for alerta
 - description: Install Mongo if target matches
@@ -75,7 +80,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+{%- endmacro %}
 
+{%- macro MACRO_INSTALL_MONGODB_CLUSTER() %}
 # Create MongoDB cluster
 - description: Install Mongo if target matches
   cmd: |
@@ -135,7 +142,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+{%- endmacro %}
 
+{%- macro MACRO_INSTALL_PROMETEUS() %}
 # Install Prometheus LTS(optional if set in model)
 - description: Prometheus LTS(optional if set in model)
   cmd: |
@@ -147,7 +156,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+{%- endmacro %}
 
+{%- macro MACRO_INSTALL_LOG_COLLECTION() %}
 # Install service for the log collection
 - description: Configure fluentd
   cmd: |
@@ -161,8 +172,10 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+{%- endmacro %}
 
-#Install heka ceilometer collector
+{%- macro MACRO_INSTALL_CEILOMETER_COLLECTOR() %}
+# Install heka ceilometer collector
 - description: Install heka ceilometer if they exists
   cmd: |
     CEILO=`salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@heka:ceilometer_collector:enabled' test.ping 1>/dev/null 2>&1 && echo true`;
@@ -174,7 +187,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+{%- endmacro %}
 
+{%- macro MACRO_COLLECT_GRAINS() %}
 # Collect grains needed to configure the services
 
 - description: Get grains
@@ -194,15 +209,19 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 5, delay: 15}
   skip_fail: false
+{%- endmacro %}
 
+{%- macro MACRO_CONFIGURE_SERVICES() %}
 # Configure the services running in Docker Swarm
 - description: Configure prometheus in docker swarm
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm and I@prometheus:server' state.sls prometheus,heka.remote_collector
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+{%- endmacro %}
 
-#Launch containers
+{%- macro MACRO_LAUNCH_CONTAINERS() %}
+# Launch containers
 - description: launch prometheus containers
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master and I@prometheus:server' state.sls docker.client
   node_name: {{ HOSTNAME_CFG01 }}
@@ -221,25 +240,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-
-#- description: Install prometheus alertmanager
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls prometheus,heka.remote_collector -b 1
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
-#- description: run docker state
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm:role:master' state.sls docker
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-#
-#- description: docker ps
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' dockerng.ps
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 10}
-#  skip_fail: false
-
 - description: Configure Grafana dashboards and datasources
   cmd: sleep 30;  salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@grafana:client' state.sls grafana.client
   node_name: {{ HOSTNAME_CFG01 }}
@@ -251,3 +251,4 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
+{%- endmacro %}
