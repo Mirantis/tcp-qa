@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ee477827_fcac2cba",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 324,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-09-24T12:43:48Z",
+      "side": 1,
+      "message": "please move into separate macros, as this is needed to be included only in queens",
+      "range": {
+        "startLine": 324,
+        "startChar": 10,
+        "endLine": 324,
+        "endChar": 15
+      },
+      "revId": "76367c1c517564958bc4288e58bd25db2c5a46ce",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
