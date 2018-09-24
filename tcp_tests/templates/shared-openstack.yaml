@@ -316,4 +316,12 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 10, delay: 30}
   skip_fail: false
+
+- description: Re-run nova for map cell mapping
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "I@nova:controller and *01*" state.sls nova.controller
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 {%- endmacro %}
