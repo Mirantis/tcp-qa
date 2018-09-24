@@ -296,7 +296,7 @@
 # TO DO
 {%- endmacro %}
 
-{%- macro MACRO_INSTALL_COMPUTE() %}
+{%- macro MACRO_INSTALL_COMPUTE(CELL_MAPPING=false) %}
 # Install compute node
 - description: Apply formulas for compute node
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
@@ -316,4 +316,14 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 10, delay: 30}
   skip_fail: false
+
+  {%- if CELL_MAPPING %}
+- description: Re-run nova for map cell mapping
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "I@nova:controller and *01*" state.sls nova.controller
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+  {%- endif %}
+
 {%- endmacro %}
