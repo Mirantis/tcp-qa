@@ -184,3 +184,5 @@ default_context:
   use_default_network_scheme: 'False'
   rsync_fernet_rotation: 'True'
   compute_padding_with_zeros: False
+  designate_enabled: 'True'
+  designate_backend: 'powerdns'
