@@ -145,6 +145,8 @@ template:
             default_{{ HOSTNAME_MTR02 }}: +87
             default_{{ HOSTNAME_MTR03 }}: +88
             default_{{ HOSTNAME_GTW01 }}: +110
+#            default_{{ HOSTNAME_DNS01 }}: +111
+#            default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+130, +220]
