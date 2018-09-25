@@ -3,7 +3,7 @@
 {%- macro MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=true) %}
   {%- if USE_ORCHESTRATE %}
 - description: |
-    Execute salt orchestration state to configure all needed 
+    Execute salt orchestration state to configure all needed
     prerequisites like creating SSH public key ant etc.
     Workaround for PROD-22488, use for PROD-22535.
   cmd: salt-run state.orchestrate keystone.orchestrate.deploy
@@ -247,8 +247,16 @@
   skip_fail: true
 {%- endmacro %}
 
-{%- macro MACRO_INSTALL_DESIGNATE() %}
-# Note: deploy backend for designate firstly
+{%- macro MACRO_INSTALL_DESIGNATE(INSTALL_POWERDNS=true) %}
+  {%- if INSTALL_POWERDNS %}
+- description: Install powerdns
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@powerdns:server' state.sls powerdns.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+  {%- endif %}
+
 - description: Install designate on primary node
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C "I@designate:server and *01*" state.sls designate.server
