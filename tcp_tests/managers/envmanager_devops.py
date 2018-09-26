@@ -71,7 +71,6 @@ class EnvironmentManager(object):
             self._create_environment()
         self.set_dns_config()
         self.set_address_pools_config()
-        self.set_dhcp_ranges_config()
 
     @property
     def _devops_config(self):
@@ -523,14 +522,3 @@ class EnvironmentManager(object):
         """Store address pools CIDRs in config object"""
         for ap in self.__env.get_address_pools():
             self.__config.underlay.address_pools[ap.name] = ap.net
-
-    def set_dhcp_ranges_config(self):
-        """Store DHCP ranges in config object"""
-        for ap in self.__env.get_address_pools():
-            if "gateway" in ap.ip_reserved and "dhcp" in ap.ip_ranges:
-                self.__config.underlay.dhcp_ranges[ap.name] = {
-                    "cidr": ap.net,
-                    "start": ap.ip_range_start("dhcp"),
-                    "end": ap.ip_range_end("dhcp"),
-                    "gateway": ap.gateway,
-                }

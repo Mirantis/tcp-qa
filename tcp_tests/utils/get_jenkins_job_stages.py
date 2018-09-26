@@ -15,7 +15,6 @@
 import argparse
 import os
 import sys
-import time
 
 sys.path.append(os.getcwd())
 try:
@@ -108,17 +107,8 @@ def get_deployment_result(opts):
                                 for line in log["text"].splitlines()))
         return res
 
-    for _ in range(3):
-        wf = jenkins.get_workflow(opts.job_name, opts.build_number)
-        info = jenkins.build_info(opts.job_name, int(wf['id']))
-        if info is not None:
-            break
-        time.sleep(3)
-
-    if not info:
-        raise("Cannot get info for the job {0}:{1}".format(opts.job_name,
-                                                           opts.build_number))
-
+    wf = jenkins.get_workflow(opts.job_name, opts.build_number)
+    info = jenkins.build_info(opts.job_name, int(wf['id']))
     build_description = ("[" + info['fullDisplayName'] + "] " +
                          info['url'] + " : " + info['result'])
     stages = get_stages(wf['stages'], 0)

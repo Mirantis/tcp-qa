@@ -73,9 +73,8 @@ template:
         net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '172.17.42.128/26:26') }}
         params:
           ip_reserved:
-            gateway: '172.17.42.129'
-          ip_ranges:
-              dhcp: ['172.17.42.130', '172.17.42.180']
+            gateway: +1
+            l2_network_device: -2
 
 
     groups:

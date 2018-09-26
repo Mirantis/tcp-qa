@@ -87,7 +87,6 @@ class ExecuteCommandsMixin(object):
         retry_count = retry.get('count', 1)
         retry_delay = retry.get('delay', 1)
         skip_fail = step.get('skip_fail', False)
-        timeout = step.get('timeout', None)
 
         with self.__underlay.remote(node_name=node_name) as remote:
 
@@ -102,7 +101,7 @@ class ExecuteCommandsMixin(object):
                 LOG.info("\n\n{0}\n{1}".format(
                     msg + retry_msg, '=' * len(msg + retry_msg)))
 
-                result = remote.execute(cmd, timeout=timeout, verbose=True)
+                result = remote.execute(cmd, verbose=True)
                 if return_res:
                     return result
 
@@ -149,7 +148,6 @@ class ExecuteCommandsMixin(object):
         retry_count = retry.get('count', 1)
         retry_delay = retry.get('delay', 1)
         skip_fail = step.get('skip_fail', False)
-        timeout = step.get('timeout', None)
 
         if not bool(state) ^ bool(states):
             raise ValueError("You should use state or states in step")
@@ -167,7 +165,7 @@ class ExecuteCommandsMixin(object):
 
             method = getattr(self._salt, self._salt._map[do])
             command_ret = method(tgt=target, state=state or states,
-                                 args=args, kwargs=kwargs, timeout=timeout)
+                                 args=args, kwargs=kwargs)
             command_ret = command_ret if \
                 isinstance(command_ret, list) else [command_ret]
             results = [(r['return'][0], f) for r, f in command_ret]

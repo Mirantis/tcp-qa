@@ -104,12 +104,11 @@ class SaltManager(ExecuteCommandsMixin):
         self.__session_start = login()
         return self.__api
 
-    def local(self, tgt, fun, args=None, kwargs=None, timeout=None):
-        return self.api.local(tgt, fun, args, kwargs, timeout=timeout,
-                              expr_form='compound')
+    def local(self, tgt, fun, args=None, kwargs=None):
+        return self.api.local(tgt, fun, args, kwargs, expr_form='compound')
 
-    def local_async(self, tgt, fun, args=None, kwargs=None, timeout=None):
-        return self.api.local_async(tgt, fun, args, kwargs, timeout=timeout)
+    def local_async(self, tgt, fun, args=None, kwargs=None):
+        return self.api.local_async(tgt, fun, args, kwargs)
 
     def lookup_result(self, jid):
         return self.api.lookup_jid(jid)
@@ -139,27 +138,25 @@ class SaltManager(ExecuteCommandsMixin):
 
         return fails if fails else None
 
-    def enforce_state(self, tgt, state, args=None, kwargs=None, timeout=None):
-        r = self.local(tgt=tgt, fun='state.sls', args=state, timeout=timeout)
+    def enforce_state(self, tgt, state, args=None, kwargs=None):
+        r = self.local(tgt=tgt, fun='state.sls', args=state)
         f = self.check_result(r)
         return r, f
 
-    def enforce_states(self, tgt, state, args=None, kwargs=None, timeout=None):
+    def enforce_states(self, tgt, state, args=None, kwargs=None):
         rets = []
         for s in state:
-            r = self.enforce_state(tgt=tgt, state=s, timeout=timeout)
+            r = self.enforce_state(tgt=tgt, state=s)
             rets.append(r)
         return rets
 
-    def run_state(self, tgt, state, args=None, kwargs=None, timeout=None):
-        return self.local(tgt=tgt, fun=state, args=args, kwargs=kwargs,
-                          timeout=timeout), None
+    def run_state(self, tgt, state, args=None, kwargs=None):
+        return self.local(tgt=tgt, fun=state, args=args, kwargs=kwargs), None
 
-    def run_states(self, tgt, state, args=None, kwargs=None, timeout=None):
+    def run_states(self, tgt, state, args=None, kwargs=None):
         rets = []
         for s in state:
-            r = self.run_state(tgt=tgt, state=s, args=args, kwargs=kwargs,
-                               timeout=timeout)
+            r = self.run_state(tgt=tgt, state=s, args=args, kwargs=kwargs)
             rets.append(r)
         return rets
 

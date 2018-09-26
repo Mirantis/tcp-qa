@@ -161,7 +161,8 @@ template:
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
-            dhcp: [+180, +220]
+            dhcp: [+10, -10]
+
 
     groups:
       - name: default
