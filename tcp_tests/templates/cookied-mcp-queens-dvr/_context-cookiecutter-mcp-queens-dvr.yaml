@@ -1,7 +1,7 @@
 default_context:
   barbican_backend: dogtag
   barbican_enabled: 'False'
-  auditd_enabled: 'False'
+  auditd_enabled: 'True'
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   cicd_enabled: 'False'
