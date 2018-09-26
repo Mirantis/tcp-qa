@@ -167,5 +167,3 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
-
