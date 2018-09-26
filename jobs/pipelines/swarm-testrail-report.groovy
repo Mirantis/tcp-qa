@@ -31,13 +31,6 @@ node ("${PARENT_NODE_NAME}") {
     }
     dir("${PARENT_WORKSPACE}") {
         try {
-
-            if (env.TCP_QA_REFS) {
-                stage("Update working dir to patch ${TCP_QA_REFS}") {
-                    shared.update_working_dir()
-                }
-            }
-
             def report_name = ''
             def testSuiteName = ''
             def methodname = ''
@@ -118,7 +111,7 @@ node ("${PARENT_NODE_NAME}") {
             }
 
         } catch (e) {
-            common.printMsg("Job is failed", "red")
+            common.printMsg("Job is failed: " + e.message, "red")
             throw e
         } finally {
             // reporting is failed for some reason

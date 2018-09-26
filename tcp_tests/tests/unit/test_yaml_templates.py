@@ -29,16 +29,6 @@ config.underlay.address_pools = {
     "tenant-pool01": "10.80.0.0/24",
     "external-pool01": "10.90.0.0/24"
 }
-config.underlay.dhcp_ranges = {
-    "admin-pool01": {"cidr": "10.70.0.0/24",
-                     "start": "10.70.0.10",
-                     "end": "10.70.0.200",
-                     "gateway": "10.70.0.1"},
-    "external-pool01": {"cidr": "10.90.0.0/24",
-                        "start": "10.90.0.10",
-                        "end": "10.90.0.200",
-                        "gateway": "10.90.0.1"},
-}
 config.underlay.ssh_keys = [
     {"public": "AAAARRRGGHHHhh", "private": "--- BLABLA-KEY ---"}
 ]

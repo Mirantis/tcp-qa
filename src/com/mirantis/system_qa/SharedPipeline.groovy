@@ -2,19 +2,6 @@ package com.mirantis.system_qa
 
 import groovy.xml.XmlUtil
 
-def run_sh(String cmd) {
-    // run shell script without catching any output
-    def common = new com.mirantis.mk.Common()
-    common.printMsg("Run shell command:\n" + cmd, "blue")
-    def VENV_PATH='/home/jenkins/fuel-devops30'
-    script = """\
-        set -ex;
-        . ${VENV_PATH}/bin/activate;
-        bash -c '${cmd.stripIndent()}'
-    """
-    return sh(script: script)
-}
-
 def run_cmd(String cmd, Boolean returnStdout=false) {
     def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
@@ -125,17 +112,6 @@ def prepare_working_dir() {
                 git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
             fi
             pip install --upgrade --upgrade-strategy=only-if-needed -r tcp_tests/requirements.txt
-        """)
-}
-
-def update_working_dir() {
-        // Use to fetch a patchset from gerrit to the working dir
-        run_cmd("""\
-            if [ -n "$TCP_QA_REFS" ]; then
-                set -e
-                git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
-            fi
-            pip install -r tcp_tests/requirements.txt
         """)
 }
 
