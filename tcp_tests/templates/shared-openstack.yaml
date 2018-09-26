@@ -247,11 +247,20 @@
   skip_fail: true
 {%- endmacro %}
 
-{%- macro MACRO_INSTALL_DESIGNATE(INSTALL_POWERDNS=false) %}
+{%- macro MACRO_INSTALL_DESIGNATE(INSTALL_POWERDNS=false, INSTALL_BIND=false) %}
   {%- if INSTALL_POWERDNS %}
 - description: Install powerdns
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@powerdns:server' state.sls powerdns.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+  {%- endif %}
+
+  {%- if INSTALL_BIND %}
+- description: Install bind
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@bind:server' state.sls bind
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false

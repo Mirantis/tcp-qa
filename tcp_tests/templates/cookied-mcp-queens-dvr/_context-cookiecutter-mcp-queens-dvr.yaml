@@ -1,7 +1,7 @@
 default_context:
   barbican_backend: dogtag
   barbican_enabled: 'False'
-  auditd_enabled: 'False'
+  auditd_enabled: 'True'
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   cicd_enabled: 'False'
@@ -197,7 +197,7 @@ default_context:
   rsync_fernet_rotation: 'True'
   compute_padding_with_zeros: False
   designate_backend: bind
-  designate_enabled: 'False'
+  designate_enabled: 'True'
   nova_vnc_tls_enabled: 'False'
   galera_ssl_enabled: 'False'
   openstack_mysql_x509_enabled: 'False'
