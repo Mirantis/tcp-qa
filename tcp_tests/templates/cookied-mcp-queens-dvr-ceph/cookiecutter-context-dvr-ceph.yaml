@@ -1,7 +1,7 @@
 default_context:
   barbican_backend: dogtag
   barbican_enabled: 'False'
-  auditd_enabled: 'False'
+  auditd_enabled: 'True'
   backend_network_netmask: 255.255.255.0
   backend_network_subnet: 10.167.4.0/24
   backend_vlan: '10'
