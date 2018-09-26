@@ -18,6 +18,9 @@ nodes:
       - openstack_database_leader
       - openstack_message_queue
       - linux_system_codename_xenial
+      - features_designate_pool_manager_database
+      - features_designate_pool_manager
+      - features_designate_pool_manager_keystone
       interfaces:
         ens3:
           role: single_dhcp
@@ -32,6 +35,8 @@ nodes:
       - openstack_database
       - openstack_message_queue
       - linux_system_codename_xenial
+      - features_designate_pool_manager_database
+      - features_designate_pool_manager
       interfaces:
         ens3:
           role: single_dhcp
@@ -46,6 +51,8 @@ nodes:
       - openstack_database
       - openstack_message_queue
       - linux_system_codename_xenial
+      - features_designate_pool_manager_database
+      - features_designate_pool_manager
       interfaces:
         ens3:
           role: single_dhcp
@@ -57,6 +64,7 @@ nodes:
       roles:
       - openstack_proxy
       - linux_system_codename_xenial
+      - features_designate_pool_manager_proxy
       interfaces:
         ens3:
           role: single_dhcp
@@ -193,22 +201,24 @@ nodes:
         ens6:
           role: bond1_ab_ovs_floating
 
-#    dns01.mcp-queens-dvr.local:
-#      reclass_storage_name: openstack_dns_node01
-#      roles:
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_dhcp
-#        ens4:
-#          role: single_ctl
-#
-#    dns02.mcp-queens-dvr.local:
-#      reclass_storage_name: openstack_dns_node02
-#      roles:
-#      - linux_system_codename_xenial
-#      interfaces:
-#        ens3:
-#          role: single_dhcp
-#        ens4:
-#          role: single_ctl
+    dns01.mcp-queens-dvr.local:
+      reclass_storage_name: openstack_dns_node01
+      roles:
+      - features_designate_pool_manager_dns
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    dns02.mcp-queens-dvr.local:
+      reclass_storage_name: openstack_dns_node02
+      roles:
+      - features_designate_pool_manager_dns
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
