@@ -31,6 +31,13 @@ node ("${PARENT_NODE_NAME}") {
     }
     dir("${PARENT_WORKSPACE}") {
         try {
+
+            if (env.TCP_QA_REFS) {
+                stage("Update working dir to patch ${TCP_QA_REFS}") {
+                    shared.update_working_dir()
+                }
+            }
+
             def report_name = ''
             def testSuiteName = ''
             def methodname = ''
@@ -70,7 +77,7 @@ node ("${PARENT_NODE_NAME}") {
 
             if (tcpqa_report_name) {
                 stage("tcp-qa cases report") {
-//                    report_name = "nosetests.xml"
+                    // tcpqa_report_name =~ "nosetests.xml"
                     testSuiteName = "[MCP_X] integration cases"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
@@ -85,7 +92,7 @@ node ("${PARENT_NODE_NAME}") {
 
             if ('openstack' in stacks && tempest_report_name) {
                 stage("Tempest report") {
-//                    report_name = "report_*.xml"
+                    // tempest_report_name =~ "report_*.xml"
                     testSuiteName = "[MCP1.1_PIKE]Tempest"
                     methodname = "{classname}.{methodname}"
                     testrail_name_template = "{title}"
@@ -95,14 +102,30 @@ node ("${PARENT_NODE_NAME}") {
 
             if ('k8s' in stacks && k8s_conformance_report_name) {
                 stage("K8s conformance report") {
-                    println "TBD"
-                    // K8s conformance report
+                    // k8s_conformance_report_name =~ conformance_result.xml
+                    // TODO(ddmitriev): it's better to get the k8s version right after deployment
+                    // and store in some artifact that can be re-used here.
+                    def k8s_version=run_cmd_stdout("""\
+                        export ENV_NAME=${ENV_NAME}
+                        . ./tcp_tests/utils/env_salt
+                        . ./tcp_tests/utils/env_k8s
+                        echo "\$kubernetes_version_major.\$kubernetes_version_minor"
+                    """).trim().split().last()
+                    testSuiteName = "[MCP][k8s]Hyperkube ${k8s_version}.x"
+                    methodname = "{methodname}"
+                    testrail_name_template = "{title}"
+                    reporter_extra_options = [
+                      "--testrail-add-missing-cases",
+                      "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
+                      "--testrail-case-section-name \'Conformance\'",
+                    ]
+                    shared.upload_results_to_testrail(k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                 }
             }
 
             if ('stacklight' in stacks && stacklight_report_name) {
                 stage("stacklight-pytest report") {
-//                    report_name = "stacklight_report.xml"
+                    // stacklight_report_name =~ "stacklight_report.xml"
                     testSuiteName = "LMA2.0_Automated"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
@@ -111,7 +134,7 @@ node ("${PARENT_NODE_NAME}") {
             }
 
         } catch (e) {
-            common.printMsg("Job is failed: " + e.message, "red")
+            common.printMsg("Job is failed", "red")
             throw e
         } finally {
             // reporting is failed for some reason

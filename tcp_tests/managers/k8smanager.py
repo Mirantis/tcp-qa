@@ -192,7 +192,7 @@ class K8SManager(ExecuteCommandsMixin):
                image=self.__config.k8s.k8s_conformance_image)
         return self.__underlay.check_call(
                cmd=cmd, node_name=node_name, timeout=timeout,
-               raise_on_err=raise_on_err)
+               raise_on_err=raise_on_err, verbose=True)
 
     def run_virtlet_conformance(self, timeout=60 * 120,
                                 log_file='virtlet_conformance.log'):
