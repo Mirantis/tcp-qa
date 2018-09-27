@@ -13,6 +13,8 @@
 {% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03') %}
 {% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp001') %}
 {% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp002') %}
+{% set HOSTNAME_CMP03 = os_env('HOSTNAME_CMP03', 'cmp003') %}
+{% set HOSTNAME_CMP04 = os_env('HOSTNAME_CMP04', 'cmp004') %}
 {% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01') %}
 {% set HOSTNAME_KVM02 = os_env('HOSTNAME_KVM02', 'kvm02') %}
 {% set HOSTNAME_KVM03 = os_env('HOSTNAME_KVM03', 'kvm03') %}
@@ -70,6 +72,8 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +13
             default_{{ HOSTNAME_CMP01 }}: +101
             default_{{ HOSTNAME_CMP02 }}: +102
+            default_{{ HOSTNAME_CMP03 }}: +103
+            default_{{ HOSTNAME_CMP04 }}: +104
             default_{{ HOSTNAME_KVM }}: +240
             default_{{ HOSTNAME_KVM01 }}: +241
             default_{{ HOSTNAME_KVM02 }}: +242
@@ -379,7 +383,7 @@ template:
             role: k8s_controller
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -408,7 +412,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -437,7 +441,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              memory: !os_env SLAVE_NODE_MEMORY, 8192
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -466,7 +470,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -492,7 +496,59 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_CMP03 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_CMP04 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
               cloud_init_volume_name: iso

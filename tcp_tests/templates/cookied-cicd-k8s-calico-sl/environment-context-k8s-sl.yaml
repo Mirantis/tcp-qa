@@ -135,6 +135,32 @@ nodes:
           role: single_ctl
           single_address: ${_param:kubernetes_compute_node02_address}
 
+    cmp003:
+      reclass_storage_name: kubernetes_compute_node03
+      roles:
+      - kubernetes_compute
+      - linux_system_codename_xenial
+      - salt_master_host
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+          single_address: ${_param:kubernetes_compute_node03_address}
+
+    cmp004:
+      reclass_storage_name: kubernetes_compute_node04
+      roles:
+      - kubernetes_compute
+      - linux_system_codename_xenial
+      - salt_master_host
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+          single_address: ${_param:kubernetes_compute_node04_address}
+
     mon01:
       reclass_storage_name: stacklight_server_node01
       roles:
