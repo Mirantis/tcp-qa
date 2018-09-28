@@ -205,3 +205,7 @@ default_context:
   openstack_rabbitmq_x509_enabled: 'False'
   tenant_telemetry_enabled: 'False'
   gnocchi_aggregation_storage: file
+  manila_enabled: 'True'
+  manila_share_backend: 'lvm'
+  manila_lvm_volume_name: 'manila-volume'
+  manila_lvm_devices: '/dev/loop1'
