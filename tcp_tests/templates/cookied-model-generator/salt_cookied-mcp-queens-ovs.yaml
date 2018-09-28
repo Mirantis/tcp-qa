@@ -61,12 +61,4 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-- description: temp
-  cmd: |
-    sed -i 's/\-\ environment.cookied-mcp-queens-ovs.features.designate_pool_manager.dns//g' /srv/salt/reclass/classes/environment/cookied-mcp-queens-ovs/init.yml;
-    sed -i 's/\-\ environment.cookied-mcp-queens-ovs.features.designate_pool_manager//g' /srv/salt/reclass/classes/environment/cookied-mcp-queens-ovs/init.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
