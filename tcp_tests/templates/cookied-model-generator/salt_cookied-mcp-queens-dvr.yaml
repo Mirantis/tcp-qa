@@ -24,14 +24,7 @@
     sed -i '/system.reclass.storage.system.physical_control_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     sed -i '/system.reclass.storage.system.openstack_database_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     sed -i '/system.reclass.storage.system.openstack_message_queue_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
-    # sed -i '/system.reclass.storage.system.stacklight_telemetry_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     sed -i '/system.salt.control.placement.openstack.compact/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/kvm.yml;
-    # sed -i '/system.reclass.storage.system.stacklight_log_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
-
-    # Bind9 services are placed on the first two ctl nodes
-    # salt-call reclass.cluster_meta_set name='openstack_dns_node01_address' value='${_param:openstack_control_node01_address}' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
-    # salt-call reclass.cluster_meta_set name='openstack_dns_node02_address' value='${_param:openstack_control_node02_address}' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
-
     . /root/venv-reclass-tools/bin/activate;
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
@@ -42,12 +35,14 @@
     reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
-    # reclass-tools del-key parameters.reclass.storage.node.stacklight_log_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     # Add cinder volume on cmp nodes. PROD-20945
     reclass-tools add-key 'classes' 'system.cinder.volume.single' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
     reclass-tools add-key 'classes' 'system.cinder.volume.backend.lvm' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
     reclass-tools add-key 'classes' 'system.linux.storage.loopback' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
     reclass-tools add-key parameters._param.loopback_device_size '20' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml;
+    # Add for manila
+    reclass-tools add-key parameters._param.loopback_device1_size '20' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml;
+    reclass-tools add-key 'classes' 'system.linux.storage.loopback_manila' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
