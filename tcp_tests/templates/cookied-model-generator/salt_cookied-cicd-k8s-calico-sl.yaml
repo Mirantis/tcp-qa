@@ -25,6 +25,8 @@
     # Workaround for compute nodes. Auto-registration for compute nodes cannot be used without external address inventory
     reclass-tools add-key parameters._param.kubernetes_compute_node01_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.101 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/init.yml;
     reclass-tools add-key parameters._param.kubernetes_compute_node02_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.102 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/init.yml;
+    reclass-tools add-key parameters._param.kubernetes_compute_node03_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.103 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/init.yml;
+    reclass-tools add-key parameters._param.kubernetes_compute_node04_address {{ SHARED.IPV4_NET_CONTROL_PREFIX }}.104 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/init.yml;
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
