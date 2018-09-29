@@ -105,7 +105,7 @@ node ("${PARENT_NODE_NAME}") {
                     // k8s_conformance_report_name =~ conformance_result.xml
                     // TODO(ddmitriev): it's better to get the k8s version right after deployment
                     // and store in some artifact that can be re-used here.
-                    def k8s_version=run_cmd_stdout("""\
+                    def k8s_version=shared.run_cmd_stdout("""\
                         export ENV_NAME=${ENV_NAME}
                         . ./tcp_tests/utils/env_salt
                         . ./tcp_tests/utils/env_k8s
