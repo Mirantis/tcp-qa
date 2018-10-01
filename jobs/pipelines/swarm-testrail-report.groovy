@@ -115,6 +115,7 @@ node ("${PARENT_NODE_NAME}") {
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
                     reporter_extra_options = [
+                      "--send-duplicates",
                       "--testrail-add-missing-cases",
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'Conformance\'",
