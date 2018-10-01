@@ -322,13 +322,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: WR https://mirantis.jira.com/browse/PROD-19012
-  cmd: |
-    salt 'ctl*' cmd.run 'systemctl restart apache2'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Check manila-services
   cmd: |
     salt 'ctl01*' cmd.run '. /root/keystonercv3; manila service-list'
@@ -338,7 +331,7 @@
 
 - description: Create manila type
   cmd: |
-    salt 'cfg01*' state.sls manila.client
+    salt -C "I@manila:client" state.sls manila.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
