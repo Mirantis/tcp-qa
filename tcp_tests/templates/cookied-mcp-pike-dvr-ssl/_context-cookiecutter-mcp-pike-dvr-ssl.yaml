@@ -13,7 +13,7 @@ default_context:
   control_vlan: '10'
   cookiecutter_template_branch: master
   cookiecutter_template_credentials: gerrit
-  cookiecutter_template_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/mk/cookiecutter-templates.git
+  cookiecutter_template_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.com:29418/mk/cookiecutter-templates.git
   deploy_network_gateway: 192.168.10.1
   deploy_network_netmask: 255.255.255.0
   deploy_network_subnet: 192.168.10.0/24
@@ -145,7 +145,7 @@ default_context:
   salt_master_address: 172.16.10.90
   salt_master_hostname: cfg01
   salt_master_management_address: 192.168.10.90
-  shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.net:29418/salt-models/reclass-system.git
+  shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.com:29418/salt-models/reclass-system.git
   stacklight_enabled: 'True'
   stacklight_log_address: 172.16.10.70
   stacklight_log_hostname: mon

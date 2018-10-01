@@ -6,7 +6,7 @@
 {% from 'cookied-bm-contrail-nfv-maas/underlay.yaml' import MAAS_DHCP_POOL_START with context %}
 {% from 'cookied-bm-contrail-nfv-maas/underlay.yaml' import MAAS_DHCP_POOL_END with context %}
 
-{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','physical-cookied-bm-contrail-nfv-maas') %}

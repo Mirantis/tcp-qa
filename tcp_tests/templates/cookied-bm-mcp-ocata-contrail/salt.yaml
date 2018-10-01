@@ -4,7 +4,7 @@
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import CUSTOM_VCP_TRUSTY_IMAGE_URL with context %}
 {% from 'cookied-bm-mcp-ocata-contrail/underlay.yaml' import CUSTOM_VCP_XENIAL_IMAGE_URL with context %}
 
-{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model

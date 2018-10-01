@@ -84,7 +84,7 @@
    - find /srv/pillar/ -type f -exec sed -i "s/==HOST_MIRROR_MCP_MIRANTIS==/{{ os_env('HOST_MIRROR_MCP_MIRANTIS', 'mirror.mcp.mirantis.net') }}/g" {} +
    - find /srv/pillar/ -type f -exec sed -i "s/==HOST_MIRROR_FUEL_INFRA==/{{ os_env('HOST_MIRROR_FUEL_INFRA', 'mirror.fuel-infra.org') }}/g" {} +
    - find /srv/pillar/ -type f -exec sed -i "s/==HOST_PPA_LAUNCHPAD==/{{ os_env('HOST_PPA_LAUNCHPAD', 'ppa.launchpad.net') }}/g" {} +
-   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_GERRIT_MCP_MIRANTIS==/{{ os_env('HOST_GERRIT_MCP_MIRANTIS', 'gerrit.mcp.mirantis.net') }}/g" {} +
+   - find /srv/pillar/ -type f -exec sed -i "s/==HOST_GERRIT_MCP_MIRANTIS==/{{ os_env('HOST_GERRIT_MCP_MIRANTIS', 'gerrit.mcp.mirantis.com') }}/g" {} +
    - salt-call --local  --state-output=mixed state.sls dnsmasq;
    - salt-call --local  --state-output=mixed state.sls nginx;
    ########################################################

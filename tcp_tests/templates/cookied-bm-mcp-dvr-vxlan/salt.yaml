@@ -5,7 +5,7 @@
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM02 with context %}
 {% from 'cookied-bm-mcp-dvr-vxlan/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
-{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-virtual-lab') %}
 
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-bm-mcp-dvr-vxlan') %}
 

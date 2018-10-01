@@ -22,7 +22,7 @@ parameters:
                 proto: manual
                 slaves: enp2s0f1
                 type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - enp2s0f1
                 require_interfaces:
                 - enp2s0f1
@@ -30,7 +30,7 @@ parameters:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0
                 require_interfaces:
                 - bond0
@@ -40,7 +40,7 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0.2416
                 require_interfaces:
                 - bond0.2416
@@ -54,7 +54,7 @@ parameters:
                 netmask: 255.255.255.192
                 proto: static
                 type: bridge
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - enp2s0f0
                 require_interfaces:
                 - enp2s0f0
@@ -89,7 +89,7 @@ parameters:
                 proto: manual
                 slaves: enp2s0f1
                 type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - enp2s0f1
                 require_interfaces:
                 - enp2s0f1
@@ -97,7 +97,7 @@ parameters:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0
                 require_interfaces:
                 - bond0
@@ -107,7 +107,7 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0.2416
                 require_interfaces:
                 - bond0.2416
@@ -121,7 +121,7 @@ parameters:
                 netmask: 255.255.255.192
                 proto: static
                 type: bridge
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - enp2s0f0
                 require_interfaces:
                 - enp2s0f0
@@ -156,7 +156,7 @@ parameters:
                 proto: manual
                 slaves: eno2
                 type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - eno2
                 require_interfaces:
                 - eno2
@@ -164,7 +164,7 @@ parameters:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0
                 require_interfaces:
                 - bond0
@@ -174,7 +174,7 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0.2416
                 require_interfaces:
                 - bond0.2416
@@ -188,7 +188,7 @@ parameters:
                 netmask: 255.255.255.192
                 proto: static
                 type: bridge
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - eno1
                 require_interfaces:
                 - eno1
@@ -263,7 +263,7 @@ parameters:
                 proto: manual
                 slaves: enp3s0f1 enp5s0f0
                 type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - enp3s0f1
                 - enp5s0f0
                 require_interfaces:
@@ -273,7 +273,7 @@ parameters:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0
                 require_interfaces:
                 - bond0
@@ -283,7 +283,7 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0.2416
                 require_interfaces:
                 - bond0.2416
@@ -321,7 +321,7 @@ parameters:
 #                slaves: eth0 eth3
                 slaves: eth0
                 type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - eth0
 #                - eth3
                 require_interfaces:
@@ -331,7 +331,7 @@ parameters:
                 enabled: true
                 proto: manual
                 type: vlan
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0
                 require_interfaces:
                 - bond0
@@ -346,7 +346,7 @@ parameters:
                 netmask: 255.255.255.0
                 proto: static
                 type: bridge
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - bond0.2416
                 require_interfaces:
                 - bond0.2416
@@ -397,7 +397,7 @@ parameters:
                 proto: manual
                 slaves: enp3s0f1
                 type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - enp3s0f1
                 require_interfaces:
                 - enp3s0f1
@@ -483,7 +483,7 @@ parameters:
                 proto: manual
                 slaves: eno2
                 type: bond
-                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.net/#/c/8344
+                use_interfaces: # Remove 'use_interfaces' after https://gerrit.mcp.mirantis.com/#/c/8344
                 - eno2
                 require_interfaces:
                 - eno2

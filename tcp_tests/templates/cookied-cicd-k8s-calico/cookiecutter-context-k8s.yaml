@@ -83,7 +83,7 @@ default_context:
   control_vlan: '10'
   cookiecutter_template_branch: ''
   cookiecutter_template_credentials: gerrit
-  cookiecutter_template_url: https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates.git
+  cookiecutter_template_url: https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates.git
   deploy_network_gateway: 10.167.5.1
   deploy_network_netmask: 255.255.255.0
   deploy_network_subnet: 10.167.5.0/24
@@ -152,7 +152,7 @@ default_context:
   salt_master_hostname: cfg01
   salt_master_management_address: 10.167.5.15
   shared_reclass_branch: 'proposed'
-  shared_reclass_url: https://gerrit.mcp.mirantis.net/salt-models/reclass-system.git
+  shared_reclass_url: https://gerrit.mcp.mirantis.com/salt-models/reclass-system.git
   stacklight_enabled: 'False'
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'

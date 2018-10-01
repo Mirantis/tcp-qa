@@ -2,7 +2,7 @@
 {% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'cookied-mcp-ocata-dop-sl2/underlay.yaml' import DOMAIN_NAME with context %}
 
-{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/mcp-virtual-lab') %}
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
 
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model

@@ -5,11 +5,11 @@
 {# Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12 #}
 {% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
 {# Pin to a specified commit in salt-models/reclass-system #}
-{% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','https://gerrit.mcp.mirantis.net/salt-models/reclass-system') %}
+{% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/reclass-system') %}
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
 {% set SALT_MODELS_SYSTEM_TAG = os_env('SALT_MODELS_SYSTEM_TAG','') %}
-{% set COOKIECUTTER_TEMPLATES_REPOSITORY = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY','https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates') %}
+{% set COOKIECUTTER_TEMPLATES_REPOSITORY = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY','https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates') %}
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
 {% set COOKIECUTTER_TAG = os_env('COOKIECUTTER_TAG','') %}
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
@@ -51,7 +51,7 @@
 {% set SALT_FORMULAS_REFS = os_env('SALT_FORMULAS_REFS', '') %}
 {% set TEMPEST_PATTERN = os_env('TEMPEST_PATTERN', 'tempest') %}
 {% set EXCLUDE_TEST_ARGS = os_env('EXCLUDE_TEST_ARGS', '') %}
-{% set SALT_FORMULAS_REPO = os_env('SALT_FORMULAS_REPO', 'https://gerrit.mcp.mirantis.net/salt-formulas') %}
+{% set SALT_FORMULAS_REPO = os_env('SALT_FORMULAS_REPO', 'https://gerrit.mcp.mirantis.com/salt-formulas') %}
 
 # Needed for using different models in different templates
 {% set CLUSTER_NAME = os_env('CLUSTER_NAME', LAB_CONFIG_NAME) %}
