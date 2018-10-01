@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e2bcedf9_674b5e18",
+        "filename": "tcp_tests/templates/shared-sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 240,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-10-01T14:20:03Z",
+      "side": 1,
+      "message": "It is better to use some way which will wait for service http://${stacklight_vip}:15013/ is available",
+      "range": {
+        "startLine": 240,
+        "startChar": 9,
+        "endLine": 240,
+        "endChar": 30
+      },
+      "revId": "39ebc7122686eded8d741a4cf2b96607a6be92c5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
