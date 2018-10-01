@@ -15,6 +15,32 @@
 {{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
 
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='\*') }}
+
+- description: "Workaround PROD-23577"
+  cmd: |
+    set -e;
+    apt install make -y;
+    git clone http://gerrit.mcp.mirantis.com/salt-formulas/linux /root/linux;
+    pushd /root/linux/;
+    git fetch http://gerrit.mcp.mirantis.com/salt-formulas/linux refs/changes/49/27649/6 && git checkout FETCH_HEAD;
+    make install;
+    popd;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Refresh pillars on all minions
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
