@@ -18,6 +18,7 @@ nodes:
       - openstack_database_leader
       - openstack_message_queue
       - linux_system_codename_xenial
+      - openstack_dns
       interfaces:
         ens3:
           role: single_dhcp
@@ -32,6 +33,7 @@ nodes:
       - openstack_database
       - openstack_message_queue
       - linux_system_codename_xenial
+      - openstack_dns
       interfaces:
         ens3:
           role: single_dhcp
@@ -46,6 +48,7 @@ nodes:
       - openstack_database
       - openstack_message_queue
       - linux_system_codename_xenial
+      - openstack_dns
       interfaces:
         ens3:
           role: single_dhcp
@@ -195,6 +198,28 @@ nodes:
 
     share01.mcp-queens-dvr.local:
       reclass_storage_name: openstack_share_node01
+      roles:
+      - openstack_share
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    share02.mcp-queens-dvr.local:
+      reclass_storage_name: openstack_share_node02
+      roles:
+      - openstack_share
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    share03.mcp-queens-dvr.local:
+      reclass_storage_name: openstack_share_node03
       roles:
       - openstack_share
       - linux_system_codename_xenial
