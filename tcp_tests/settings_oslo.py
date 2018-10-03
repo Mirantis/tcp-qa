@@ -348,6 +348,8 @@ k8s_deploy_opts = [
            help="", default=False),
     ct.Cfg('kubernetes_metallb_enabled', ct.Boolean(),
            help="", default=False),
+    ct.Cfg('kubernetes_ingressnginx_enabled', ct.Boolean(),
+           help="", default=False),
     ct.Cfg('kubelet_fail_on_swap', ct.Boolean(),
            help="", default=False)
 ]

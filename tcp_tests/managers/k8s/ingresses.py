@@ -14,6 +14,8 @@
 
 from kubernetes import client
 
+from devops.helpers import helpers
+
 from tcp_tests.managers.k8s.base import K8sBaseResource
 from tcp_tests.managers.k8s.base import K8sBaseManager
 
@@ -40,6 +42,12 @@ class K8sIngress(K8sBaseResource):
     def _delete(self, **kwargs):
         self._manager.api.delete_namespaced_ingress(
             self.name, self.namespace, client.V1DeleteOptions(), **kwargs)
+
+    def wait_ready(self, timeout=120, interval=2):
+        helpers.wait(
+            lambda: self.read().status.loadBalancer.get('ingress') is not None,
+            timeout=timeout, interval=interval)
+        return self
 
 
 class K8sIngressManager(K8sBaseManager):

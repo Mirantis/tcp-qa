@@ -16,6 +16,7 @@ import pytest
 import netaddr
 import os
 import json
+import requests
 
 from tcp_tests import logger
 from tcp_tests import settings
@@ -385,3 +386,74 @@ class TestMCPK8sActions(object):
             [ns.name for ns in k8s_deployed.api.namespaces.list()]
         for namespace in dashboard_namespaces:
             assert namespace['objectMeta']['name'] in namespaces_names_list
+
+    @pytest.mark.grap_versions
+    @pytest.mark.fail_snapshot
+    def test_k8s_ingress_nginx(self, show_step, config,
+                               salt_deployed, k8s_deployed):
+        """Test ingress-nginx configured and working with metallb
+
+        Scenario:
+            1. Setup Kubernetes cluster with metallb
+            2. Create 2 example deployments and expose them
+            3. Create ingress controller with 2 backends to each service
+            respectively
+            4. Wait ingress for deploy
+            5. Try to reach default endpoint
+            6. Try to reach endpoint of both deployments
+        """
+        show_step(1)
+        if not config.k8s_deploy.kubernetes_metallb_enabled:
+            pytest.skip("Test requires metallb addon enabled")
+        if not config.k8s_deploy.kubernetes_ingressnginx_enabled:
+            pytest.skip("Test requires ingress-nginx addon enabled")
+
+        show_step(2)
+        image = 'nginxdemos/hello:plain-text'
+        port = 80
+        dep1 = k8s_deployed.run_sample_deployment(
+            'dep-ingress-1', image=image, port=port)
+        dep2 = k8s_deployed.run_sample_deployment(
+            'dep-ingress-2', image=image, port=port)
+        svc1 = dep1.wait_ready().expose()
+        svc2 = dep2.wait_ready().expose()
+
+        show_step(3)
+        body = {
+            'apiVersion': 'extensions/v1beta1',
+            'kind': 'Ingress',
+            'metadata': {'name': 'cafe-ingress'},
+            'spec': {
+                'rules': [{'http': {
+                    'paths': [{
+                        'backend': {
+                            'serviceName': svc1.name,
+                            'servicePort': port},
+                        'path': '/test1'}, {
+                        'backend': {
+                            'serviceName': svc2.name,
+                            'servicePort': port},
+                        'path': '/test2'
+                    }]
+                }}]
+            }
+        }
+        ingress = k8s_deployed.api.ingresses.create(body)
+
+        show_step(4)
+        ingress.wait_ready()
+
+        ingress_addr = "https://{}".format(
+            ingress.read().status.loadBalancer.ingress[0].ip)
+
+        show_step(5)
+        assert requests.get(ingress_addr).status_code == 404
+
+        show_step(6)
+        req1 = requests.get(ingress_addr + "/test1")
+        assert req1.status_code == 200
+        assert "/test1" in req1
+
+        req2 = requests.get(ingress_addr + "/test2")
+        assert req2.status_code == 200
+        assert "/test1" in req2
