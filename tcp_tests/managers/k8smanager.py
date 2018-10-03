@@ -450,8 +450,6 @@ class K8SVirtlet(object):
     def get_pod_dom_uuid(self, pod):
         uuid_name_map = self.virtlet_execute(
             pod.read().spec.node_name, 'virsh list --uuid --name')['stdout']
-        LOG.info("HEHEHEH {}".format(uuid_name_map))
-        LOG.info("MDAMDMAD {}".format(pod.name))
         for line in uuid_name_map:
             if line.rstrip().endswith("-{}".format(pod.name)):
                 return line.split(" ")[0]
@@ -502,6 +500,7 @@ class K8SSampleDeployment(object):
 
     def expose(self, service_type='ClusterIP'):
         service_name = "{0}-s{1}".format(self._deployment.name, self._index)
+        self._index += 1
         self._svc = self._manager.kubectl.expose(
             self._deployment, port=self._port,
             service_name=service_name, service_type=service_type)
@@ -518,3 +517,9 @@ class K8SSampleDeployment(object):
 
     def is_service_available(self, svc=None, external=False):
         return "Hello Kubernetes!" in self.curl(svc, external=external)
+
+    def delete(self):
+        for svc in self._manager.api.services.list_all(
+                name_prefix="{}-s".format(self._deployment.name)):
+            svc.delete()
+        self._deployment.delete()

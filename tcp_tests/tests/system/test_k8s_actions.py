@@ -71,7 +71,9 @@ class TestMCPK8sActions(object):
         })
 
         show_step(5)
-        k8s_deployed.nslookup(hostname, svc.get_ip())
+        dns_svc = k8s_deployed.api.services.get(
+            name='coredns', namespace='kube-system')
+        k8s_deployed.nslookup(hostname, dns_svc.get_ip())
 
         show_step(6)
         deployment.delete()
