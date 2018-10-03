@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b593d2f_20ca69c0",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 64
+      },
+      "lineNbr": 964,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-03T10:53:12Z",
+      "side": 1,
+      "message": "please leave sleep. minion can be restarted by formula, need a sleep at least 10 sec after the state",
+      "revId": "87a33bb06627334ac4178cfd91cc3ad99e5b198d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
