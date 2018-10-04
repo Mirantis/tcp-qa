@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0714ff73_c486120d",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-pike-k8s-contrail/salt.yaml",
+        "patchSetId": 65
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-04T10:52:57Z",
+      "side": 1,
+      "message": "Can you please point on PROD which is workarounded here?",
+      "range": {
+        "startLine": 185,
+        "startChar": 15,
+        "endLine": 185,
+        "endChar": 57
+      },
+      "revId": "32d419c2e98495ebf377d9a389d18eba5cf16167",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "47331de9_bab47704",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-pike-k8s-contrail/sl.yaml",
+        "patchSetId": 65
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-04T10:52:57Z",
+      "side": 1,
+      "message": "status",
+      "range": {
+        "startLine": 204,
+        "startChar": 15,
+        "endLine": 204,
+        "endChar": 22
+      },
+      "revId": "32d419c2e98495ebf377d9a389d18eba5cf16167",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "62191c50_dd2f9097",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-pike-k8s-contrail/sl.yaml",
+        "patchSetId": 65
+      },
+      "lineNbr": 211,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-04T10:52:57Z",
+      "side": 1,
+      "message": "status",
+      "range": {
+        "startLine": 211,
+        "startChar": 15,
+        "endLine": 211,
+        "endChar": 23
+      },
+      "revId": "32d419c2e98495ebf377d9a389d18eba5cf16167",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
