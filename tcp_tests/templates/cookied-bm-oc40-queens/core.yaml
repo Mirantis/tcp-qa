@@ -1,0 +1,37 @@
+{% from 'cookied-bm-oc40-queens/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
+{% import 'shared-core.yaml' as SHARED_CORE with context %}
+
+{{ SHARED_CORE.MACRO_INSTALL_KEEPALIVED() }}
+
+# WR install gluster
+- description: Install glusterfs
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' state.sls glusterfs.server.service && sleep 20
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup glusterfs on primary controller
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server and *01*' state.sls glusterfs.server.setup -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Check the gluster status
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' cmd.run 'gluster peer status && gluster volume status' -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{ SHARED_CORE.MACRO_INSTALL_RABBITMQ() }}
+
+{{ SHARED_CORE.MACRO_INSTALL_GALERA() }}
+
+{{ SHARED_CORE.MACRO_INSTALL_HAPROXY() }}
+
+{{ SHARED_CORE.MACRO_INSTALL_MEMCACHED() }}
+
+{{ SHARED_CORE.MACRO_CHECK_VIP() }}
