@@ -1,0 +1,243 @@
+{% from 'cookied-bm-oc40-queens/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-oc40-queens/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-bm-oc40-queens/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
+{% set PATTERN = os_env('PATTERN', 'false') %}
+{% set RUN_TEMPEST = os_env('RUN_TEMPEST', 'false') %}
+
+{% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
+
+# Install OpenStack control services
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_NOVA() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER(INSTALL_VOLUME=false) }}
+
+- description: WR Install cinder volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@cinder:volume' state.sls cinder
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON(INSTALL_GATEWAY=false) }}
+
+# install contrail
+
+- description: Install Docker services
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:host' match.pillar 'docker:host' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:host' state.sls docker.host
+    fi; sleep 10;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Install opencontrail database services on first minion
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database and *01*' state.sls opencontrail.database
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Install opencontrail database services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database' state.sls opencontrail.database
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Install Opencontrail control services on first minion
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control and *01*' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Install Opencontrail control services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Install Opencontrail collectors on first minion
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:collector and *01*' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Install Opencontrail collectors
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:collector' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 20}
+  skip_fail: false
+
+- description: Spawn Opencontrail docker images
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:control or I@opencontrail:collector' state.sls docker.client && sleep 15;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Finalize opencontrail services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database:id:1' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 30}
+  skip_fail: false
+
+- description: Finalize opencontrail services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:client and not I@opencontrail:compute' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Finalize opencontrail services
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:compute' state.sls opencontrail exclude=opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 30}
+  skip_fail: true
+
+- description: Check contrail status
+  cmd: sleep 15; salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@opencontrail:database' cmd.run 'doctrail all contrail-status'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Reboot computes
+  cmd: |
+    salt "cmp*" system.reboot;
+    sleep 600;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Remove crashes files from /var/crashes/ while vrouter was crashed
+  cmd: salt  "cmp*" cmd.run "rm -rf /var/crashes/*"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Test WR Apply networking
+  cmd: salt -C 'I@opencontrail:compute' state.sls linux.network.interface
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: Apply Opencontrail compute
+  cmd: salt -C 'I@opencontrail:compute' state.sls opencontrail.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 30}
+  skip_fail: false
+
+- description: Apply Opencontrail compute
+  cmd: salt -C 'I@opencontrail:compute' state.sls opencontrail
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Check status for contrail services
+  cmd: |
+    sleep 15;
+    salt -C 'I@opencontrail:database' cmd.run 'doctrail all contrail-status'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
+
+#Install compute node
+
+- description: Apply formulas for compute node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: true
+
+- description: Check IP on computes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
+    'ip a'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
+
+  # Upload cirros image
+
+- description: Upload cirros image on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Register image in glance
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-0.3.4-i386-disk.img'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create net04
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron net-create net04'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create subnet_net04
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron subnet-create net04 192.168.0.0/24 --name net04__subnet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create router
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-create net04_router01'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Add interface
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Allow all
+  cmd: |
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule create default --egress --protocol tcp';
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule create default --ingress --protocol tcp';
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule create default --egress --protocol icmp';
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule create default --ingress --protocol icmp';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Hack resolv.conf on VCP nodes for internal services access
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False -C '* and not kvm* and not cmp* and not gtw* and not cfg*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
