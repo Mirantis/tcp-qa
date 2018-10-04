@@ -238,11 +238,6 @@ class RuntestManager(object):
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls keystone.client")},
             {
-                'description': "Create networks for Tempest tests",
-                'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls neutron.client")},
-            {
                 'description': "Create flavors for Tempest tests",
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +

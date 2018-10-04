@@ -27,7 +27,9 @@ class TestOpenContrail(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.with_rally(rally_node="ctl01.")
     def test_opencontrail_simple(self, config, underlay, salt_deployed,
-                                 openstack_deployed, stacklight_deployed,
+                                 openstack_deployed,
+                                 tempest_actions,
+                                 stacklight_deployed,
                                  show_step):
         """Runner for Juniper contrail-tests
 
@@ -43,11 +45,7 @@ class TestOpenContrail(object):
             args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            tempest_conf_name = '/var/lib/contrail_fixed_mcp.conf'
-            openstack_deployed.run_tempest(target='ctl01',
-                                           pattern=settings.PATTERN,
-                                           conf_name=tempest_conf_name)
-            openstack_deployed.download_tempest_report(stored_node='ctl01')
+            tempest_actions.prepare_and_run_tempest()
         # Run SL component tetsts
         if settings.RUN_SL_TESTS:
             show_step(5)
