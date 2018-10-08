@@ -103,62 +103,6 @@
   retry: {count: 10, delay: 30}
   skip_fail: false
 
-- description: Create net04_external
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create subnet_external
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create net04
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron net-create net04'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create subnet_net04
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron subnet-create net04 {{ IPV4_NET_TENANT_PREFIX }}.0/24 --name net04__subnet --allocation-pool start={{ IPV4_NET_TENANT_PREFIX }}.120,end={{ IPV4_NET_TENANT_PREFIX }}.240'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Create router
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-create net04_router01'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set geteway
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description:  Add interface
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
-    '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: sync time
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
-    'service ntp stop; ntpd -gq;  service ntp start'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
 - description: Install manila-api on first node
   cmd: |
     salt -C 'I@manila:api and *01*' state.sls manila.api;
@@ -217,6 +161,4 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 3, delay: 5}
   skip_fail: false
-
-{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
 
