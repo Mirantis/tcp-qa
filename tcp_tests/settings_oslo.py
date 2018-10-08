@@ -126,6 +126,22 @@ underlay_opts = [
                    tests or during the deployment process.
                    {'pool_name1': '<cidr>', 'pool_name2': '<cidr>', ...}""",
            default={}),
+    ct.Cfg('dhcp_ranges', ct.JSONDict(),
+           help="""DHCP ranges allocated for the address pools.
+                   This is extended object comparing to 'address_pools'.
+                   May be used to determine DHCP range start/end/gateway for a
+                   specific network from tests or during the deployment
+                   process.
+                   {'pool_name1': {'cidr': 'n.n.n.n/m',
+                                   'start': 'x.x.x.x',
+                                   'end': 'y.y.y.y',
+                                   'gateway': 'z.z.z.z'},
+                    'pool_name2': {'cidr': 'n.n.n.n/m',
+                                   'start': x.x.x.x,
+                                   'end': 'y.y.y.y',
+                                   'gateway': 'z.z.z.z'},
+                    ...}""",
+           default={}),
     ct.Cfg('ssh_keys', ct.JSONList(), default=[],
            help="SSH key pair(s) for root. If the option is left empty, "
                 "then a key pair will be generated automatically"),
