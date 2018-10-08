@@ -123,7 +123,7 @@ class TestOpenContrail(object):
                 '/root/stacklight-pytest/stacklight_tests/report.xml')
         LOG.info("*************** DONE **************")
 
-    @pytest.mark.extract(container_system='docker', extract_from='myimage',
+    @pytest.mark.extract(container_system='docker', extract_from='conformance',
                          files_to_extract=['report'])
     @pytest.mark.merge_xunit(path='/root/report',
                              output='/root/conformance_result.xml')
@@ -149,7 +149,7 @@ class TestOpenContrail(object):
             k8s_deployed.run_conformance(raise_on_err=False)
         LOG.info("*************** DONE **************")
 
-    @pytest.mark.extract(container_system='docker', extract_from='myimage',
+    @pytest.mark.extract(container_system='docker', extract_from='conformance',
                          files_to_extract=['report'])
     @pytest.mark.merge_xunit(path='/root/report',
                              output='/root/conformance_result.xml')
