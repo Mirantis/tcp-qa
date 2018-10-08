@@ -50,6 +50,16 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: "Change hyperkube and pause images to v1.11"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.kubernetes_hyperkube_image '${_param:kubernetes_hyperkube_repo}/hyperkube-amd64:v1.11.2-1' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/common.yml;
+    reclass-tools add-key parameters._param.kubernetes_pause_image '${_param:kubernetes_hyperkube_repo}/pause-amd64:v1.11.2-1' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/common.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Delete proxy inclusion from kvm
   cmd: |
     sed -i 's/- system.salt.control.cluster.kubernetes_proxy_cluster//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
