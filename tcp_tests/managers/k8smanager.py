@@ -12,6 +12,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import json
 import os
 import requests
 import yaml
@@ -315,6 +316,7 @@ class K8SManager(ExecuteCommandsMixin):
                 r.check_call(cmd, raise_on_err=False)
                 LOG.info("Downloading the artifact {0}".format(log_file))
                 r.download(destination=log_file, target=os.getcwd())
+        self.store_server_version(os.path.join(os.getcwd(), 'env_k8s_version'))
 
     def combine_xunit(self, path, output):
         """
@@ -378,6 +380,35 @@ class K8SManager(ExecuteCommandsMixin):
         result = self.controller_check_call(cmd)
         LOG.debug("{0}\nresult:\n{1}".format(cmd, result['stdout']))
         return result['stdout']
+
+    def server_version(self):
+        """Get Kubernetes server version from a controller"""
+
+        def digits(string):
+            return ''.join(n for n in string if n.isdigit())
+
+        ver = ''.join(self.curl("http://127.0.0.1:8080/version"))
+        LOG.debug("Got Kubernetes server version:\n{0}".format(ver))
+
+        ver_dict = json.loads(ver)
+        return {
+            'short': "{0}.{1}".format(digits(ver_dict['major']),
+                                      digits(ver_dict['minor'])),
+            'gitVersion': ver_dict['gitVersion'],
+        }
+
+    def store_server_version(self, env_file_path):
+        """Store Kubernetes server version in bash source file"""
+
+        s_version = self.server_version()
+        env_version = ("export KUBE_SERVER_VERSION={0}\n"
+                       "export KUBE_SERVER_GIT_VERSION={1}\n"
+                       .format(s_version['short'], s_version['gitVersion']))
+
+        LOG.info("Kubernetes server version is stored to {0}:\n{1}"
+                 .format(env_file_path, env_version))
+        with open(env_file_path, 'w') as kver:
+            kver.write(env_version)
 
 
 class K8SKubectlCli(object):

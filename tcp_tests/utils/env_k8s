@@ -20,21 +20,15 @@ if [ -z "$SALTAPI_URL" ]; then
     unset kube_apiserver_port
     unset kubernetes_admin_user
     unset kubernetes_admin_password
-    unset kubernetes_version_major
-    unset kubernetes_version_minor
 else
     KUBE_TARGET='I@haproxy:proxy:enabled:true and I@kubernetes:master and *01*'
     export kube_host=$(${PYTHONPATH}/tcp_tests/utils/get_param.py -C "${KUBE_TARGET}" pillar.get haproxy:proxy:listen:k8s_secure:binds:address)
     export kube_apiserver_port=$(${PYTHONPATH}/tcp_tests/utils/get_param.py -C "${KUBE_TARGET}" pillar.get haproxy:proxy:listen:k8s_secure:binds:port)
     export kubernetes_admin_user=$(${PYTHONPATH}/tcp_tests/utils/get_param.py -C "${KUBE_TARGET}" pillar.get kubernetes:master:admin:username)
     export kubernetes_admin_password=$(${PYTHONPATH}/tcp_tests/utils/get_param.py -C "${KUBE_TARGET}" pillar.get kubernetes:master:admin:password)
-    export kubernetes_version_major=$(${PYTHONPATH}/tcp_tests/utils/get_param.py -C "${KUBE_TARGET}" cmd.run "curl -s 127.0.0.1:8080/version|grep major| cut -d'\"' -f4|sed 's/[^0-9]*//g'")
-    export kubernetes_version_minor=$(${PYTHONPATH}/tcp_tests/utils/get_param.py -C "${KUBE_TARGET}" cmd.run "curl -s 127.0.0.1:8080/version|grep minor| cut -d'\"' -f4|sed 's/[^0-9]*//g'")
 fi
 
 echo "export kube_host='$kube_host'  # Kubernetes API host"
 echo "export kube_apiserver_port='${kube_apiserver_port}'  # Kubernetes API port"
 echo "export kubernetes_admin_user='${kubernetes_admin_user}'  # Kubernetes admin user"
 echo "export kubernetes_admin_password='${kubernetes_admin_password}'  # Kubernetes admin password"
-echo "export kubernetes_version_major='${kubernetes_version_major}'   # Kubernetes version major"
-echo "export kubernetes_version_minor='${kubernetes_version_minor}'   # Kubernetes version minor"
