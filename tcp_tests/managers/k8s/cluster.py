@@ -92,6 +92,7 @@ class K8sCluster(object):
         self.api_autoscaling = client.AutoscalingV1Api(api_client)
         self.api_batch = client.BatchV1Api(api_client)
         self.api_rbac_auth = client.RbacAuthorizationV1Api(api_client)
+        self.api_version = client.VersionApi(api_client)
 
         self.nodes = K8sNodeManager(self)
         self.pods = K8sPodManager(self)
