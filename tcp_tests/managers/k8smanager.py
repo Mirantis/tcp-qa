@@ -315,6 +315,7 @@ class K8SManager(ExecuteCommandsMixin):
                 r.check_call(cmd, raise_on_err=False)
                 LOG.info("Downloading the artifact {0}".format(log_file))
                 r.download(destination=log_file, target=os.getcwd())
+        self.store_server_version(os.path.join(os.getcwd(), 'env_k8s_version'))
 
     def combine_xunit(self, path, output):
         """
@@ -378,6 +379,26 @@ class K8SManager(ExecuteCommandsMixin):
         result = self.controller_check_call(cmd)
         LOG.debug("{0}\nresult:\n{1}".format(cmd, result['stdout']))
         return result['stdout']
+
+    def store_server_version(self, env_file_path):
+        """Store Kubernetes server version in bash source file"""
+
+        def digits(string):
+            return ''.join(n for n in string if n.isdigit())
+
+        ver = self.api.api_version.get_code()
+        LOG.debug("Got Kubernetes server version:\n{0}".format(ver))
+
+        env_version = ("export KUBE_SERVER_VERSION={0}.{1}\n"
+                       "export KUBE_SERVER_GIT_VERSION={2}\n"
+                       .format(digits(ver.major),
+                               digits(ver.minor),
+                               ver.git_version))
+
+        LOG.info("Kubernetes server version is stored to {0}:\n{1}"
+                 .format(env_file_path, env_version))
+        with open(env_file_path, 'w') as kver:
+            kver.write(env_version)
 
 
 class K8SKubectlCli(object):
