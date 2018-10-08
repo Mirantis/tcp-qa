@@ -2,14 +2,12 @@
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
 {% import 'cookied-cicd-pike-ovs-sl/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
-{% import 'cookied-cicd-pike-ovs-sl/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
 {% import 'cookied-cicd-pike-ovs-sl/underlay--user-data1604-swp.yaml' as CLOUDINIT_USER_DATA_1604_SWP with context %}
 
 ---
 aliases:
  - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
- - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data_1604_swp {{ CLOUDINIT_USER_DATA_1604_SWP }}
 
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-cicd-pike-ovs-sl') %}
@@ -240,15 +238,6 @@ template:
                   bus: ide
                   # source_image: !os_env CFG01_CONFIG_PATH # no source image required.
                                                             # it will be uploaded after config drive generation
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-                  capacity: 1
-                  format: raw
-                  device: cdrom
-                  bus: ide
-                  cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cfg01
-
               interfaces:
                 - label: ens3
                   l2_network_device: admin
