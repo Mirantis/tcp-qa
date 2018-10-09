@@ -310,7 +310,7 @@ def generate_configdrive_iso() {
         build_pipeline_job('create-cfg-config-drive', parameters)
 }
 
-def run_job_on_day01_node(stack_to_install, timeout=1800) {
+def run_job_on_day01_node(stack_to_install, timeout=2400) {
     // stack_to_install="core,cicd"
     def stack = "${stack_to_install}"
     try {
@@ -340,7 +340,7 @@ def run_job_on_day01_node(stack_to_install, timeout=1800) {
     }
 }
 
-def run_job_on_cicd_nodes(stack_to_install, timeout=1800) {
+def run_job_on_cicd_nodes(stack_to_install, timeout=2400) {
     // stack_to_install="k8s,calico,stacklight"
     def stack = "${stack_to_install}"
     try {
