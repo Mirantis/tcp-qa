@@ -4,6 +4,7 @@ import argparse
 import os
 import sys
 
+from devops import error
 import json
 
 sys.path.append(os.getcwd())
@@ -131,13 +132,18 @@ def run_job(opts):
     if opts.verbose:
         print_build_header(build, job_params, opts)
 
-    jenkins.wait_end_of_build(
-        name=build[0],
-        build_id=build[1],
-        timeout=opts.build_timeout,
-        interval=1,
-        verbose=opts.verbose,
-        job_output_prefix=opts.job_output_prefix)
+    try:
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=opts.build_timeout,
+            interval=1,
+            verbose=opts.verbose,
+            job_output_prefix=opts.job_output_prefix)
+    except error.TimeoutError as e:
+        print (str(e))
+        raise
+
     result = jenkins.build_info(name=build[0],
                                 build_id=build[1])['result']
     if opts.verbose:
