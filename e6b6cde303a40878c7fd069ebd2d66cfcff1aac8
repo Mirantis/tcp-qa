@@ -22,6 +22,30 @@
       "revId": "e6b6cde303a40878c7fd069ebd2d66cfcff1aac8",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3534faf1_552aaa5d",
+        "filename": "tcp_tests/utils/get_jenkins_job_stages.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 114,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-09T17:31:32Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "533d8849_2201a59c",
+      "range": {
+        "startLine": 114,
+        "startChar": 23,
+        "endLine": 114,
+        "endChar": 24
+      },
+      "revId": "e6b6cde303a40878c7fd069ebd2d66cfcff1aac8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
     }
   ]
 }
