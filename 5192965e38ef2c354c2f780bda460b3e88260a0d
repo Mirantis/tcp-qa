@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "77248627_4b3b1d17",
+        "filename": "tcp_tests/templates/physical-mcp-ocata-offline-ovs/underlay.yaml",
+        "patchSetId": 14
+      },
+      "lineNbr": 19,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-10-09T11:26:04Z",
+      "side": 1,
+      "message": "Copypaste typo. KVM04 05 and 06.",
+      "range": {
+        "startLine": 17,
+        "startChar": 3,
+        "endLine": 19,
+        "endChar": 22
+      },
+      "revId": "5192965e38ef2c354c2f780bda460b3e88260a0d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
