@@ -106,10 +106,8 @@ node ("${PARENT_NODE_NAME}") {
                     // TODO(ddmitriev): it's better to get the k8s version right after deployment
                     // and store in some artifact that can be re-used here.
                     def k8s_version=shared.run_cmd_stdout("""\
-                        export ENV_NAME=${ENV_NAME}
-                        . ./tcp_tests/utils/env_salt
-                        . ./tcp_tests/utils/env_k8s
-                        echo "\$kubernetes_version_major.\$kubernetes_version_minor"
+                        . ./env_k8s_version;
+                        echo "\$KUBE_SERVER_VERSION"
                     """).trim().split().last()
                     testSuiteName = "[MCP][k8s]Hyperkube ${k8s_version}.x"
                     methodname = "{methodname}"
