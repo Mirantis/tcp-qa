@@ -14,7 +14,7 @@
 {% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker ' + REPOSITORY_SUITE + ' stable') %}
 # Install OpenStack control services
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=false) }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
 

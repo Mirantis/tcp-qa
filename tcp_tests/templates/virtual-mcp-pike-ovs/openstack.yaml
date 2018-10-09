@@ -13,7 +13,7 @@
 {% import 'shared-backup-restore.yaml' as BACKUP with context %}
 # Install OpenStack control services
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE(USE_ORCHESTRATE=false) }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
 
