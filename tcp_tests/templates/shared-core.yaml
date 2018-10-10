@@ -78,7 +78,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server and *01*' state.sls glusterfs.server.setup -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 3, delay: 30}
   skip_fail: false
 
 - description: Check the gluster status
