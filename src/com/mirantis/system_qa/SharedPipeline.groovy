@@ -307,7 +307,7 @@ def generate_configdrive_iso() {
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
             ]
-        build_pipeline_job('create-cfg-config-drive', parameters)
+        build_pipeline_job('swarm-create-cfg-config-drive', parameters)
 }
 
 def run_job_on_day01_node(stack_to_install, timeout=1800) {
