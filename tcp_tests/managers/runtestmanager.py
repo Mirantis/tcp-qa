@@ -98,33 +98,13 @@ class RuntestManager(object):
                             'log_file': 'tempest.log'
                         },
                         'compute': {
-                            'build_timeout': 600,
-                            'max_microversion': 2.53,
                             'min_compute_nodes': 2,
-                            'min_microversion': 2.1,
-                            'volume_device_name': 'vdc'
                         },
                         'convert_to_uuid': {
                             'network': {
                                 'public_network_id':
                                 '${_param:runtest_tempest_public_net}'
                             }
-                        },
-                        'dns_feature_enabled': {
-                            'api_admin': False,
-                            'api_v1': False,
-                            'api_v2': True,
-                            'api_v2_quotas': True,
-                            'api_v2_root_recordsets': True,
-                            'bug_1573141_fixed': True
-                        },
-                        'heat_plugin': {
-                            'floating_network_name':
-                            '${_param:runtest_tempest_public_net}'
-                        },
-                        'network': {
-                            'floating_network_name':
-                            '${_param:runtest_tempest_public_net}'
                         },
                         'share': {
                             'capability_snapshot_support': True,
