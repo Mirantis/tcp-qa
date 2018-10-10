@@ -287,8 +287,18 @@ def generate_configdrive_iso() {
             """).trim().split().last()
         println("SALT_MASTER_IP=" + SALT_MASTER_IP)
 
+        def dhcp_ranges_json=run_cmd_stdout("""\
+            fgrep dhcp_ranges ${ENV_NAME}_hardware.ini |
+            fgrep "admin-pool01"|
+            awk -F"=" '{print \$2}'
+            """).trim()
+        def dhcp_ranges = new groovy.json.JsonSlurper().parseText(dhcp_ranges_json)
+        def ADMIN_NETWORK_GW = dhcp_ranges['admin-pool01']['gateway']
+        println("ADMIN_NETWORK_GW=" + ADMIN_NETWORK_GW)
+
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
 
         def parameters = [
                 string(name: 'CLUSTER_NAME', value: "${LAB_CONFIG_NAME}"),
@@ -300,14 +310,16 @@ def generate_configdrive_iso() {
                 string(name: 'NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'CONFIG_DRIVE_ISO_NAME', value: "${CFG01_CONFIG_IMAGE_NAME}"),
                 string(name: 'SALT_MASTER_DEPLOY_IP', value: SALT_MASTER_IP),
+                string(name: 'DEPLOY_NETWORK_GW', value: ADMIN_NETWORK_GW),
                 string(name: 'PIPELINE_REPO_URL', value: "https://github.com/Mirantis"),
                 booleanParam(name: 'PIPELINES_FROM_ISO', value: true),
                 string(name: 'MCP_SALT_REPO_URL', value: "http://apt.mirantis.com/xenial"),
                 string(name: 'MCP_SALT_REPO_KEY', value: "http://apt.mirantis.com/public.gpg"),
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
             ]
-        build_pipeline_job('create-cfg-config-drive', parameters)
+        build_pipeline_job('swarm-create-cfg-config-drive', parameters)
 }
 
 def run_job_on_day01_node(stack_to_install, timeout=2400) {
