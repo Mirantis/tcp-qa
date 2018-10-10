@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "571b7e7b_cf3ab3a2",
+        "filename": "tcp_tests/templates/shared-core.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-10T11:53:12Z",
+      "side": 1,
+      "message": "Please add \u0027\u0026\u0026 sleep 10\u0027 to the previous step with glusterfs.server.service \nLooks like the gluster service is not up in time.",
+      "range": {
+        "startLine": 81,
+        "startChar": 17,
+        "endLine": 81,
+        "endChar": 29
+      },
+      "revId": "39779b7fc95fa01bd9006a718d7da7949657154c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
