@@ -69,9 +69,9 @@ node ("${PARENT_NODE_NAME}") {
                 """)
             }
 
-            stage("Generate the model") {
-                shared.generate_cookied_model()
-            }
+//            stage("Generate the model") {
+//                shared.generate_cookied_model()
+//            }
 
             stage("Generate config drive ISO") {
                 shared.generate_configdrive_iso()
