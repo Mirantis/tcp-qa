@@ -289,6 +289,7 @@ def generate_configdrive_iso() {
 
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
 
         def parameters = [
                 string(name: 'CLUSTER_NAME', value: "${LAB_CONFIG_NAME}"),
@@ -306,8 +307,9 @@ def generate_configdrive_iso() {
                 string(name: 'MCP_SALT_REPO_KEY', value: "http://apt.mirantis.com/public.gpg"),
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
             ]
-        build_pipeline_job('create-cfg-config-drive', parameters)
+        build_pipeline_job('swarm-create-cfg-config-drive', parameters)
 }
 
 def run_job_on_day01_node(stack_to_install, timeout=2400) {
