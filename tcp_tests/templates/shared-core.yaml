@@ -69,7 +69,7 @@
 
 - description: Install glusterfs
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:server' state.sls glusterfs.server.service
+    -C 'I@glusterfs:server' state.sls glusterfs.server.service && sleep 20
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
