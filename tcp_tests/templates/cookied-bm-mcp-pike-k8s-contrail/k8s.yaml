@@ -131,7 +131,7 @@
 
 - description: Run Kubernetes master setup
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-     -C 'I@kubernetes:master and *01*' state.sls kubernetes.master.setup
+     -C 'I@kubernetes:master' state.sls kubernetes.master.setup
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
