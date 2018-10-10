@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "00d131f3_b26d91ee",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 15
+      },
+      "lineNbr": 91,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2018-10-10T13:28:20Z",
+      "side": 1,
+      "message": "let\u0027s use internal dns here  \ndns_server01: 172.18.176.6\ndns_server02: 172.18.208.44",
+      "revId": "c2af2d9fc62cdbdbec0d22fcbe4966c61438eb2a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
