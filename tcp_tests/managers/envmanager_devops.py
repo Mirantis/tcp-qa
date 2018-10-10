@@ -309,7 +309,7 @@ class EnvironmentManager(object):
         self.__env.start()
         LOG.info('Environment "{0}" started'.format(self.__env.name))
         check_cloudinit_started = '[ -f /is_cloud_init_started ]'
-        check_cloudinit_finished = '[ -f /is_cloud_init_finished ]'
+        check_cloudinit_finished = '[ -f /is_cloud_init_finished ] || [ -f /var/log/mcp/.bootstrap_done ]'
         check_cloudinit_failed = 'cat /is_cloud_init_failed'
         passed = {}
         for node in self.__env.get_nodes(role__in=underlay_node_roles):
