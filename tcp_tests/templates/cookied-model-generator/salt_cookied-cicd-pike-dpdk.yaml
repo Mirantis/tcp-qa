@@ -24,10 +24,6 @@
     sed -i '/system.reclass.storage.system.stacklight_telemetry_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     sed -i '/system.reclass.storage.system.stacklight_log_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
 
-    # Start compute node addresses from .105 , as in static models
-    sed -i 's/start: 101/start: 105/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
-
-
     # set wider cpu mask for DPDK
     salt-call reclass.cluster_meta_set name='compute_ovs_dpdk_lcore_mask' value='"0xF"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
     salt-call reclass.cluster_meta_set name='compute_hugepages_size' value='"2M"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
