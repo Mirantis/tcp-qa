@@ -50,6 +50,16 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: "Disable netchecker. PROD-24040"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters.kubernetes.master.namespace.netchecker.enabled 'false' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/control.yml;
+    reclass-tools add-key parameters.kubernetes.common.addons.netchecker.enabled 'false' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/control.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
 - description: Delete proxy inclusion from kvm
   cmd: |
     sed -i 's/- system.salt.control.cluster.kubernetes_proxy_cluster//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
