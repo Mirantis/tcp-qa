@@ -92,13 +92,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-#- description: Setup glance.client
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@glance:client' state.sls glance.client
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
 - description: Check glance image-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C "I@keystone:server" cmd.run ". /root/keystonercv3;
@@ -281,10 +274,6 @@
   skip_fail: false
 {%- endmacro %}
 
-{%- macro MACRO_INSTALL_CEILOMETER() %}
-# TO DO
-{%- endmacro %}
-
 {%- macro MACRO_INSTALL_BARBICAN() %}
 # TO DO
 {%- endmacro %}
@@ -355,14 +344,6 @@
 # TO DO
 {%- endmacro %}
 
-{%- macro MACRO_INSTALL_GNOCCHI() %}
-# TO DO
-{%- endmacro %}
-
-{%- macro MACRO_INSTALL_AODH() %}
-# TO DO
-{%- endmacro %}
-
 {%- macro MACRO_INSTALL_COMPUTE(CELL_MAPPING=false) %}
 # Install compute node
 - description: Apply formulas for compute node
@@ -392,7 +373,63 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
   {%- endif %}
+{%- endmacro %}
 
+{%- macro MACRO_INSTALL_REDIS() %}
+- description: Install redis service
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@redis:cluster:role:master' state.sls redis &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@redis:server' state.sls redis
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_GNOCCHI() %}
+- description: Install gnocchi server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:server and *01*' state.sls gnocchi.server &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:server' state.sls gnocchi.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup gnocchi client
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:client and *01*' state.sls gnocchi.client &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@gnocchi:client' state.sls gnocchi.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_PANKO() %}
+- description: Install panko server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server and *01*' state.sls panko &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@panko:server' state.sls panko
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_CEILOMETER() %}
+- description: Install ceilometer server on first node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server and *01*' state.sls ceilometer
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Install ceilometer server on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceilometer:server' state.sls ceilometer
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_AODH() %}
+- description: Install aodh server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aodh:server and *01*' state.sls aodh &&
+       salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@aodh:server' state.sls aodh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 {%- endmacro %}
 
 {%- macro OVERRIDE_POLICY() %}
