@@ -1,10 +1,12 @@
 classes:
 - service.runtest.tempest
+- service.runtest.tempest.public_net
+- service.runtest.tempest.services.manila.glance
 parameters:
   _param:
-    runtest_tempest_cfg_dir: /root/test/
+    runtest_tempest_cfg_dir: /tmp/test/
     runtest_tempest_cfg_name: tempest.conf
-    runtest_tempest_public_net: net04_ext
+    runtest_tempest_public_net: public
     tempest_test_target: gtw01*
   neutron:
     client:
@@ -19,25 +21,10 @@ parameters:
       convert_to_uuid:
         network:
           public_network_id: ${_param:runtest_tempest_public_net}
-      network:
-          floating_network_name: ${_param:runtest_tempest_public_net}
       DEFAULT:
         log_file: tempest.log
-      heat_plugin:
-        floating_network_name: ${_param:runtest_tempest_public_net}
       compute:
-        build_timeout: 600
-        min_microversion: 2.1
-        max_microversion: 2.53
         min_compute_nodes: 2
-        volume_device_name: 'vdc'
-      dns_feature_enabled:
-        api_admin: false
-        api_v1: false
-        api_v2: true
-        api_v2_quotas: true
-        api_v2_root_recordsets: true
-        bug_1573141_fixed: true
       share:
         capability_snapshot_support: True
         run_driver_assisted_migration_tests: False
