@@ -1,0 +1,174 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7d6f968d_04eb89c1",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/lab04-physical-inventory.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "use need add ens4 interface for using runtestmanager\nfix it in this file and in underlay\nalso you need modify jenkins job and create bridge on 8125",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "16fe7f21_76d68a15",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/lab04-physical-inventory.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "remove ip address from all interfaces for cmp* nodes",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "38d4ee00_ce319b13",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/openstack.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "create shared-contrail.yaml file and move steps",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "26bdaef7_5d1c1b95",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/openstack.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "remove steps: create images, networks, use runtestmanager",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a7698bc_5f066fb4",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/openstack.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c1aa2528_7b24202e",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/openstack.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 238,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "remove",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ff75bc22_145a2ed0",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/openstack.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 244,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "use valid name server from contex",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0220834f_84e9b04a",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "update coxtex for compute, add ranges(like in cookied virtual models)",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf9beffc_92b34fd2",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/salt.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "delete this step",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c0c8c21_665f58a9",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/salt.yaml",
+        "patchSetId": 16
+      },
+      "lineNbr": 45,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-11T12:50:12Z",
+      "side": 1,
+      "message": "do we need this step?",
+      "revId": "0dd3c0c9fe3fdbb1e1ed022699de4c120fcf9b97",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
