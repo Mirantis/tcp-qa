@@ -333,17 +333,17 @@ class TestOfflineDeployment(object):
 
         cmd = "salt --async -C " \
               "'I@salt:control' cmd.run 'salt-call state.sls " \
-              "linux.system.user,openssh,linux.network;reboot'"
+              "linux.system.repo,linux.system.user,openssh,linux.network;reboot'"  # noqa
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         cmd = "salt --async -C " \
               "'I@nova:compute' cmd.run 'salt-call state.sls " \
-              "linux.system.user,openssh,linux.network;reboot'"
+              "linux.system.repo,linux.system.user,openssh,linux.network;reboot'"  # noqa
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         cmd = "salt --async -C " \
               "'I@ceph:osd' cmd.run 'salt-call state.sls " \
-              "linux.system.user,openssh,linux.network;reboot'"
+              "linux.system.repo,linux.system.user,openssh,linux.network;reboot'"  # noqa
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         time.sleep(360)  # TODO: Add ssh waiter
@@ -392,8 +392,12 @@ class TestOfflineDeployment(object):
             password='r00tme')
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
-        params['STACK_INSTALL'] = \
-            'core,kvm,ceph,cicd,openstack,stacklight,finalize'
+        if settings.STACK_INSTALL:
+            params['STACK_INSTALL'] = settings.STACK_INSTALL
+        else:
+            params['STACK_INSTALL'] = \
+                'core,kvm,ceph,cicd,openstack,stacklight,finalize'
+        params['STATIC_MGMT_NETWORK'] = 'true'
         build = jenkins.run_build('deploy_openstack', params)
 
         jenkins.wait_end_of_build(
