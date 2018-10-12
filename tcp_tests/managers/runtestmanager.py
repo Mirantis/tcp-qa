@@ -222,6 +222,12 @@ class RuntestManager(object):
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls glance.client")},
             {
+                'description': "TEMP WR for PROD-23915",
+                'node_name': self.master_name,
+                'cmd': ("set +ex;" +
+                        salt_call_cmd + "cmd.run 'service salt-master restart;"
+                                        "salt-call test.ping'")},
+            {
                 'description': "Generate config for Tempest",
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
