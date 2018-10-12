@@ -255,9 +255,10 @@ class SaltManager(ExecuteCommandsMixin):
         # because previous authentication most probably is not valid
         # before or after time sync.
         self.__api = None
-        self.run_state(
-            tgt,
-            'cmd.run', 'service ntp stop; if [ -x /usr/sbin/ntpdate ]; then ntpdate -s ntp.ubuntu.com; else ntpd -gq ; fi; service ntp start')  # noqa
+        if not settings.SKIP_SYNC_TIME:
+            self.run_state(
+                tgt,
+                'cmd.run', 'service ntp stop; if [ -x /usr/sbin/ntpdate ]; then ntpdate -s ntp.ubuntu.com; else ntpd -gq ; fi; service ntp start')  # noqa
         new_time_res = self.run_state(tgt, 'cmd.run', 'date')
         for node_name, time in sorted(new_time_res[0]['return'][0].items()):
             LOG.info("{0}: {1}".format(node_name, time))

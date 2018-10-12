@@ -1,9 +1,9 @@
-{% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
-# {% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import LAB_CONFIG_NAME with context %}
-# {% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'physical-mcp-offline-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
+# {% from 'physical-mcp-offline-vxlan/underlay.yaml' import LAB_CONFIG_NAME with context %}
+# {% from 'physical-mcp-offline-vxlan/underlay.yaml' import DOMAIN_NAME with context %}
 
 # Environment model name stored in https://github.com/Mirantis/tcp-qa/tree/master/tcp_tests/environments
-# {% set ENVIRONMENT_MODEL_NAME = os_env('ENVIRONMENT_MODEL_NAME','physical-mcp-ocata-offline-ovs') %}
+# {% set ENVIRONMENT_MODEL_NAME = os_env('ENVIRONMENT_MODEL_NAME','physical-mcp-offline-vxlan') %}
 
 # {% import 'shared-salt.yaml' as SHARED with context %}
 

@@ -169,6 +169,9 @@ class TestOfflineDeployment(object):
 
         LOG.info("*************** DONE **************")
 
+    # def test_deploy_day1(self, show_step, config, underlay, hardware,
+    #                      core_deployed, salt_deployed,
+    #                      core_deployed, salt_deployed, tempest_actions):
     def test_deploy_day1(self, show_step, config, underlay, hardware,
                          core_deployed, salt_deployed):
         """Test for deploying an mcp from day01 images
@@ -189,8 +192,7 @@ class TestOfflineDeployment(object):
         # group = hardware._get_default_node_group()
         nodes = underlay.node_names()
         LOG.info("Nodes - {}".format(nodes))
-        cfg_node = 'cfg01.offline-ocata-vxlan.local'
-        tempest_node = 'gtw01.offline-ocata-vxlan.local'
+        cfg_node = 'cfg01.mcp-offline-vxlan.local'
         verbose = True
         ssh_test_key = config.underlay.ssh_keys[0]['public']
 
@@ -333,17 +335,17 @@ class TestOfflineDeployment(object):
 
         cmd = "salt --async -C " \
               "'I@salt:control' cmd.run 'salt-call state.sls " \
-              "linux.system.user,openssh,linux.network;reboot'"
+              "linux.system.repo,linux.system.user,openssh,linux.network;reboot'"  # noqa
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         cmd = "salt --async -C " \
               "'I@nova:compute' cmd.run 'salt-call state.sls " \
-              "linux.system.user,openssh,linux.network;reboot'"
+              "linux.system.repo,linux.system.user,openssh,linux.network;reboot'"  # noqa
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         cmd = "salt --async -C " \
               "'I@ceph:osd' cmd.run 'salt-call state.sls " \
-              "linux.system.user,openssh,linux.network;reboot'"
+              "linux.system.repo,linux.system.user,openssh,linux.network;reboot'"  # noqa
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
         time.sleep(360)  # TODO: Add ssh waiter
@@ -392,12 +394,16 @@ class TestOfflineDeployment(object):
             password='r00tme')
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
-        params['STACK_INSTALL'] = \
-            'core,kvm,ceph,cicd,openstack,stacklight,finalize'
+        if settings.STACK_INSTALL:
+            params['STACK_INSTALL'] = settings.STACK_INSTALL
+        else:
+            params['STACK_INSTALL'] = \
+                'core,kvm,ceph,cicd,openstack,stacklight,finalize'
+        params['STATIC_MGMT_NETWORK'] = 'true'
         build = jenkins.run_build('deploy_openstack', params)
 
         jenkins.wait_end_of_build(
-            name=build[0], build_id=build[1], timeout=60 * 60 * 4)
+            name=build[0], build_id=build[1], timeout=60 * 60 * 5)
 
         with open("{path}/cfg01_jenkins_deploy_openstack_console.log".format(
                 path=settings.LOGS_DIR), 'w') as f:
@@ -436,11 +442,5 @@ class TestOfflineDeployment(object):
         cmd = "salt '*' test.ping"
         underlay.check_call(node_name=cfg_node, verbose=verbose, cmd=cmd)
 
-        openstack = managers.openstack_manager.OpenstackManager(
-            config, underlay, hardware, salt_deployed)
-
-        if settings.RUN_TEMPEST:
-            openstack.run_tempest(
-                pattern=settings.PATTERN,
-                node_name=tempest_node)
-            openstack.download_tempest_report()
+        # if settings.RUN_TEMPEST:
+        #     tempest_actions.prepare_and_run_tempest()
