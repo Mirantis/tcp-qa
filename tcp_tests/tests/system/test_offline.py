@@ -392,8 +392,12 @@ class TestOfflineDeployment(object):
             password='r00tme')
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
-        params['STACK_INSTALL'] = \
-            'core,kvm,ceph,cicd,openstack,stacklight,finalize'
+        if settings.STACK_INSTALL:
+            params['STACK_INSTALL'] = settings.STACK_INSTALL
+        else:
+            params['STACK_INSTALL'] = \
+                'core,kvm,ceph,cicd,openstack,stacklight,finalize'
+        params['STATIC_MGMT_NETWORK'] = 'true'
         build = jenkins.run_build('deploy_openstack', params)
 
         jenkins.wait_end_of_build(
