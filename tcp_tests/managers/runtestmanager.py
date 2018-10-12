@@ -196,6 +196,13 @@ class RuntestManager(object):
                         salt_call_cmd + " pip.install setuptools && " +
                         salt_call_cmd + " pip.install docker")},
             {
+                'description': "sync time",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_cmd + "'*' service ntp stop && " +
+                        salt_cmd + "'*' ntpd -gq && " +
+                        salt_cmd + "'*' service ntp start")},
+            {
                 'description': "Run salt.minion state for runtest formula",
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
