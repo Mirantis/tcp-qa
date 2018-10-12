@@ -7,6 +7,8 @@ import requests
 
 from devops.helpers import helpers
 
+from requests.exceptions import ConnectionError
+
 
 class JenkinsWrapper(jenkins.Jenkins):
     """Workaround for the bug:
@@ -122,7 +124,11 @@ class JenkinsClient(object):
             print(prefix, end='')
 
         def building():
-            status = not self.build_info(name, build_id)['building']
+            try:
+                status = not self.build_info(name, build_id)['building']
+            except ConnectionError:
+                status = False
+
             if verbose:
                 time_str = time.strftime("%H:%M:%S")
                 prefix = "\n" + job_output_prefix.format(
