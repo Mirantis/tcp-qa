@@ -18,6 +18,7 @@ import os
 from tcp_tests import logger
 from tcp_tests import settings
 
+
 LOG = logger.logger
 
 TEMPEST_CFG_DIR = '/tmp/test'
@@ -172,7 +173,6 @@ class RuntestManager(object):
 
     def prepare(self, dpdk=None):
         self.store_runtest_model()
-
         salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
         commands = [
@@ -195,6 +195,13 @@ class RuntestManager(object):
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " pip.install setuptools && " +
                         salt_call_cmd + " pip.install docker")},
+            {
+                'description': "sync time",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_cmd + "'*' cmd.run 'service ntp stop' && " +
+                        salt_cmd + "'*' cmd.run 'ntpd -gq' && " +
+                        salt_cmd + "'*' cmd.run 'service ntp start'")},
             {
                 'description': "Run salt.minion state for runtest formula",
                 'node_name': self.master_name,
