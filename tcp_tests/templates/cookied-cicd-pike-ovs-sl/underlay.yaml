@@ -224,8 +224,6 @@ template:
               memory: {{ os_env('CFG_NODE_MEMORY', 8192) }}
               boot:
                 - hd
-              cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: {{ os_env('CFG_NODE_VOLUME_SIZE', 150) }}
