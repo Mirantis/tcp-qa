@@ -33,6 +33,10 @@ class RuntestManager(object):
     control_host = "ctl01"
     class_name = "runtest"
     run_cmd = '/bin/bash -c "run-tempest"'
+    cirros_pillar = ("salt-call --out=newline_values_only "
+                     "pillar.get "
+                     "glance:client:identity:"
+                     "admin_identity:image:cirros:location")
 
     def __init__(self, config, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
@@ -94,6 +98,8 @@ class RuntestManager(object):
                         'enabled': True,
                         'cfg_dir': '${_param:runtest_tempest_cfg_dir}',
                         'cfg_name': '${_param:runtest_tempest_cfg_name}',
+                        'put_keystone_rc_enabled': True,
+                        'put_local_image_file_enabled': False,
                         'DEFAULT': {
                             'log_file': 'tempest.log'
                         },
@@ -217,7 +223,7 @@ class RuntestManager(object):
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls nova.client")},
             {
-                'description': "Create cirros image for Tempest",
+                'description': "Upload images for Tempest",
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls glance.client")},
@@ -226,6 +232,14 @@ class RuntestManager(object):
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls runtest")},
+            {
+                'description': "Upload cirros image",
+                'node_name': self.master_host,
+                'cmd': (("set -ex; cirros_url=$({}) && "
+                         "{} {} cmd.run {} wget "
+                         "--directory-prefix /tmp/ $cirros_url")
+                        .format(self.cirros_pillar,
+                                salt_cmd, self.target_name))},
         ]
 
         if dpdk:
