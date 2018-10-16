@@ -40,13 +40,14 @@ class RuntestManager(object):
                  run_cmd=None, target='gtw01'):
         self.__config = config
         self.underlay = underlay
+        self.target = target
         self.__salt_api = salt_api
         self.cluster_name = cluster_name
         self.domain_name = domain_name
         self.tempest_threads = tempest_threads
         self.tempest_pattern = tempest_pattern
         self.run_cmd = run_cmd or self.run_cmd
-        self.target_name = self.underlay.get_target_node_names(target)[0]
+        self.target_name = self.underlay.get_target_node_names(self.target)[0]
         self.master_name = self.underlay.get_target_node_names(
             self.master_host)[0]
         self.control_name = self.underlay.get_target_node_names(
@@ -94,6 +95,8 @@ class RuntestManager(object):
                         'enabled': True,
                         'cfg_dir': '${_param:runtest_tempest_cfg_dir}',
                         'cfg_name': '${_param:runtest_tempest_cfg_name}',
+                        'put_keystone_rc_enabled': True,
+                        'put_local_image_file_enabled': False,
                         'DEFAULT': {
                             'log_file': 'tempest.log'
                         },
@@ -172,7 +175,10 @@ class RuntestManager(object):
 
     def prepare(self, dpdk=None):
         self.store_runtest_model()
-
+        cirros_pillar = ("salt-call --out=newline_values_only "
+                         "pillar.get "
+                         "glance:client:identity:"
+                         "admin_identity:image:cirros:location")
         salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
         commands = [
@@ -217,7 +223,7 @@ class RuntestManager(object):
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls nova.client")},
             {
-                'description': "Create cirros image for Tempest",
+                'description': "Upload images for Tempest",
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls glance.client")},
@@ -226,6 +232,13 @@ class RuntestManager(object):
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls runtest")},
+            {
+                'description': "Upload cirros image",
+                'node_name': self.master_host,
+                'cmd': ("set -ex;"
+                        "cirros_url=$({}) && {} '{}*' cmd.run "
+                        "'wget /tmp/ $cirros_url' - O /tmp/TestCirros-0.3.5"
+                        .format(cirros_pillar, salt_cmd, self.target))},
         ]
 
         if dpdk:
