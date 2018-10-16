@@ -250,8 +250,10 @@ class RuntestManager(object):
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " cmd.run "
                         " '. /root/keystonercv3;"
+                        "  openstack flavor set m1.extra_tiny_test"
+                        "  --property hw:mem_page_size=any;"
                         "  openstack flavor set m1.tiny_test"
-                        "  --property hw:mem_page_size=small'")},
+                        "  --property hw:mem_page_size=any'")},
             )
 
         self.__salt_api.execute_commands(commands=commands,
