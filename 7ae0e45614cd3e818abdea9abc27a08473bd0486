@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "21c2977c_a47001e7",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-16T19:46:05Z",
+      "side": 1,
+      "message": "do we need this constant as a class attribute? please move it to L184 to other commands, and use the variable salt_call_cmd instead of \u0027salt-call\u0027 (more adequate logging)",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 60
+      },
+      "revId": "7ae0e45614cd3e818abdea9abc27a08473bd0486",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
