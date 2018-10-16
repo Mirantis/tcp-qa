@@ -327,10 +327,10 @@ k8s_deploy_opts = [
            default='sbPfel23ZigJF3Bm'),
     ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
     ct.Cfg('kubernetes_hyperkube_image', ct.String(),
-           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.10.4-4'.format(
+           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.11.3-2'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_pause_image', ct.String(),
-           default='{}/mirantis/kubernetes/pause-amd64:v1.10.4-4'.format(
+           default='{}/mirantis/kubernetes/pause-amd64:v1.11.3-2'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/node:v3.1.3'.format(
@@ -357,17 +357,18 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_virtlet_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_virtlet_image', ct.String(),
-           help="", default='mirantis/virtlet:v1.1.0'),
+           help="", default='mirantis/virtlet:v1.4.1'),
     ct.Cfg('kubernetes_dns', ct.Boolean(),
            help="", default=True),
     ct.Cfg('kubernetes_externaldns_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_externaldns_image', ct.String(),
-           help="", default='mirantis/external-dns:latest'),
+           help="", default='{}/mirantis/external-dns/external-dns:'
+                            'v0.5.6-2'.format(settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_externaldns_provider', ct.String(),
            help="", default='coredns'),
     ct.Cfg('kubernetes_coredns_enabled', ct.Boolean(),
-           help="", default=False),
+           help="", default=True),
     ct.Cfg('kubernetes_metallb_enabled', ct.Boolean(),
            help="", default=False),
     ct.Cfg('kubernetes_ingressnginx_enabled', ct.Boolean(),
@@ -389,9 +390,9 @@ k8s_opts = [
            default=False),
     ct.Cfg('k8s_conformance_image', ct.String(),
            default='docker-prod-virtual.docker.mirantis.net/mirantis/'
-                   'kubernetes/k8s-conformance:v1.10.4-4'),
+                   'kubernetes/k8s-conformance:v1.11.3-2'),
     ct.Cfg('k8s_update_chain', ct.String(),
-           default='v1.9.8-4 v1.10.4-4')
+           default='v1.9.8-4 v1.10.4-4 v1.11.3-2')
 ]
 
 day1_cfg_config_opts = [
