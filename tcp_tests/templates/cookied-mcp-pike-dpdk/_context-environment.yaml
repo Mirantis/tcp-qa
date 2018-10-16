@@ -158,7 +158,10 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_ovs_br_prv
-          mtu: 1500
+          role: bond0_ab_ovs_vxlan_mesh_no_tag
+        ens6:
+          role: bond0_ab_ovs_vxlan_mesh_no_tag
         ens7:
-          role: bond1_ab_ovs_floating
+          role: single_ovs_br_floating
+          external_address: 10.90.0.110
+          external_network_netmask: 255.255.255.0
