@@ -32,8 +32,6 @@ default_context:
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   auditd_enabled: 'False'
-  kubernetes_coredns_enabled: False
-  kubernetes_kubedns_enabled: True
   cicd_control_node01_address: 10.167.8.91
   cicd_control_node01_hostname: cid01
   cicd_control_node02_address: 10.167.8.92
