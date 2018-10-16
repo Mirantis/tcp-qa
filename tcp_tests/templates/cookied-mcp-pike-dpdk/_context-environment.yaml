@@ -155,7 +155,6 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: single_ovs_br_prv
-          mtu: 1500
-        ens7:
+          role: bond0_ab_ovs_vxlan_mesh
+        ens6:
           role: bond1_ab_ovs_floating
