@@ -510,11 +510,6 @@ template:
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 12
               memory: !os_env SLAVE_NODE_MEMORY, 8192
-              numa:
-              - cpus: 0,1,2,3,4,5
-                memory: 4096
-              - cpus: 6,7,8,9,10,11
-                memory: 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -575,11 +570,6 @@ template:
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 12
               memory: !os_env SLAVE_NODE_MEMORY, 8192
-              numa:
-              - cpus: 0,1,2,3,4,5
-                memory: 4096
-              - cpus: 6,7,8,9,10,11
-                memory: 4096
               boot:
                 - hd
               cloud_init_volume_name: iso
