@@ -46,7 +46,6 @@ nodes:
       - openstack_database
       - openstack_message_queue
       - linux_system_codename_xenial
-      - openstack_dns
       interfaces:
         ens3:
           role: single_dhcp
