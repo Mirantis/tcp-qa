@@ -94,6 +94,8 @@ class RuntestManager(object):
                         'enabled': True,
                         'cfg_dir': '${_param:runtest_tempest_cfg_dir}',
                         'cfg_name': '${_param:runtest_tempest_cfg_name}',
+                        'put_keystone_rc_enabled': True,
+                        'put_local_image_file_enabled': False,
                         'DEFAULT': {
                             'log_file': 'tempest.log'
                         },
@@ -150,6 +152,14 @@ class RuntestManager(object):
                 'cluster.{cluster_name}.infra.{class_name}'.format(
                     cluster_name=self.cluster_name,
                     class_name=self.class_name))
+
+    def upload_cirros(self):
+        cirros_url = self.salt_api.local(
+            self.master_name,
+            'pillar.get glance:client:identity:admin_identity:image:cirros:location')
+        self.salt_api.local(self.target_name,
+                            'cmd.run', 'wget --directory-prefix /tmp/ ', cirros_url)
+
 
     def save_runtime_logs(self, logs=None, inspect=None):
         if logs:
@@ -304,6 +314,7 @@ class RuntestManager(object):
         """
         tempest_timeout = settings.TEMPEST_TIMEOUT
         self.prepare(dpdk=dpdk)
+        self.upload_cirros()
         test_res = self.run_tempest(tempest_timeout)
         self.fetch_arficats(username=username)
         self.save_runtime_logs(**test_res)
