@@ -162,3 +162,15 @@ nodes:
           mtu: 1500
         ens7:
           role: bond1_ab_ovs_floating
+              #        ens3:
+              #          role: single_dhcp
+              #        ens4:
+              #          role: single_ctl
+              #        ens5:
+              #          role: bond0_ab_ovs_vxlan_mesh
+              #        ens6:
+              #          role: bond0_ab_ovs_vxlan_mesh
+              #        ens7:
+              #          role: single_ovs_br_floating
+              #          external_address: 10.90.0.110
+              #          external_network_netmask: 255.255.255.0
