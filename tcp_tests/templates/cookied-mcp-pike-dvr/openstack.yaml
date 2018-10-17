@@ -35,65 +35,24 @@
   node_name: {{ HOSTNAME_CFG01 }}
 {%- endif %}
 
+# Install OpenStack control services
+
 {{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NOVA() }}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER() }}
+{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER(INSTALL_VOLUME=true) }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON() }}
 
-# isntall designate
-#- description: Install powerdns
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@powerdns:server' state.sls powerdns.server
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 1, delay: 5}
-#  skip_fail: false
-
-#- description: Install designate
-#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-#    -C 'I@designate:server' state.sls designate -b 1
-#  node_name: {{ HOSTNAME_CFG01 }}
-#  retry: {count: 5, delay: 10}
-#  skip_fail: false
-
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
 
-- description: Deploy horizon dashboard
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@horizon:server' state.sls horizon
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+{{ SHARED_OPENSTACK.MACRO_INSTALL_DESIGNATE(INSTALL_BIND=true) }}
 
-- description: Deploy nginx proxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
+{{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE(CELL_MAPPING=true) }}
 
-# Install compute node
-
-- description: Apply formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Re-apply(as in doc) formulas for compute node
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' state.apply
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Check IP on computes
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'cmp*' cmd.run
-    'ip a'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 10, delay: 30}
-  skip_fail: false
+{{ SHARED_OPENSTACK.MACRO_INSTALL_MANILA() }}
