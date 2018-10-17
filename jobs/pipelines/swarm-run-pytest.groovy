@@ -69,13 +69,23 @@ node ("${PARENT_NODE_NAME}") {
 
                     py.test --junit-xml=nosetests.xml ${RUN_TEST_OPTS}
 
-                    dos.py suspend ${ENV_NAME}
-                    dos.py snapshot ${ENV_NAME} test_completed
                     """)
+
+                def snapshot_name = "test_completed"
+                shared.run_cmd("""\
+                    dos.py suspend ${ENV_NAME}
+                    dos.py snapshot ${ENV_NAME} ${snapshot_name}
+                """)
+                if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
+                    shared.run_cmd("""\
+                        dos.py resume ${ENV_NAME}
+                    """)
+                }
+                shared.devops_snapshot_info(snapshot_name)
             }
 
         } catch (e) {
-            common.printMsg("Job is failed", "red")
+            common.printMsg("Job is failed", "purple")
             throw e
         } finally {
             // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"

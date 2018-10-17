@@ -32,20 +32,18 @@ def deploy(shared, common, steps) {
         currentBuild.result = 'SUCCESS'
 
     } catch (e) {
-        common.printMsg("Deploy is failed: " + e.message , "red")
+        common.printMsg("Deploy is failed: " + e.message , "purple")
+        def snapshot_name = "deploy_failed"
         shared.run_cmd("""\
             dos.py suspend ${ENV_NAME} || true
-            dos.py snapshot ${ENV_NAME} deploy_failed || true
+            dos.py snapshot ${ENV_NAME} ${snapshot_name} || true
         """)
         if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
             shared.run_cmd("""\
                 dos.py resume ${ENV_NAME} || true
             """)
-        } else {
-            shared.run_cmd("""\
-                dos.py destroy ${ENV_NAME} || true
-            """)
         }
+        shared.devops_snapshot_info(snapshot_name)
         report_text = e.message
         throw e
     } finally {
@@ -60,22 +58,19 @@ def test(shared, common, steps) {
         }
 
     } catch (e) {
-        common.printMsg("Tests are failed: " + e.message, "red")
+        common.printMsg("Tests are failed: " + e.message, "purple")
+        def snapshot_name = "tests_failed"
         shared.run_cmd("""\
             dos.py suspend ${ENV_NAME} || true
-            dos.py snapshot ${ENV_NAME} tests_failed || true
+            dos.py snapshot ${ENV_NAME} ${snapshot_name} || true
         """)
-        throw e
-    } finally {
         if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
             shared.run_cmd("""\
                 dos.py resume ${ENV_NAME} || true
             """)
-        } else {
-            shared.run_cmd("""\
-                dos.py destroy ${ENV_NAME} || true
-            """)
         }
+        shared.devops_snapshot_info(snapshot_name)
+        throw e
     }
 }
 
@@ -83,12 +78,21 @@ def test(shared, common, steps) {
 throttle(['fuel_devops_environment']) {
   node ("${NODE_NAME}") {
     try {
+        // run deploy stages
         deploy(shared, common, steps)
+        // run test stages
         test(shared, common, steps)
     } catch (e) {
-        common.printMsg("Job is failed: " + e.message, "red")
+        common.printMsg("Job is failed: " + e.message, "purple")
         throw e
     } finally {
+        // shutdown the environment if required
+        if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
+            shared.run_cmd("""\
+                dos.py destroy ${ENV_NAME} || true
+            """)
+        }
+        // report results to testrail
         shared.swarm_testrail_report(steps)
     }
   }
