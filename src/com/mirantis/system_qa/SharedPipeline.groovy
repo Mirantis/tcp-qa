@@ -55,7 +55,7 @@ def build_pipeline_job(job_name, parameters) {
     if (job_info.getResult() != "SUCCESS") {
         currentBuild.result = job_info.getResult()
         def build_number = job_info.getNumber()
-        common.printMsg("Job '${job_name}' failed, getting details", "red")
+        common.printMsg("Job '${job_name}' failed, getting details", "purple")
         def workflow_details=run_cmd_stdout("""\
             export JOB_NAME=${job_name}
             export BUILD_NUMBER=${build_number}
@@ -83,7 +83,7 @@ def build_shell_job(job_name, parameters, junit_report_filename=null, junit_repo
         def job_url = "${build_url}"
         currentBuild.result = build_status
         if (junit_report_filename) {
-            common.printMsg("Job '${job_url}' failed with status ${build_status}, getting details", "red")
+            common.printMsg("Job '${job_url}' failed with status ${build_status}, getting details", "purple")
             step($class: 'hudson.plugins.copyartifact.CopyArtifact',
                  projectName: job_name,
                  selector: specific("${build_number}"),
@@ -94,10 +94,8 @@ def build_shell_job(job_name, parameters, junit_report_filename=null, junit_repo
 
             def String junit_report_xml = readFile("${junit_report_filename}")
             def String junit_report_xml_pretty = new XmlUtil().serialize(junit_report_xml)
-            // Replace '<' and '>' to '&lt;' and '&gt;' to avoid conflicts between xml tags in the message and JUnit report
-            def String junit_report_xml_filtered = junit_report_xml_pretty.replaceAll("<","&lt;").replaceAll(">", "&gt;")
             def String msg = "Job '${job_url}' failed with status ${build_status}, JUnit report:\n"
-            throw new Exception(msg + junit_report_xml_filtered)
+            throw new Exception(msg + junit_report_xml_pretty)
         } else {
             throw new Exception("Job '${job_url}' failed with status ${build_status}, please check the console output.")
         }
@@ -340,7 +338,7 @@ def run_job_on_day01_node(stack_to_install, timeout=2400) {
         """)
     } catch (e) {
         def common = new com.mirantis.mk.Common()
-        common.printMsg("Product job 'deploy_openstack' failed, getting details", "red")
+        common.printMsg("Product job 'deploy_openstack' failed, getting details", "purple")
         def workflow_details=run_cmd_stdout("""\
             . ./tcp_tests/utils/env_salt
             . ./tcp_tests/utils/env_jenkins_day01
@@ -371,7 +369,7 @@ def run_job_on_cicd_nodes(stack_to_install, timeout=2400) {
         """)
     } catch (e) {
         def common = new com.mirantis.mk.Common()
-        common.printMsg("Product job 'deploy_openstack' failed, getting details", "red")
+        common.printMsg("Product job 'deploy_openstack' failed, getting details", "purple")
         def workflow_details=run_cmd_stdout("""\
             . ./tcp_tests/utils/env_salt
             . ./tcp_tests/utils/env_jenkins_cicd
@@ -398,6 +396,30 @@ def sanity_check_component(stack) {
     }
 }
 
+def devops_snapshot_info(snapshot_name) {
+    // Print helper message after snapshot
+    def common = new com.mirantis.mk.Common()
+
+    def SALT_MASTER_IP=run_cmd_stdout("""\
+        . ./tcp_tests/utils/env_salt
+        echo \$SALT_MASTER_IP
+    """).trim().split().last()
+    def login = "root"                        // set fixed 'root' login for now
+    def password = "r00tme"                   // set fixed 'root' login for now
+    def key_file = "${env.WORKSPACE}/id_rsa"  // set fixed path in the WORKSPACE
+
+    common.printMsg("""\
+#########################
+# To revert the snapshot:
+#########################
+. ${VENV_PATH}/bin/activate;
+dos.py revert ${ENV_NAME} ${snapshot_name};
+dos.py resume ${ENV_NAME};
+# dos.py time-sync ${ENV_NAME};  # Optional\n
+ssh -i ${key_file} ${login}@${SALT_MASTER_IP} # Optional password: ${password}
+""", "cyan")
+}
+
 def devops_snapshot(stack) {
     // Make the snapshot with name "${stack}_deployed"
     // for all VMs in the environment.
@@ -418,6 +440,7 @@ def devops_snapshot(stack) {
             cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
         fi
     """)
+    devops_snapshot_info("${stack}_deployed")
 }
 
 def get_steps_list(steps) {
@@ -429,11 +452,15 @@ def create_xml_report(String filename, String classname, String name, String sta
     // <filename> is name of the XML report file that will be created
     // <status> is one of the 'success', 'skipped', 'failure' or 'error'
     // 'error' status is assumed as 'Blocker' in TestRail reporter
+
+    // Replace '<' and '>' to '&lt;' and '&gt;' to avoid conflicts between xml tags in the message and JUnit report
+    def String text_filtered = text.replaceAll("<","&lt;").replaceAll(">", "&gt;")
+
     def script = """\
 <?xml version=\"1.0\" encoding=\"utf-8\"?>
   <testsuite>
     <testcase classname=\"${classname}\" name=\"${name}\" time=\"0\">
-      <${status} message=\"${status_message}\">${text}</${status}>
+      <${status} message=\"${status_message}\">${text_filtered}</${status}>
       <system-out>${stdout}</system-out>
       <system-err>${stderr}</system-err>
     </testcase>
