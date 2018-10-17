@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ae445d7b_8f049c30",
+        "filename": "tcp_tests/templates/cookied-mcp-pike-dvr/_context-environment.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-17T15:45:07Z",
+      "side": 1,
+      "message": "you can remove the domain part at all:  \"cfg01:\"",
+      "range": {
+        "startLine": 2,
+        "startChar": 9,
+        "endLine": 2,
+        "endChar": 28
+      },
+      "revId": "5e8efa8b0cf7f18c3ba861adf2e2ae9c9dd0c0ee",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
