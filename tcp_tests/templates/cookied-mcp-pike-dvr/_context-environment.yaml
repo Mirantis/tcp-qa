@@ -181,7 +181,6 @@ nodes:
     gtw01.mcp-pike-dvr.local:
       reclass_storage_name: openstack_gateway_node01
       roles:
-      - openstack_gateway
       - linux_system_codename_xenial
       interfaces:
         ens3:
