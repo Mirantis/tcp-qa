@@ -55,6 +55,9 @@ default_context:
   ceph_osd_rack01_backend_subnet: 10.167.4
   ceph_osd_rack01_hostname: osd
   ceph_osd_rack01_single_subnet: 10.167.4
+  ceph_osd_single_address_ranges: 10.167.4.94-10.167.4.95
+  ceph_osd_deploy_address_ranges: 10.167.5.94-10.167.5.95
+  ceph_osd_backend_address_ranges: 10.167.4.94-10.167.4.95
   ceph_public_network: 10.167.4.0/24
   ceph_rgw_address: 10.167.4.75
   ceph_rgw_hostname: rgw
