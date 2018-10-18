@@ -217,3 +217,9 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
+
+- description: WORKAROUND PROD-23354
+  cmd: sed -n 's/max_microversion = 2.42/max_microversion = 2.38/;w /var/log/lvm_mcp_newton.conf' /var/log/lvm_mcp.conf
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
