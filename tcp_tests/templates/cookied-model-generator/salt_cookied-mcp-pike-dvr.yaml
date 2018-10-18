@@ -49,6 +49,9 @@
     reclass-tools add-key 'classes' 'system.cinder.volume.backend.lvm' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
     reclass-tools add-key 'classes' 'system.linux.storage.loopback' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
     reclass-tools add-key parameters._param.loopback_device_size '20' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml;
+    # Add for manila
+    reclass-tools add-key parameters._param.loopback_device1_size '20' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml;
+    reclass-tools add-key 'classes' 'system.linux.storage.loopback_manila' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
