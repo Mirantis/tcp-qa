@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "16d4e453_c7fd4819",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-mcp-ocata-ovs.yaml",
+        "patchSetId": 6
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-18T08:23:02Z",
+      "side": 1,
+      "message": "If you move cinder.volume to cmp nodes, please remove it from controllers: https://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/templates/cookied-model-generator/salt_cookied-mcp-pike-dvr.yaml#L59-L60",
+      "range": {
+        "startLine": 49,
+        "startChar": 0,
+        "endLine": 49,
+        "endChar": 48
+      },
+      "revId": "07f2ca4de99bad207c0409a9dd3b2d7e9e3ff559",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
