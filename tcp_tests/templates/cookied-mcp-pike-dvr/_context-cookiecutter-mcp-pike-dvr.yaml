@@ -203,3 +203,5 @@ default_context:
   openstack_share_node01_hostname: share01
   openstack_share_node02_hostname: share02
   openstack_share_node03_hostname: share03
+  openstack_octavia_enabled: 'True'
+
