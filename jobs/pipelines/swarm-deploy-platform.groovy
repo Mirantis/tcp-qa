@@ -66,7 +66,7 @@ node ("${PARENT_NODE_NAME}") {
             }
 
         } catch (e) {
-            common.printMsg("Job is failed", "red")
+            common.printMsg("Job is failed", "purple")
             throw e
         } finally {
             // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
