@@ -202,3 +202,4 @@ default_context:
   openstack_share_node03_hostname: share03
   designate_backend: bind
   designate_enabled: 'True'
+  openstack_octavia_enabled: 'True'
