@@ -184,53 +184,62 @@ class RuntestManager(object):
             {
                 'description': "Sync salt objects for runtest model",
                 'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_cmd + "'*' saltutil.refresh_pillar && " +
-                        salt_cmd + "'*' saltutil.sync_all")},
+                'cmd': ("set -ex;"
+                        "{} '*' saltutil.refresh_pillar && "
+                        "{} '*' saltutil.sync_all"
+                        .format(salt_cmd, salt_cmd))},
             {
                 'description': ("Install docker.io package and "
                                 "enable packets forwarding"),
                 'node_name': self.target_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " pkg.install docker.io && " +
-                        " iptables --policy FORWARD ACCEPT")},
+                'cmd': ("set -ex;"
+                        "{} pkg.install docker.io && "
+                        "iptables --policy FORWARD ACCEPT"
+                        .format(salt_call_cmd))},
             {
                 'description': "Install PyPI docker package",
                 'node_name': self.target_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " pip.install setuptools && " +
-                        salt_call_cmd + " pip.install docker")},
+                'cmd': ("set -ex;"
+                        "{} pip.install setuptools && "
+                        "{} pip.install docker"
+                        .format(salt_call_cmd, salt_call_cmd))},
             {
                 'description': "Run salt.minion state for runtest formula",
                 'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls salt.minion && "
-                        " sleep 20")},
+                'cmd': ("set -ex;"
+                        "{} state.sls salt.minion && "
+                        " sleep 20"
+                        .format(salt_call_cmd))},
             {
                 'description': "Enforce keystone state for neutronv2",
                 'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls keystone.client")},
+                'cmd': ("set -ex;"
+                        "{} state.sls keystone.client"
+                        .format(salt_call_cmd))},
             {
                 'description': "Create networks for Tempest tests",
                 'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls neutron.client")},
+                'cmd': ("set -ex;"
+                        "{} state.sls neutron.client"
+                        .format(salt_call_cmd))},
             {
                 'description': "Create flavors for Tempest tests",
                 'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls nova.client")},
+                'cmd': ("set -ex;"
+                        "{} state.sls nova.client"
+                        .format(salt_call_cmd))},
             {
                 'description': "Upload images for Tempest",
                 'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls glance.client")},
+                'cmd': ("set -ex;"
+                        "{} state.sls glance.client"
+                        .format(salt_call_cmd))},
             {
                 'description': "Generate config for Tempest",
                 'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls runtest")},
+                'cmd': ("set -ex;"
+                        "{} state.sls runtest"
+                        .format(salt_call_cmd))},
             {
                 'description': "Upload cirros image",
                 'node_name': self.master_name,
@@ -244,11 +253,12 @@ class RuntestManager(object):
             commands.append({
                 'description': "Configure flavor for DPDK",
                 'node_name': self.control_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " cmd.run "
-                        " '. /root/keystonercv3;"
-                        "  openstack flavor set m1.tiny_test"
-                        "  --property hw:mem_page_size=small'")},
+                'cmd': ("set -ex;"
+                        "{} cmd.run "
+                        "'. /root/keystonercv3;"
+                        "openstack flavor set m1.tiny_test "
+                        "--property hw:mem_page_size=small'"
+                        .format(salt_call_cmd))},
             )
 
         self.__salt_api.execute_commands(commands=commands,
