@@ -337,7 +337,51 @@
 {%- endmacro %}
 
 {%- macro MACRO_INSTALL_OCTAVIA_API() %}
-# TO DO
+- description: Install octavia api service on primary node
+  cmd: salt -C 'I@octavia:api:role:primary' state.sls octavia.api
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install octavia api service
+  cmd: salt -C 'I@octavia:api' state.sls octavia.api
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_OCTAVIA_MANAGER() %}
+- description: Update mine
+  cmd: salt -C 'I@neutron:client' mine.update && sleep 60
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install octavia manager
+  cmd: salt -C 'I@octavia:manager' state.sls octavia.manager
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Execute octavia ca
+  cmd: salt -C 'I@octavia:manager' state.sls salt.minion.ca
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Execute octavia cert
+  cmd: salt -C 'I@octavia:manager' state.sls salt.minion.cert
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Execute octavia client
+  cmd: salt -C 'I@octavia:client' state.sls octavia.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 {%- endmacro %}
 
 {%- macro MACRO_INSTALL_DOGTAG() %}
