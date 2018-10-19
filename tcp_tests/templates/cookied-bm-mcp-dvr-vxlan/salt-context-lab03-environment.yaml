@@ -44,7 +44,7 @@ nodes:
         enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
-    cmp01.cookied-bm-mcp-dvr-vxlan.local:
+    cmp001.cookied-bm-mcp-dvr-vxlan.local:
       reclass_storage_name: openstack_compute_node01
       roles:
       - openstack_compute
@@ -55,11 +55,8 @@ nodes:
           role: single_mgm_dhcp
         enp9s0f1:
           role: bond0_ab_dvr_vxlan_ctl_mesh_floating
-          single_address: 10.167.4.105
-          tenant_address: 10.167.6.105
 
-
-    cmp02.cookied-bm-mcp-dvr-vxlan.local:
+    cmp002.cookied-bm-mcp-dvr-vxlan.local:
       reclass_storage_name: openstack_compute_node02
       roles:
       - openstack_compute
@@ -70,8 +67,6 @@ nodes:
           role: single_mgm_dhcp
         enp9s0f1:
           role: bond0_ab_dvr_vxlan_ctl_mesh_floating
-          single_address: 10.167.4.106
-          tenant_address: 10.167.6.106
 
     gtw01.cookied-bm-mcp-dvr-vxlan.local:
       reclass_storage_name: openstack_gateway_node01
