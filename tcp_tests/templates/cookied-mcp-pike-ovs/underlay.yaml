@@ -100,7 +100,7 @@ template:
             default_{{ HOSTNAME_PRX01 }}: +121
             default_{{ HOSTNAME_SHARE01 }}: +69
             default_{{ HOSTNAME_SHARE02 }}: +70
-            default_{{ HOSTNAME_SHARE03 }}: +711
+            default_{{ HOSTNAME_SHARE03 }}: +71
           ip_ranges:
             dhcp: [+90, -10]
 
