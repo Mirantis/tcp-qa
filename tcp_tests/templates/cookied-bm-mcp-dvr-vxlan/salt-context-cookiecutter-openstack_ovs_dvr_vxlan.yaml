@@ -1,7 +1,7 @@
 default_context:
   mcp_version: proposed
   ceph_enabled: 'False'
-  cicd_enabled: 'True'
+  cicd_enabled: 'False'
   cicd_control_node01_address: 10.167.4.91
   cicd_control_node01_hostname: cid01
   cicd_control_node02_address: 10.167.4.92
@@ -66,8 +66,8 @@ default_context:
   openstack_compute_deploy_address_ranges: 192.168.10.105-192.168.10.106
   openstack_compute_tenant_address_ranges: 10.1.0.105-10.1.0.106
   openstack_compute_backend_address_ranges: 10.1.0.105-10.1.0.106
-  openstack_compute_node01_hostname: cmp01
-  openstack_compute_node02_hostname: cmp02
+  openstack_compute_node01_hostname: cmp001
+  openstack_compute_node02_hostname: cmp002
   openstack_compute_node01_address: 10.167.4.3
   openstack_compute_node02_address: 10.167.4.31
   openstack_compute_node01_single_address: 10.167.4.3
