@@ -52,6 +52,13 @@
    - export MAAS_DHCP_POOL_END={{ os_env('MAAS_DHCP_POOL_END', '172.16.49.119') }}
    - ifconfig $MAAS_PXE_INTERFACE_NAME $MAAS_PXE_INTERFACE_ADDRESS/$MAAS_DHCP_POOL_NETMASK_PREFIX
 
+   - mkdir -p /srv/salt/reclass/nodes
+   - systemctl enable salt-master
+   - systemctl enable salt-minion
+   - systemctl start salt-master
+   - systemctl start salt-minion
+   - salt-call -l info --timeout=120 test.ping
+
   write_files:
    - path: /etc/network/interfaces
      content: |

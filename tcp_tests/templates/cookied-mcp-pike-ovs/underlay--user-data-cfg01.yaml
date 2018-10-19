@@ -44,6 +44,13 @@
 
    - echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
 
+   - mkdir -p /srv/salt/reclass/nodes
+   - systemctl enable salt-master
+   - systemctl enable salt-minion
+   - systemctl start salt-master
+   - systemctl start salt-minion
+   - salt-call -l info --timeout=120 test.ping
+
   write_files:
    - path: /etc/network/interfaces
      content: |

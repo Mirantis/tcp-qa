@@ -18,8 +18,6 @@
    expire: False
 
   bootcmd:
-   # Block access to SSH while node is preparing
-   - cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
    - service sshd restart
@@ -48,15 +46,12 @@
    - swapon /swapfile
    - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
 
-   ############## TCP Cloud cfg01 node ##################
-   - echo "Preparing base OS"
-   - sleep 160;
-   # find /etc/apt/ -type f -exec sed -i "s/ubuntu.com/ubuntu.local.test/g" {} +;
-   ########################################################
-   # Node is ready, allow SSH access
-   - echo "Allow SSH access ..."
-   - sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-   ########################################################
+   - mkdir -p /srv/salt/reclass/nodes
+   - systemctl enable salt-master
+   - systemctl enable salt-minion
+   - systemctl start salt-master
+   - systemctl start salt-minion
+   - salt-call -l info --timeout=120 test.ping
 
   write_files:
    - path: /etc/network/interfaces
