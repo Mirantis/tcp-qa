@@ -46,6 +46,13 @@
    - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
    - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
 
+   - mkdir -p /srv/salt/reclass/nodes
+   - systemctl enable salt-master
+   - systemctl enable salt-minion
+   - systemctl start salt-master
+   - systemctl start salt-minion
+   - salt-call -l info --timeout=120 test.ping
+
   write_files:
    - path: /etc/default/grub.d/97-enable-grub-menu.cfg
      content: |

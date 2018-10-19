@@ -18,10 +18,6 @@
    expire: False
 
   bootcmd:
-   # Block access to SSH while node is preparing
-   #- cloud-init-per once sudo iptables -A INPUT -p tcp --dport 22 -j DROP
-   - cloud-init-per once sudo ifdown ens4
-
    # Enable root access
    - cloud-init-per once sudo sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
    - cloud-init-per once sudo service sshd restart
@@ -32,26 +28,21 @@
   runcmd:
    # Prepare network connection
    - sudo ifdown ens3
+   - sudo ifdown ens4
+   - sudo ip r d default || true  # remove existing default route to get it from dhcp
    - sudo ifup ens3
+   - sudo ifup ens4
    #- sudo route add default gw {gateway} {interface_name}
-
-   # Purge the unattended-upgrades package (Workaround for PROD-17904, PROD-18736)"
-   - echo "APT::Periodic::Update-Package-Lists 0;" > /etc/apt/apt.conf.d/99dont_update_package_list-salt
-   - echo "APT::Periodic::Download-Upgradeable-Packages 0;" > /etc/apt/apt.conf.d/99dont_update_download_upg_packages-salt
-   - echo "APT::Periodic::Unattended-Upgrade 0;" > /etc/apt/apt.conf.d/99disable_unattended_upgrade-salt
-   - apt-get -y purge unattended-upgrades
-   # Stop currently running apt-daily service, source: https://unix.stackexchange.com/a/315517
-   - systemctl stop apt-daily.service
-   - systemctl kill --kill-who=all apt-daily.service
-   - while ! (systemctl list-units --all apt-daily.service | fgrep -q dead); do sleep 1; done
-
-   # Configure dhclient
-   - sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
-   - sudo resolvconf -u
 
    # Enable grub menu using updated config below
    - update-grub
 
+   - mkdir -p /srv/salt/reclass/nodes
+   - systemctl enable salt-master
+   - systemctl enable salt-minion
+   - systemctl start salt-master
+   - systemctl start salt-minion
+   - salt-call -l info --timeout=120 test.ping
    # Create swap
    #- fallocate -l 16G /swapfile
    #- chmod 600 /swapfile
@@ -62,26 +53,10 @@
    ############## TCP Cloud cfg01 node ##################
    - echo "Preparing base OS"
 
-   - echo "nameserver 172.18.208.44" >> /etc/resolv.conf;
-
-   - apt-get clean
-   - apt-get update
+   - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
 
    # Ensure that the salt-master service is ready to receive requests
    - salt-key -y -D
-   - service salt-master restart
-   - service salt-minion restart
-   - apt-get install -y salt-formula-*
-   - for f in $(ls -1 /usr/share/salt-formulas/reclass/service); do ln -s /usr/share/salt-formulas/reclass/service/$f /srv/salt/reclass/classes/service/ || true; done
-   - salt-call --timeout=180 test.ping
-
-   ########################################################
-   # Node is ready, allow SSH access
-   #- echo "Allow SSH access ..."
-   #- sudo iptables -D INPUT -p tcp --dport 22 -j DROP
-   - sudo ifup ens4
-   ########################################################
-
 
   write_files:
    - path: /etc/default/grub.d/97-enable-grub-menu.cfg

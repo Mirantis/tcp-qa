@@ -47,6 +47,13 @@
    # Enable grub menu using updated config below
    - update-grub
 
+   - mkdir -p /srv/salt/reclass/nodes
+   - systemctl enable salt-master
+   - systemctl enable salt-minion
+   - systemctl start salt-master
+   - systemctl start salt-minion
+   - salt-call -l info --timeout=120 test.ping
+
   write_files:
    - path: /etc/default/grub.d/97-enable-grub-menu.cfg
      content: |
