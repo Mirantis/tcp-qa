@@ -20,6 +20,7 @@ nodes:
       - features_designate_pool_manager_database
       - features_designate_pool_manager
       - features_designate_pool_manager_keystone
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -36,6 +37,7 @@ nodes:
       - openstack_message_queue
       - features_designate_pool_manager_database
       - features_designate_pool_manager
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -52,6 +54,7 @@ nodes:
       - openstack_message_queue
       - features_designate_pool_manager_database
       - features_designate_pool_manager
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -115,6 +118,7 @@ nodes:
       reclass_storage_name: openstack_compute_rack01
       roles:
       - openstack_compute
+      - features_lvm_backend_volume_vdb
       - linux_system_codename_xenial
       interfaces:
         ens3:
