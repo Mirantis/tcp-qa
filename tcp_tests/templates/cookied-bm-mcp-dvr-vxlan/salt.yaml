@@ -44,14 +44,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-- description: Temporary workaround for removing virtual gtw nodes
-  cmd: |
-    sed -i 's/\-\ system\.salt\.control\.sizes\.ovs\.compact//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    sed -i 's/\-\ system\.salt\.control\.placement\.ovs\.compact//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
 - description: Rerun openssh after env model is generated
   cmd: |
     salt-call state.sls openssh
@@ -64,13 +56,6 @@
 ########################################
 # Spin up Control Plane VMs on KVM nodes
 ########################################
-
-- description: Hack resolv.conf on nodes for internal services access
-  cmd: |
-    salt --hard-crash --state-output=mixed --state-verbose=False -C '*' cmd.run "echo 'nameserver 172.18.208.44' > /etc/resolv.conf;"
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
 
 - description: Execute 'libvirt' states to create necessary libvirt networks
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'kvm*' state.sls libvirt
