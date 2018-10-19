@@ -630,7 +630,7 @@
   skip_fail: false
 
 - description: Restart salt-master service
-  cmd: service salt-master restart;
+  cmd: service salt-master restart && salt-call -l info --timeout=120 test.ping
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -722,6 +722,12 @@
     done;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Restart salt-master service
+  cmd: service salt-master restart;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 
 - description: Sync all salt resources on salt-master minion
