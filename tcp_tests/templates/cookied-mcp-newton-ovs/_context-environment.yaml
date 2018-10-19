@@ -21,6 +21,7 @@ nodes:
       - features_designate_bind9_dns
       - features_designate_bind9
       - features_designate_bind9_keystone
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -38,6 +39,7 @@ nodes:
       - features_designate_bind9_database
       - features_designate_bind9_dns
       - features_designate_bind9
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -54,6 +56,7 @@ nodes:
       - openstack_message_queue
       - features_designate_bind9_database
       - features_designate_bind9
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -117,6 +120,7 @@ nodes:
       reclass_storage_name: openstack_compute_rack01
       roles:
       - openstack_compute
+      - features_lvm_backend_volume_vdb
       - linux_system_codename_xenial
       interfaces:
         ens3:
