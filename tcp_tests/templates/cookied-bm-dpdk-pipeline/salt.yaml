@@ -127,7 +127,7 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: true
-  
+
 - description: Enable Jenkins
   cmd: |
     systemctl enable jenkins || true;
@@ -143,4 +143,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
