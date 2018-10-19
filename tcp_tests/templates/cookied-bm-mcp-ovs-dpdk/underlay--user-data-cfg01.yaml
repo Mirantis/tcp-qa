@@ -51,10 +51,6 @@
    - echo "Preparing base OS"
 
    - echo "nameserver 172.18.208.44" > /etc/resolv.conf;
-   - which wget >/dev/null || (apt-get update; apt-get install -y wget);
-
-   # Install common packages
-   - eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree sshuttle
 
    ########################################################
    # Node is ready, allow SSH access
