@@ -82,6 +82,7 @@ nodes:
       - openstack_control_leader
       - openstack_database_leader
       - openstack_message_queue
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -95,6 +96,7 @@ nodes:
       - openstack_control
       - openstack_database
       - openstack_message_queue
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -108,6 +110,7 @@ nodes:
       - openstack_control
       - openstack_database
       - openstack_message_queue
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -230,6 +233,7 @@ nodes:
       reclass_storage_name: openstack_compute_rack01
       roles:
       - openstack_compute
+      - features_lvm_backend_volume_vdb
       - linux_system_codename_xenial
       interfaces:
         ens3:
