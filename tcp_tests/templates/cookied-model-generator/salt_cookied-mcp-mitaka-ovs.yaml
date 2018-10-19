@@ -55,11 +55,6 @@
     reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.openstack_message_queue_node03 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.stacklight_log_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
-    # Add cinder volume on cmp nodes. PROD-20945
-    reclass-tools add-key 'classes' 'system.cinder.volume.single' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
-    reclass-tools add-key 'classes' 'system.cinder.volume.backend.lvm' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
-    reclass-tools add-key 'classes' 'system.linux.storage.loopback' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml --merge ;
-    reclass-tools add-key parameters._param.loopback_device_size '20' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml;
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
