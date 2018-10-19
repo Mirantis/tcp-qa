@@ -75,7 +75,6 @@ class UnderlaySSHManager(object):
     """
     __config = None
     config_ssh = None
-    config_lvm = None
 
     def __init__(self, config):
         """Read config.underlay.ssh object
@@ -85,9 +84,6 @@ class UnderlaySSHManager(object):
         self.__config = config
         if self.config_ssh is None:
             self.config_ssh = []
-
-        if self.config_lvm is None:
-            self.config_lvm = {}
 
         self.add_config_ssh(self.__config.underlay.ssh)
 
@@ -190,42 +186,6 @@ class UnderlaySSHManager(object):
             if ssh['node_name'] not in names:
                 names.append(ssh['node_name'])
         return names
-
-    def enable_lvm(self, lvmconfig):
-        """Method for enabling lvm oh hosts in environment
-
-        :param lvmconfig: dict with ids or device' names of lvm storage
-        :raises: devops.error.DevopsCalledProcessError,
-        devops.error.TimeoutError, AssertionError, ValueError
-        """
-        def get_actions(lvm_id):
-            return [
-                "systemctl enable lvm2-lvmetad.service",
-                "systemctl enable lvm2-lvmetad.socket",
-                "systemctl start lvm2-lvmetad.service",
-                "systemctl start lvm2-lvmetad.socket",
-                "pvcreate {} && pvs".format(lvm_id),
-                "vgcreate default {} && vgs".format(lvm_id),
-                "lvcreate -L 1G -T default/pool && lvs",
-            ]
-        lvmpackages = ["lvm2", "liblvm2-dev", "thin-provisioning-tools"]
-        for node_name in self.node_names():
-            lvm = lvmconfig.get(node_name, None)
-            if not lvm:
-                continue
-            if 'id' in lvm:
-                lvmdevice = '/dev/disk/by-id/{}'.format(lvm['id'])
-            elif 'device' in lvm:
-                lvmdevice = '/dev/{}'.format(lvm['device'])
-            else:
-                raise ValueError("Unknown LVM device type")
-            if lvmdevice:
-                self.apt_install_package(
-                    packages=lvmpackages, node_name=node_name, verbose=True)
-                for command in get_actions(lvmdevice):
-                    self.sudo_check_call(command, node_name=node_name,
-                                         verbose=True)
-        self.config_lvm = dict(lvmconfig)
 
     def host_by_node_name(self, node_name, address_pool=None):
         ssh_data = self.__ssh_data(node_name=node_name,
