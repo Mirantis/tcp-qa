@@ -84,7 +84,22 @@ class RuntestManager(object):
                 },
                 'neutron': {
                     'client': {
-                        'enabled': True
+                        'enabled': True,
+                        'server': {
+                            'admin_identity': {
+                                'network': {
+#                                    'public': {
+#                                        'provider_network_type': 'flat',
+#                                        'provider_physical_network':
+#                                            'physnet1',
+#                                        'provider_segmentation_id': 10,
+#                                    },
+                                    'heat-net': {
+                                        'provider_network_type': 'flat',
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 'runtest': {
