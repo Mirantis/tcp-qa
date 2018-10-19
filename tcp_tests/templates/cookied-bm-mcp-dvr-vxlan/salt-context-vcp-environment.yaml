@@ -4,6 +4,7 @@ nodes:
       roles:
       - openstack_control_leader
       - linux_system_codename_xenial
+	  - features_lvm_backend_control
       interfaces:
         ens2:
           role: single_dhcp
@@ -15,6 +16,7 @@ nodes:
       roles:
       - openstack_control
       - linux_system_codename_xenial
+	  - features_lvm_backend_control
       interfaces:
         ens2:
           role: single_dhcp
@@ -26,6 +28,7 @@ nodes:
       roles:
       - openstack_control
       - linux_system_codename_xenial
+	  - features_lvm_backend_control
       interfaces:
         ens2:
           role: single_dhcp
