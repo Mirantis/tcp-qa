@@ -15,6 +15,7 @@ nodes:
       roles:
       - infra_kvm
       - openstack_control_leader
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -27,6 +28,7 @@ nodes:
       roles:
       - infra_kvm
       - openstack_control
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -39,6 +41,7 @@ nodes:
       roles:
       - infra_kvm
       - openstack_control
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -129,6 +132,7 @@ nodes:
       roles:
       - openstack_compute
       - features_lvm_backend
+      - features_lvm_backend_volume_vdb
       - linux_system_codename_xenial
       interfaces:
         ens3:

@@ -80,6 +80,7 @@ nodes:
       reclass_storage_name: openstack_control_node01
       roles:
       - openstack_control_leader
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -91,6 +92,7 @@ nodes:
       reclass_storage_name: openstack_control_node02
       roles:
       - openstack_control
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -102,6 +104,7 @@ nodes:
       reclass_storage_name: openstack_control_node03
       roles:
       - openstack_control
+      - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -191,7 +194,7 @@ nodes:
       reclass_storage_name: openstack_compute_rack01
       roles:
       - openstack_compute
-      - features_lvm_backend
+      - features_lvm_backend_volume_vdb
       - linux_system_codename_xenial
       interfaces:
         ens3:
