@@ -118,8 +118,6 @@ underlay_opts = [
     ct.Cfg('upstream_dns_servers', ct.JSONList(),
            help="IP addresses of upstream DNS servers (dnsmasq)",
            default=[]),
-    ct.Cfg('lvm', ct.JSONDict(),
-           help="LVM settings for Underlay", default={}),
     ct.Cfg('address_pools', ct.JSONDict(),
            help="""Address pools (dynamically) allocated for the environment.
                    May be used to determine CIDR for a specific network from
