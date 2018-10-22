@@ -135,7 +135,6 @@ default_context:
   openstack_compute_single_address_ranges: 10.167.4.105-10.167.4.106
   openstack_compute_deploy_address_ranges: 10.167.5.105-10.167.5.106
   openstack_compute_tenant_address_ranges: 10.167.6.105-10.167.6.106
-  openstack_compute_backend_address_ranges: 10.167.6.105-10.167.6.106
   openstack_dns_hostname: dns
   openstack_dns_node01_address: 10.167.4.111
   openstack_dns_node01_hostname: dns01

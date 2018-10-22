@@ -123,7 +123,6 @@ default_context:
   openstack_compute_single_address_ranges: 172.16.10.105-172.16.10.106
   openstack_compute_deploy_address_ranges: 192.168.10.105-192.168.10.106
   openstack_compute_tenant_address_ranges: 10.1.0.105-10.1.0.106
-  openstack_compute_backend_address_ranges: 10.1.0.105-10.1.0.106
   openstack_control_address: 10.167.11.10
   openstack_control_hostname: ctl
   openstack_control_node01_address: 10.167.11.11
