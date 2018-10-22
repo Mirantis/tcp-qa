@@ -63,9 +63,9 @@ template:
             default_{{ HOSTNAME_MTR03 }}: +88
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
-            default_{{ HOSTNAME_SHARE01 }}: +69
-            default_{{ HOSTNAME_SHARE02 }}: +70
-            default_{{ HOSTNAME_SHARE03 }}: +71
+            default_{{ HOSTNAME_SHARE01 }}: +204
+            default_{{ HOSTNAME_SHARE02 }}: +205
+            default_{{ HOSTNAME_SHARE03 }}: +206
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -92,9 +92,9 @@ template:
             default_{{ HOSTNAME_MTR03 }}: +88
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
-            default_{{ HOSTNAME_SHARE01 }}: +69
-            default_{{ HOSTNAME_SHARE02 }}: +70
-            default_{{ HOSTNAME_SHARE03 }}: +71
+            default_{{ HOSTNAME_SHARE01 }}: +204
+            default_{{ HOSTNAME_SHARE02 }}: +205
+            default_{{ HOSTNAME_SHARE03 }}: +206
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -121,9 +121,9 @@ template:
             default_{{ HOSTNAME_MTR03 }}: +88
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
-            default_{{ HOSTNAME_SHARE01 }}: +69
-            default_{{ HOSTNAME_SHARE02 }}: +70
-            default_{{ HOSTNAME_SHARE03 }}: +71
+            default_{{ HOSTNAME_SHARE01 }}: +204
+            default_{{ HOSTNAME_SHARE02 }}: +205
+            default_{{ HOSTNAME_SHARE03 }}: +206
           ip_ranges:
             dhcp: [+10, -10]
 
@@ -150,9 +150,9 @@ template:
             default_{{ HOSTNAME_MTR03 }}: +88
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
-            default_{{ HOSTNAME_SHARE01 }}: +69
-            default_{{ HOSTNAME_SHARE02 }}: +70
-            default_{{ HOSTNAME_SHARE03 }}: +71
+            default_{{ HOSTNAME_SHARE01 }}: +204
+            default_{{ HOSTNAME_SHARE02 }}: +205
+            default_{{ HOSTNAME_SHARE03 }}: +206
           ip_ranges:
             dhcp: [+130, +220]
 
