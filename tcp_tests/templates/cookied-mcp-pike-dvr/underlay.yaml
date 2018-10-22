@@ -33,8 +33,8 @@ aliases:
 {% set HOSTNAME_DNS01 = os_env('HOSTNAME_DNS01', 'dns01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_DNS02 = os_env('HOSTNAME_DNS02', 'dns02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_SHARE01 = os_env('HOSTNAME_SHARE01', 'share01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_SHARE02 = os_env('HOSTNAME_SHARE01', 'share02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_SHARE03 = os_env('HOSTNAME_SHARE01', 'share03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_SHARE02 = os_env('HOSTNAME_SHARE02', 'share02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_SHARE03 = os_env('HOSTNAME_SHARE03', 'share03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
 
 template:
