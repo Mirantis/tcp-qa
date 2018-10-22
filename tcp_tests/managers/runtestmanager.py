@@ -15,8 +15,11 @@
 import json
 import os
 
+from devops.helpers import helpers
+
 from tcp_tests import logger
 from tcp_tests import settings
+
 
 LOG = logger.logger
 
@@ -259,13 +262,14 @@ class RuntestManager(object):
         image_nameversion = "{}:{}".format(self.image_name, self.image_version)
 
         docker_args = (
+            " -t "
             " --name {container_name} "
             " -e ARGS=\"-r {tempest_pattern} -w {tempest_threads}\""
             " -v {cfg_dir}/tempest.conf:/etc/tempest/tempest.conf"
             " -v /tmp/:/tmp/"
             " -v {cfg_dir}:/root/tempest"
             " -v /etc/ssl/certs/:/etc/ssl/certs/"
-            " --rm"
+            " -d "
             " {image_nameversion} {run_cmd}"
             .format(
                 container_name=self.container_name,
@@ -291,6 +295,25 @@ class RuntestManager(object):
 
         self.__salt_api.execute_commands(commands=commands,
                                          label="Run Tempest tests")
+
+        def wait_status(s):
+            inspect_res = self.salt_api.local(tgt,
+                                              'dockerng.inspect',
+                                              self.container_name)
+            if 'return' in inspect_res:
+                inspect = inspect_res['return']
+                inspect = inspect[0]
+                inspect = next(inspect.iteritems())[1]
+                status = inspect['State']['Status']
+
+                return status.lower() == s.lower()
+
+            return False
+
+        helpers.wait(lambda: wait_status('exited'),
+                     timeout=timeout,
+                     timeout_msg=('Tempest run didnt finished '
+                                  'in {}'.format(timeout)))
 
         inspect_res = self.salt_api.local(tgt,
                                           'dockerng.inspect',
