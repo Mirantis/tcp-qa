@@ -210,13 +210,13 @@ default_context:
   manila_share_backend: 'lvm'
   manila_lvm_volume_name: 'manila-volume'
   manila_lvm_devices: '/dev/loop1'
-  openstack_share_address: 172.16.10.68
-  openstack_share_node01_address: 172.16.10.69
-  openstack_share_node02_address: 172.16.10.70
-  openstack_share_node03_address: 172.16.10.71
-  openstack_share_node01_deploy_address: 192.168.10.69
-  openstack_share_node02_deploy_address: 192.168.10.70
-  openstack_share_node03_deploy_address: 192.168.10.71
+  openstack_share_address: 172.16.10.113
+  openstack_share_node01_address: 172.16.10.114
+  openstack_share_node02_address: 172.16.10.115
+  openstack_share_node03_address: 172.16.10.116
+  openstack_share_node01_deploy_address: 192.168.10.114
+  openstack_share_node02_deploy_address: 192.168.10.115
+  openstack_share_node03_deploy_address: 192.168.10.116
   openstack_share_hostname: share
   openstack_share_node01_hostname: share01
   openstack_share_node02_hostname: share02
