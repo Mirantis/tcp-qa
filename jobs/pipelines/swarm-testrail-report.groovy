@@ -30,6 +30,7 @@ node ("${PARENT_NODE_NAME}") {
         error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
     }
     dir("${PARENT_WORKSPACE}") {
+        def description = ''
         try {
 
             if (env.TCP_QA_REFS) {
@@ -44,9 +45,8 @@ node ("${PARENT_NODE_NAME}") {
             def testrail_name_template = ''
             def reporter_extra_options = []
 
-            stage("Archive all xml reports") {
-                archiveArtifacts artifacts: "**/*.xml"
-            }
+            def report_result = ''
+            def report_url = ''
 
             def deployment_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"deployment_${ENV_NAME}.xml\"", returnStdout: true)
             def tcpqa_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"nosetests.xml\"", returnStdout: true)
@@ -71,7 +71,19 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    shared.upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    report_result = shared.upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    println " ####### report_result:"
+                    println report_result
+                    report_url = report_result.slit("\n").each {
+                        println "=== LINE: ${it}"
+                        if (it.contains("[TestRun URL]")) {
+                            println "=== LINE RUN:" + it.trim().split().last()
+                            return it.trim().split().last()
+                        }
+                    }
+                    println " ####### report_url:"
+                    println report_url
+                    description += "<a href=${report_url}>${testSuiteName}</a>"
                 }
             }
 
@@ -86,7 +98,13 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    shared.upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    report_result = shared.upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    report_url = report_result.eachLine {
+                        if (it.contains("[TestRun URL]")) {
+                            return it.trim().split().last()
+                        }
+                    }
+                    description += "<a href=${report_url}>${testSuiteName}</a>"
                 }
             }
 
@@ -96,7 +114,13 @@ node ("${PARENT_NODE_NAME}") {
                     testSuiteName = "[MCP1.1_PIKE]Tempest"
                     methodname = "{classname}.{methodname}"
                     testrail_name_template = "{title}"
-                    shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
+                    report_result = shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
+                    report_url = report_result.eachLine {
+                        if (it.contains("[TestRun URL]")) {
+                            return it.trim().split().last()
+                        }
+                    }
+                    description += "<a href=${report_url}>${testSuiteName}</a>"
                 }
             }
 
@@ -118,7 +142,13 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'Conformance\'",
                     ]
-                    shared.upload_results_to_testrail(k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    report_result = shared.upload_results_to_testrail(k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    report_url = report_result.eachLine {
+                        if (it.contains("[TestRun URL]")) {
+                            return it.trim().split().last()
+                        }
+                    }
+                    description += "<a href=${report_url}>${testSuiteName}</a>"
                 }
             }
 
@@ -128,7 +158,13 @@ node ("${PARENT_NODE_NAME}") {
                     testSuiteName = "LMA2.0_Automated"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
-                    shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template)
+                    report_result = shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template)
+                    report_url = report_result.eachLine {
+                        if (it.contains("[TestRun URL]")) {
+                            return it.trim().split().last()
+                        }
+                    }
+                    description += "<a href=${report_url}>${testSuiteName}</a>"
                 }
             }
 
@@ -137,6 +173,7 @@ node ("${PARENT_NODE_NAME}") {
             throw e
         } finally {
             // reporting is failed for some reason
+            writeFile(file: "description.txt", text: description, encoding: "UTF-8")
         }
     }
 }
