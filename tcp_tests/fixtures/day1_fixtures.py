@@ -71,10 +71,6 @@ def day1_underlay(revert_snapshot, config, hardware):
                     "region": {
                         "machines": macs}}}}
 
-        if not config.day1_underlay.lvm:
-            underlay.enable_lvm(hardware.lvm_storages())
-            config.day1_underlay.lvm = underlay.config_lvm
-
         hardware.create_snapshot(ext.SNAPSHOT.day1_underlay)
 
     else:

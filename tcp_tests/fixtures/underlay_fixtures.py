@@ -200,10 +200,6 @@ def underlay(request, revert_snapshot, config, hardware, underlay_actions):
         LOG.info("Config - {}".format(config))
         underlay_actions.add_config_ssh(config.underlay.ssh)
 
-        if not config.underlay.lvm:
-            underlay_actions.enable_lvm(hardware.lvm_storages())
-            config.underlay.lvm = underlay_actions.config_lvm
-
         hardware.create_snapshot(ext.SNAPSHOT.underlay)
 
         return underlay_actions
@@ -233,10 +229,6 @@ def underlay(request, revert_snapshot, config, hardware, underlay_actions):
                 "maas": {
                     "region": {
                         "machines": macs}}}}
-
-        if not config.underlay.lvm:
-            underlay_actions.enable_lvm(hardware.lvm_storages())
-            config.underlay.lvm = underlay_actions.config_lvm
 
         for node in hardware.slave_nodes:
             # For correct comissioning by MaaS nodes should be powered off
