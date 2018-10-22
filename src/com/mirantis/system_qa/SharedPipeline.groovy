@@ -509,7 +509,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
              passwordVariable: 'TESTRAIL_PASSWORD',
              usernameVariable: 'TESTRAIL_USER']
   ]) {
-    return run_cmd(script)
+    return run_cmd_stdout(script)
   }
 }
 
