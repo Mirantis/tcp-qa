@@ -623,6 +623,9 @@ template:
                   capacity: !os_env NODE_VOLUME_SIZE, 150
                   backing_store: cloudimage1604
                   format: qcow2
+                - name: manila
+                  capacity: 20
+                  format: qcow2
                 - name: cinder
                   capacity: 50
                   format: qcow2
@@ -678,6 +681,9 @@ template:
                   backing_store: cloudimage1604
                   format: qcow2
                 - name: cinder
+                  capacity: 20
+                  format: qcow2
+                - name: manila
                   capacity: 50
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
