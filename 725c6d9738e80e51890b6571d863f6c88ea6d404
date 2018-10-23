@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "f06f64de_f236709b",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt.yaml",
+        "patchSetId": 13
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-23T19:34:04Z",
+      "side": 1,
+      "message": "this lab still don\u0027t provide \u0027control\u0027 network VLAN to cz8125?",
+      "range": {
+        "startLine": 116,
+        "startChar": 0,
+        "endLine": 116,
+        "endChar": 68
+      },
+      "revId": "725c6d9738e80e51890b6571d863f6c88ea6d404",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ec92a4e3_d1e4419c",
         "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-bm-mcp-dvr-vxlan.yaml",
         "patchSetId": 13
