@@ -208,7 +208,7 @@ default_context:
   manila_enabled: 'True'
   manila_share_backend: 'lvm'
   manila_lvm_volume_name: 'manila-volume'
-  manila_lvm_devices: '/dev/loop0'
+  manila_lvm_devices: '/dev/vdc'
   openstack_share_address: 172.16.10.203
   openstack_share_node01_address: 172.16.10.204
   openstack_share_node02_address: 172.16.10.205
