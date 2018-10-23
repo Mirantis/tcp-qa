@@ -66,7 +66,7 @@ class Netchecker(object):
         else:
             assert self.get_connectivity_status().status_code == 400
 
-    def wait_check_network(self, works, timeout=60, interval=10):
+    def wait_check_network(self, works, timeout=600, interval=10):
         helpers.wait_pass(
             lambda: self.check_network(works=works),
             timeout=timeout,
