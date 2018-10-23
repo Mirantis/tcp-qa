@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ec92a4e3_d1e4419c",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-bm-mcp-dvr-vxlan.yaml",
+        "patchSetId": 13
+      },
+      "lineNbr": 59,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-23T19:31:25Z",
+      "side": 1,
+      "message": "This will be automatically aligned if you set \u0027mcp_version\u0027 in the cookiecutter context YAML to one of:\n{%- if cookiecutter.mcp_version in [ \u0027proposed\u0027, \u0027testing\u0027, \u0027nightly\u0027 ] %}\n\nSee infra/init.yml",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 59,
+        "endChar": 0
+      },
+      "revId": "725c6d9738e80e51890b6571d863f6c88ea6d404",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
