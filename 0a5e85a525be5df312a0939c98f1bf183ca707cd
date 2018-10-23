@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9c0a16bc_0f9e250f",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-10-23T11:41:08Z",
+      "side": 0,
+      "message": "if you remove this - will get 5 gtw aain as issue is still in place",
+      "range": {
+        "startLine": 50,
+        "startChar": 32,
+        "endLine": 50,
+        "endChar": 39
+      },
+      "revId": "0a5e85a525be5df312a0939c98f1bf183ca707cd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
