@@ -28,10 +28,6 @@
     sed -i '/system.salt.control.placement.openstack.compact/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/kvm.yml;
     # sed -i '/system.reclass.storage.system.stacklight_log_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
 
-    # Bind9 services are placed on the first two ctl nodes
-    # salt-call reclass.cluster_meta_set name='openstack_dns_node01_address' value='${_param:openstack_control_node01_address}' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
-    # salt-call reclass.cluster_meta_set name='openstack_dns_node02_address' value='${_param:openstack_control_node02_address}' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
-
     . /root/venv-reclass-tools/bin/activate;
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
     reclass-tools del-key parameters.reclass.storage.node.infra_kvm_node02 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
