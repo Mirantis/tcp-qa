@@ -22,6 +22,30 @@
       "revId": "0a5e85a525be5df312a0939c98f1bf183ca707cd",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc94b547_f6f5a75f",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-10-23T13:36:22Z",
+      "side": 0,
+      "message": "I moved this workaround to \nhttps://review.gerrithub.io/#/c/Mirantis/tcp-qa/+/430088/9/tcp_tests/templates/cookied-model-generator/salt_cookied-bm-mcp-dvr-vxlan.yaml",
+      "parentUuid": "9c0a16bc_0f9e250f",
+      "range": {
+        "startLine": 50,
+        "startChar": 32,
+        "endLine": 50,
+        "endChar": 39
+      },
+      "revId": "0a5e85a525be5df312a0939c98f1bf183ca707cd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
