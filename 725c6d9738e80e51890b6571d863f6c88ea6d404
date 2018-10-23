@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "f0102566_1af68d87",
+        "filename": "tcp_tests/templates/cookied-bm-dpdk-pipeline/salt-context-environment.yaml",
+        "patchSetId": 13
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-23T19:39:27Z",
+      "side": 1,
+      "message": "It\u0027s better to use features_lvm_backend_volume_sdb",
+      "range": {
+        "startLine": 51,
+        "startChar": 0,
+        "endLine": 51,
+        "endChar": 28
+      },
+      "revId": "725c6d9738e80e51890b6571d863f6c88ea6d404",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "80ccd78a_a757a82e",
+        "filename": "tcp_tests/templates/cookied-bm-dpdk-pipeline/salt-context-environment.yaml",
+        "patchSetId": 13
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-23T19:39:27Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 74,
+        "startChar": 7,
+        "endLine": 74,
+        "endChar": 28
+      },
+      "revId": "725c6d9738e80e51890b6571d863f6c88ea6d404",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "772fc334_850de2ef",
         "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt-context-vcp-environment.yaml",
         "patchSetId": 13
