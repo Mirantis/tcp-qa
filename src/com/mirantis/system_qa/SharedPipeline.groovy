@@ -477,6 +477,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
   def testrailProject = "Mirantis Cloud Platform"
   def testPlanName = "[MCP-Q2]System-${MCP_VERSION}-${new Date().format('yyyy-MM-dd')}"
   def testrailMilestone = "MCP1.1"
+  def testrailCaseMaxNameLenght = 250
   def jobURL = env.BUILD_URL
 
   def reporterOptions = [
@@ -493,6 +494,7 @@ def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_
     "--xunit-name-template \"${methodname}\"",
     "--testrail-name-template \"${testrail_name_template}\"",
     "--test-results-link \"${jobURL}\"",
+    "--testrail-case-max-name-lenght ${testrailCaseMaxNameLenght}",
   ] + reporter_extra_options
 
   def script = """
