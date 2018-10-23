@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "4a0c77a4_9ad4ce12",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt-context-vcp-environment.yaml",
+        "patchSetId": 13
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-23T19:37:48Z",
+      "side": 1,
+      "message": "Please ignore, cmp nodes are in another file.",
+      "parentUuid": "772fc334_850de2ef",
+      "range": {
+        "startLine": 31,
+        "startChar": 0,
+        "endLine": 31,
+        "endChar": 36
+      },
+      "revId": "725c6d9738e80e51890b6571d863f6c88ea6d404",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f06f64de_f236709b",
         "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt.yaml",
         "patchSetId": 13
