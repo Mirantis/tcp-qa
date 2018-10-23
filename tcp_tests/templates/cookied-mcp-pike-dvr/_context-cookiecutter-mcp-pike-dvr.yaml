@@ -103,6 +103,10 @@ default_context:
   openstack_proxy_node02_address: 172.16.10.122
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: 172.16.10.19
+  designate_backend: bind
+  designate_enabled: 'True'
+  openstack_dns_node01_address: 172.16.10.113
+  openstack_dns_node02_address: 172.16.10.114
   openstack_version: pike
   oss_enabled: 'False'
   oss_node03_address: ${_param:stacklight_monitor_node03_address}

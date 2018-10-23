@@ -108,9 +108,9 @@ default_context:
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: 172.16.10.19
   openstack_dns_hostname: dns
-  openstack_dns_node01_address: 172.16.10.111
+  openstack_dns_node01_address: 172.16.10.113
   openstack_dns_node01_hostname: dns01
-  openstack_dns_node02_address: 172.16.10.112
+  openstack_dns_node02_address: 172.16.10.114
   openstack_dns_node02_hostname: dns02
   openstack_version: queens
   oss_enabled: 'False'
@@ -196,7 +196,7 @@ default_context:
   rsync_fernet_rotation: 'True'
   compute_padding_with_zeros: False
   designate_backend: bind
-  designate_enabled: 'True'
+  designate_enabled: 'False'
   nova_vnc_tls_enabled: 'True'
   galera_ssl_enabled: 'True'
   openstack_mysql_x509_enabled: 'True'

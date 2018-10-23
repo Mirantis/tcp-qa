@@ -108,9 +108,9 @@ default_context:
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: 172.16.10.19
   openstack_dns_hostname: dns
-  openstack_dns_node01_address: 172.16.10.111
+  openstack_dns_node01_address: 172.16.10.113
   openstack_dns_node01_hostname: dns01
-  openstack_dns_node02_address: 172.16.10.112
+  openstack_dns_node02_address: 172.16.10.114
   openstack_dns_node02_hostname: dns02
   openstack_version: queens
   oss_enabled: 'False'
