@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e867e7d4_aea8a7bb",
+        "filename": "tcp_tests/tests/system/test_install_mcp_ovs_pike.py",
+        "patchSetId": 18
+      },
+      "lineNbr": 232,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-10-24T20:26:37Z",
+      "side": 1,
+      "message": "please do not change this one - as it used by jobs without dpdk, better to change in job run test test_mcp_dpdk_ovs_install",
+      "range": {
+        "startLine": 232,
+        "startChar": 57,
+        "endLine": 232,
+        "endChar": 61
+      },
+      "revId": "2bd78e439ef46736ffc549442017e13816c58625",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
