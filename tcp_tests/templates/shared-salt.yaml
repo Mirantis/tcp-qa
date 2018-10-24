@@ -9,7 +9,9 @@
 {% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
 {% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
 {% set SALT_MODELS_SYSTEM_TAG = os_env('SALT_MODELS_SYSTEM_TAG','') %}
-{% set COOKIECUTTER_TEMPLATES_REPOSITORY = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY','https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates') %}
+{% set COOKIECUTTER_TEMPLATES_REPOSITORY_USER = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY_USER','mcp-gerrit') %}
+{% set COOKIECUTTER_TEMPLATES_REPOSITORY_KEY = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY_KEY','') %}
+{% set COOKIECUTTER_TEMPLATES_REPOSITORY = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY','ssh://' + COOKIECUTTER_TEMPLATES_REPOSITORY_USER +'@gerrit.mcp.mirantis.com/mk/cookiecutter-templates') %}
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
 {% set COOKIECUTTER_TAG = os_env('COOKIECUTTER_TAG','') %}
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
@@ -371,6 +373,9 @@
     set -x;
     sudo apt-get install python-setuptools -y
     pip install cookiecutter
+
+    eval $(ssh-agent)
+    ssh-add {{ COOKIECUTTER_TEMPLATES_REPOSITORY_KEY }}
     export GIT_SSL_NO_VERIFY=true; git clone {{ COOKIECUTTER_TEMPLATES_REPOSITORY }} /root/cookiecutter-templates
 
     {%- if COOKIECUTTER_REF_CHANGE != '' %}
