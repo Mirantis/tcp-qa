@@ -111,6 +111,9 @@ class RuntestManager(object):
                                 '${_param:runtest_tempest_public_net}'
                             }
                         },
+                        'heat_plugin': {
+                            'build_timeout': '600'
+                        },
                         'share': {
                             'capability_snapshot_support': True,
                             'run_driver_assisted_migration_tests': False,

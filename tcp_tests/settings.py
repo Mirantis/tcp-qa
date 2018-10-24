@@ -77,7 +77,7 @@ TEMPEST_IMAGE = os.environ.get(
     'docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest')  # noqa
 TEMPEST_IMAGE_VERSION = os.environ.get('TEMPEST_IMAGE_VERSION', 'pike')
 TEMPEST_PATTERN = os.environ.get('TEMPEST_PATTERN', 'tempest')
-TEMPEST_TIMEOUT = int(os.environ.get('TEMPEST_TIMEOUT', 60 * 60 * 5))
+TEMPEST_TIMEOUT = int(os.environ.get('TEMPEST_TIMEOUT', 60 * 60 * 6))
 TEMPEST_THREADS = int(os.environ.get('TEMPEST_THREADS', 2))
 TEMPEST_TARGET = os.environ.get('TEMPEST_TARGET', 'gtw01')
 SALT_VERSION = os.environ.get('SALT_VERSION', '2017.7')
