@@ -12,7 +12,7 @@
 {% import 'shared-salt.yaml' as SHARED with context %}
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 
-{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker ' + REPOSITORY_SUITE + ' stable') %}
+{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/' + REPOSITORY_SUITE + '/docker/xenial xenial stable') %}
 
   # Upload cirros image
 - description: Upload cirros image on ctl01
