@@ -9,6 +9,7 @@
 {% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', '') %}
 
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
+{% import 'shared-salt.yaml' as SHARED with context %}
 
 # Install OpenStack control services
 
@@ -172,11 +173,7 @@
   retry: {count: 1, delay: 30}
   skip_fail: false
 
-- description: Install docker.io on gtw
-  cmd: salt-call cmd.run 'apt-get install docker.io -y'
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+{{ SHARED.INSTALL_DOCKER_ON_GTW() }}
 
 - description: create rc file on cfg
   cmd: scp ctl01:/root/keystonercv3 /root
@@ -187,11 +184,5 @@
 - description: Copy rc file
   cmd: scp /root/keystonercv3 gtw01:/root
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Set floating ip address on br-floating
-  cmd: ifconfig br-floating {{ IPV4_NET_EXTERNAL_PREFIX }}.110/24
-  node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
