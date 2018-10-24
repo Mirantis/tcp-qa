@@ -61,7 +61,7 @@ class TestMCPK8sActions(object):
         svc = deployment.expose()
 
         show_step(4)
-        hostname = "test.{0}.local.".format(settings.LAB_CONFIG_NAME)
+        hostname = "test.{0}.".format(settings.DOMAIN_NAME)
         svc.patch({
             "metadata": {
                 "annotations": {
