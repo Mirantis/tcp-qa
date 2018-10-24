@@ -97,8 +97,8 @@ default_context:
   deploy_network_netmask: 255.255.255.192
   deploy_network_subnet: 172.16.49.64/26
   deployment_type: physical
-  dns_server01: 172.18.208.44
-  dns_server02: 8.8.4.4
+  dns_server01: 172.18.176.6
+  dns_server02: 172.18.208.44
   email_address: sgudz@mirantis.com
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
