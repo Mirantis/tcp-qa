@@ -356,6 +356,12 @@ def render_template(file_path, options=None, log_env_vars=True):
 
         return var
 
+    def basename(path):
+        return os.path.basename(path)
+
+    def dirname(path):
+        return os.path.dirname(path)
+
     if options is None:
         options = {}
     options.update({'os_env': os_env, })
@@ -366,6 +372,9 @@ def render_template(file_path, options=None, log_env_vars=True):
     environment = jinja2.Environment(
         loader=jinja2.FileSystemLoader([path, os.path.dirname(path)],
                                        followlinks=True))
+    environment.filters['basename'] = basename
+    environment.filters['dirname'] = dirname
+
     template = environment.get_template(filename).render(options)
 
     if required_env_vars and log_env_vars:
