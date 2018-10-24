@@ -72,6 +72,7 @@ node ("${PARENT_NODE_NAME}") {
                     """)
 
                 def snapshot_name = "test_completed"
+                shared.download_logs("test_completed")
                 shared.run_cmd("""\
                     dos.py suspend ${ENV_NAME}
                     dos.py snapshot ${ENV_NAME} ${snapshot_name}
@@ -86,6 +87,9 @@ node ("${PARENT_NODE_NAME}") {
 
         } catch (e) {
             common.printMsg("Job is failed", "purple")
+            // Downloading logs usually not needed here
+            // because tests should use the decorator @pytest.mark.grab_versions
+            // shared.download_logs("test_failed")
             throw e
         } finally {
             // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"

@@ -4,7 +4,6 @@ import argparse
 import os
 import sys
 
-from devops import error
 import json
 
 sys.path.append(os.getcwd())
@@ -140,7 +139,7 @@ def run_job(opts):
             interval=1,
             verbose=opts.verbose,
             job_output_prefix=opts.job_output_prefix)
-    except error.TimeoutError as e:
+    except Exception as e:
         print(str(e))
         raise
 

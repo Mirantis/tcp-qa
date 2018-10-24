@@ -396,6 +396,17 @@ def sanity_check_component(stack) {
     }
 }
 
+def download_logs(archive_name_prefix) {
+    // Archive and download logs and debug info from salt nodes in the lab
+    // Do not fail in case of error to not lose the original error from the parent exception.
+    def common = new com.mirantis.mk.Common()
+    common.printMsg("Downloading nodes logs by ${archive_name_prefix}", "blue")
+    run_cmd("""\
+        export TESTS_CONFIGS=\$(pwd)/${ENV_NAME}_salt_deployed.ini
+        ./tcp_tests/utils/get_logs.py --archive-name-prefix ${archive_name_prefix} || true
+    """)
+}
+
 def devops_snapshot_info(snapshot_name) {
     // Print helper message after snapshot
     def common = new com.mirantis.mk.Common()

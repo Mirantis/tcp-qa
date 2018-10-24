@@ -29,29 +29,31 @@ node ("${PARENT_NODE_NAME}") {
         error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
     }
     dir("${PARENT_WORKSPACE}") {
-        try {
 
-            if (! env.STACK_INSTALL) {
-                error "'STACK_INSTALL' must contain one or more comma separated stack names for [deploy_openstack] pipeline"
+        if (! env.STACK_INSTALL) {
+            error "'STACK_INSTALL' must contain one or more comma separated stack names for [deploy_openstack] pipeline"
+        }
+
+        if (env.TCP_QA_REFS) {
+            stage("Update working dir to patch ${TCP_QA_REFS}") {
+                shared.update_working_dir()
+            }
+        }
+
+        // Install the cluster
+        def stack
+        def timeout
+
+        for (element in "${STACK_INSTALL}".split(",")) {
+            if (element.contains(':')) {
+                (stack, timeout) = element.split(':')
+            } else {
+                stack = element
+                timeout = '1800'
             }
 
-            if (env.TCP_QA_REFS) {
-                stage("Update working dir to patch ${TCP_QA_REFS}") {
-                    shared.update_working_dir()
-                }
-            }
+            try {
 
-            // Install the cluster
-            def stack
-            def timeout
-
-            for (element in "${STACK_INSTALL}".split(",")) {
-                if (element.contains(':')) {
-                    (stack, timeout) = element.split(':')
-                } else {
-                    stack = element
-                    timeout = '1800'
-                }
                 stage("Run Jenkins job on CICD [deploy_openstack:${stack}]") {
                     shared.run_job_on_cicd_nodes(stack, timeout)
                 }
@@ -60,23 +62,25 @@ node ("${PARENT_NODE_NAME}") {
                     shared.sanity_check_component(stack)
                 }
 
-                stage("Make environment snapshot [${stack}_deployed]") {
-                    shared.devops_snapshot(stack)
+            } catch (e) {
+                common.printMsg("Job is failed", "purple")
+                shared.download_logs("deploy_${stack}")
+                throw e
+            } finally {
+                // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
+                // and report appropriate data to TestRail
+                // TODO(ddmitriev): add checks for the installed stacks
+                if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
+                    shared.run_cmd("""\
+                        dos.py destroy ${ENV_NAME}
+                    """)
                 }
             }
 
-        } catch (e) {
-            common.printMsg("Job is failed", "purple")
-            throw e
-        } finally {
-            // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
-            // and report appropriate data to TestRail
-            // TODO(ddmitriev): add checks for the installed stacks
-            if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
-                shared.run_cmd("""\
-                    dos.py destroy ${ENV_NAME}
-                """)
+            stage("Make environment snapshot [${stack}_deployed]") {
+                shared.devops_snapshot(stack)
             }
-        }
-    }
-}
+
+        } // for
+    } // dir
+} // node
