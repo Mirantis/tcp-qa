@@ -5,14 +5,14 @@
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
-{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'proposed') %}
 # Install OpenStack control services
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'virtual-offline-pike-ovs-dpdk') %}
 {% import 'shared-backup-restore.yaml' as BACKUP with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 
-{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker ' + REPOSITORY_SUITE + ' stable') %}
+{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/' + REPOSITORY_SUITE + '/docker/xenial xenial stable') %}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
 
