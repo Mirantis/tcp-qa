@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7506c30e_c7e50fb8",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt.yaml",
+        "patchSetId": 19
+      },
+      "lineNbr": 105,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-25T10:17:25Z",
+      "side": 1,
+      "message": "This classes should provide root key on all nodes\nhttps://github.com/Mirantis/environment-template/blob/master/%7B%7B%20cookiecutter._env_name%20%7D%7D/overrides.yml#L4",
+      "range": {
+        "startLine": 101,
+        "startChar": 0,
+        "endLine": 105,
+        "endChar": 43
+      },
+      "revId": "212327712206329a3776623bd2f9bd64748e6e90",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
