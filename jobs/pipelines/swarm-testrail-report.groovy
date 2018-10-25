@@ -76,7 +76,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
                         }
                     }
                 }
@@ -98,7 +98,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
                         }
                     }
                 }
@@ -115,7 +115,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
                         }
                     }
                 }
@@ -144,7 +144,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
                         }
                     }
                 }
@@ -161,7 +161,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
                         }
                     }
                 }

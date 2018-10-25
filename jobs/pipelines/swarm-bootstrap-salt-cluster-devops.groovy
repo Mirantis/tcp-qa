@@ -38,54 +38,54 @@ node ("${PARENT_NODE_NAME}") {
         error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
     }
     dir("${PARENT_WORKSPACE}") {
+        stage("Cleanup: erase ${ENV_NAME} and remove config drive") {
+            println "Remove environment ${ENV_NAME}"
+            shared.run_cmd("""\
+                dos.py erase ${ENV_NAME} || true
+            """)
+            println "Remove config drive ISO"
+            shared.run_cmd("""\
+                rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
+            """)
+        }
+
+        if (env.TCP_QA_REFS) {
+            stage("Update working dir to patch ${TCP_QA_REFS}") {
+                shared.update_working_dir()
+            }
+        }
+
+        stage("Create an environment ${ENV_NAME} in disabled state") {
+            // deploy_hardware.xml
+            shared.run_cmd("""\
+                export ENV_NAME=${ENV_NAME}
+                export LAB_CONFIG_NAME=${LAB_CONFIG_NAME}
+                export MANAGER=devops
+                export PYTHONIOENCODING=UTF-8
+                export REPOSITORY_SUITE=${MCP_VERSION}
+                export TEST_GROUP=test_create_environment
+                py.test -vvv -s -p no:django -p no:ipdb --junit-xml=deploy_hardware.xml -k \${TEST_GROUP}
+            """)
+        }
+
+        stage("Generate the model") {
+            shared.generate_cookied_model()
+        }
+
+        stage("Generate config drive ISO") {
+            shared.generate_configdrive_iso()
+        }
+
+        stage("Upload generated config drive ISO into volume on cfg01 node") {
+            shared.run_cmd("""\
+                # Get SALT_MASTER_HOSTNAME to determine the volume name
+                . ./tcp_tests/utils/env_salt
+                virsh vol-upload ${ENV_NAME}_\${SALT_MASTER_HOSTNAME}_config /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} --pool default
+                virsh pool-refresh --pool default
+            """)
+        }
+
         try {
-            stage("Cleanup: erase ${ENV_NAME} and remove config drive") {
-                println "Remove environment ${ENV_NAME}"
-                shared.run_cmd("""\
-                    dos.py erase ${ENV_NAME} || true
-                """)
-                println "Remove config drive ISO"
-                shared.run_cmd("""\
-                    rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
-                """)
-            }
-
-            if (env.TCP_QA_REFS) {
-                stage("Update working dir to patch ${TCP_QA_REFS}") {
-                    shared.update_working_dir()
-                }
-            }
-
-            stage("Create an environment ${ENV_NAME} in disabled state") {
-                // deploy_hardware.xml
-                shared.run_cmd("""\
-                    export ENV_NAME=${ENV_NAME}
-                    export LAB_CONFIG_NAME=${LAB_CONFIG_NAME}
-                    export MANAGER=devops
-                    export PYTHONIOENCODING=UTF-8
-                    export REPOSITORY_SUITE=${MCP_VERSION}
-                    export TEST_GROUP=test_create_environment
-                    py.test -vvv -s -p no:django -p no:ipdb --junit-xml=deploy_hardware.xml -k \${TEST_GROUP}
-                """)
-            }
-
-            stage("Generate the model") {
-                shared.generate_cookied_model()
-            }
-
-            stage("Generate config drive ISO") {
-                shared.generate_configdrive_iso()
-            }
-
-            stage("Upload generated config drive ISO into volume on cfg01 node") {
-                shared.run_cmd("""\
-                    # Get SALT_MASTER_HOSTNAME to determine the volume name
-                    . ./tcp_tests/utils/env_salt
-                    virsh vol-upload ${ENV_NAME}_\${SALT_MASTER_HOSTNAME}_config /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} --pool default
-                    virsh pool-refresh --pool default
-                """)
-            }
-
             stage("Run the 'underlay' and 'salt-deployed' fixtures to bootstrap salt cluster") {
                 // deploy_salt.xml
                 shared.run_cmd("""\
@@ -103,7 +103,8 @@ node ("${PARENT_NODE_NAME}") {
             }
 
           } catch (e) {
-              common.printMsg("Job is failed", "purple")
+              common.printMsg("Saltstack cluster deploy is failed", "purple")
+              shared.download_logs("deploy_salt")
               throw e
           } finally {
             // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
