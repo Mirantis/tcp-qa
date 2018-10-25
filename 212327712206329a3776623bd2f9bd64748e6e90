@@ -2,6 +2,52 @@
   "comments": [
     {
       "key": {
+        "uuid": "858efca3_c7dec00b",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt-context-lab03-environment.yaml",
+        "patchSetId": 19
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-25T10:21:06Z",
+      "side": 1,
+      "message": "https://review.gerrithub.io/#/c/Mirantis/tcp-qa/+/430088/13/tcp_tests/templates/cookied-bm-dpdk-pipeline/salt-context-environment.yaml",
+      "range": {
+        "startLine": 51,
+        "startChar": 8,
+        "endLine": 51,
+        "endChar": 28
+      },
+      "revId": "212327712206329a3776623bd2f9bd64748e6e90",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7ae493e5_3df91c6a",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt-context-lab03-environment.yaml",
+        "patchSetId": 19
+      },
+      "lineNbr": 63,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-25T10:21:06Z",
+      "side": 1,
+      "message": "https://review.gerrithub.io/#/c/Mirantis/tcp-qa/+/430088/13/tcp_tests/templates/cookied-bm-dpdk-pipeline/salt-context-environment.yaml",
+      "range": {
+        "startLine": 63,
+        "startChar": 8,
+        "endLine": 63,
+        "endChar": 28
+      },
+      "revId": "212327712206329a3776623bd2f9bd64748e6e90",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7506c30e_c7e50fb8",
         "filename": "tcp_tests/templates/cookied-bm-mcp-dvr-vxlan/salt.yaml",
         "patchSetId": 19
