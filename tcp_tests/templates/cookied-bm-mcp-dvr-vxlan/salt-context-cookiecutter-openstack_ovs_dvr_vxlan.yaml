@@ -1,7 +1,7 @@
 default_context:
   mcp_version: proposed
   ceph_enabled: 'False'
-  cicd_enabled: 'True'
+  cicd_enabled: 'False'
   cicd_control_node01_address: 10.167.4.91
   cicd_control_node01_hostname: cid01
   cicd_control_node02_address: 10.167.4.92
