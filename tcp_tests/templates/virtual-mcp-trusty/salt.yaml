@@ -22,7 +22,7 @@
 
 {%- if OVERRIDES != '' %}
 {%- for param in OVERRIDES.splitlines() %}
-{%- set key, value = param.replace(' ','').split(':') %}
+{%- set key, value = param.replace(' ','').split(':', 1) %}
 - description: Override cluster parameters
   cmd: |
     salt-call reclass.cluster_meta_set name='{{ key }}' value='{{ value }}' file_name='{{OVERRIDES_FILENAME}}'
