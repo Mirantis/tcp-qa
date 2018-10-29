@@ -34,6 +34,7 @@ class RuntestManager(object):
     container_name = 'run-tempest-ci'
     master_host = "cfg01"
     control_host = "ctl01"
+    compute_host = "cmp001"
     class_name = "runtest"
     run_cmd = '/bin/bash -c "run-tempest"'
 
@@ -54,6 +55,8 @@ class RuntestManager(object):
             self.master_host)[0]
         self.control_name = self.underlay.get_target_node_names(
             self.control_host)[0]
+        self.compute_name = self.underlay.get_target_node_names(
+            self.compute_host)[0]
 
     @property
     def salt_api(self):
@@ -184,8 +187,20 @@ class RuntestManager(object):
                          "pillar.get "
                          "glance:client:identity:"
                          "admin_identity:image:cirros:location")
+        dpdk_pillar_cmd = ("salt-call --out=newline_values_only "
+                           "pillar.get linux:network:dpdk:enabled")
         salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+        get_dpdk = [
+            {
+                'description': "Get dpdk pillar",
+                'node_name': self.compute_name,
+                'cmd': ("set -ex;" +
+                        dpdk_pillar_cmd)}
+                   ]
+        dpdk_result = self.__salt_api.execute_commands(commands=get_dpdk,
+                                                       label="Check dpdk")
+        LOG.info("DPDK result {}".format(dpdk_result))
         commands = [
             {
                 'description': "Sync salt objects for runtest model",
