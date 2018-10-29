@@ -35,7 +35,7 @@
     set -e;
     # Remove rack01 key
     . /root/venv-reclass-tools/bin/activate;
-    reclass-tools del-key parameters.reclass.storage.node.kubernetes_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.kubernetes_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config/init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
