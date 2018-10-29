@@ -208,28 +208,6 @@ nodes:
         ens4:
           role: single_ctl
 
-    share02.mcp-queens-dvr.local:
-      reclass_storage_name: openstack_share_node02
-      roles:
-      - openstack_share
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: single_ctl
-
-    share03.mcp-queens-dvr.local:
-      reclass_storage_name: openstack_share_node03
-      roles:
-      - openstack_share
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: single_ctl
-
     dns01.mcp-queens-dvr.local:
       reclass_storage_name: openstack_dns_node01
       roles:
