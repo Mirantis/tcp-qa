@@ -295,7 +295,7 @@
     salt -C 'I@manila:api and not *01*' state.sls manila.api;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: True
 
 - description: Install manila-scheduler
   cmd: |
