@@ -229,7 +229,7 @@ class TestMcpInstallOvsPike(object):
             args='service ntp stop; ntpd -gq; service ntp start')
 
         if settings.RUN_TEMPEST:
-            tempest_actions.prepare_and_run_tempest(dpdk=True)
+            tempest_actions.prepare_and_run_tempest()
         LOG.info("*************** DONE **************")
 
     @pytest.mark.grab_versions
@@ -298,7 +298,7 @@ class TestMcpInstallOvsPike(object):
             tgt='*', fun='cmd.run',
             args='service ntp stop; ntpd -gq; service ntp start')
         if settings.RUN_TEMPEST:
-            tempest_actions.prepare_and_run_tempest(dpdk=True)
+            tempest_actions.prepare_and_run_tempest()
 
         LOG.info("*************** DONE **************")
 
