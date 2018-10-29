@@ -25,7 +25,9 @@
     sed -i '/system.reclass.storage.system.stacklight_log_cluster/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
 
     # set wider cpu mask for DPDK
-    salt-call reclass.cluster_meta_set name='compute_ovs_dpdk_lcore_mask' value='"0xF"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    salt-call reclass.cluster_meta_set name='compute_ovs_dpdk_lcore_mask' value='"0x41"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    salt-call reclass.cluster_meta_set name='compute_ovs_pmd_cpu_mask' value='"0xe"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
+    salt-call reclass.cluster_meta_set name='compute_ovs_dpdk_socket_mem' value='"512,512"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
     salt-call reclass.cluster_meta_set name='compute_hugepages_size' value='"2M"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
     salt-call reclass.cluster_meta_set name='compute_hugepages_mount' value='"/mnt/hugepages_2M"' file_name=/srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/init.yml
 
