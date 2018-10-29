@@ -34,6 +34,7 @@ class RuntestManager(object):
     container_name = 'run-tempest-ci'
     master_host = "cfg01"
     control_host = "ctl01"
+    compute_host = "cmp001"
     class_name = "runtest"
     run_cmd = '/bin/bash -c "run-tempest"'
 
@@ -54,6 +55,8 @@ class RuntestManager(object):
             self.master_host)[0]
         self.control_name = self.underlay.get_target_node_names(
             self.control_host)[0]
+        self.compute_name = self.underlay.get_target_node_names(
+            self.compute_host)[0]
 
     @property
     def salt_api(self):
@@ -178,14 +181,23 @@ class RuntestManager(object):
                                                indent=4, sort_keys=True)
                 f.write(container_inspect)
 
-    def prepare(self, dpdk=None):
+    def prepare(self):
         self.store_runtest_model()
         cirros_pillar = ("salt-call --out=newline_values_only "
                          "pillar.get "
                          "glance:client:identity:"
                          "admin_identity:image:cirros:location")
+        dpdk_pillar = "linux:network:dpdk:enabled"
         salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+
+        result = self.__salt_api.get_pillar(tgt=self.compute_name,
+                                            pillar=dpdk_pillar)
+        if result:
+            dpdk = result[0].get(self.compute_name, False)
+
+        LOG.info("DPDK enabled: {}".format(dpdk))
+
         commands = [
             {
                 'description': "Sync salt objects for runtest model",
@@ -338,12 +350,12 @@ class RuntestManager(object):
         return {'inspect': inspect,
                 'logs': logs}
 
-    def prepare_and_run_tempest(self, username='root', dpdk=None):
+    def prepare_and_run_tempest(self, username='root'):
         """
         Run tempest tests
         """
         tempest_timeout = settings.TEMPEST_TIMEOUT
-        self.prepare(dpdk=dpdk)
+        self.prepare()
         test_res = self.run_tempest(tempest_timeout)
         self.fetch_arficats(username=username)
         self.save_runtime_logs(**test_res)
