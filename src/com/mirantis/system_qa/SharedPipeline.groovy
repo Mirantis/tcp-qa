@@ -168,7 +168,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         build_pipeline_job('swarm-bootstrap-salt-cluster-devops', parameters)
 }
 
-def swarm_deploy_cicd(String stack_to_install='core,cicd') {
+def swarm_deploy_cicd(String stack_to_install, String install_timeout) {
         // Run openstack_deploy job on cfg01 Jenkins for specified stacks
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
@@ -177,13 +177,14 @@ def swarm_deploy_cicd(String stack_to_install='core,cicd') {
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'STACK_INSTALL', value: stack_to_install),
+                string(name: 'STACK_INSTALL_TIMEOUT', value: stack_to_install),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
         build_pipeline_job('swarm-deploy-cicd', parameters)
 }
 
-def swarm_deploy_platform(String stack_to_install) {
+def swarm_deploy_platform(String stack_to_install, String install_timeout) {
         // Run openstack_deploy job on CICD Jenkins for specified stacks
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
@@ -192,6 +193,7 @@ def swarm_deploy_platform(String stack_to_install) {
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'STACK_INSTALL', value: stack_to_install),
+                string(name: 'STACK_INSTALL_TIMEOUT', value: install_timeout),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
