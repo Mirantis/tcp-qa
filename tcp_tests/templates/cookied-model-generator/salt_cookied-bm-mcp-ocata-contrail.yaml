@@ -32,12 +32,12 @@
     set -e;
     . /root/venv-reclass-tools/bin/activate;
     # Remove rack01 key
-    reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config/init.yml;
     # Add openstack_compute_node definition from system
-    reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml --merge;
+    reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config/init.yml --merge;
     # Workaround for compute nodes addresses
-    reclass-tools add-key parameters._param.openstack_compute_node01_address '${_param:openstack_compute_rack01_single_subnet}'.105 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
-    reclass-tools add-key parameters._param.openstack_compute_node02_address '${_param:openstack_compute_rack01_single_subnet}'.106 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml;
+    reclass-tools add-key parameters._param.openstack_compute_node01_address '${_param:openstack_compute_rack01_single_subnet}'.105 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config/init.yml;
+    reclass-tools add-key parameters._param.openstack_compute_node02_address '${_param:openstack_compute_rack01_single_subnet}'.106 /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config/init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
