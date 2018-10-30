@@ -208,6 +208,14 @@ default_context:
   stacklight_telemetry_node02_hostname: mtr02
   stacklight_telemetry_node03_address: 172.16.10.88
   stacklight_telemetry_node03_hostname: mtr03
+  openstack_telemetry_address: 172.16.10.96
+  openstack_telemetry_hostname: mdb
+  openstack_telemetry_node01_address: 172.16.10.97
+  openstack_telemetry_node01_hostname: mdb01
+  openstack_telemetry_node02_address: 172.16.10.98
+  openstack_telemetry_node02_hostname: mdb02
+  openstack_telemetry_node03_address: 172.16.10.99
+  openstack_telemetry_node03_hostname: mdb03
   stacklight_version: '2'
   stacklight_long_term_storage_type: prometheus
   static_ips_on_deploy_network_enabled: 'False'

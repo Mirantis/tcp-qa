@@ -227,5 +227,5 @@ default_context:
   openstack_mysql_x509_enabled: 'False'
   rabbitmq_ssl_enabled: 'False'
   openstack_rabbitmq_x509_enabled: 'False'
-  tenant_telemetry_enabled: 'False'
-  gnocchi_aggregation_storage: file
+  tenant_telemetry_enabled: 'True'
+  gnocchi_aggregation_storage: ceph
