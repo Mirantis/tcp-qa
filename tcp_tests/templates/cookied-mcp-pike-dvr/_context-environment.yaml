@@ -137,6 +137,7 @@ nodes:
       roles:
       - stacklight_telemetry_leader
       - linux_system_codename_xenial
+      - openstack_telemetry
       interfaces:
         ens3:
           role: single_dhcp
@@ -148,6 +149,7 @@ nodes:
       roles:
       - stacklight_telemetry
       - linux_system_codename_xenial
+      - openstack_telemetry
       interfaces:
         ens3:
           role: single_dhcp
@@ -159,6 +161,7 @@ nodes:
       roles:
       - stacklight_telemetry
       - linux_system_codename_xenial
+      - openstack_telemetry
       interfaces:
         ens3:
           role: single_dhcp
