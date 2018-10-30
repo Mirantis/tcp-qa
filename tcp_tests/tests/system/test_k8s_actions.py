@@ -222,7 +222,7 @@ class TestMCPK8sActions(object):
         show_step(1)
 
         # Find out calico and flannel networks
-        tgt_k8s_control = "I@kubernetes:control:enabled:True"
+        tgt_k8s_control = "I@kubernetes:master"
 
         flannel_pillar = salt_deployed.get_pillar(
             tgt=tgt_k8s_control,

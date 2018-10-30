@@ -107,9 +107,7 @@ class TestMCPCalico(object):
         assert len(first_node_ips) > 0, "Couldn't find first k8s node IP!"
         first_node_names = [name for name in underlay.node_names()
                             if name.startswith(first_node.name)]
-        assert len(first_node_names) == 1, "Couldn't find first k8s node " \
-                                           "hostname in SSH config!"
-        first_node_name = first_node_names.pop()
+        first_node_name = first_node_names[0]
 
         target_pod_ip = None
 
