@@ -87,6 +87,12 @@ class RuntestManager(object):
                     'openstack_public_neutron_subnet_allocation_end':
                         public_allocation_end,
                     'tempest_test_target': self.target_name.encode("ascii"),
+                    'glance_image_cirros_location': 'http://cz8133.bud.mirantis.net:8099'
+                                                    '/cirros-0.3.5-x86_64-disk.img',
+                    'glance_image_fedora_location': 'http://cz8133.bud.mirantis.net:8099'
+                                                    '/Fedora-Cloud-Base-27-1.6.x86_64.qcow2',
+                    'glance_image_manila_location': 'http://cz8133.bud.mirantis.net:8099'
+                                                    '/manila-service-image-master.qcow2',
                 },
                 'neutron': {
                     'client': {
