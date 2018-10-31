@@ -47,7 +47,7 @@ timeout(time: install_timeout + 600, unit: 'SECONDS') {
 
             try {
                 // Install the cluster
-                stage("Run Jenkins job on CICD [deploy_openstack:platform]") {
+                stage("Run Jenkins job on CICD [deploy_openstack:${env.STACK_INSTALL}]") {
                     shared.run_job_on_cicd_nodes(env.STACK_INSTALL, install_timeout)
                 }
 
