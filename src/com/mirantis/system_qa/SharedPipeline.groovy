@@ -324,7 +324,9 @@ def generate_configdrive_iso() {
 
 def run_job_on_day01_node(stack_to_install, timeout=2400) {
     // stack_to_install="core,cicd"
+    def common = new com.mirantis.mk.Common()
     def stack = "${stack_to_install}"
+    common.printMsg("Deploy DriveTrain CICD components: ${stack_to_install}", "blue")
     try {
         run_cmd("""\
             export ENV_NAME=${ENV_NAME}
@@ -335,11 +337,12 @@ def run_job_on_day01_node(stack_to_install, timeout=2400) {
                 \\\"SALT_MASTER_URL\\\": \\\"\${SALTAPI_URL}\\\",
                 \\\"STACK_INSTALL\\\": \\\"${stack}\\\"
             }\"
-            JOB_PREFIX="[ ${ENV_NAME}/{build_number}:${stack} {time} ] "
+            JOB_PREFIX="[ ${ENV_NAME}/{build_number}:drivetrain {time} ] "
             python ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="\$JOB_PARAMETERS" --job-output-prefix="\$JOB_PREFIX"
         """)
+        // Wait for IO calm down on cluster nodes
+        sleep(60)
     } catch (e) {
-        def common = new com.mirantis.mk.Common()
         common.printMsg("Product job 'deploy_openstack' failed, getting details", "purple")
         def workflow_details=run_cmd_stdout("""\
             . ./tcp_tests/utils/env_salt
@@ -354,7 +357,9 @@ def run_job_on_day01_node(stack_to_install, timeout=2400) {
 
 def run_job_on_cicd_nodes(stack_to_install, timeout=2400) {
     // stack_to_install="k8s,calico,stacklight"
+    def common = new com.mirantis.mk.Common()
     def stack = "${stack_to_install}"
+    common.printMsg("Deploy Platform components: ${stack_to_install}", "blue")
     try {
         run_cmd("""\
             export ENV_NAME=${ENV_NAME}
@@ -365,12 +370,12 @@ def run_job_on_cicd_nodes(stack_to_install, timeout=2400) {
                 \\\"SALT_MASTER_URL\\\": \\\"\${SALTAPI_URL}\\\",
                 \\\"STACK_INSTALL\\\": \\\"${stack}\\\"
             }\"
-            JOB_PREFIX="[ ${ENV_NAME}/{build_number}:${stack} {time} ] "
+            JOB_PREFIX="[ ${ENV_NAME}/{build_number}:platform {time} ] "
             python ./tcp_tests/utils/run_jenkins_job.py --verbose --job-name=deploy_openstack --job-parameters="\$JOB_PARAMETERS" --job-output-prefix="\$JOB_PREFIX"
-            sleep 60  # Wait for IO calm down on cluster nodes
         """)
+        // Wait for IO calm down on cluster nodes
+        sleep(60)
     } catch (e) {
-        def common = new com.mirantis.mk.Common()
         common.printMsg("Product job 'deploy_openstack' failed, getting details", "purple")
         def workflow_details=run_cmd_stdout("""\
             . ./tcp_tests/utils/env_salt
