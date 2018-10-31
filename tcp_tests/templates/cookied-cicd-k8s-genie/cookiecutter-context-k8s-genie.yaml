@@ -119,6 +119,11 @@ default_context:
   kubernetes_control_node03_address: 10.167.4.13
   kubernetes_control_node03_deploy_address: 10.167.5.13
   kubernetes_control_node03_hostname: ctl03
+  kubernetes_compute_count: 4
+  kubernetes_compute_rack01_hostname: cmp
+  kubernetes_compute_deploy_address_ranges: 10.167.5.101-10.167.5.104
+  kubernetes_compute_single_address_ranges: 10.167.4.101-10.167.4.104
+  kubernetes_compute_tenant_address_ranges: 10.167.6.101-10.167.6.104
   kubernetes_enabled: 'True'
   kubernetes_externaldns_enabled: 'False'
   kubernetes_keepalived_vip_interface: br_ctl
