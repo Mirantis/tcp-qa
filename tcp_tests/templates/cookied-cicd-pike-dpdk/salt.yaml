@@ -18,6 +18,7 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+
 - description: "Workaround to avoid reboot cmp nodes: bring OVS interfaces UP (PROD-24343)"
   cmd: |
     salt 'cmp*' cmd.run "ifup br-prv";
