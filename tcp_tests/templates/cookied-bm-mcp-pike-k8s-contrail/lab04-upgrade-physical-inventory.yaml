@@ -81,28 +81,40 @@ nodes:
           role: single_vlan_ctl
           single_address: 10.167.8.237
 
-    cmp001.bm-mcp-pike-k8s-contrail.local:
-      reclass_storage_name: kubernetes_compute_node001
+    cmp<<count>>:
+      reclass_storage_name: kubernetes_compute_rack01
       roles:
-      - linux_system_codename_xenial
       - kubernetes_compute_contrail
+      - features_lvm_backend_volume_vdb
+      - linux_system_codename_xenial
       - salt_master_host
       interfaces:
         enp9s0f0:
           role: single_dhcp
         ens11f1:
           role: k8s_oc40_only_vhost_on_control_vlan
-          single_address: 10.167.8.103
-
-    cmp002.bm-mcp-pike-k8s-contrail.local:
-      reclass_storage_name: kubernetes_compute_node002
-      roles:
-      - linux_system_codename_xenial
-      - kubernetes_compute_contrail
-      - salt_master_host
-      interfaces:
-        enp9s0f0:
-          role: single_dhcp
-        ens11f1:
-          role: k8s_oc40_only_vhost_on_control_vlan
-          single_address: 10.167.8.104
+          #    cmp001.bm-mcp-pike-k8s-contrail.local:
+          #      reclass_storage_name: kubernetes_compute_node001
+          #      roles:
+          #      - linux_system_codename_xenial
+          #      - kubernetes_compute_contrail
+          #      - salt_master_host
+          #      interfaces:
+          #        enp9s0f0:
+          #          role: single_dhcp
+          #        ens11f1:
+          #          role: k8s_oc40_only_vhost_on_control_vlan
+          #          single_address: 10.167.8.103
+          #
+          #    cmp002.bm-mcp-pike-k8s-contrail.local:
+          #      reclass_storage_name: kubernetes_compute_node002
+          #      roles:
+          #      - linux_system_codename_xenial
+          #      - kubernetes_compute_contrail
+          #      - salt_master_host
+          #      interfaces:
+          #        enp9s0f0:
+          #          role: single_dhcp
+          #        ens11f1:
+          #          role: k8s_oc40_only_vhost_on_control_vlan
+          #          single_address: 10.167.8.104
