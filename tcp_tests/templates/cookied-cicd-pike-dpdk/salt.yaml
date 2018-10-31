@@ -20,12 +20,14 @@
 
 - description: "Workaround to avoid reboot cmp nodes: bring OVS interfaces UP (PROD-24343)"
   cmd: |
-    salt 'cmp*' cmd.run "ifup br-prv";
-    salt 'cmp*' cmd.run "ip l set up br-floating";
+    salt 'cmp*' state.sls linux.network.interface &&
+    salt 'cmp*' cmd.run "echo 'Interfaces after linux formula:'; ip a" &&
+    salt 'cmp*' cmd.run "ifup br-prv" &&
+    salt 'cmp*' cmd.run "ip l set up br-floating" &&
+    salt 'cmp*' cmd.run "echo 'Interfaces after link ups:'; ip a"
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
 
