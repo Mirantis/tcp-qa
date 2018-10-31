@@ -131,6 +131,14 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+- description: Create nova resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "I@nova:client" state.sls nova.client 
+    openstack server list"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 {%- endmacro %}
 
 {%- macro MACRO_INSTALL_CINDER(INSTALL_VOLUME=false) %}
