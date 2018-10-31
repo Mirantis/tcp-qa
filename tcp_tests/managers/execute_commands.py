@@ -132,8 +132,14 @@ class ExecuteCommandsMixin(object):
 
                 if x == 1 and skip_fail is False:
                     # In the last retry iteration, raise an exception
-                    raise Exception("Step '{0}' failed"
-                                    .format(description))
+                    raise Exception("Step '{0}' failed:\n"
+                                    "=======================================\n"
+                                    "STDOUT: {1}\n"
+                                    "=======================================\n"
+                                    "STDERR: {2}\n"
+                                    .format(description,
+                                            result.stdout_str,
+                                            result.stderr_str))
 
     def command2(self, step, msg):
         # Required fields
