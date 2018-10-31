@@ -10,6 +10,7 @@
                                    where 3200 and 2400 might be timeouts (not used in the testing pipeline)
  *   PARENT_NODE_NAME              Name of the jenkins slave to create the environment
  *   PARENT_WORKSPACE              Path to the workspace of the parent job to use tcp-qa repo
+ *   TEMPEST_TEST_SUITE_NAME       Name of tempest suite
  *   TCP_QA_REFS                   Reference to the tcp-qa change on review.gerrithub.io, like refs/changes/46/418546/41
  */
 
@@ -109,7 +110,7 @@ node ("${PARENT_NODE_NAME}") {
 
             if ('openstack' in stacks && tempest_report_name) {
                 stage("Tempest report") {
-                    testSuiteName = "[MCP1.1_PIKE]Tempest"
+                    testSuiteName = env.TEMPEST_TEST_SUITE_NAME
                     methodname = "{classname}.{methodname}"
                     testrail_name_template = "{title}"
                     report_result = shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
