@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat
+import groovy.xml.XmlUtil
 
 def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
 def date = new Date()
