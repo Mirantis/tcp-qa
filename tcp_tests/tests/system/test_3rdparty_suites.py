@@ -33,7 +33,7 @@ class Test3rdpartySuites(object):
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_tempest
     def test_run_tempest(self, tempest_actions, show_step, _):
-        """Runner for Juniper contrail-tests
+        """Runner for Openstack tempest tests
 
         Scenario:
             1. Run tempest
