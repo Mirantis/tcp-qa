@@ -30,16 +30,6 @@
 
 {{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
 
-- description: "Workaround for rack01 compute generator"
-  cmd: |
-    set -e;
-    # Remove rack01 key
-    . /root/venv-reclass-tools/bin/activate;
-    reclass-tools del-key parameters.reclass.storage.node.kubernetes_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config/init.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
 - description: "Change path to internal storage for salt.control images"
   cmd: |
     set -e;
