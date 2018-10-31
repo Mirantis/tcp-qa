@@ -107,8 +107,9 @@ default_context:
   infra_primary_second_nic: eth2
   kubernetes_enabled: 'True'
   kubernetes_compute_count: 2
-  kubernetes_compute_rack01_single_subnet: 10.167.8
-  kubernetes_compute_rack01_tenant_subnet: 10.167.8
+  kubernetes_compute_rack01_hostname: cmp
+  kubernetes_compute_single_address_ranges: 10.167.8.103-10.167.8.104
+  kubernetes_compute_tenant_address_ranges: 10.167.8.103-10.167.8.104
   kubernetes_network_opencontrail_enabled: 'True'
   local_repositories: 'False'
   maas_deploy_address: 172.16.49.66
