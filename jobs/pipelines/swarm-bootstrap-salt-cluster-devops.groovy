@@ -24,6 +24,8 @@
 
 @Library('tcp-qa')_
 
+import groovy.xml.XmlUtil
+
 common = new com.mirantis.mk.Common()
 shared = new com.mirantis.system_qa.SharedPipeline()
 
@@ -85,6 +87,7 @@ node ("${PARENT_NODE_NAME}") {
             """)
         }
 
+        def xml_report_name = "deploy_salt.xml"
         try {
             stage("Run the 'underlay' and 'salt-deployed' fixtures to bootstrap salt cluster") {
                 // deploy_salt.xml
@@ -97,16 +100,22 @@ node ("${PARENT_NODE_NAME}") {
                     export PYTHONIOENCODING=UTF-8
                     export REPOSITORY_SUITE=${MCP_VERSION}
                     export TEST_GROUP=test_bootstrap_salt
-                    py.test -vvv -s -p no:django -p no:ipdb --junit-xml=deploy_salt.xml -k \${TEST_GROUP}
+                    py.test -vvv -s -p no:django -p no:ipdb --junit-xml=${xml_report_name} -k \${TEST_GROUP}
                     sleep 60  # wait for jenkins to start and IO calm down
                 """)
             }
 
-          } catch (e) {
+        } catch (e) {
               common.printMsg("Saltstack cluster deploy is failed", "purple")
-              shared.download_logs("deploy_salt")
-              throw e
-          } finally {
+              if (fileExists(xml_report_name)) {
+                  shared.download_logs("deploy_salt")
+                  def String junit_report_xml = readFile(xml_report_name)
+                  def String junit_report_xml_pretty = new XmlUtil().serialize(junit_report_xml)
+                  throw new Exception(junit_report_xml_pretty)
+              } else {
+                  throw e
+              }
+        } finally {
             // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
             // and report appropriate data to TestRail
             // TODO(ddmitriev): add checks for salt cluster
