@@ -18,14 +18,16 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: "Workaround to avoid reboot cmp nodes: bring OVS interfaces UP (PROD-24343)"
+- description: "Workaround to avoid reboot cmp nodes: apply patch to bring OVS interfaces UP (PROD-24343)"
   cmd: |
-    salt 'cmp*' cmd.run "ifup br-prv";
-    salt 'cmp*' cmd.run "ip l set up br-floating";
+    set -ex
+    git clone https://gerrit.mcp.mirantis.com/salt-formulas/linux /root/salt-formula-linux
+    cd /root/salt-formula-linux
+    git fetch https://gerrit.mcp.mirantis.com/salt-formulas/linux refs/changes/32/29432/3 && git checkout FETCH_HEAD
+    cp -r /root/salt-formula-linux/linux/ /srv/salt/env/prd/
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
-
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
 
