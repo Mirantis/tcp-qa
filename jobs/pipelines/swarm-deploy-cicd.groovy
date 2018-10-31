@@ -47,7 +47,7 @@ timeout(time: install_timeout + 600, unit: 'SECONDS') {
 
             try {
                 // Install core and cicd
-                stage("Run Jenkins job on salt-master [deploy_openstack:drivetrain]") {
+                stage("Run Jenkins job on salt-master [deploy_openstack:${env.STACK_INSTALL}]") {
                     shared.run_job_on_day01_node(env.STACK_INSTALL, install_timeout)
                 }
 

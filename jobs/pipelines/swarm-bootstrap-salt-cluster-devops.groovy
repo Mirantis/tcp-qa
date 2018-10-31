@@ -101,8 +101,9 @@ node ("${PARENT_NODE_NAME}") {
                     export REPOSITORY_SUITE=${MCP_VERSION}
                     export TEST_GROUP=test_bootstrap_salt
                     py.test -vvv -s -p no:django -p no:ipdb --junit-xml=${xml_report_name} -k \${TEST_GROUP}
-                    sleep 60  # wait for jenkins to start and IO calm down
                 """)
+                // Wait for jenkins to start and IO calm down
+                sleep(60000)
 
             } catch (e) {
                   common.printMsg("Saltstack cluster deploy is failed", "purple")
