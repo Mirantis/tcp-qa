@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fe5d2b26_931dc577",
+        "filename": "tcp_tests/templates/shared-openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-10-31T11:56:04Z",
+      "side": 1,
+      "message": "This will be like: \"state.sls nova.client openstack server list\"\n\nPlease separate \"openstack server list\" in a different step (with . /root/keystonercv3;)",
+      "range": {
+        "startLine": 138,
+        "startChar": 4,
+        "endLine": 138,
+        "endChar": 26
+      },
+      "revId": "10187a1a63fd126423431afd6bc1bf76447a95cb",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
