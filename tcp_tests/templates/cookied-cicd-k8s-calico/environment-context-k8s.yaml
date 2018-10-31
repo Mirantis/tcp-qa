@@ -109,8 +109,9 @@ nodes:
         ens4:
           role: single_ctl_calico
 
-    cmp001:
-      reclass_storage_name: kubernetes_compute_node01
+    # Generator-based computes. For compatibility only
+    cmp<<count>>:
+      reclass_storage_name: kubernetes_compute_rack01
       roles:
       - kubernetes_compute
       - linux_system_codename_xenial
@@ -120,43 +121,3 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl_calico
-          single_address: ${_param:kubernetes_compute_node01_address}
-
-    cmp002:
-      reclass_storage_name: kubernetes_compute_node02
-      roles:
-      - kubernetes_compute
-      - linux_system_codename_xenial
-      - salt_master_host
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: single_ctl_calico
-          single_address: ${_param:kubernetes_compute_node02_address}
-
-    cmp003:
-      reclass_storage_name: kubernetes_compute_node03
-      roles:
-      - kubernetes_compute
-      - linux_system_codename_xenial
-      - salt_master_host
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: single_ctl_calico
-          single_address: ${_param:kubernetes_compute_node03_address}
-
-    cmp004:
-      reclass_storage_name: kubernetes_compute_node04
-      roles:
-      - kubernetes_compute
-      - linux_system_codename_xenial
-      - salt_master_host
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: single_ctl_calico
-          single_address: ${_param:kubernetes_compute_node04_address}
