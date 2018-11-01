@@ -1,0 +1,161 @@
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-baremetal-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','bm-k8s-contrail') %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-k8s-contrail.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-upgrade-physical-inventory.yaml'] %}
+{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2410') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2411') %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN, CLUSTER_PRODUCT_MODELS='cicd infra kubernetes opencontrail stacklight2') }}
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='\*') }}
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+- description: Delete proxy inclusion from kvm
+  cmd: |
+    sed -i 's/- system.salt.control.cluster.kubernetes_proxy_cluster//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Excluding tenant network from cluster"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_address '${_param:single_address}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/compute.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "WR for PROD-24605"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters.kubernetes.pool.network.opencontrail.enabled True /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/common.yml;
+    sed -i "s/'True'/True/g" /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/kubernetes/common.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Use correct compute interface"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_iface 'ens11f1.${_param:control_vlan}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Rerun openssh after env model is generated
+  cmd: |
+    salt-call state.sls openssh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+{{ SHARED.MACRO_NETWORKING_WORKAROUNDS() }}
+
+- description: WR for correct acces to git repo from jenkins on cfg01 node
+  cmd: |
+    git clone --mirror https://github.com/Mirantis/mk-pipelines.git /home/repo/mk/mk-pipelines/;
+    git clone --mirror https://github.com/Mirantis/pipeline-library.git /home/repo/mcp-ci/pipeline-library/;
+    chown -R git:www-data /home/repo/mk/mk-pipelines/*;
+    chown -R git:www-data /home/repo/mcp-ci/pipeline-library/*;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Update minion information
+  cmd: |
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' mine.update &&
+    salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar && sleep 10
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Rerun openssh after env model is generated
+  cmd: |
+    salt-call state.sls openssh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Execute linux.network.host one more time after salt.minion to apply dynamically registered hosts on the cluster nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system' state.sls linux.network.host
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+#########################################
+# Configure all running salt minion nodes
+#########################################
+
+- description: Refresh pillars on all minions
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all salt resources
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.sync_all && sleep 5
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show  reclass-salt --top for generated nodes
+  cmd: reclass-salt --top -u /srv/salt/reclass/nodes/_generated/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
+
+- description: Temporary WR
+  cmd: |
+    ssh-keyscan cfg01 > /var/lib/jenkins/.ssh/known_hosts || true;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+  
+- description: Enable Jenkins
+  cmd: |
+    systemctl enable jenkins || true;
+    systemctl restart jenkins || true;
+    sleep 5;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: true
+
+- description: run jenkins.client
+  cmd: |
+    salt-call state.sls jenkins.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
