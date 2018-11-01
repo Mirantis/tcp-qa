@@ -192,3 +192,103 @@ class TestOpenContrail(object):
             show_step(9)
             k8s_deployed.run_conformance(raise_on_err=False)
         LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
+    def test_contrail4_k8s_pipeline_deploy(self, show_step, underlay,
+                                           salt_deployed):
+        """Runner for Juniper contrail-tests
+
+        Scenario:
+            1. Prepare salt on hosts.
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Deploy k8s via pipelines
+            5. Deploy CICD via pipelines
+        """
+        nodes = underlay.node_names()
+        LOG.info("Nodes - {}".format(nodes))
+        cfg_node = [node for node in nodes
+                    if str(node).startswith('cfg')][0]
+        salt_api = salt_deployed.get_pillar(
+            cfg_node, '_param:jenkins_salt_api_url')
+        salt_api = salt_api[0].get(cfg_node)
+        jenkins = JenkinsClient(
+            host='http://172.17.41.3:8081',
+            username='admin',
+            password='r00tme')
+
+        # Creating param list for openstack deploy
+        params = jenkins.make_defults_params('deploy_openstack')
+        params['SALT_MASTER_URL'] = salt_api
+        params['STACK_INSTALL'] = 'core,kvm,k8s,contrail'
+        show_step(4)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy openstack was failed"
+
+        # Changing param for cicd deploy
+        show_step(5)
+        params['STACK_INSTALL'] = 'cicd'
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 2)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy CICD was failed"
+
+    @pytest.mark.fail_snapshot
+    def test_contrail4_os_pipeline_deploy(self, show_step, underlay,
+                                          salt_deployed):
+        """Runner for Juniper contrail-tests
+
+        Scenario:
+            1. Prepare salt on hosts.
+            2. Setup controller nodes
+            3. Setup compute nodes
+            4. Deploy openstack via pipelines
+            5. Deploy CICD via pipelines
+        """
+        nodes = underlay.node_names()
+        LOG.info("Nodes - {}".format(nodes))
+        cfg_node = [node for node in nodes
+                    if str(node).startswith('cfg')][0]
+        salt_api = salt_deployed.get_pillar(
+            cfg_node, '_param:jenkins_salt_api_url')
+        salt_api = salt_api[0].get(cfg_node)
+        jenkins = JenkinsClient(
+            host='http://172.16.49.66:8081',
+            username='admin',
+            password='r00tme')
+
+        # Creating param list for openstack deploy
+        params = jenkins.make_defults_params('deploy_openstack')
+        params['SALT_MASTER_URL'] = salt_api
+        params['STACK_INSTALL'] = 'core,kvm,openstack,contrail'
+        show_step(4)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy openstack was failed"
+
+        # Changing param for cicd deploy
+        show_step(5)
+        params['STACK_INSTALL'] = 'cicd'
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 2)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy CICD was failed"
