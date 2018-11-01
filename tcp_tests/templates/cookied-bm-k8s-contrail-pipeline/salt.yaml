@@ -1,0 +1,26 @@
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-bm-k8s-contrail-pipeline/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-baremetal-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','bm-k8s-contrail') %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-k8s-contrail.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-upgrade-physical-inventory.yaml'] %}
+{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2410') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2411') %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+- description: run jenkins.client
+  cmd: |
+    echo "TEST TEST TEST";
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
