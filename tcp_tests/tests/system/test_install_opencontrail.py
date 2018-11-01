@@ -14,6 +14,7 @@
 
 import pytest
 
+from tcp_tests.managers.jenkins.client import JenkinsClient
 from tcp_tests import logger
 from tcp_tests import settings
 
@@ -191,4 +192,139 @@ class TestOpenContrail(object):
         if config.k8s.k8s_conformance_run:
             show_step(9)
             k8s_deployed.run_conformance(raise_on_err=False)
+        LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
+    def test_contrail4_k8s_pipeline_deploy(self, show_step, underlay,
+                                           config, salt_deployed):
+        """Runner for kubernetes with contrail tests
+
+        Scenario:
+            1. Prepare salt on hosts.
+            2. Setup config node
+            3. Get needed credentials
+            4. Deploy CICD via pipelines
+            5. Deploy k8s via cicd pipelines
+        """
+        nodes = underlay.node_names()
+        LOG.info("Nodes - {}".format(nodes))
+        show_step(3)
+
+        cfg_ip = salt_deployed.host
+        salt_api = 'http://{}:6969'.format(cfg_ip)
+        jenkins = JenkinsClient(
+            host='http://{}:8081'.format(cfg_ip),
+            username='admin',
+            password='r00tme')
+
+        params = jenkins.make_defults_params('deploy_openstack')
+        params['SALT_MASTER_URL'] = salt_api
+        params['STACK_INSTALL'] = 'core,kvm,cicd'
+
+        show_step(3)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy cicd stack was failed"
+
+        show_step(4)
+
+        jenkins_target = 'I@docker:client:stack:jenkins'
+        jenkins_user = salt_deployed.get_pillar(
+            jenkins_target, 'jenkins:client:master:username')[0]
+        jenkins_passwd = salt_deployed.get_pillar(
+            jenkins_target, 'jenkins:client:master:password')[0]
+        jenkins_host = salt_deployed.get_pillar(
+            jenkins_target, 'jenkins:client:master:host')[0]
+        jenkins_port = salt_deployed.get_pillar(
+            jenkins_target, 'jenkins:client:master:port')[0]
+
+        jenkins = JenkinsClient(
+            host='http://{host}:{port}'.format(host=jenkins_host,
+                                               port=jenkins_port),
+            username=jenkins_user, password=jenkins_passwd)
+
+        params['STACK_INSTALL'] = 'k8s,contrail'
+        show_step(5)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy k8s,OC stack was failed"
+
+        LOG.info("*************** DONE **************")
+
+    @pytest.mark.fail_snapshot
+    def test_contrail4_os_pipeline_deploy(self, show_step, underlay,
+                                          config, salt_deployed):
+        """Runner for OS with OC tests
+
+        Scenario:
+            1. Prepare salt on hosts.
+            2. Setup config node
+            3. Get needed credentials
+            4. Deploy CICD via pipelines
+            5. Deploy OPENSTACK via cicd pipelines
+        """
+
+        nodes = underlay.node_names()
+        LOG.info("Nodes - {}".format(nodes))
+        show_step(3)
+
+        cfg_ip = salt_deployed.host
+        salt_api = 'http://{}:6969'.format(cfg_ip)
+        jenkins = JenkinsClient(
+            host='http://{}:8081'.format(cfg_ip),
+            username='admin',
+            password='r00tme')
+
+        params = jenkins.make_defults_params('deploy_openstack')
+        params['SALT_MASTER_URL'] = salt_api
+        params['STACK_INSTALL'] = 'core,kvm,cicd'
+
+        show_step(3)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy cicd stack was failed"
+
+        show_step(4)
+
+        jenkins_target = 'I@docker:client:stack:jenkins'
+        jenkins_user = salt_deployed.get_pillar(
+            jenkins_target, 'jenkins:client:master:username')[0]
+        jenkins_passwd = salt_deployed.get_pillar(
+            jenkins_target, 'jenkins:client:master:password')[0]
+        jenkins_host = salt_deployed.get_pillar(
+            jenkins_target, 'jenkins:client:master:host')[0]
+        jenkins_port = salt_deployed.get_pillar(
+            jenkins_target, 'jenkins:client:master:port')[0]
+
+        jenkins = JenkinsClient(
+            host='http://{host}:{port}'.format(host=jenkins_host,
+                                               port=jenkins_port),
+            username=jenkins_user, password=jenkins_passwd)
+
+        params['STACK_INSTALL'] = 'openstack,contrail'
+        show_step(5)
+        build = jenkins.run_build('deploy_openstack', params)
+        jenkins.wait_end_of_build(
+            name=build[0],
+            build_id=build[1],
+            timeout=60 * 60 * 4)
+        result = jenkins.build_info(name=build[0],
+                                    build_id=build[1])['result']
+        assert result == 'SUCCESS', "Deploy OS,OC stack was failed"
+
         LOG.info("*************** DONE **************")
