@@ -134,7 +134,7 @@
 
 - description: Create nova resources
   cmd: |
-    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@nova:client' match.pillar 'I@nova:client' ; then
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@nova:client' match.pillar 'nova:client' ; then
       salt --hard-crash --state-output=mixed --state-verbose=False -C "I@nova:client" state.sls nova.client
     fi
   node_name: {{ HOSTNAME_CFG01 }}
