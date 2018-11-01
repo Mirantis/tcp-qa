@@ -1,5 +1,5 @@
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import HOSTNAME_CTL01 with context %}
 
 {%- macro MACRO_CHECK_SYSTEMCTL() %}
 {#######################################}
