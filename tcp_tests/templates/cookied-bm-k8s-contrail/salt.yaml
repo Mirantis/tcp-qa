@@ -1,9 +1,9 @@
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import DOMAIN_NAME with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM01 with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM02 with context %}
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_KVM03 with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import DOMAIN_NAME with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import HOSTNAME_KVM01 with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import HOSTNAME_KVM02 with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import HOSTNAME_KVM03 with context %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
