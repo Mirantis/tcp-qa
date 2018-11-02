@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bb7ea312_335f9fbb",
+        "filename": "tcp_tests/tests/system/test_pipeline_deploy.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-02T15:32:41Z",
+      "side": 1,
+      "message": "Salt manager has this ip:\n\n  cfg_ip \u003d salt_deployed.host",
+      "range": {
+        "startLine": 45,
+        "startChar": 0,
+        "endLine": 54,
+        "endChar": 47
+      },
+      "revId": "b09ffb1405a958c2111e16e42e5501492ede532f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3fcc1f40_3c0b558a",
+        "filename": "tcp_tests/tests/system/test_pipeline_deploy.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-02T15:32:41Z",
+      "side": 1,
+      "message": "Please use docker:client target , not the node name:\n\n  ip \u003d $(salt -C I@docker:client:stack:jenkins pillar.get jenkins:client:master:host)\n  port \u003d $(salt -C I@docker:client:stack:jenkins pillar.get jenkins:client:master:port)\n  user \u003d $(salt -C I@docker:client:stack:jenkins pillar.get jenkins:client:master:username)\n  pass \u003d $(salt -C I@docker:client:stack:jenkins pillar.get jenkins:client:master:password)",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 50
+      },
+      "revId": "b09ffb1405a958c2111e16e42e5501492ede532f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
