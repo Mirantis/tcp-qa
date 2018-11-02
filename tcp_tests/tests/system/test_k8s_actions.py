@@ -143,6 +143,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_metallb
     def test_k8s_metallb(self, show_step, config, k8s_deployed):
         """Enable metallb in cluster and do basic tests
 
@@ -316,6 +317,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_dashboard
     def test_k8s_dashboard(self, show_step, config,
                            salt_deployed, k8s_deployed):
         """Test dashboard setup
@@ -391,6 +393,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_ingress_nginx
     def test_k8s_ingress_nginx(self, show_step, config,
                                salt_deployed, k8s_deployed):
         """Test ingress-nginx configured and working with metallb
