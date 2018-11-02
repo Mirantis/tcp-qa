@@ -1,4 +1,4 @@
-{% from 'cookied-bm-mcp-pike-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-bm-k8s-contrail/underlay.yaml' import HOSTNAME_CFG01 with context %}
 {% import 'shared-sl-tests.yaml' as SHARED_SL_TESTS with context %}
 
 # Install docker swarm

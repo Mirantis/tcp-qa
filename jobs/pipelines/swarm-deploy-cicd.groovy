@@ -7,7 +7,8 @@
  *   PARENT_NODE_NAME              Name of the jenkins slave to create the environment
  *   PARENT_WORKSPACE              Path to the workspace of the parent job to use tcp-qa repo
  *   ENV_NAME                      Fuel-devops environment name
- *   STACK_INSTALL                 Stacks to install using Jenkins on cfg01 node: "core:1800,cicd:1800", where 1800 is timeout
+ *   STACK_INSTALL                 Stacks to install using Jenkins on cfg01 node: "core,cicd"
+ *   STACK_INSTALL_TIMEOUT         Stacks installation timeout
  *   TCP_QA_REFS                   Reference to the tcp-qa change on review.gerrithub.io, like refs/changes/46/418546/41
  *   SHUTDOWN_ENV_ON_TEARDOWN      optional, shutdown fuel-devops environment at the end of the job
  *
@@ -24,46 +25,44 @@ if (! env.PARENT_NODE_NAME) {
 
 currentBuild.description = "${PARENT_NODE_NAME}:${ENV_NAME}"
 
-node ("${PARENT_NODE_NAME}") {
-    if (! fileExists("${PARENT_WORKSPACE}")) {
-        error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
-    }
-    dir("${PARENT_WORKSPACE}") {
+def install_timeout = env.STACK_INSTALL_TIMEOUT.toInteger()
 
-        if (! env.STACK_INSTALL) {
-            error "'STACK_INSTALL' must contain one or more comma separated stack names for [deploy_openstack] pipeline"
+timeout(time: install_timeout + 600, unit: 'SECONDS') {
+
+    node ("${PARENT_NODE_NAME}") {
+        if (! fileExists("${PARENT_WORKSPACE}")) {
+            error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
         }
+        dir("${PARENT_WORKSPACE}") {
 
-        if (env.TCP_QA_REFS) {
-            stage("Update working dir to patch ${TCP_QA_REFS}") {
-                shared.update_working_dir()
+            if (! env.STACK_INSTALL) {
+                error "'STACK_INSTALL' must contain one or more comma separated stack names for [deploy_openstack] pipeline"
             }
-        }
 
-        // Install core and cicd
-        def stack
-        def timeout
-
-        for (element in "${env.STACK_INSTALL}".split(",")) {
-            if (element.contains(':')) {
-                (stack, timeout) = element.split(':')
-            } else {
-                stack = element
-                timeout = '1800'
+            if (env.TCP_QA_REFS) {
+                stage("Update working dir to patch ${TCP_QA_REFS}") {
+                    shared.update_working_dir()
+                }
             }
 
             try {
-                stage("Run Jenkins job on salt-master [deploy_openstack:${stack}]") {
-                    shared.run_job_on_day01_node(stack, timeout)
+                // Install core and cicd
+                stage("Run Jenkins job on salt-master [deploy_openstack:drivetrain]") {
+                    shared.run_job_on_day01_node(env.STACK_INSTALL, install_timeout)
                 }
 
-                stage("Sanity check the deployed component [${stack}]") {
-                    shared.sanity_check_component(stack)
-                }
+                for (stack in "${env.STACK_INSTALL}".split(",")) {
+                    stage("Sanity check the deployed component [${stack}]") {
+                        shared.sanity_check_component(stack)
+                    }
+                    stage("Make environment snapshot [${stack}_deployed]") {
+                        shared.devops_snapshot(stack)
+                    }
+                } // for
 
             } catch (e) {
                 common.printMsg("Job is failed", "purple")
-                shared.download_logs("deploy_${stack}")
+                shared.download_logs("deploy_drivetrain")
                 throw e
             } finally {
                 // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
@@ -76,10 +75,6 @@ node ("${PARENT_NODE_NAME}") {
                 }
             }
 
-            stage("Make environment snapshot [${stack}_deployed]") {
-                shared.devops_snapshot(stack)
-            }
-
-        } // for
-    } // dir
-} // node
+        } // dir
+    } // node
+}

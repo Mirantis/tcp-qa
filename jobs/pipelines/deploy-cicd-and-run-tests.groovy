@@ -21,12 +21,12 @@ def deploy(shared, common, steps) {
 
         stage("Install core infrastructure and deploy CICD nodes") {
             // steps: env.DRIVETRAIN_STACK_INSTALL
-            shared.swarm_deploy_cicd(env.DRIVETRAIN_STACK_INSTALL)
+            shared.swarm_deploy_cicd(env.DRIVETRAIN_STACK_INSTALL, env.DRIVETRAIN_STACK_INSTALL_TIMEOUT)
         }
 
         stage("Deploy platform components") {
             // steps: env.PLATFORM_STACK_INSTALL
-            shared.swarm_deploy_platform(env.PLATFORM_STACK_INSTALL)
+            shared.swarm_deploy_platform(env.PLATFORM_STACK_INSTALL, env.PLATFORM_STACK_INSTALL_TIMEOUT)
         }
 
         currentBuild.result = 'SUCCESS'

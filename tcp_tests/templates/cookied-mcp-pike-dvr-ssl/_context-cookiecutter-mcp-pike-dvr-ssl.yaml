@@ -1,4 +1,7 @@
 default_context:
+  barbican_backend: dogtag
+  barbican_enabled: 'False'
+  auditd_enabled: 'True'
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   cicd_enabled: 'False'
@@ -41,16 +44,20 @@ default_context:
   local_repositories: 'False'
   maas_deploy_address: 192.168.10.90
   maas_hostname: cfg01
+  maas_enabled: 'False'
   mcp_version: stable
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
   openstack_benchmark_node01_address: 172.16.10.95
   openstack_benchmark_node01_hostname: bmk01
   openstack_cluster_size: compact
-  openstack_compute_count: '100'
+  openstack_compute_count: '2'
   openstack_compute_rack01_hostname: cmp
   openstack_compute_rack01_single_subnet: 172.16.10
   openstack_compute_rack01_tenant_subnet: 10.1.0
+  openstack_compute_single_address_ranges: 172.16.10.105-172.16.10.106
+  openstack_compute_deploy_address_ranges: 192.168.10.105-192.168.10.106
+  openstack_compute_tenant_address_ranges: 10.1.0.105-10.1.0.106
   openstack_control_address: 172.16.10.100
   openstack_control_hostname: ctl
   openstack_control_node01_address: 172.16.10.101
@@ -100,6 +107,11 @@ default_context:
   openstack_proxy_node02_address: 172.16.10.122
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: 172.16.10.19
+  openstack_dns_hostname: dns
+  openstack_dns_node01_address: 172.16.10.113
+  openstack_dns_node01_hostname: dns01
+  openstack_dns_node02_address: 172.16.10.114
+  openstack_dns_node02_hostname: dns02
   openstack_version: pike
   oss_enabled: 'False'
   oss_node03_address: ${_param:stacklight_monitor_node03_address}
@@ -146,34 +158,34 @@ default_context:
   salt_master_hostname: cfg01
   salt_master_management_address: 192.168.10.90
   shared_reclass_url: ssh://mcp-jenkins@gerrit.mcp.mirantis.com:29418/salt-models/reclass-system.git
+  fluentd_enabled: 'True'
   stacklight_enabled: 'True'
-  stacklight_log_address: 172.16.10.70
-  stacklight_log_hostname: mon
-  stacklight_log_node01_address: 172.16.10.107
-  stacklight_log_node01_hostname: mon01
-  stacklight_log_node02_address: 172.16.10.108
-  stacklight_log_node02_hostname: mon02
-  stacklight_log_node03_address: 172.16.10.109
-  stacklight_log_node03_hostname: mon03
+  stacklight_log_address: 172.16.10.60
+  stacklight_log_hostname: log
+  stacklight_log_node01_address: 172.16.10.61
+  stacklight_log_node01_hostname: log01
+  stacklight_log_node02_address: 172.16.10.62
+  stacklight_log_node02_hostname: log02
+  stacklight_log_node03_address: 172.16.10.63
+  stacklight_log_node03_hostname: log03
   stacklight_monitor_address: 172.16.10.70
   stacklight_monitor_hostname: mon
-  stacklight_monitor_node01_address: 172.16.10.107
+  stacklight_monitor_node01_address: 172.16.10.71
   stacklight_monitor_node01_hostname: mon01
-  stacklight_monitor_node02_address: 172.16.10.108
+  stacklight_monitor_node02_address: 172.16.10.72
   stacklight_monitor_node02_hostname: mon02
-  stacklight_monitor_node03_address: 172.16.10.109
+  stacklight_monitor_node03_address: 172.16.10.73
   stacklight_monitor_node03_hostname: mon03
-  stacklight_notification_address: alerts@localhost
-  stacklight_notification_smtp_host: 127.0.0.1
-  stacklight_telemetry_address: 172.16.10.70
-  stacklight_telemetry_hostname: mon
-  stacklight_telemetry_node01_address: 172.16.10.107
-  stacklight_telemetry_node01_hostname: mon01
-  stacklight_telemetry_node02_address: 172.16.10.108
-  stacklight_telemetry_node02_hostname: mon02
-  stacklight_telemetry_node03_address: 172.16.10.109
-  stacklight_telemetry_node03_hostname: mon03
+  stacklight_telemetry_address: 172.16.10.85
+  stacklight_telemetry_hostname: mtr
+  stacklight_telemetry_node01_address: 172.16.10.86
+  stacklight_telemetry_node01_hostname: mtr01
+  stacklight_telemetry_node02_address: 172.16.10.87
+  stacklight_telemetry_node02_hostname: mtr02
+  stacklight_telemetry_node03_address: 172.16.10.88
+  stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
+  stacklight_long_term_storage_type: influxdb
   static_ips_on_deploy_network_enabled: 'False'
   tenant_network_gateway: 10.1.0.1
   tenant_network_netmask: 255.255.255.0
@@ -181,3 +193,24 @@ default_context:
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
+  rsync_fernet_rotation: 'True'
+  compute_padding_with_zeros: False
+  designate_backend: bind
+  designate_enabled: 'False'
+  nova_vnc_tls_enabled: 'True'
+  galera_ssl_enabled: 'True'
+  openstack_mysql_x509_enabled: 'True'
+  rabbitmq_ssl_enabled: 'True'
+  openstack_rabbitmq_x509_enabled: 'True'
+  openstack_internal_protocol: 'https'
+  tenant_telemetry_enabled: 'True'
+  gnocchi_aggregation_storage: file
+  manila_enabled: 'False'
+  manila_share_backend: 'lvm'
+  manila_lvm_volume_name: 'manila-volume'
+  manila_lvm_devices: '/dev/vdc'
+  openstack_share_address: 172.16.10.203
+  openstack_share_node01_address: 172.16.10.204
+  openstack_share_node01_deploy_address: 192.168.10.204
+  openstack_share_hostname: share
+  openstack_share_node01_hostname: share01

@@ -102,6 +102,14 @@
 {%- endmacro %}
 
 {%- macro MACRO_INSTALL_NOVA() %}
+
+- description: Deploy nginx proxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls nginx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
 - description: Install nova service on primary node
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C "I@nova:controller and *01*" state.sls nova.controller
@@ -128,6 +136,15 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C "I@keystone:server" cmd.run ". /root/keystonercv3;
     openstack server list"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Create nova resources
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@nova:client' match.pillar 'nova:client' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C "I@nova:client" state.sls nova.client
+    fi
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -228,13 +245,6 @@
 - description: Deploy horizon dashboard
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@horizon:server' state.sls horizon
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Deploy nginx proxy
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@nginx:server' state.sls nginx
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
