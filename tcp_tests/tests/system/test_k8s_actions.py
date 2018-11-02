@@ -143,6 +143,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_metallb
     def test_k8s_metallb(self, show_step, config, k8s_deployed):
         """Enable metallb in cluster and do basic tests
 
@@ -157,7 +158,7 @@ class TestMCPK8sActions(object):
             8. Delete deployments
         """
         show_step(1)
-        if not config.k8s_deploy.kubernetes_metallb_enabled:
+        if not k8s_deployed.is_metallb_enabled:
             pytest.skip("Test requires metallb addon enabled")
 
         show_step(2)
@@ -316,6 +317,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_dashboard
     def test_k8s_dashboard(self, show_step, config,
                            salt_deployed, k8s_deployed):
         """Test dashboard setup
@@ -391,6 +393,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_ingress_nginx
     def test_k8s_ingress_nginx(self, show_step, config,
                                salt_deployed, k8s_deployed):
         """Test ingress-nginx configured and working with metallb
@@ -405,9 +408,9 @@ class TestMCPK8sActions(object):
             6. Try to reach test1 and test2 deployment services endpoints
         """
         show_step(1)
-        if not config.k8s_deploy.kubernetes_metallb_enabled:
+        if not k8s_deployed.is_metallb_enabled:
             pytest.skip("Test requires metallb addon enabled")
-        if not config.k8s_deploy.kubernetes_ingressnginx_enabled:
+        if not k8s_deployed.is_ingress_nginx_enabled:
             pytest.skip("Test requires ingress-nginx addon enabled")
 
         show_step(2)
