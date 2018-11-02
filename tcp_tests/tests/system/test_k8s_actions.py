@@ -143,6 +143,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_metallb
     def test_k8s_metallb(self, show_step, config, k8s_deployed):
         """Enable metallb in cluster and do basic tests
 
@@ -316,6 +317,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_dashboard
     def test_k8s_dashboard(self, show_step, config,
                            salt_deployed, k8s_deployed):
         """Test dashboard setup
@@ -391,6 +393,7 @@ class TestMCPK8sActions(object):
 
     @pytest.mark.grap_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_ingress_nginx
     def test_k8s_ingress_nginx(self, show_step, config,
                                salt_deployed, k8s_deployed):
         """Test ingress-nginx configured and working with metallb
@@ -405,9 +408,25 @@ class TestMCPK8sActions(object):
             6. Try to reach test1 and test2 deployment services endpoints
         """
         show_step(1)
-        if not config.k8s_deploy.kubernetes_metallb_enabled:
+        ctl_tgt = k8s_deployed.controller_minion_id
+        LOG.info("Controller target: {}".format(ctl_tgt))
+
+        result = salt_deployed.get_pillar(
+            tgt=ctl_tgt, pillar='kubernetes:common:addons:metallb:enabled')
+        metallb = result[0].get(ctl_tgt, False)
+        LOG.info("{} kubernetes:common:addons:metallb:enabled: {}\n{}"
+                 .format(ctl_tgt, bool(metallb), result))
+
+        result = salt_deployed.get_pillar(
+            tgt=ctl_tgt,
+            pillar='kubernetes:common:addons:ingress-nginx:enabled')
+        ingress_nginx = result[0].get(ctl_tgt, False)
+        LOG.info("{} kubernetes:common:addons:ingress-nginx:enabled: {}\n{}"
+                 .format(ctl_tgt, bool(ingress_nginx), result))
+
+        if not metallb:
             pytest.skip("Test requires metallb addon enabled")
-        if not config.k8s_deploy.kubernetes_ingressnginx_enabled:
+        if not ingress_nginx:
             pytest.skip("Test requires ingress-nginx addon enabled")
 
         show_step(2)
