@@ -9,6 +9,8 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_static_ctl
+        ens5:
+          role: single_storage_dhcp
 
     kvm01:
       reclass_storage_name: infra_kvm_node01
@@ -86,6 +88,8 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl_calico
+        ens5:
+          role: single_storage_dhcp
 
     ctl02:
       reclass_storage_name: kubernetes_control_node02
@@ -97,6 +101,8 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl_calico
+        ens5:
+          role: single_storage_dhcp
 
     ctl03:
       reclass_storage_name: kubernetes_control_node03
@@ -108,6 +114,8 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl_calico
+        ens5:
+          role: single_storage_dhcp
 
     prx01:
       reclass_storage_name: kubernetes_proxy_node01
@@ -143,6 +151,8 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl_calico
+        ens5:
+          role: single_storage_dhcp
 
     mon01:
       reclass_storage_name: stacklight_server_node01

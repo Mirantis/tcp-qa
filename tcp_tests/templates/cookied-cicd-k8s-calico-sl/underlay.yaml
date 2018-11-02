@@ -176,7 +176,7 @@ template:
 
           external:
             address_pool: external-pool01
-            dhcp: false
+            dhcp: true
             forward:
               mode: nat
 
@@ -212,20 +212,26 @@ template:
                   bus: ide
                   # source_image: !os_env CFG01_CONFIG_PATH # no source image required.
                                                             # it will be uploaded after config drive generation
-              interfaces:
+              interfaces: &all_interfaces
                 - label: ens3
                   l2_network_device: admin
                   interface_model: *interface_model
                 - label: ens4
                   l2_network_device: private
                   interface_model: *interface_model
-              network_config:
+                - label: ens5
+                  l2_network_device: external
+                  interface_model: *interface_model
+              network_config: &all_network_config
                 ens3:
                   networks:
                     - admin
                 ens4:
                   networks:
                     - private
+                ens5:
+                  networks:
+                    - external
 
           - name: {{ HOSTNAME_KVM01 }}
             role: salt_minion
@@ -418,8 +424,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_CTL02 }}
             role: salt_minion
@@ -444,8 +450,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_CTL03 }}
             role: salt_minion
@@ -470,8 +476,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
@@ -496,8 +502,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_CMP02 }}
             role: salt_minion
@@ -522,8 +528,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_CMP03 }}
             role: salt_minion
@@ -548,8 +554,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_CMP04 }}
             role: salt_minion
@@ -574,8 +580,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_MON01 }}
             role: salt_minion
@@ -834,8 +840,8 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604_swp
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
 
           - name: {{ HOSTNAME_PRX02 }}
             role: salt_minion
@@ -860,5 +866,5 @@ template:
                   cloudinit_meta_data: *cloudinit_meta_data
                   cloudinit_user_data: *cloudinit_user_data_1604_swp
 
-              interfaces: *interfaces
-              network_config: *network_config
+              interfaces: *all_interfaces
+              network_config: *all_network_config
