@@ -41,7 +41,6 @@ class SLManager(ExecuteCommandsMixin):
     def install(self, commands, label='Install SL services'):
         self.execute_commands(commands, label=label)
         self.__config.stack_light.stacklight_installed = True
-        self.__config.stack_light.sl_vip_host = self.get_sl_vip()
 
     def get_sl_vip(self):
         tgt = 'I@prometheus:server:enabled:True'
@@ -76,6 +75,7 @@ class SLManager(ExecuteCommandsMixin):
     @property
     def api(self):
         if self._p_client is None:
+            self.__config.stack_light.sl_vip_host = self.get_sl_vip()
             self._p_client = prometheus_client.PrometheusClient(
                 host=self.__config.stack_light.sl_vip_host,
                 port=self.__config.stack_light.sl_prometheus_port,
