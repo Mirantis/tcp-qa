@@ -106,7 +106,11 @@ class Testk8sInstall(object):
             # todo (tleontovich) add asserts here and extend the tests
             # with acceptance criteria
         show_step(10)
+
         # Run SL component tests
+        stacklight_deployed.setup_sl_functional_tests(
+                'cfg01',
+        )
         stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
@@ -163,6 +167,9 @@ class Testk8sInstall(object):
         stacklight_deployed.check_prometheus_targets(mon_nodes)
         show_step(6)
         # Run SL component tests
+        stacklight_deployed.setup_sl_functional_tests(
+                'cfg01',
+        )
         stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
