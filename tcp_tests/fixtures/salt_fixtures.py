@@ -71,13 +71,7 @@ def salt_deployed(revert_snapshot, request, config,
         LOG.info("############ Executing command ####### {0}".format(commands))
         salt_actions.install(commands)
 
-        salt_nodes = salt_actions.get_ssh_data()
-        config.underlay.ssh = config.underlay.ssh + \
-            [node for node in salt_nodes
-             if not any(node['node_name'] == n['node_name']
-                        for n in config.underlay.ssh)]
-        underlay.config_ssh = []
-        underlay.add_config_ssh(config.underlay.ssh)
+        salt_actions.update_ssh_data_from_minions()
 
         hardware.create_snapshot(ext.SNAPSHOT.salt_deployed)
         salt_actions.sync_time()
