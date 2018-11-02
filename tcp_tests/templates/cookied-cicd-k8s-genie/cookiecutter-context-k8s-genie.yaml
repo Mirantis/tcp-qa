@@ -174,5 +174,8 @@ default_context:
   kubernetes_network_genie_enabled: 'True'
   kubernetes_genie_default_plugin: 'calico'
   kubernetes_virtlet_enabled: 'True'
-  kubernetes_compute_node01_hostname: cmp001
-  kubernetes_compute_node02_hostname: cmp002
+
+  kubernetes_metallb_enabled: 'True'
+  metallb_addresses: 172.17.16.150-172.17.16.190
+  kubernetes_ingressnginx_enabled: 'True'
+  kubernetes_ingressnginx_controller_replicas: 2

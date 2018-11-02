@@ -52,7 +52,7 @@ node ("${PARENT_NODE_NAME}") {
             def tcpqa_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"nosetests.xml\"", returnStdout: true)
             def tempest_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"report_*.xml\"", returnStdout: true)
             def k8s_conformance_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_result.xml\"", returnStdout: true)
-            def stacklight_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"stacklight_report.xml\"", returnStdout: true)
+            def stacklight_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"*report.xml\"", returnStdout: true)
             common.printMsg(deployment_report_name ? "Found deployment report: ${deployment_report_name}" : "Deployment report not found", deployment_report_name ? "blue" : "red")
             common.printMsg(tcpqa_report_name ? "Found tcp-qa report: ${tcpqa_report_name}" : "tcp-qa report not found", tcpqa_report_name ? "blue" : "red")
             common.printMsg(tempest_report_name ? "Found tempest report: ${tempest_report_name}" : "tempest report not found", tempest_report_name ? "blue" : "red")
