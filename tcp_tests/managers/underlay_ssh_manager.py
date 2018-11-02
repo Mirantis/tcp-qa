@@ -39,6 +39,7 @@ class UnderlaySSHManager(object):
           [
             {
               node_name: node1,
+              minion_id: node1.local,
               address_pool: 'public-pool01',
               host: ,
               port: ,
@@ -50,6 +51,7 @@ class UnderlaySSHManager(object):
             },
             {
               node_name: node1,
+              minion_id: node1.local,
               address_pool: 'private-pool01',
               host:
               port:
@@ -61,6 +63,7 @@ class UnderlaySSHManager(object):
             },
             {
               node_name: node2,
+              minion_id: node2.local,
               address_pool: 'public-pool01',
               keys_source_host: node1
               ...
@@ -96,6 +99,7 @@ class UnderlaySSHManager(object):
             ssh_data = {
                 # Required keys:
                 'node_name': ssh['node_name'],
+                'minion_id': ssh['minion_id'],
                 'host': ssh['host'],
                 'login': ssh['login'],
                 'password': ssh['password'],
@@ -122,6 +126,7 @@ class UnderlaySSHManager(object):
             ssh_data = {
                 # Required keys:
                 'node_name': ssh['node_name'],
+                'minion_id': ssh['minion_id'],
                 'host': ssh['host'],
                 'login': ssh['login'],
                 'password': ssh['password'],

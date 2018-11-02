@@ -188,13 +188,14 @@ class SaltManager(ExecuteCommandsMixin):
         if len(hosts) == 0:
             raise LookupError("Hosts is empty or absent")
 
-        def host(node_name, ip):
+        def host(minion_id, ip):
             return {
                 'roles': ['salt_minion'],
                 'keys': [
                     k['private'] for k in self.__config.underlay.ssh_keys
                 ],
-                'node_name': node_name,
+                'node_name': minion_id,
+                'minion_id': minion_id,
                 'host': ip,
                 'address_pool': pool_name,
                 'login': settings.SSH_NODE_CREDENTIALS['login'],
@@ -215,6 +216,17 @@ class SaltManager(ExecuteCommandsMixin):
                        net=pool_net,
                        host_list={k: v['ipv4'] for k, v in hosts.items()}))
             raise StopIteration(msg)
+
+    def update_ssh_data_from_minions():
+        salt_nodes = self.get_ssh_data()
+        nodes_list = \
+            [node for node in salt_nodes
+             if not any(node['node_name'] == n['node_name']
+                        for n in self.__config.underlay.ssh)]
+        self.__config.underlay.ssh = self.__config.underlay.ssh + nodes_list
+        #self.__underlay.add_config_ssh(nodes_list)
+        self.__underlay.config_ssh = []
+        self.__underlay.add_config_ssh(self.__config.underlay.ssh)
 
     def service_status(self, tgt, service):
         result = self.local(tgt=tgt, fun='service.status', args=service)
