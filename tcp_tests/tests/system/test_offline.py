@@ -430,13 +430,7 @@ class TestOfflineDeployment(object):
             cmd='salt "*" ssh.set_auth_key ubuntu '
                 '"$(ssh-keygen -y -f ~/.ssh/id_rsa | cut -d " " -f 2)"')
 
-        salt_nodes = salt_deployed.get_ssh_data()
-        nodes_list = \
-            [node for node in salt_nodes
-             if not any(node['node_name'] == n['node_name']
-                        for n in config.underlay.ssh)]
-        config.underlay.ssh = config.underlay.ssh + nodes_list
-        underlay.add_config_ssh(nodes_list)
+        salt_deployed.update_ssh_data_from_minions()
 
         time.sleep(120)  # debug sleep
         cmd = "salt '*' test.ping"
