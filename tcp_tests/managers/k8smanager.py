@@ -112,6 +112,15 @@ class K8SManager(ExecuteCommandsMixin):
         names.sort()
         return names[0]
 
+    @property
+    def controller_minion_id(self):
+        """ Return node name of controller node that used for all actions """
+        minion_ids = [minion_id['minion_id'] for minion_id in
+                      self.get_controllers()]
+        # we want to return same controller name every time
+        minion_ids.sort()
+        return minion_ids[0]
+
     def controller_check_call(self, cmd, **kwargs):
         """ Run command on controller and return result """
         LOG.info("running cmd on k8s controller: {}".format(cmd))
