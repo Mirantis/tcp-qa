@@ -112,6 +112,41 @@ class K8SManager(ExecuteCommandsMixin):
         names.sort()
         return names[0]
 
+    @property
+    def controller_minion_id(self):
+        """ Return node name of controller node that used for all actions """
+        minion_ids = [minion_id['minion_id'] for minion_id in
+                      self.get_controllers()]
+        # we want to return same controller name every time
+        minion_ids.sort()
+        return minion_ids[0]
+
+    @property
+    def is_metallb_enabled(self):
+        ctl_tgt = self.controller_minion_id
+        LOG.debug("Controller target: {}".format(ctl_tgt))
+
+        result = self._salt.get_pillar(
+            tgt=ctl_tgt,
+            pillar='kubernetes:common:addons:metallb:enabled')
+        metallb = result[0].get(ctl_tgt, False)
+        LOG.info("{} kubernetes:common:addons:metallb:enabled: {}"
+                 .format(ctl_tgt, bool(metallb)))
+        return metallb
+
+    @property
+    def is_ingress_nginx_enabled(self):
+        ctl_tgt = self.controller_minion_id
+        LOG.debug("Controller target: {}".format(ctl_tgt))
+
+        result = self._salt.get_pillar(
+            tgt=ctl_tgt,
+            pillar='kubernetes:common:addons:ingress-nginx:enabled')
+        ingress_nginx = result[0].get(ctl_tgt, False)
+        LOG.info("{} kubernetes:common:addons:ingress-nginx:enabled: {}"
+                 .format(ctl_tgt, bool(ingress_nginx)))
+        return ingress_nginx
+
     def controller_check_call(self, cmd, **kwargs):
         """ Run command on controller and return result """
         LOG.info("running cmd on k8s controller: {}".format(cmd))
