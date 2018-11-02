@@ -27,56 +27,7 @@ class TestPipeline(object):
 
     @pytest.mark.fail_snapshot
     def test_pipeline(self, show_step, underlay,
-                      core_deployed, salt_deployed):
-        """Runner for Juniper contrail-tests
-
-        Scenario:
-            1. Prepare salt on hosts.
-            2. Setup controller nodes
-            3. Setup compute nodes
-            4. Deploy openstack via pipelines
-            5. Deploy CICD via pipelines
-        """
-        nodes = underlay.node_names()
-        LOG.info("Nodes - {}".format(nodes))
-        cfg_node = 'cfg01.ocata-cicd.local'
-        salt_api = salt_deployed.get_pillar(
-            cfg_node, '_param:jenkins_salt_api_url')
-        salt_api = salt_api[0].get(cfg_node)
-        jenkins = JenkinsClient(
-            host='http://172.16.49.66:8081',
-            username='admin',
-            password='r00tme')
-
-        # Creating param list for openstack deploy
-        params = jenkins.make_defults_params('deploy_openstack')
-        params['SALT_MASTER_URL'] = salt_api
-        params['STACK_INSTALL'] = 'core,kvm,openstack,ovs'
-        show_step(4)
-        build = jenkins.run_build('deploy_openstack', params)
-        jenkins.wait_end_of_build(
-            name=build[0],
-            build_id=build[1],
-            timeout=60 * 60 * 4)
-        result = jenkins.build_info(name=build[0],
-                                    build_id=build[1])['result']
-        assert result == 'SUCCESS', "Deploy openstack was failed"
-
-        # Changing param for cicd deploy
-        show_step(5)
-        params['STACK_INSTALL'] = 'cicd'
-        build = jenkins.run_build('deploy_openstack', params)
-        jenkins.wait_end_of_build(
-            name=build[0],
-            build_id=build[1],
-            timeout=60 * 60 * 2)
-        result = jenkins.build_info(name=build[0],
-                                    build_id=build[1])['result']
-        assert result == 'SUCCESS', "Deploy CICD was failed"
-
-    @pytest.mark.fail_snapshot
-    def test_pipeline_dpdk(self, show_step, underlay,
-                           salt_deployed, tempest_actions):
+                      salt_deployed, tempest_actions):
         """Deploy bm via pipeline
 
         Scenario:
@@ -91,14 +42,21 @@ class TestPipeline(object):
         LOG.info("Nodes - {}".format(nodes))
         show_step(2)
 
-        cfg_node = 'cfg01.cookied-bm-dpdk-pipeline.local'
+        cfg_node = [node for node in nodes
+                    if node.startswith('cfg')][0]
+        cicd_node = [node for node in nodes
+                     if node.startswith('cid01')][0]
         salt_api = salt_deployed.get_pillar(
             cfg_node, '_param:jenkins_salt_api_url')
         salt_api = salt_api[0].get(cfg_node)
+        cfg_ip_pillar = salt_deployed.get_pillar(
+            cfg_node, '_param:salt_master_host')
+        cfg_ip = cfg_ip_pillar[0].get(cfg_node)
         jenkins = JenkinsClient(
-            host='http://172.16.49.2:8081',
+            host='http://{}:8081'.format(cfg_ip),
             username='admin',
             password='r00tme')
+
         params = jenkins.make_defults_params('deploy_openstack')
         params['SALT_MASTER_URL'] = salt_api
         params['STACK_INSTALL'] = 'core,kvm,cicd'
@@ -114,14 +72,22 @@ class TestPipeline(object):
         assert result == 'SUCCESS', "Deploy openstack was failed"
 
         show_step(4)
-        cid_node = 'cid01.cookied-bm-dpdk-pipeline.local'
-        salt_output = salt_deployed.get_pillar(
-            cid_node, 'jenkins:client:master:password')
-        cid_passwd = salt_output[0].get(cid_node)
+
+        jenkins_passwd_pillar = salt_deployed.get_pillar(
+            cicd_node, 'jenkins:client:master:password')
+
+        jenkins_passwd = jenkins_passwd_pillar[0].get(cicd_node)
+
+        cicd_ip_pillar = salt_deployed.get_pillar(
+            cicd_node, 'jenkins:client:master:host')
+
+        cicd_ip = cicd_ip_pillar[0].get(cicd_node)
+
         jenkins = JenkinsClient(
-            host='http://10.167.11.90:8081',
+            host='http://{}:8081'.format(cicd_ip),
             username='admin',
-            password=cid_passwd)
+            password=jenkins_passwd)
+
         params['STACK_INSTALL'] = 'ovs,openstack'
         show_step(5)
         build = jenkins.run_build('deploy_openstack', params)
