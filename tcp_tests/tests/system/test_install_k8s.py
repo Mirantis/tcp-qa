@@ -49,7 +49,6 @@ class Testk8sInstall(object):
         """
 
         show_step(5)
-        sl_actions = stacklight_deployed
         nch = netchecker.Netchecker(k8s_deployed.api)
 
         show_step(6)
@@ -79,32 +78,6 @@ class Testk8sInstall(object):
             assert metric in res.text.strip(), \
                 'Mandotory metric {0} is missing in {1}'.format(
                     metric, res.text)
-
-        prometheus_client = stacklight_deployed.api
-        try:
-            current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'
-                      .format(current_targets))
-        except Exception:
-            LOG.warning('Restarting keepalived service on mon nodes...')
-            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                                   args='systemctl restart keepalived')
-            LOG.warning(
-                'Ip states after forset restart {0}'.format(
-                    sl_actions._salt.local(tgt='mon*',
-                                           fun='cmd.run', args='ip a')))
-            current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'
-                      .format(current_targets))
-
-        # todo (tleontovich) add assertion that k8s targets here
-        for metric in metrics:
-            res = prometheus_client.get_query(metric)
-            for entry in res:
-                assert entry["metric"]["job"] == 'kubernetes-service-endpoints'
-            LOG.debug('Metric {} exists'.format(res))
-            # todo (tleontovich) add asserts here and extend the tests
-            # with acceptance criteria
         show_step(10)
 
         # Run SL component tests
@@ -141,30 +114,6 @@ class Testk8sInstall(object):
             7. Optionally run k8s e2e conformance
 
         """
-
-        show_step(5)
-        sl_actions = stacklight_deployed
-
-        prometheus_client = stacklight_deployed.api
-        try:
-            current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'
-                      .format(current_targets))
-        except Exception:
-            LOG.warning('Restarting keepalived service on mon nodes...')
-            sl_actions._salt.local(tgt='mon*', fun='cmd.run',
-                                   args='systemctl restart keepalived')
-            LOG.warning(
-                'Ip states after forset restart {0}'.format(
-                    sl_actions._salt.local(tgt='mon*',
-                                           fun='cmd.run', args='ip a')))
-            current_targets = prometheus_client.get_targets()
-            LOG.debug('Current targets after install {0}'
-                      .format(current_targets))
-        mon_nodes = stacklight_deployed.get_monitoring_nodes()
-        LOG.debug('Mon nodes list {0}'.format(mon_nodes))
-
-        stacklight_deployed.check_prometheus_targets(mon_nodes)
         show_step(6)
         # Run SL component tests
         stacklight_deployed.setup_sl_functional_tests(
