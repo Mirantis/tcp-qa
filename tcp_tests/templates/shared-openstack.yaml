@@ -340,6 +340,13 @@
 {%- endmacro %}
 
 {%- macro MACRO_INSTALL_OCTAVIA_API() %}
+
+- description: Execute glance client to upload octavia image
+  cmd: salt -C 'I@glance:client' state.sls glance.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Install octavia api service on primary node
   cmd: salt -C 'I@octavia:api:role:primary' state.sls octavia.api
   node_name: {{ HOSTNAME_CFG01 }}
