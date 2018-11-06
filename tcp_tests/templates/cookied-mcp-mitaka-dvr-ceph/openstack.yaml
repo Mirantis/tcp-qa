@@ -1,0 +1,161 @@
+{% from 'cookied-mcp-mitaka-dvr-ceph/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-mitaka-dvr-ceph/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'cookied-mcp-mitaka-dvr-ceph/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'cookied-mcp-mitaka-dvr-ceph/underlay.yaml' import HOSTNAME_CTL03 with context %}
+{% from 'cookied-mcp-mitaka-dvr-ceph/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
+{% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
+{% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', '') %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
+
+{% import 'shared-ceph.yaml' as SHARED_CEPH with context %}
+
+# Install OpenStack control services
+
+{{ SHARED_OPENSTACK.OVERRIDE_POLICY() }}
+
+# Deploy nginx before openstack services (PROD-22740)
+- description: Deploy nginx proxy
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls nginx
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_MONS() }}
+
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_MGR() }}
+
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_OSD_AND_RADOSGW() }}
+
+{{ SHARED_CEPH.CONNECT_CEPH_TO_SERVICES() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_NOVA() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_NEUTRON() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
+
+{{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE() }}
+
+
+  # Upload cirros image
+
+- description: Upload cirros image on ctl01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    'wget http://images.mirantis.com.s3.amazonaws.com/cirros-x64-20170828.qcow2'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 30}
+  skip_fail: false
+
+- description: Register image in glance
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; glance --timeout 120 image-create --name cirros --visibility public --disk-format qcow2 --container-format bare --progress < /root/cirros-x64-20170828.qcow2'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create net04_external
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron net-create net04_ext --router:external True --provider:physical_network physnet1 --provider:network_type flat'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create subnet_external
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron subnet-create net04_ext {{ IPV4_NET_EXTERNAL_PREFIX }}.0/24 --name net04_ext__subnet --disable-dhcp --allocation-pool start={{ IPV4_NET_EXTERNAL_PREFIX }}.150,end={{ IPV4_NET_EXTERNAL_PREFIX }}.180 --gateway {{ IPV4_NET_EXTERNAL_PREFIX }}.1'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create net04
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron net-create net04'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create subnet_net04
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron subnet-create net04 {{ IPV4_NET_TENANT_PREFIX }}.0/24 --name net04__subnet --allocation-pool start={{ IPV4_NET_TENANT_PREFIX }}.120,end={{ IPV4_NET_TENANT_PREFIX }}.240'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create router
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-create net04_router01'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Set gateway
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-gateway-set net04_router01 net04_ext'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Add interface
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-interface-add net04_router01 net04__subnet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Allow all tcp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; nova secgroup-add-rule default tcp 1 65535 0.0.0.0/0'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description:  Allow all icmp
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; nova secgroup-add-rule default icmp -1 -1 0.0.0.0/0'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: sync time
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run
+    'service ntp stop; ntpd -gq;  service ntp start'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Install docker.io on gtw
+  cmd: salt-call cmd.run 'apt-get install docker.io -y'
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: create rc file on cfg
+  cmd: scp ctl01:/root/keystonercv3 /root
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Copy rc file
+  cmd: scp /root/keystonercv3 gtw01:/root
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Set floating ip address on br-floating
+  cmd: ifconfig br-floating {{ IPV4_NET_EXTERNAL_PREFIX }}.110/24
+  node_name: {{ HOSTNAME_GTW01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
