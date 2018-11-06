@@ -74,7 +74,7 @@ class TestMcpInstallQueensOvs(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.cookied_mcp_queens_ovs
+    @pytest.mark.cookied_mcp_queens_ovs
     def test_cookied_mcp_queens_ovs_sl(self, underlay,
                                        openstack_deployed,
                                        stacklight_deployed):
