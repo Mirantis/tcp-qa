@@ -70,6 +70,7 @@ class RuntestManager(object):
         public_cidr = public_net["cidr"].encode("ascii")
         public_allocation_start = public_net["start"].encode("ascii")
         public_allocation_end = public_net["end"].encode("ascii")
+        tempest_test_target = self.target_name.encode("ascii") + "*"
 
         return {
             'classes': ['service.runtest.tempest',
@@ -86,7 +87,7 @@ class RuntestManager(object):
                         public_allocation_start,
                     'openstack_public_neutron_subnet_allocation_end':
                         public_allocation_end,
-                    'tempest_test_target': self.target_name.encode("ascii"),
+                    'tempest_test_target': tempest_test_target,
                     'glance_image_cirros_location':
                         'http://cz8133.bud.mirantis.net:8099'
                         '/cirros-0.3.5-x86_64-disk.img',
