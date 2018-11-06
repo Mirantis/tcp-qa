@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "372c6c8c_eb57ce8c",
+        "filename": "tcp_tests/tests/system/test_install_mcp_queens.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:37:32Z",
+      "side": 1,
+      "message": "the same",
+      "range": {
+        "startLine": 96,
+        "startChar": 8,
+        "endLine": 96,
+        "endChar": 27
+      },
+      "revId": "919c93983985733ac5dcf6a23951e364c43467dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "60f43d6c_e7dd6be7",
+        "filename": "tcp_tests/tests/system/test_install_mcp_queens.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 159,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:37:32Z",
+      "side": 1,
+      "message": "please do not use this one - they are covered by SL tests",
+      "range": {
+        "startLine": 159,
+        "startChar": 28,
+        "endLine": 159,
+        "endChar": 52
+      },
+      "revId": "919c93983985733ac5dcf6a23951e364c43467dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc7e8c3e_8718c837",
+        "filename": "tcp_tests/tests/system/test_install_mcp_queens.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 222,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:37:32Z",
+      "side": 1,
+      "message": "same",
+      "range": {
+        "startLine": 222,
+        "startChar": 8,
+        "endLine": 222,
+        "endChar": 27
+      },
+      "revId": "919c93983985733ac5dcf6a23951e364c43467dc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
