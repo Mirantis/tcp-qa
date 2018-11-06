@@ -76,9 +76,9 @@
 
 - description: Setup glusterfs on primary controller
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glusterfs:server and *01*' state.sls glusterfs.server.setup -b 1
+    -C 'I@glusterfs:server:role:primary' state.sls glusterfs.server.setup -b 1
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
+  retry: {count: 5, delay: 5}
   skip_fail: false
 
 - description: Check the gluster status
