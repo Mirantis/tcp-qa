@@ -1,0 +1,180 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "33152a06_a590284f",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/core.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "use shared-salt for glusterfs",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "cc8cb7da_aa2d7e87",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/lab04-physical-inventory.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 49,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "use rack01 generator",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "01f2bab5_0f12478c",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/openstack.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 187,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "fix typo",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2aef4cf0_3ea5634c",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/openstack.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 272,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "change description",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bf584306_832f0409",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/openstack.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 282,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "set concurrency 2",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1ff970f3_53f53e9d",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/runtest.yml",
+        "patchSetId": 52
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "set to false\nyou don\u0027t need step copy rc file form ctl01 to ctl01",
+      "range": {
+        "startLine": 37,
+        "startChar": 31,
+        "endLine": 37,
+        "endChar": 35
+      },
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f76bac13_c35f4d15",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/salt.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 37,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "remove this",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7df924ff_cadfcda5",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/salt.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 155,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "do we still need this step?",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "09497522_7e3ca7cd",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/sl.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "remove #",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3c097fb_1fa7570b",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/sl.yaml",
+        "patchSetId": 52
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-06T15:28:37Z",
+      "side": 1,
+      "message": "same",
+      "revId": "6d0d5caa7b16582f2c408dc2f9258b150e3e330f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
