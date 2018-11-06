@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "964f7d40_c6ec8854",
+        "filename": "tcp_tests/tests/system/test_install_mcp_queens.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:57:54Z",
+      "side": 1,
+      "message": "it seems that if you drop depricated check , you do not need mon nodes :)",
+      "range": {
+        "startLine": 93,
+        "startChar": 20,
+        "endLine": 93,
+        "endChar": 39
+      },
+      "revId": "a73fecfc1f4bcc591827767b9f508bbf6177e287",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a5e805c_0806cc3a",
+        "filename": "tcp_tests/tests/system/test_install_mcp_queens.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:57:54Z",
+      "side": 1,
+      "message": "it seems that if you drop depricated check , you do not need mon nodes :)",
+      "range": {
+        "startLine": 154,
+        "startChar": 20,
+        "endLine": 154,
+        "endChar": 39
+      },
+      "revId": "a73fecfc1f4bcc591827767b9f508bbf6177e287",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "55621b20_89ff81a2",
+        "filename": "tcp_tests/tests/system/test_install_mcp_queens.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 216,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:57:54Z",
+      "side": 1,
+      "message": "it seems that if you drop depricated check , you do not need mon nodes :)",
+      "range": {
+        "startLine": 216,
+        "startChar": 12,
+        "endLine": 216,
+        "endChar": 17
+      },
+      "revId": "a73fecfc1f4bcc591827767b9f508bbf6177e287",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
