@@ -115,6 +115,9 @@ class ExecuteCommandsMixin(object):
                         failed += 1
                     if 'Minion did not return. [Not connected]' in s:
                         failed += 1
+                    if ('Salt request timed out. The master is not responding.'
+                            in s):
+                        failed += 1
                     if s.startswith("[CRITICAL]"):
                         failed += 1
                     if 'Fatal' in s:
@@ -133,11 +136,14 @@ class ExecuteCommandsMixin(object):
                 if x == 1 and skip_fail is False:
                     # In the last retry iteration, raise an exception
                     raise Exception("Step '{0}' failed:\n"
-                                    "=============== STDOUT: ===============\n"
+                                    "=============== Command: ==============\n"
                                     "{1}\n"
-                                    "=============== STDERR: ===============\n"
+                                    "=============== STDOUT: ===============\n"
                                     "{2}\n"
+                                    "=============== STDERR: ===============\n"
+                                    "{3}\n"
                                     .format(description,
+                                            cmd,
                                             result.stdout_str,
                                             result.stderr_str))
 
