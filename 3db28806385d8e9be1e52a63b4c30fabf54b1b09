@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9db72c61_1cc50766",
+        "filename": "tcp_tests/tests/system/test_install_mcp_queens.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 29,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-06T14:01:40Z",
+      "side": 1,
+      "message": "1. This test is *not* for ceph (no ceph checks here)\n2. This and all below tests are *not* for deploy, it\u0027s just a component test runner. Please remove \"_install\"",
+      "range": {
+        "startLine": 29,
+        "startChar": 27,
+        "endLine": 29,
+        "endChar": 40
+      },
+      "revId": "3db28806385d8e9be1e52a63b4c30fabf54b1b09",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
