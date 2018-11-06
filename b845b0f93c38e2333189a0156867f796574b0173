@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "74bcc018_4414482a",
+        "filename": "tcp_tests/tests/system/test_install_opencontrail.py",
+        "patchSetId": 21
+      },
+      "lineNbr": 200,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:48:24Z",
+      "side": 1,
+      "message": "Better to re-write the doc string here",
+      "range": {
+        "startLine": 200,
+        "startChar": 22,
+        "endLine": 200,
+        "endChar": 29
+      },
+      "revId": "b845b0f93c38e2333189a0156867f796574b0173",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c86aa024_b77dce14",
+        "filename": "tcp_tests/tests/system/test_install_opencontrail.py",
+        "patchSetId": 21
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:48:24Z",
+      "side": 1,
+      "message": "for me steps looks like:\n1. provision bm hosts\n2. install cfg01\n3. install jenkins on top of cfg01\n4. install cicd using jenkins from cfg\n5. run deploy_openstack (always funny to see that name) with params:\n6. Run e2e tests, contrail service checks whatever",
+      "range": {
+        "startLine": 203,
+        "startChar": 15,
+        "endLine": 203,
+        "endChar": 22
+      },
+      "revId": "b845b0f93c38e2333189a0156867f796574b0173",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b8e2ae10_4c273823",
+        "filename": "tcp_tests/tests/system/test_install_opencontrail.py",
+        "patchSetId": 21
+      },
+      "lineNbr": 275,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-06T14:48:24Z",
+      "side": 1,
+      "message": "the same here",
+      "range": {
+        "startLine": 275,
+        "startChar": 21,
+        "endLine": 275,
+        "endChar": 31
+      },
+      "revId": "b845b0f93c38e2333189a0156867f796574b0173",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
