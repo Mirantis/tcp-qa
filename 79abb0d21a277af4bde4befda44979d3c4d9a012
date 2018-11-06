@@ -22,6 +22,30 @@
       "revId": "79abb0d21a277af4bde4befda44979d3c4d9a012",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0783dbd2_7c41e5af",
+        "filename": "tcp_tests/managers/execute_commands.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-06T15:32:06Z",
+      "side": 1,
+      "message": "This is to fit into 80 chars limitation. The whole condition is in ().",
+      "parentUuid": "deb074a6_86f4c847",
+      "range": {
+        "startLine": 119,
+        "startChar": 32,
+        "endLine": 119,
+        "endChar": 34
+      },
+      "revId": "79abb0d21a277af4bde4befda44979d3c4d9a012",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
