@@ -109,7 +109,7 @@ class TestMcpInstallQueensDvr(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.test_cookied_mcp_queens_dvr
+    @pytest.mark.cookied_mcp_queens_dvr
     def test_cookied_mcp_queens_dvr(self, underlay,
                                     openstack_deployed,
                                     stacklight_deployed,
@@ -132,7 +132,7 @@ class TestMcpInstallQueensDvr(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.test_cookied_mcp_queens_dvr
+    @pytest.mark.cookied_mcp_queens_dvr
     def test_cookied_mcp_queens_dvr_sl(self, underlay,
                                        openstack_deployed,
                                        stacklight_deployed):
