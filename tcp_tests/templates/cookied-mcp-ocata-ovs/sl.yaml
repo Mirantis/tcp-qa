@@ -1,5 +1,7 @@
-{% from 'virtual-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
+
 {% import 'shared-sl-tests.yaml' as SHARED_SL_TESTS with context %}
+
 # Install docker swarm
 - description: Configure docker service
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@docker:swarm' state.sls docker.host
@@ -72,11 +74,8 @@
   retry: {count: 2, delay: 10}
   skip_fail: false
 
-- description: Configure Prometheus exporters, if pillar 'prometheus:exporters' exists on any server
-  cmd: |
-    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:exporters' match.pillar 'prometheus:exporters' ; then
-      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:exporters' state.sls prometheus
-    fi
+- description: Configure Prometheus exporters
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@prometheus:exporters' state.sls prometheus
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -139,7 +138,7 @@
 - description: Update mine
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@salt:minion' mine.update; sleep 5;
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 5, delay: 15}
+  retry: {count: 1, delay: 10}
   skip_fail: false
 
 # Configure the services running in Docker Swarm

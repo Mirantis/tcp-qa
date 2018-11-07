@@ -1,9 +1,9 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
-{% import 'virtual-mcp-ocata-dvr/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
-{% import 'virtual-mcp-ocata-dvr/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
-{% import 'virtual-mcp-ocata-dvr/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+{% import 'cookied-mcp-ocata-ovs/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'cookied-mcp-ocata-ovs/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'cookied-mcp-ocata-ovs/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
 
 ---
 aliases:
@@ -12,7 +12,7 @@ aliases:
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
 
-{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'virtual-mcp-ocata-dvr') %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-mcp-ocata-ovs') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
@@ -24,13 +24,11 @@ aliases:
 {% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_DNS01 = os_env('HOSTNAME_DNS01', 'dns01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_DNS02 = os_env('HOSTNAME_DNS02', 'dns02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'virtual-mcp-ocata-dvr_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ os_env('ENV_NAME', 'cookied-mcp-ocata-ovs_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
 
     address_pools:
       private-pool01:
@@ -49,8 +47,6 @@ template:
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
@@ -71,8 +67,6 @@ template:
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
@@ -93,8 +87,6 @@ template:
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+10, -10]
@@ -115,8 +107,6 @@ template:
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+10, -10]
@@ -390,7 +380,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -411,7 +401,6 @@ template:
 
               interfaces: *interfaces
               network_config: *network_config
-
 
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
@@ -509,58 +498,6 @@ template:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
                   backing_store: cloudimage1604
-                  format: qcow2
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-                  capacity: 1
-                  format: raw
-                  device: cdrom
-                  bus: ide
-                  cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_1604
-
-              interfaces: *all_interfaces
-              network_config: *all_network_config
-
-          - name: {{ HOSTNAME_DNS01 }}
-            role: salt_minion
-            params:
-              vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
-              boot:
-                - hd
-              cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
-              volumes:
-                - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: mcp_ubuntu_1604_image
-                  format: qcow2
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-                  capacity: 1
-                  format: raw
-                  device: cdrom
-                  bus: ide
-                  cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_1604
-
-              interfaces: *all_interfaces
-              network_config: *all_network_config
-
-          - name: {{ HOSTNAME_DNS02 }}
-            role: salt_minion
-            params:
-              vcpu: !os_env SLAVE_NODE_CPU, 1
-              memory: !os_env SLAVE_NODE_MEMORY, 2048
-              boot:
-                - hd
-              cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
-              volumes:
-                - name: system
-                  capacity: !os_env NODE_VOLUME_SIZE, 150
-                  backing_store: mcp_ubuntu_1604_image
                   format: qcow2
                 - name: iso  # Volume with name 'iso' will be used
                              # for store image with cloud-init metadata.

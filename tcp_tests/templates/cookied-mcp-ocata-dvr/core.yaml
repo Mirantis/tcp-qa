@@ -1,4 +1,4 @@
-{% from 'virtual-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 {% import 'shared-core.yaml' as SHARED_CORE with context %}
 

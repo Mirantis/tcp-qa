@@ -2,12 +2,12 @@ default_context:
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   cicd_enabled: 'False'
-  cluster_domain: virtual-mcp-ocata-dvr.local
-  cluster_name: virtual-mcp-ocata-dvr
+  cluster_domain: cookied-mcp-ocata-ovs.local
+  cluster_name: cookied-mcp-ocata-ovs
   compute_bond_mode: active-backup
   compute_primary_first_nic: eth1
   compute_primary_second_nic: eth2
-  context_seed: wUqrwKeBTCpRpVrhK1KwZQv4cjM9VhG7L2vQ0iQsTuMrXASklEBDmJEf6bnPEqcK
+  context_seed: U1hx5V31VJfFFBu8fCsk9ebDN2TwuBABTIcptYQ8tmFSlhSxHIkKnJnDsnckgKnH
   control_network_netmask: 255.255.255.0
   control_network_subnet: 172.16.10.0/24
   control_vlan: '10'
@@ -94,7 +94,7 @@ default_context:
   openstack_nfv_dpdk_enabled: 'False'
   openstack_nfv_sriov_enabled: 'False'
   openstack_nova_compute_nfv_req_enabled: 'False'
-  openstack_ovs_dvr_enabled: 'True'
+  openstack_ovs_dvr_enabled: 'False'
   openstack_ovs_encapsulation_type: vxlan
   openstack_proxy_address: 172.16.10.80
   openstack_proxy_hostname: prx
@@ -143,8 +143,8 @@ default_context:
       7r3i+QUZ7RBdOb24QcQ618q54ozNTCB7OywY78ptFzeoBeptiNr1
       -----END RSA PRIVATE KEY-----
   backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvr+tWAJ62wROllpSZeaSPxxnVY3R65sfUW8wM6L8tr1knJOTQLoBikmcjISb3ekyPlwubTypGoxb7al06FiNwfr3KDkytflKRGTyMKYgchighuFCfBuePd13cjf1l19TYU7u7a+VuCVWi7pmhDGUkMi24s23OroQb7D14XX17v46wLrqJQi2nrXzN/DWXcn/ycq8IZ7ZFgN/uYlbpfAKX8PCvImbDDO8+BgndAy4MPz8cWOWsnfGMVNePhvhazVcijLvx8Vu2Iuvg7CoJiSGjTe7YTms44/WpnFkHreyK8cwsw4wzls4BApu6UU2jIAsAMZh9zux/Rtni71dcNfF
-  salt_api_password: H0rTPdmktZ8RI7T7y6fjqY0uEbbs7Kwi
-  salt_api_password_hash: $6$lfbIFtMZ$.nTbTDMzs1iYv0WqkZHia8H8Fma963Nv3qyyz1x68jQh0YXK9i907B/hvoG4QHMvfolE7V7vQnFClJ1mVA3Yb.
+  salt_api_password: PGah7Ph3IdWuMdAX3ZBLSf5BtlBG1Qhl
+  salt_api_password_hash: $6$kgvztcjH$9B2950AyxRjE2Tj5QNVCnvdrgaFo/u6c59pMoQPqfxs2MTLLU7ywxPTQnDH3cNV.BBEK6FilF9SulWfIfENou0
   salt_master_address: 172.16.10.90
   salt_master_hostname: cfg01
   salt_master_management_address: 192.168.10.90

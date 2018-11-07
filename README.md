@@ -35,8 +35,8 @@ Choose the name of the cluster model
 LAB_CONFIG_NAME variable maps cluster name from the model repository with
 the set of templates in the ./tcp_tests/templates/ folder.
 ```
-export LAB_CONFIG_NAME=virtual-mcp-ocata-dvr  # OVS-DVR with ocata packages
-export LAB_CONFIG_NAME=virtual-mcp-ocata-ovs  # OVS-NO-DVR with ocata packages
+export LAB_CONFIG_NAME=cookied-mcp-ocata-dvr  # OVS-DVR with ocata packages
+export LAB_CONFIG_NAME=cookied-mcp-ocata-ovs  # OVS-NO-DVR with ocata packages
 export LAB_CONFIG_NAME=virtual-mcp-ocata-cicd  # Operational Support System Tools
 export LAB_CONFIG_NAME=virtual-mcp11-dvr  # OVS-DVR with neutron packages
 export LAB_CONFIG_NAME=virtual-mcp11-ovs  # OVS-NO-DVR with neutron packages
