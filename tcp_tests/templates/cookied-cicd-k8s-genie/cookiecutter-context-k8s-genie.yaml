@@ -128,6 +128,12 @@ default_context:
   kubernetes_externaldns_enabled: 'False'
   kubernetes_keepalived_vip_interface: br_ctl
   kubernetes_network_calico_enabled: 'True'
+  kubernetes_proxy_hostname: prx
+  kubernetes_proxy_node01_hostname: prx01
+  kubernetes_proxy_node02_hostname: prx02
+  kubernetes_proxy_address: 10.167.4.220
+  kubernetes_proxy_node01_address: 10.167.4.221
+  kubernetes_proxy_node02_address: 10.167.4.222
   local_repositories: 'False'
   maas_deploy_address: 10.167.5.15
   maas_deploy_range_end: 10.167.5.199

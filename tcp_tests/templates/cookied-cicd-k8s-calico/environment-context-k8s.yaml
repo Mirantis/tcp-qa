@@ -109,6 +109,28 @@ nodes:
         ens4:
           role: single_ctl_calico
 
+    prx01:
+      reclass_storage_name: kubernetes_proxy_node01
+      roles:
+      - kubernetes_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    prx02:
+      reclass_storage_name: kubernetes_proxy_node02
+      roles:
+      - kubernetes_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
     # Generator-based computes. For compatibility only
     cmp<<count>>:
       reclass_storage_name: kubernetes_compute_rack01
