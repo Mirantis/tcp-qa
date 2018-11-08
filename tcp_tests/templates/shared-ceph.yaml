@@ -126,4 +126,12 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
+
+- description: Connect ceph to gnocchi
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@gnocchi:server' match.pillar 'ceph.common' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@gnocchi:server' state.sls ceph.common,ceph.setup.keyring
+    fi  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
 {%- endmacro %}
