@@ -111,19 +111,28 @@
 {%- endmacro %}
 
 {%- macro CONNECT_CEPH_TO_SERVICES() %}
-- description: Connect ceph to glance
+- description: Setup keyring for glance
   cmd: |
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@glance:server' state.sls ceph.common,ceph.setup.keyring;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
   skip_fail: false
 
-- description: Connect ceph to cinder and nova
+- description: Setup keyring for cinder and nova
   cmd: |
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@cinder:controller' state.sls ceph.common,ceph.setup.keyring;
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' state.sls ceph.common,ceph.setup.keyring;
     salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@nova:compute' saltutil.sync_grains;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Setup keyring for gnocchi
+  cmd: |
+    if salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@gnocchi:server' match.pillar 'ceph:common' ; then
+      salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@ceph:common and I@gnocchi:server' state.sls ceph.common,ceph.setup.keyring
+    fi
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
   skip_fail: false
 {%- endmacro %}
