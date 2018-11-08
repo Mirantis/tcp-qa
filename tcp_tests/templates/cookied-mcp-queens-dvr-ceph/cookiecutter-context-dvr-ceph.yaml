@@ -227,5 +227,13 @@ default_context:
   openstack_mysql_x509_enabled: 'False'
   rabbitmq_ssl_enabled: 'False'
   openstack_rabbitmq_x509_enabled: 'False'
-  tenant_telemetry_enabled: 'False'
-  gnocchi_aggregation_storage: file
+  tenant_telemetry_enabled: 'True'
+  gnocchi_aggregation_storage: ceph
+  openstack_telemetry_address: 172.16.10.83
+  openstack_telemetry_hostname: mdb
+  openstack_telemetry_node01_address: 172.16.10.84
+  openstack_telemetry_node01_hostname: mdb01
+  openstack_telemetry_node02_address: 172.16.10.85
+  openstack_telemetry_node02_hostname: mdb02
+  openstack_telemetry_node03_address: 172.16.10.86
+  openstack_telemetry_node03_hostname: mdb03
