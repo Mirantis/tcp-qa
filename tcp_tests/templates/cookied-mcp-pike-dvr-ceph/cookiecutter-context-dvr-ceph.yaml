@@ -92,7 +92,7 @@ default_context:
   gainsight_service_enabled: 'False'
   gateway_primary_first_nic: eth1
   gateway_primary_second_nic: eth2
-  gnocchi_aggregation_storage: file
+  gnocchi_aggregation_storage: ceph
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
   infra_kvm01_control_address: 10.167.4.11
@@ -209,9 +209,17 @@ default_context:
   tenant_network_gateway: 10.167.6.1
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: 10.167.6.0/24
-  tenant_telemetry_enabled: 'False'
+  tenant_telemetry_enabled: 'True'
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
   version: proposed
   vnf_onboarding_enabled: 'False'
+  openstack_telemetry_address: 172.16.10.83
+  openstack_telemetry_hostname: mdb
+  openstack_telemetry_node01_address: 172.16.10.84
+  openstack_telemetry_node01_hostname: mdb01
+  openstack_telemetry_node02_address: 172.16.10.85
+  openstack_telemetry_node02_hostname: mdb02
+  openstack_telemetry_node03_address: 172.16.10.86
+  openstack_telemetry_node03_hostname: mdb03
