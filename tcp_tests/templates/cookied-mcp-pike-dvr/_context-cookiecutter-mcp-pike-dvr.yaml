@@ -227,4 +227,9 @@ default_context:
   openstack_share_hostname: share
   openstack_share_node01_hostname: share01
   openstack_octavia_enabled: 'True'
+  octavia_hm_bind_ip: 192.168.1.12
+  octavia_lb_mgmt_cidr: 192.168.1.0/24
+  octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
+  octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
+
 
