@@ -188,13 +188,14 @@ class SaltManager(ExecuteCommandsMixin):
         if len(hosts) == 0:
             raise LookupError("Hosts is empty or absent")
 
-        def host(node_name, ip):
+        def host(minion_id, ip):
             return {
                 'roles': ['salt_minion'],
                 'keys': [
                     k['private'] for k in self.__config.underlay.ssh_keys
                 ],
-                'node_name': node_name,
+                'node_name': minion_id,
+                'minion_id': minion_id,
                 'host': ip,
                 'address_pool': pool_name,
                 'login': settings.SSH_NODE_CREDENTIALS['login'],
@@ -215,6 +216,25 @@ class SaltManager(ExecuteCommandsMixin):
                        net=pool_net,
                        host_list={k: v['ipv4'] for k, v in hosts.items()}))
             raise StopIteration(msg)
+
+    def update_ssh_data_from_minions(self):
+        """Combine existing underlay.ssh with VCP salt minions"""
+        salt_nodes = self.get_ssh_data()
+
+        for salt_node in salt_nodes:
+            nodes = [n for n in self.__config.underlay.ssh
+                     if salt_node['host'] == n['host']
+                     and salt_node['address_pool'] == n['address_pool']]
+            if nodes:
+                # Assume that there can be only one node with such IP address
+                # Just update minion_id for this node
+                nodes[0]['minion_id'] = salt_node['minion_id']
+            else:
+                # New node, add to config.underlay.ssh
+                self.__config.underlay.ssh.append(salt_node)
+
+        self.__underlay.config_ssh = []
+        self.__underlay.add_config_ssh(self.__config.underlay.ssh)
 
     def service_status(self, tgt, service):
         result = self.local(tgt=tgt, fun='service.status', args=service)
