@@ -48,11 +48,16 @@ node ("${PARENT_NODE_NAME}") {
             def report_result = ''
             def report_url = ''
 
+            //  deployment_report_name = "deployment_${ENV_NAME}.xml"
             def deployment_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"deployment_${ENV_NAME}.xml\"", returnStdout: true)
+            // tcpqa_report_name =~ "nosetests.xml"
             def tcpqa_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"nosetests.xml\"", returnStdout: true)
+            // tempest_report_name =~ "report_*.xml"
             def tempest_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"report_*.xml\"", returnStdout: true)
+            // k8s_conformance_report_name =~ conformance_result.xml
             def k8s_conformance_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_result.xml\"", returnStdout: true)
-            def stacklight_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"stacklight_report.xml\"", returnStdout: true)
+            // stacklight_report_name =~ "stacklight_report.xml" or "report.xml"
+            def stacklight_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"*report.xml\"", returnStdout: true)
             common.printMsg(deployment_report_name ? "Found deployment report: ${deployment_report_name}" : "Deployment report not found", deployment_report_name ? "blue" : "red")
             common.printMsg(tcpqa_report_name ? "Found tcp-qa report: ${tcpqa_report_name}" : "tcp-qa report not found", tcpqa_report_name ? "blue" : "red")
             common.printMsg(tempest_report_name ? "Found tempest report: ${tempest_report_name}" : "tempest report not found", tempest_report_name ? "blue" : "red")
@@ -62,7 +67,6 @@ node ("${PARENT_NODE_NAME}") {
 
             if (deployment_report_name) {
                 stage("Deployment report") {
-//                    report_name = "deployment_${ENV_NAME}.xml"
                     testSuiteName = "[MCP] Integration automation"
                     methodname = '{methodname}'
                     testrail_name_template = '{title}'
@@ -84,7 +88,6 @@ node ("${PARENT_NODE_NAME}") {
 
             if (tcpqa_report_name) {
                 stage("tcp-qa cases report") {
-                    // tcpqa_report_name =~ "nosetests.xml"
                     testSuiteName = "[MCP_X] integration cases"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
@@ -106,7 +109,6 @@ node ("${PARENT_NODE_NAME}") {
 
             if ('openstack' in stacks && tempest_report_name) {
                 stage("Tempest report") {
-                    // tempest_report_name =~ "report_*.xml"
                     testSuiteName = "[MCP1.1_PIKE]Tempest"
                     methodname = "{classname}.{methodname}"
                     testrail_name_template = "{title}"
@@ -123,9 +125,6 @@ node ("${PARENT_NODE_NAME}") {
 
             if ('k8s' in stacks && k8s_conformance_report_name) {
                 stage("K8s conformance report") {
-                    // k8s_conformance_report_name =~ conformance_result.xml
-                    // TODO(ddmitriev): it's better to get the k8s version right after deployment
-                    // and store in some artifact that can be re-used here.
                     def k8s_version=shared.run_cmd_stdout("""\
                         . ./env_k8s_version;
                         echo "\$KUBE_SERVER_VERSION"
@@ -152,7 +151,6 @@ node ("${PARENT_NODE_NAME}") {
 
             if ('stacklight' in stacks && stacklight_report_name) {
                 stage("stacklight-pytest report") {
-                    // stacklight_report_name =~ "stacklight_report.xml"
                     testSuiteName = "LMA2.0_Automated"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
