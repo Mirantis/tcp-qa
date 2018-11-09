@@ -43,13 +43,53 @@ node (node_name) {
     }
 
     stage("Clone mk-pipelines and pipeline-library") {
-        sh "git clone --mirror https://github.com/Mirantis/mk-pipelines.git -b ${MCP_VERSION} mk-pipelines"
-        sh "git clone --mirror https://github.com/Mirantis/pipeline-library.git -b ${MCP_VERSION} pipeline-library"
+        def cloned = true
+        withCredentials([[$class: 'SSHUserPrivateKeyBinding',
+                          keyFileVariable: "GERRIT_KEY",
+                          credentialsId:CREDENTIALS_ID,
+                          usernameVariable: "GERRIT_USERNAME",
+                          passwordVariable: "GERRIT_PASSWORD"]]) {
+
+            dir("mk-pipelines-git") {
+                cloned = gerrit.gerritPatchsetCheckout([
+                    credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
+                    gerritBranch: "${MCP_VERSION}",
+                    //gerritRefSpec: "${MK_PIPELINES_REF}",
+                    gerritScheme: "ssh",
+                    gerritName: "${GERRIT_USERNAME}",
+                    gerritHost: "gerrit.mcp.mirantis.net",
+                    gerritPort: "29418",
+                    gerritProject: "mk/mk-pipelines"
+                ])
+            }
+            if (!cloned) {
+                error("Failed to clone the repository mk/mk-pipelines")
+            }
+            dir("pipeline-library-git") {
+                cloned = gerrit.gerritPatchsetCheckout([
+                    credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
+                    gerritBranch: "${MCP_VERSION}",
+                    //gerritRefSpec: "${MK_PIPELINES_REF}",
+                    gerritScheme: "ssh",
+                    gerritName: "${GERRIT_USERNAME}",
+                    gerritHost: "gerrit.mcp.mirantis.net",
+                    gerritPort: "29418",
+                    gerritProject: "mcp-ci/pipeline-library"
+                ])
+            }
+            if (!cloned) {
+                error("Failed to clone the repository mcp-ci/pipeline-library")
+            }
+        }
+
+        // gerrit.gerritPatchsetCheckout() doesn't support clonning bare repository
+        sh "git clone --mirror mk-pipelines-git -b ${MCP_VERSION} mk-pipelines"
+        sh "git clone --mirror pipeline-library-git -b ${MCP_VERSION} pipeline-library"
         if (PIPELINE_LIBRARY_REF != '') {
            sh "cd pipeline-library; git fetch https://gerrit.mcp.mirantis.net/mcp-ci/pipeline-library ${PIPELINE_LIBRARY_REF} ; git tag ${MCP_VERSION} FETCH_HEAD -f ; cd .."
         }
         if (MK_PIPELINES_REF != '') {
-           sh "cd mk-pipelines; git fetch https://gerrit.mcp.mirantis.net/mcp-ci/mk-pipelines ${MK_PIPELINES_REF} ; git tag ${MCP_VERSION} FETCH_HEAD -f; cd .."
+           sh "cd mk-pipelines; git fetch https://gerrit.mcp.mirantis.net/mk/mk-pipelines ${MK_PIPELINES_REF} ; git tag ${MCP_VERSION} FETCH_HEAD -f; cd .."
         }
         //args = "--user-data user_data --vendor-data user_data2 --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
         args = "--user-data user_data2 --vendor-data user_data --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
