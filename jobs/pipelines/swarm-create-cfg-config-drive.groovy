@@ -1,5 +1,6 @@
 import java.text.SimpleDateFormat
 
+def gerrit = new com.mirantis.mk.Gerrit()
 def dateFormat = new SimpleDateFormat("yyyyMMddHHmm")
 def date = new Date()
 def common_scripts_commit = "${COMMON_SCRIPTS_COMMIT}"
@@ -31,28 +32,83 @@ node (node_name) {
         step([$class: 'WsCleanup'])
     }
 
-    stage("Get scripts") {
-      // apt package genisoimage is required for this stage
-      // download create-config-drive
+    stage("Get mk-pipelines, pipeline-library and mcp-common-scripts repositories") {
+        def cloned = true
+        withCredentials([[$class: 'SSHUserPrivateKeyBinding',
+                          keyFileVariable: "GERRIT_KEY",
+                          credentialsId: env.GERRIT_MCP_CREDENTIALS_ID,
+                          usernameVariable: "GERRIT_USERNAME",
+                          passwordVariable: "GERRIT_PASSWORD"]]) {
 
-      def config_drive_script_url = "https://raw.githubusercontent.com/Mirantis/mcp-common-scripts/${common_scripts_commit}/config-drive/create_config_drive.sh"
-      sh "wget -O create-config-drive ${config_drive_script_url} && chmod +x create-config-drive"
+            dir("mcp-common-scripts-git") {
+                cloned = gerrit.gerritPatchsetCheckout([
+                    credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
+                    gerritBranch: "${MCP_VERSION}",
+                    gerritRefSpec: "${MCP_COMMON_SCRIPTS_REFS}",
+                    gerritScheme: "ssh",
+                    gerritName: "${GERRIT_USERNAME}",
+                    gerritHost: "gerrit.mcp.mirantis.net",
+                    gerritPort: "29418",
+                    gerritProject: "mcp/mcp-common-scripts"
+                ])
+            }
+            if (!cloned) {
+                error("Failed to clone the repository mcp/mcp-common-scripts")
+            }
 
-      def user_data_script_url = "https://raw.githubusercontent.com/Mirantis/mcp-common-scripts/${common_scripts_commit}/config-drive/master_config.yaml"
-      sh "wget -O user_data ${user_data_script_url}"
-    }
+            dir("mk-pipelines-git") {
+                cloned = gerrit.gerritPatchsetCheckout([
+                    credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
+                    gerritBranch: "${MCP_VERSION}",
+                    gerritScheme: "ssh",
+                    gerritName: "${GERRIT_USERNAME}",
+                    gerritHost: "gerrit.mcp.mirantis.net",
+                    gerritPort: "29418",
+                    gerritProject: "mk/mk-pipelines"
+                ])
+            }
+            if (!cloned) {
+                error("Failed to clone the repository mk/mk-pipelines")
+            }
 
-    stage("Clone mk-pipelines and pipeline-library") {
-        sh "git clone --mirror https://github.com/Mirantis/mk-pipelines.git -b ${MCP_VERSION} mk-pipelines"
-        sh "git clone --mirror https://github.com/Mirantis/pipeline-library.git -b ${MCP_VERSION} pipeline-library"
+            dir("pipeline-library-git") {
+                cloned = gerrit.gerritPatchsetCheckout([
+                    credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
+                    gerritBranch: "${MCP_VERSION}",
+                    gerritScheme: "ssh",
+                    gerritName: "${GERRIT_USERNAME}",
+                    gerritHost: "gerrit.mcp.mirantis.net",
+                    gerritPort: "29418",
+                    gerritProject: "mcp-ci/pipeline-library"
+                ])
+            }
+            if (!cloned) {
+                error("Failed to clone the repository mcp-ci/pipeline-library")
+            }
+        }
+
+        // gerrit.gerritPatchsetCheckout() doesn't support clonning bare repository
+        sh "git clone --mirror mk-pipelines-git -b ${MCP_VERSION} mk-pipelines"
+        sh "git clone --mirror pipeline-library-git -b ${MCP_VERSION} pipeline-library"
+        //if (MCP_COMMON_SCRIPTS_REFS != '') {
+        //   sh "cd mcp-common-scripts-git; git fetch https://gerrit.mcp.mirantis.net/mcp/mcp-common-scripts ${MCP_COMMON_SCRIPTS_REFS} && git checkout FETCH_HEAD && cd .."
+        //}
         if (PIPELINE_LIBRARY_REF != '') {
            sh "cd pipeline-library; git fetch https://gerrit.mcp.mirantis.net/mcp-ci/pipeline-library ${PIPELINE_LIBRARY_REF} ; git tag ${MCP_VERSION} FETCH_HEAD -f ; cd .."
         }
         if (MK_PIPELINES_REF != '') {
-           sh "cd mk-pipelines; git fetch https://gerrit.mcp.mirantis.net/mcp-ci/mk-pipelines ${MK_PIPELINES_REF} ; git tag ${MCP_VERSION} FETCH_HEAD -f; cd .."
+           sh "cd mk-pipelines; git fetch https://gerrit.mcp.mirantis.net/mk/mk-pipelines ${MK_PIPELINES_REF} ; git tag ${MCP_VERSION} FETCH_HEAD -f; cd .."
         }
+    }
+
+    stage("Prepare arguments for generation config drive") {
+
+        config_drive_script_path = "mcp-common-scripts-git/config-drive/create_config_drive.sh"
+        user_data_script_path = "mcp-common-scripts-git/config-drive/master_config.yaml"
+        sh "chmod +x ${config_drive_script_path}"
+
         //args = "--user-data user_data --vendor-data user_data2 --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
-        args = "--user-data user_data2 --vendor-data user_data --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
+        args = "--user-data user_data2 --vendor-data ${user_data_script_path} --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
     }
 
     stage("Get cluster model") {
@@ -70,7 +126,7 @@ node (node_name) {
 
     stage("Set data"){
         for (i in entries(smc)) {
-            sh "sed -i \"s,export ${i[0]}=.*,export ${i[0]}=${i[1]},\" user_data"
+            sh "sed -i \"s,export ${i[0]}=.*,export ${i[0]}=${i[1]},\" ${user_data_script_path}"
         }
     }
 
@@ -151,8 +207,8 @@ merge_how: "dict(recurse_array)+list(append)"
 
     stage("Create config-drive"){
       // create cfg config-drive
-      //sh "sed -i 's,config_dir/vendor-data,config_dir/user-data1,g' ./create-config-drive"
-      sh "./create-config-drive ${args}"
+      // apt package genisoimage is required for this stage
+      sh "./${config_drive_script_path} ${args}"
     }
 
     stage("Save artifacts") {
