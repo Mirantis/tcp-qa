@@ -77,16 +77,16 @@ def k8s_deployed(revert_snapshot, request, config, hardware, underlay,
         interfaces_pillar = k8s_actions._salt.get_pillar(
             tgt=tgt, pillar='linux:network:interface')[0]
 
-        for node_name, interfaces in interfaces_pillar.items():
+        for minion_id, interfaces in interfaces_pillar.items():
             for iface_name, iface in interfaces.items():
                 iface_name = iface.get('name', iface_name)
                 default_proto = 'static' if 'address' in iface else 'dhcp'
                 if iface.get('proto', default_proto) != 'dhcp':
                     LOG.warning('Trying to kill dhclient for iface {0} '
-                                'on node {1}'.format(iface_name, node_name))
+                                'on node {1}'.format(iface_name, minion_id))
                     underlay.check_call(
                         cmd='pkill -f "dhclient.*{}"'.format(iface_name),
-                        node_name=node_name, raise_on_err=False)
+                        node_name=minion_id, raise_on_err=False)
 
         LOG.warning('Restarting keepalived service on controllers...')
         k8s_actions._salt.local(tgt='ctl*', fun='cmd.run',

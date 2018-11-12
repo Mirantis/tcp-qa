@@ -129,6 +129,7 @@ class EnvironmentManager(object):
         for d_node in self.__env.get_nodes(role__in=roles):
             ssh_data = {
                 'node_name': d_node.name,
+                'minion_id': d_node.name,
                 'roles': [d_node.role],
                 'address_pool': self._get_network_pool(
                     ext.NETWORK_TYPE.admin).address_pool.name,

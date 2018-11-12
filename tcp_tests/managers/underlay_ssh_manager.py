@@ -39,6 +39,7 @@ class UnderlaySSHManager(object):
           [
             {
               node_name: node1,
+              minion_id: node1.local,
               address_pool: 'public-pool01',
               host: ,
               port: ,
@@ -50,6 +51,7 @@ class UnderlaySSHManager(object):
             },
             {
               node_name: node1,
+              minion_id: node1.local,
               address_pool: 'private-pool01',
               host:
               port:
@@ -61,6 +63,7 @@ class UnderlaySSHManager(object):
             },
             {
               node_name: node2,
+              minion_id: node2.local,
               address_pool: 'public-pool01',
               keys_source_host: node1
               ...
@@ -96,6 +99,7 @@ class UnderlaySSHManager(object):
             ssh_data = {
                 # Required keys:
                 'node_name': ssh['node_name'],
+                'minion_id': ssh['minion_id'],
                 'host': ssh['host'],
                 'login': ssh['login'],
                 'password': ssh['password'],
@@ -122,6 +126,7 @@ class UnderlaySSHManager(object):
             ssh_data = {
                 # Required keys:
                 'node_name': ssh['node_name'],
+                'minion_id': ssh['minion_id'],
                 'host': ssh['host'],
                 'login': ssh['login'],
                 'password': ssh['password'],
@@ -143,7 +148,7 @@ class UnderlaySSHManager(object):
         return keys
 
     def __ssh_data(self, node_name=None, host=None, address_pool=None,
-                   node_role=None):
+                   node_role=None, minion_id=None):
 
         ssh_data = None
 
@@ -171,6 +176,16 @@ class UnderlaySSHManager(object):
                             break
                     else:
                         ssh_data = ssh
+        elif minion_id is not None:
+            for ssh in self.config_ssh:
+                if minion_id == ssh['minion_id']:
+                    if address_pool is not None:
+                        if address_pool == ssh['address_pool']:
+                            ssh_data = ssh
+                            break
+                    else:
+                        ssh_data = ssh
+
         if ssh_data is None:
             LOG.debug("config_ssh - {}".format(self.config_ssh))
             raise Exception('Auth data for node was not found using '
@@ -187,6 +202,15 @@ class UnderlaySSHManager(object):
                 names.append(ssh['node_name'])
         return names
 
+    def minion_ids(self):
+        """Get list of minion ids registered in config.underlay.ssh"""
+
+        ids = []  # List is used to keep the original order of ids
+        for ssh in self.config_ssh:
+            if ssh['minion_id'] not in ids:
+                ids.append(ssh['minion_id'])
+        return ids
+
     def host_by_node_name(self, node_name, address_pool=None):
         ssh_data = self.__ssh_data(node_name=node_name,
                                    address_pool=address_pool)
@@ -194,6 +218,11 @@ class UnderlaySSHManager(object):
 
     def host_by_node_role(self, node_role, address_pool=None):
         ssh_data = self.__ssh_data(node_role=node_role,
+                                   address_pool=address_pool)
+        return ssh_data['host']
+
+    def host_by_minion_id(self, minion_id, address_pool=None):
+        ssh_data = self.__ssh_data(minion_id=minion_id,
                                    address_pool=address_pool)
         return ssh_data['host']
 
