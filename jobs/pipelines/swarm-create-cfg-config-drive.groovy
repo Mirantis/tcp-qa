@@ -96,8 +96,8 @@ node (node_name) {
         }
 
         // gerrit.gerritPatchsetCheckout() doesn't support clonning bare repository
-        sh "git clone --mirror mk-pipelines-git -b ${MCP_VERSION} mk-pipelines"
-        sh "git clone --mirror pipeline-library-git -b ${MCP_VERSION} pipeline-library"
+        sh "git clone --mirror mk-pipelines-git mk-pipelines"
+        sh "git clone --mirror pipeline-library-git pipeline-library"
     }
 
     stage("Prepare arguments for generation config drive") {
