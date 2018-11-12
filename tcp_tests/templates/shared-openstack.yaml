@@ -285,7 +285,33 @@
 {%- endmacro %}
 
 {%- macro MACRO_INSTALL_BARBICAN() %}
-# TO DO
+
+- description: Install barbican server
+  cmd: |
+    salt -C 'I@barbican:server:role:master' state.sls barbican.server;
+    salt -C 'I@barbican:server' state.sls dogtag.server;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install barbican client
+  cmd: salt -C 'I@barbican:server:role:master' state.sls barbican.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_DOGTAG() %}
+
+- description: Install dogtag server
+  cmd: |
+    salt -C 'I@dogtag:server:role:master' state.sls dogtag.server;
+    salt -C 'I@dogtag:server' state.sls dogtag.server;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 {%- endmacro %}
 
 {%- macro MACRO_INSTALL_IRONIC() %}
@@ -398,10 +424,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-{%- endmacro %}
-
-{%- macro MACRO_INSTALL_DOGTAG() %}
-# TO DO
 {%- endmacro %}
 
 {%- macro MACRO_INSTALL_COMPUTE(CELL_MAPPING=false) %}
