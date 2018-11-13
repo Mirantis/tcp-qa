@@ -288,14 +288,8 @@
 
 - description: Install barbican server
   cmd: |
-    salt -C 'I@barbican:server:role:master' state.sls barbican.server;
-    salt -C 'I@barbican:server' state.sls dogtag.server;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Install barbican client
-  cmd: salt -C 'I@barbican:server:role:master' state.sls barbican.client
+    salt -C 'I@barbican:server:role:primary' state.sls barbican.server;
+    salt -C 'I@barbican:server' state.sls barbican.server;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
