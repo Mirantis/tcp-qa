@@ -22,6 +22,9 @@ aliases:
 {% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp2.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'kmn01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'kmn02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'kmn03.' + DOMAIN_NAME) %}
 
 template:
   devops_settings:
@@ -42,6 +45,9 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_KMN01 }}: +45
+            default_{{ HOSTNAME_KMN02 }}: +46
+            default_{{ HOSTNAME_KMN03 }}: +47
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -59,6 +65,9 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_KMN01 }}: +45
+            default_{{ HOSTNAME_KMN02 }}: +46
+            default_{{ HOSTNAME_KMN03 }}: +47
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -76,6 +85,9 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_KMN01 }}: +45
+            default_{{ HOSTNAME_KMN02 }}: +46
+            default_{{ HOSTNAME_KMN03 }}: +47
           ip_ranges:
             dhcp: [+10, -10]
 
@@ -93,6 +105,9 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_KMN01 }}: +45
+            default_{{ HOSTNAME_KMN02 }}: +46
+            default_{{ HOSTNAME_KMN03 }}: +47
           ip_ranges:
             dhcp: [+130, +220]
 
@@ -253,6 +268,84 @@ template:
               network_config: *network_config
 
           - name: {{ HOSTNAME_CTL03 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 16384
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_KMN01 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 16384
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_KMN02 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 16384
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_KMN03 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
