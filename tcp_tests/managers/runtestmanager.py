@@ -37,6 +37,7 @@ class RuntestManager(object):
     compute_host = "cmp"
     class_name = "runtest"
     run_cmd = '/bin/bash -c "run-tempest"'
+    barbican_pillar = "nova:controller:barbican:enabled"
 
     def __init__(self, config, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
@@ -57,6 +58,11 @@ class RuntestManager(object):
             self.control_host)[0]
         self.compute_name = self.underlay.get_target_node_names(
             self.compute_host)[0]
+        result = self.__salt_api.get_pillar(tgt=self.control_name,
+                                            pillar=self.barbican_pillar)
+        self.barbican_enabed = result[0].get(self.control_name, False)
+
+
 
     @property
     def salt_api(self):
@@ -72,7 +78,7 @@ class RuntestManager(object):
         public_allocation_end = public_net["end"].encode("ascii")
         tempest_test_target = self.target_name.encode("ascii") + "*"
 
-        return {
+        pillar = {
             'classes': ['service.runtest.tempest',
                         'service.runtest.tempest.public_net',
                         'service.runtest.tempest.services.manila.glance'],
@@ -138,6 +144,10 @@ class RuntestManager(object):
                             'run_replication_tests': False,
                             'run_snapshot_tests': True,
                         }}}}}
+        if self.barbican_enabed:
+            pillar['classes'].append('service.runtest.tempest.barbican')
+
+        return pillar
 
     def fetch_arficats(self, username=None, file_format='xml'):
         with self.underlay.remote(node_name=self.target_name,
@@ -279,6 +289,20 @@ class RuntestManager(object):
                         "  openstack flavor set m1.tiny_test"
                         "  --property hw:mem_page_size=any'")},
             )
+
+        if self.barbican_enabed:
+            commands.append({
+                'description': "Configure barbican",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd +
+                        " state.sls barbican.client && " +
+                        salt_call_cmd +
+                        " state.sls runtest.test_accounts && " +
+                        salt_call_cmd +
+                        " state.sls runtest.barbican_sign_image")},
+            )
+        commands.append()
 
         self.__salt_api.execute_commands(commands=commands,
                                          label="Prepare for Tempest")
