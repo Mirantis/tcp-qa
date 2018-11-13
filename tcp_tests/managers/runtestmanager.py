@@ -198,6 +198,7 @@ class RuntestManager(object):
                          "glance:client:identity:"
                          "admin_identity:image:cirros:location")
         dpdk_pillar = "linux:network:dpdk:enabled"
+        barbican_pillar = "nova:controller:barbican:enabled"
         salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
 
@@ -206,6 +207,9 @@ class RuntestManager(object):
 
         dpdk = result[0].get(self.compute_name, False)
         LOG.info("DPDK enabled: {}".format(bool(dpdk)))
+
+        barbican = result[0].get(self.control_name, False)
+        LOG.info("Barbican enabled: {}".format(bool(dpdk)))
 
         commands = [
             {
@@ -278,6 +282,16 @@ class RuntestManager(object):
                         "  --property hw:mem_page_size=any;"
                         "  openstack flavor set m1.tiny_test"
                         "  --property hw:mem_page_size=any'")},
+            )
+
+        if barbican:
+            commands.append({
+                'description': "Configure barbican",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd + " state.sls barbican.client && " +
+                        salt_call_cmd + " state.sls runtest.test_accounts && " +
+                        salt_call_cmd + " state.sls runtest.barbican_sign_image")},
             )
 
         self.__salt_api.execute_commands(commands=commands,
