@@ -214,3 +214,11 @@ default_context:
   openstack_share_node01_deploy_address: 192.168.10.204
   openstack_share_hostname: share
   openstack_share_node01_hostname: share01
+  openstack_barbican_address: 172.16.10.44
+  openstack_barbican_hostname: kmn
+  openstack_barbican_node01_address: 172.16.10.45
+  openstack_barbican_node01_hostname: kmn01
+  openstack_barbican_node02_address: 172.16.10.46
+  openstack_barbican_node02_hostname: kmn02
+  openstack_barbican_node03_address: 172.16.10.47
+  openstack_barbican_node03_hostname: kmn03
