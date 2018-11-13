@@ -295,7 +295,7 @@
   skip_fail: false
 
 - description: Install barbican client
-  cmd: salt -C 'I@barbican:server:role:master' state.sls barbican.client
+  cmd: salt -C 'I@barbican:client' state.sls barbican.client
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
