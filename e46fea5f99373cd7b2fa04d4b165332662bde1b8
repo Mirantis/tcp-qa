@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "293de715_3e9bc563",
+        "filename": "tcp_tests/templates/cookied-bm-oc40-queens/salt.yaml",
+        "patchSetId": 58
+      },
+      "lineNbr": 34,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2018-11-14T12:23:35Z",
+      "side": 1,
+      "message": "I think we can already remove this",
+      "revId": "e46fea5f99373cd7b2fa04d4b165332662bde1b8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
