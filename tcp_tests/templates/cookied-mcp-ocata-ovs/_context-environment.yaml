@@ -18,7 +18,6 @@ nodes:
       - openstack_database_leader
       - openstack_message_queue
       - features_designate_bind9_database
-      - features_designate_bind9_dns
       - features_designate_bind9
       - features_designate_bind9_keystone
       - features_lvm_backend_control
@@ -37,7 +36,6 @@ nodes:
       - openstack_database
       - openstack_message_queue
       - features_designate_bind9_database
-      - features_designate_bind9_dns
       - features_designate_bind9
       - features_lvm_backend_control
       - linux_system_codename_xenial
