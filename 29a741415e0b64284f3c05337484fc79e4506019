@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "351fdb1e_2e7dbe26",
+        "filename": "tcp_tests/templates/cookied-bm-dpdk-pipeline/underlay.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-14T12:51:00Z",
+      "side": 1,
+      "message": "When you change default values, please *don\u0027t change* the variable names",
+      "range": {
+        "startLine": 9,
+        "startChar": 0,
+        "endLine": 10,
+        "endChar": 78
+      },
+      "revId": "29a741415e0b64284f3c05337484fc79e4506019",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
