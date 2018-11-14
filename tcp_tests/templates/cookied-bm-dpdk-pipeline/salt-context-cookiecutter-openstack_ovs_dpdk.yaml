@@ -107,7 +107,7 @@ default_context:
   local_repositories: 'False'
   maas_deploy_address: 172.16.49.15
   maas_hostname: cfg01
-  mcp_version: testing
+  mcp_version: proposed
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
   openldap_domain: deploy-name.local
