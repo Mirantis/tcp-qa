@@ -21,7 +21,7 @@ LOG = logger.logger
 
 class TestFailoverK8s(object):
 
-    @pytest.mark.grap_versions
+    @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_k8s_master_vip_migration(self, show_step, k8s_deployed, underlay,
                                       k8s_actions, core_actions,
