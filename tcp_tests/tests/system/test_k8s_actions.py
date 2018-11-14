@@ -22,6 +22,7 @@ from tcp_tests import logger
 from tcp_tests import settings
 
 from tcp_tests.managers.k8s import read_yaml_file
+from tcp_tests.managers.jenkins.client import JenkinsClient
 
 LOG = logger.logger
 
@@ -459,3 +460,41 @@ class TestMCPK8sActions(object):
         req2 = requests.get(ingress_address + "/test2", verify=False)
         assert req2.status_code == 200
         assert 'dep-ingress-2' in req2.text
+
+    @pytest.mark.grap_versions
+    @pytest.mark.fail_snapshot
+    def test_k8s_cicd_upgrade(self, show_step, config,
+                               salt_deployed, k8s_deployed):
+        """Test k8s upgrade cicd pipeline
+
+        Scenario:
+            1. Setup Kubernetes+CICD cluster
+            2. Start deploy-k8s-upgrade job in jenkins
+            3. Wait for job to end
+        """
+        show_step(1)
+        jenkins_info = salt_deployed.get_pillar(
+            tgt='cid*1*', pillar="jenkins:client:master")[0].values()[0]
+
+        salt_api = salt_deployed.get_pillar(
+            tgt='cid*1*', pillar="_param:jenkins_salt_api_url")[0].values()[0]
+
+        show_step(2)
+        jenkins = JenkinsClient(
+            host='http://{host}:{port}'.format(**jenkins_info),
+            username=jenkins_info['username'],
+            password=jenkins_info['password'])
+
+        params = jenkins.make_defults_params('deploy-k8s-upgrade')
+        params['SALT_MASTER_URL'] = salt_api
+        params['SALT_MASTER_CREDENTIALS'] = 'salt'
+        params['CONFORMANCE_RUN_AFTER'] = True
+        params['CONFORMANCE_RUN_BEFORE'] = True
+        build = jenkins.run_build('deploy-k8s-upgrade', params)
+
+        show_step(3)
+        jenkins.wait_end_of_build(
+            name=build[0], build_id=build[1], timeout=3600 * 4)
+        result = jenkins.build_info(
+            name=build[0], build_id=build[1])['result']
+        assert result == 'SUCCESS', "k8s upgrade job has been failed"
