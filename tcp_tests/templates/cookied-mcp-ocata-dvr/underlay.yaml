@@ -49,8 +49,6 @@ template:
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
             default_{{ HOSTNAME_GTW01 }}: +110
-            default_{{ HOSTNAME_DNS01 }}: +111
-            default_{{ HOSTNAME_DNS02 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
@@ -70,9 +68,9 @@ template:
             default_{{ HOSTNAME_MON01 }}: +107
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
-            default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_DNS01 }}: +111
             default_{{ HOSTNAME_DNS02 }}: +112
+            default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+90, -10]
@@ -92,9 +90,9 @@ template:
             default_{{ HOSTNAME_MON01 }}: +107
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
-            default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_DNS01 }}: +111
             default_{{ HOSTNAME_DNS02 }}: +112
+            default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+10, -10]
@@ -114,9 +112,9 @@ template:
             default_{{ HOSTNAME_MON01 }}: +107
             default_{{ HOSTNAME_MON02 }}: +108
             default_{{ HOSTNAME_MON03 }}: +109
-            default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_DNS01 }}: +111
             default_{{ HOSTNAME_DNS02 }}: +112
+            default_{{ HOSTNAME_GTW01 }}: +110
             default_{{ HOSTNAME_PRX01 }}: +121
           ip_ranges:
             dhcp: [+10, -10]
@@ -521,7 +519,6 @@ template:
 
               interfaces: *all_interfaces
               network_config: *all_network_config
-
           - name: {{ HOSTNAME_DNS01 }}
             role: salt_minion
             params:
