@@ -54,9 +54,9 @@
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HEAT() }}
 
 # install designate backend
-- description: Install powerdns
+- description: Install bind
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@powerdns:server' state.sls powerdns.server
+    -C 'I@bind:server' state.sls bind
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
