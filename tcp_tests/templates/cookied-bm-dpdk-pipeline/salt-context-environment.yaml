@@ -44,11 +44,11 @@ nodes:
         enp3s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
-    cmp01.cookied-bm-dpdk-pipeline.local:
+    cmp001.cookied-bm-dpdk-pipeline.local:
       reclass_storage_name: openstack_compute_node01
       roles:
       - openstack_compute_dpdk
-      - features_lvm_backend
+      - features_lvm_backend_volume_sdb
       - linux_system_codename_xenial
       - openstack_compute_sriov
       interfaces:
@@ -62,16 +62,12 @@ nodes:
         enp3s0f1:
           role: bond_dpdk_prv_lacp
           dpdk_pci: "0000:03:00.1"
-        # Remove this interface after switching to reclass 1.5.x
-        # in favor to system.nova.compute.nfv.sriov
-        enp5s0f1:
-          role: sriov
 
-    cmp02.cookied-bm-dpdk-pipeline.local:
+    cmp002.cookied-bm-dpdk-pipeline.local:
       reclass_storage_name: openstack_compute_node02
       roles:
       - openstack_compute_dpdk
-      - features_lvm_backend
+      - features_lvm_backend_volume_sdb
       - linux_system_codename_xenial
       - openstack_compute_sriov
       interfaces:
@@ -85,10 +81,7 @@ nodes:
         enp3s0f1:
           role: bond_dpdk_prv_lacp
           dpdk_pci: "0000:03:00.1"
-        # Remove this interface after switching to reclass 1.5.x
-        # in favor to system.nova.compute.nfv.sriov
-        enp5s0f1:
-          role: sriov
+
 
     gtw01.cookied-bm-dpdk-pipeline.local:
       reclass_storage_name: openstack_gateway_node01
@@ -97,10 +90,11 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp3s0f0:
-          role: single_mgm
-          deploy_address: 172.16.49.5
+          role: single_mgm_dhcp
         enp3s0f1:
-          role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+          role: bond0_ab_dvr_vxlan_ctl_mesh_external
+          external_address: 172.17.42.134
+          external_network_netmask: 255.255.255.192
 
     gtw02.cookied-bm-dpdk-pipeline.local:
       reclass_storage_name: openstack_gateway_node02
@@ -109,7 +103,8 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp3s0f0:
-          role: single_mgm
-          deploy_address: 172.16.49.4
+          role: single_mgm_dhcp
         enp3s0f1:
-          role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+          role: bond0_ab_dvr_vxlan_ctl_mesh_external
+          external_address: 172.17.42.135
+          external_network_netmask: 255.255.255.192
