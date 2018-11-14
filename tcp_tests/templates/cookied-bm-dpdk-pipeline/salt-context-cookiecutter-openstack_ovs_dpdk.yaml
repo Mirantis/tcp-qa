@@ -107,7 +107,7 @@ default_context:
   local_repositories: 'False'
   maas_deploy_address: 172.16.49.15
   maas_hostname: cfg01
-  mcp_version: testing
+  mcp_version: proposed
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
   openldap_domain: deploy-name.local
@@ -171,7 +171,7 @@ default_context:
   openstack_nova_compute_reserved_host_memory_mb: '900'
   openstack_ovs_dvr_enabled: 'False'
   openstack_ovs_encapsulation_type: vlan
-  openstack_ovs_encapsulation_vlan_range: 2418:2420
+  openstack_ovs_encapsulation_vlan_range: 2417:2420
   openstack_proxy_address: 10.167.11.80
   openstack_proxy_hostname: prx
   openstack_proxy_node01_address: 10.167.11.81
