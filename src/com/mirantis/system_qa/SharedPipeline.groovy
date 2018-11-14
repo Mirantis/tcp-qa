@@ -216,6 +216,8 @@ def swarm_run_pytest(String passed_steps) {
                 string(name: 'REPOSITORY_SUITE', value: "${MCP_VERSION}"),
                 string(name: 'MCP_IMAGE_PATH1604', value: "${MCP_IMAGE_PATH1604}"),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
+                string(name: 'TEMPEST_IMAGE_VERSION', value: "${TEMPEST_IMAGE_VERSION}"),
+
             ]
         common.printMsg("Start building job 'swarm-run-pytest' with parameters:", "purple")
         common.prettyPrint(parameters)
@@ -227,6 +229,7 @@ def swarm_testrail_report(String passed_steps) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
+        def tempest_test_suite_name = env.TEMPEST_TEST_SUITE_NAME
         def parameters = [
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
@@ -234,6 +237,7 @@ def swarm_testrail_report(String passed_steps) {
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
+                string(name: 'TEMPEST_TEST_SUITE_NAME', value: "${tempest_test_suite_name}"),
             ]
         common.printMsg("Start building job 'swarm-testrail-report' with parameters:", "purple")
         common.prettyPrint(parameters)
