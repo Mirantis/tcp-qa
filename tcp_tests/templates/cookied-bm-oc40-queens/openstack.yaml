@@ -270,13 +270,37 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Run tempest from new docker image
+- description: Test future contrail manipulation
   cmd: |
-    OPENSTACK_VERSION=`salt-call --out=newline_values_only pillar.get _param:openstack_version`;
-    docker run -e ARGS="-r test -w 2" -v /tmp/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /tmp/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest:$OPENSTACK_VERSION /bin/bash -c "run-tempest";
+    apt install crudini jq -y;
+    crudini --set /tmp/test/tempest.conf auth tempest_roles admin;
+    crudini --set /tmp/test/tempest.conf patrole custom_policy_files /etc/opencontrail/policy.json;
+    crudini --set /tmp/test/tempest.conf sdn service_name opencontrail;
+    cat /tmp/test/tempest.conf;
   node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 30}
   skip_fail: true
+
+- description: Run tempest from new docker image
+  cmd: |
+    OPENSTACK_VERSION=`salt-call --out=newline_values_only pillar.get _param:openstack_version`;
+    docker run --name "run-tempest-yml" -d -e ARGS="-r test -w 2" -v /tmp/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /tmp/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest:$OPENSTACK_VERSION /bin/bash -c "run-tempest";
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Test Wait container script
+  cmd: |
+    report_file=`find /tmp/test -maxdepth 1 -name 'report_*xml' -print -quit`;
+    if [ `docker inspect run-tempest-yml | jq -M '.[]."State"."Status"' | tr -d '"'` == "exited" ] && [ -f "$report_file" ];
+    then echo "All done!"; docker logs run-tempest-yml;
+    elif [ `docker inspect run-tempest-yml | jq -M '.[]."State"."Status"' | tr -d '"'` == "exited" ] && [ ! -f "$report_file" ];
+    then echo "Exit without report!"; docker logs run-tempest-yml;
+    else echo "Tempest not finished... ";sleep 900; false;
+    fi
+  node_name: {{ HOSTNAME_CTL01 }}
+  retry: {count: 25, delay: 30}
+  skip_fail: false
 
 - description: Download xml results
   download:
