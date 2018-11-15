@@ -239,7 +239,7 @@ class ExecuteCommandsMixin(object):
 
         result = {}
         with self.__underlay.local() as local:
-            result = local.execute('cd {0} && find . -type f -name "{1}"'
+            result = local.execute('cd {0} && find . -maxdepth 1 -type f -name "{1}"'
                                    .format(local_path, local_filename))
             LOG.info("Found files to upload:\n{0}".format(result))
 
@@ -283,7 +283,7 @@ class ExecuteCommandsMixin(object):
 
         with self.__underlay.remote(node_name=node_name) as remote:
 
-            result = remote.execute('find {0} -type f -name {1}'
+            result = remote.execute('find {0} -maxdepth 1 -type f -name {1}'
                                     .format(remote_path, remote_filename))
             LOG.info("Found files to download:\n{0}".format(result))
 
