@@ -56,12 +56,15 @@ node ("${PARENT_NODE_NAME}") {
             def tempest_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"report_*.xml\"", returnStdout: true)
             // k8s_conformance_report_name =~ conformance_result.xml
             def k8s_conformance_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_result.xml\"", returnStdout: true)
+            // k8s_conformance_report_name =~ conformance_virtlet_result.xml
+            def k8s_conformance_virtlet_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_virtlet_result.xml\"", returnStdout: true)
             // stacklight_report_name =~ "stacklight_report.xml" or "report.xml"
             def stacklight_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"*report.xml\"", returnStdout: true)
             common.printMsg(deployment_report_name ? "Found deployment report: ${deployment_report_name}" : "Deployment report not found", deployment_report_name ? "blue" : "red")
             common.printMsg(tcpqa_report_name ? "Found tcp-qa report: ${tcpqa_report_name}" : "tcp-qa report not found", tcpqa_report_name ? "blue" : "red")
             common.printMsg(tempest_report_name ? "Found tempest report: ${tempest_report_name}" : "tempest report not found", tempest_report_name ? "blue" : "red")
             common.printMsg(k8s_conformance_report_name ? "Found k8s conformance report: ${k8s_conformance_report_name}" : "k8s conformance report not found", k8s_conformance_report_name ? "blue" : "red")
+            common.printMsg(k8s_conformance_virtlet_report_name ? "Found k8s conformance virtlet report: ${k8s_conformance_virtlet_report_name}" : "k8s conformance virtlet report not found", k8s_conformance_virtlet_report_name ? "blue" : "red")
             common.printMsg(stacklight_report_name ? "Found stacklight-pytest report: ${stacklight_report_name}" : "stacklight-pytest report not found", stacklight_report_name ? "blue" : "red")
 
 
@@ -139,6 +142,28 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-section-name \'Conformance\'",
                     ]
                     report_result = shared.upload_results_to_testrail(k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    common.printMsg(report_result, "blue")
+                    report_url = report_result.split("\n").each {
+                        if (it.contains("[TestRun URL]")) {
+                            common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
+                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                        }
+                    }
+                }
+            }
+
+            if ('k8s' in stacks && k8s_conformance_virtlet_report_name) {
+                stage("K8s conformance virtlet report") {
+                    testSuiteName = "[k8s] Virtlet"
+                    methodname = "{methodname}"
+                    testrail_name_template = "{title}"
+                    reporter_extra_options = [
+                      "--send-duplicates",
+                      "--testrail-add-missing-cases",
+                      "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
+                      "--testrail-case-section-name \'Conformance\'",
+                    ]
+                    report_result = shared.upload_results_to_testrail(k8s_conformance_virtlet_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(report_result, "blue")
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
