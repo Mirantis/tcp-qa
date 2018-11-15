@@ -83,11 +83,15 @@ class Test3rdpartySuites(object):
         k8s_actions.run_conformance()
 
     @pytest.mark.grab_versions
+    @pytest.mark.extract(container_system='docker',
+                         extract_from='mirantis/virtlet',
+                         files_to_extract=['conformance_virtlet_result.xml'])
     @pytest.mark.grab_k8s_results(name=['virtlet_conformance.log',
-                                        'report.xml'])
+                                        'conformance_virtlet_result.xml'])
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.k8s_conformance_virtlet
     def test_run_k8s_conformance_virtlet(self, show_step, config, k8s_actions,
                                          k8s_logs, _):
         """Test run of k8s virtlet conformance tests"""
-        k8s_actions.run_virtlet_conformance()
+        k8s_actions.run_virtlet_conformance(
+            report_name="conformance_virtlet_result.xml")
