@@ -33,19 +33,9 @@
     set -e;
     # Remove rack01 key
     . /root/venv-reclass-tools/bin/activate;
-    reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config/init.yml;
+    reclass-tools del-key parameters.reclass.storage.node.openstack_compute_rack01 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml;
     # Add openstack_compute_node definition from system
-    reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config/init.yml --merge;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 10}
-  skip_fail: false
-
-- description: "Change path to internal storage for salt.control images"
-  cmd: |
-    set -e;
-    . /root/venv-reclass-tools/bin/activate;
-    reclass-tools add-key parameters._param.salt_control_xenial_image 'http://images.mcp.mirantis.net/ubuntu-16-04-x64-mcp{{ SHARED.REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
-    reclass-tools add-key parameters._param.salt_control_trusty_image 'http://images.mcp.mirantis.net/ubuntu-14-04-x64-mcp{{ SHARED.REPOSITORY_SUITE }}.qcow2' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/init.yml;
+    reclass-tools add-key 'classes' 'system.reclass.storage.system.openstack_compute_multi' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml --merge;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
