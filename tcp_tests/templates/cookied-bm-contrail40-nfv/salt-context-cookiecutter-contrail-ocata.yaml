@@ -30,7 +30,7 @@ default_context:
   backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCmrlbGRqC+Q1Y7zkW1LUHIcMqQ1aGYV2lj0Pj11mtLC4T1cZD5Zbv0XYAbAqSLY3aPWLJ+kwQpEgQhv/lxuXp9nNMZOd2F3snGTHrEZ2FmRf1Uzo2qi1o7hySPs2x+JkpPCnnz9hJGTPciLVc+m3Q1Cpku40DC6zgGX17VaTl03D6Ac3ebgmYBzMltDzWWtBRELt/d3bGOgWRdZcLYUqQxLoA6XWPzsBN55Ib3F4cts68jIHDsjA/0wUDm9S0eXwPOx2bNaZVFpt7ZUy0ZrVhrklNOArydea1hbd28RD8O2DNwo8nZ87fVzN70tGkNJLQTp39whIGDOw98Em5QIYdN
   bmk_enabled: 'False'
   ceph_enabled: 'False'
-  opencontrail_compute_iface: enp5s0f0
+  opencontrail_compute_iface: enp5s0f0.${_param:tenant_vlan}
   openstack_nfv_dpdk_enabled: 'True'
   openstack_nfv_sriov_enabled: 'True'
   openstack_nfv_sriov_network: physnet1
@@ -97,8 +97,8 @@ default_context:
   deploy_network_netmask: 255.255.255.192
   deploy_network_subnet: 172.16.49.64/26
   deployment_type: physical
-  dns_server01: 172.18.208.44
-  dns_server02: 8.8.4.4
+  dns_server01: 172.18.176.6
+  dns_server02: 172.18.208.44
   email_address: sgudz@mirantis.com
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
@@ -150,7 +150,7 @@ default_context:
   opencontrail_control_node03_address: 10.167.8.23
   opencontrail_control_node03_hostname: ntw03
   opencontrail_enabled: 'True'
-  opencontrail_router01_address: 10.167.8.100
+  opencontrail_router01_address: 10.167.8.220
   opencontrail_router01_hostname: rtr01
   opencontrail_router02_address: 10.167.8.101
   opencontrail_router02_hostname: rtr02
@@ -242,7 +242,7 @@ default_context:
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: 192.168.0.1
+  tenant_network_gateway: 192.168.0.220
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: 192.168.0.0/24
   tenant_vlan: '2423'
