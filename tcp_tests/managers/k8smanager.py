@@ -230,28 +230,29 @@ class K8SManager(ExecuteCommandsMixin):
                raise_on_err=raise_on_err, verbose=True)
 
     def run_virtlet_conformance(self, timeout=60 * 120,
-                                log_file='virtlet_conformance.log'):
+                                log_file='virtlet_conformance.log',
+                                report_name="report.xml"):
         if self.__config.k8s.run_extended_virtlet_conformance:
             ci_image = "cloud-images.ubuntu.com/xenial/current/" \
                        "xenial-server-cloudimg-amd64-disk1.img"
             cmd = ("set -o pipefail; "
                    "docker run --net=host {0} /virtlet-e2e-tests "
-                   "-include-cloud-init-tests -junitOutput report.xml "
+                   "-include-cloud-init-tests -junitOutput {3} "
                    "-image {2} -sshuser ubuntu -memoryLimit 1024 "
                    "-alsologtostderr -cluster-url http://127.0.0.1:8080 "
                    "-ginkgo.focus '\[Conformance\]' "
                    "| tee {1}".format(
                     self.__config.k8s_deploy.kubernetes_virtlet_image,
-                    log_file, ci_image))
+                    log_file, ci_image, report_name))
         else:
             cmd = ("set -o pipefail; "
                    "docker run --net=host {0} /virtlet-e2e-tests "
-                   "-junitOutput report.xml "
+                   "-junitOutput {2} "
                    "-alsologtostderr -cluster-url http://127.0.0.1:8080 "
                    "-ginkgo.focus '\[Conformance\]' "
                    "| tee {1}".format(
                     self.__config.k8s_deploy.kubernetes_virtlet_image,
-                    log_file))
+                    log_file, report_name))
         LOG.info("Executing: {}".format(cmd))
         with self.__underlay.remote(
                 node_name=self.controller_name) as remote:
