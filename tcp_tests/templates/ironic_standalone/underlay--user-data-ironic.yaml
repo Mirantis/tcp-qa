@@ -72,7 +72,7 @@
 
    {%- if os_env('IRONIC_DNSMASQ_HOSTFILE', '') %}
    - echo "dhcp-hostsfile=/var/lib/libvirt/dnsmasq/{{ IRONIC_ENV_NAME }}.hostsfile" >> /etc/dnsmasq.conf
-   - service dnsmasq restart
+   - service dnsmasq restart && sleep 30
    {%- endif %}
 
    # Enable SNAT to allow internet access for deploying nodes using ironic node as a gateway
