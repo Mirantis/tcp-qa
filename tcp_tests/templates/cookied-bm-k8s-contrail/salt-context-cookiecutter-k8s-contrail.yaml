@@ -111,6 +111,7 @@ default_context:
   kubernetes_compute_single_address_ranges: 10.167.8.103-10.167.8.104
   kubernetes_compute_tenant_address_ranges: 10.167.8.103-10.167.8.104
   kubernetes_network_opencontrail_enabled: 'True'
+  kubernetes_keepalived_vip_interface: br_ctl
   kubernetes_metallb_enabled: 'False'  # Not used with opencontrail
   metallb_addresses: 172.17.41.160-172.17.41.180
   kubernetes_ingressnginx_enabled: 'True'
