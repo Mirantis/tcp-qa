@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "92eb35e0_f8114e90",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-20T09:17:58Z",
+      "side": 1,
+      "message": "Please describe what problem you\u0027re trying to fix",
+      "range": {
+        "startLine": 9,
+        "startChar": 4,
+        "endLine": 9,
+        "endChar": 8
+      },
+      "revId": "2f86478d189ddb5935333657ebe7e90976ea46f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8c819026_4e56e51e",
+        "filename": "tcp_tests/templates/shared-core.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-20T09:17:58Z",
+      "side": 1,
+      "message": "Note we also have glusterfs state execute in shared openstack (at least for keystone and glance) So seems it is not missed",
+      "range": {
+        "startLine": 93,
+        "startChar": 38,
+        "endLine": 93,
+        "endChar": 47
+      },
+      "revId": "2f86478d189ddb5935333657ebe7e90976ea46f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
