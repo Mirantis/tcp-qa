@@ -225,11 +225,12 @@ class RuntestManager(object):
                         salt_cmd + "'*' saltutil.refresh_pillar && " +
                         salt_cmd + "'*' saltutil.sync_all")},
             {
-                'description': ("Install docker.io package and "
+                'description': ("Install docker-ce package and "
                                 "enable packets forwarding"),
                 'node_name': self.target_name,
                 'cmd': ("set -ex;" +
-                        salt_call_cmd + " pkg.install docker.io && " +
+                        salt_call_cmd + " pkg.install docker-ce  "
+                                        "--allow-unauthenticated && " +
                         " iptables --policy FORWARD ACCEPT")},
             {
                 'description': "Install PyPI docker package",
