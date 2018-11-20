@@ -58,6 +58,18 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+- description: '*Workaround* to remove apt key until migrate on CC'
+  cmd: salt-key -d apt01.virtual-offline-pike-ovs-dpdk  -y
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: true
+
+- description: '*Workaround* stop minion on apt like proxy node'
+  cmd: systemctl stop salt-minion.service
+  node_name: {{ HOSTNAME_APT01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: true
+
 {{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='"linux" "reclass" "salt" "openssh" "ntp" "git" "nginx" "collectd" "sensu" "heka" "sphinx" "keystone" "mysql" "grafana" "haproxy" "rsyslog" "horizon" "prometheus" "telegraf" "elasticsearch" "powerdns" "fluentd" "backupninja" "watchdog" "dogtag" "runtest" "manila" "auditd" "logrotate" "gnocchi"') }}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
