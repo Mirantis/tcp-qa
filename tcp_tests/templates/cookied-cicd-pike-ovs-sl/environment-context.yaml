@@ -249,6 +249,8 @@ nodes:
       reclass_storage_name: openstack_gateway_node01
       roles:
       - linux_system_codename_xenial
+      classes:
+      - system.linux.system.repo.mcp.apt_mirantis.docker
       interfaces:
         ens3:
           role: single_dhcp
