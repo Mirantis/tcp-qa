@@ -81,11 +81,32 @@
   retry: {count: 5, delay: 5}
   skip_fail: false
 
+- description: Setup glusterfs on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:server' state.sls glusterfs
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 5, delay: 5}
+  skip_fail: false
+
 - description: Check the gluster status
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@glusterfs:server' cmd.run 'gluster peer status && gluster volume status' -b 1
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Refresh pillar before glusterfs client
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:client' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Setup glusterfs client
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@glusterfs:client' state.sls glusterfs.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
   skip_fail: false
 
 {%- endmacro %}
@@ -159,6 +180,24 @@
 - description: Restart rsyslog
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@haproxy:proxy' service.restart rsyslog
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro MACRO_INSTALL_NGINX() %}
+
+- description: Update certificate files on nginx nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls salt.minion.cert
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Install nginx server
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@nginx:server' state.sls nginx
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
