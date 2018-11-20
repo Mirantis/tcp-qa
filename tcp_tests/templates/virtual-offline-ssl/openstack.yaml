@@ -384,37 +384,37 @@
   skip_fail: false
 
 
-- description: Enable local docker repo
-  cmd: |
-    set -e;
-    echo "{{ DOCKER_LOCAL_REPO }}" > /etc/apt/sources.list.d/mcp_docker.list;
-    apt-get clean; apt-get update;
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description: Enable local docker repo
+#  cmd: |
+#    set -e;
+#    echo "{{ DOCKER_LOCAL_REPO }}" > /etc/apt/sources.list.d/mcp_docker.list;
+#    apt-get clean; apt-get update;
+#  node_name: {{ HOSTNAME_GTW01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Install docker-ce on gtw
+#  cmd: salt-call cmd.run 'apt-get install docker-ce -y  --allow-unauthenticated'
+#  node_name: {{ HOSTNAME_GTW01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Enable forward policy on gtw
+#  cmd: |
+#    set -e;
+#    iptables --policy FORWARD ACCEPT;
+#  node_name: {{ HOSTNAME_GTW01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
 
-- description: Install docker-ce on gtw
-  cmd: salt-call cmd.run 'apt-get install docker-ce -y'
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Enable forward policy on gtw
-  cmd: |
-    set -e;
-    iptables --policy FORWARD ACCEPT;
-  node_name: {{ HOSTNAME_GTW01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: create rc file on cfg
-  cmd: scp ctl01:/root/keystonercv3 /root
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
-
-- description: Copy rc file
-  cmd: scp /root/keystonercv3 gtw01:/root
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 30}
-  skip_fail: false
+#- description: create rc file on cfg
+#  cmd: scp ctl01:/root/keystonercv3 /root
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
+#
+#- description: Copy rc file
+#  cmd: scp /root/keystonercv3 gtw01:/root
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 30}
+#  skip_fail: false
