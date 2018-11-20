@@ -18,6 +18,7 @@
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import HOSTNAME_VS with context %}
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import LAB_CONFIG_NAME with context %}
 {% from 'virtual-offline-pike-ovs-dpdk/underlay.yaml' import DOMAIN_NAME with context %}
+{% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'proposed') %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.local.test/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml
@@ -40,6 +41,7 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_VS) }}
 {{ VSWITCH.MACRO_CONFIGURE_VSWITCH(HOSTNAME_VS, VSWITCH_IP) }}
 
 {{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}

@@ -394,7 +394,7 @@ class TestMcpInstallOvsPike(object):
                 result)
 
         # Prepare resources before test
-        steps_path = config.openstack_deploy.penstack_resources_steps_path
+        steps_path = config.openstack_deploy.openstack_resources_steps_path
         commands = underlay.read_template(steps_path)
         openstack_actions.install(commands)
 

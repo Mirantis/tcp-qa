@@ -12,9 +12,27 @@
 {% import 'shared-salt.yaml' as SHARED with context %}
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 
-{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/ubuntu-xenial/docker ' + REPOSITORY_SUITE + ' stable') %}
+{% set DOCKER_LOCAL_REPO = os_env('DOCKER_LOCAL_REPO', 'deb [arch=amd64] http://mirror.mcp.mirantis.local.test/' + REPOSITORY_SUITE + '/docker/xenial xenial stable') %}
 
-  # Upload cirros image
+- description: Run 'openssh' formula on cfg01
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@salt:master' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Configure openssh on all nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False -C 'I@linux:system and not cfg01*' state.sls openssh &&
+    salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@linux:system and not cfg01*' cmd.run "sed -i 's/PasswordAuthentication no/PasswordAuthentication
+    yes/' /etc/ssh/sshd_config && service ssh reload"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Upload cirros image on ctl01
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
     'wget http://download.cirros-cloud.net/0.3.4/cirros-0.3.4-i386-disk.img'
@@ -88,7 +106,7 @@
   skip_fail: false
 
 - description: Install docker-ce on gtw
-  cmd: salt-call cmd.run 'apt-get install docker-ce -y'
+  cmd: salt-call cmd.run 'apt-get install docker-ce -y  --allow-unauthenticated'
   node_name: {{ HOSTNAME_GTW01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
@@ -102,13 +120,13 @@
   skip_fail: false
 
 - description: create rc file on cfg
-  cmd: scp ctl01:/root/keystonercv3 /root
+  cmd: scp -o StrictHostKeyChecking=no ctl01:/root/keystonercv3 /root
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
 
 - description: Copy rc file
-  cmd: scp /root/keystonercv3 gtw01:/root
+  cmd: scp -o StrictHostKeyChecking=no /root/keystonercv3 gtw01:/root
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 30}
   skip_fail: false
