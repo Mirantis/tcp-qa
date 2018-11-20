@@ -32,6 +32,8 @@ nodes:
       roles:
       - openstack_control_leader
       - linux_system_codename_xenial
+      classes:
+      - system.linux.system.repo.mcp.apt_mirantis.docker
       interfaces:
         ens3:
           role: single_ctl
