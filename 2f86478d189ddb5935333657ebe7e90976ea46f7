@@ -45,6 +45,30 @@
       "revId": "2f86478d189ddb5935333657ebe7e90976ea46f7",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8a7c62f0_b5846b8e",
+        "filename": "tcp_tests/templates/shared-core.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 93,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-20T13:23:36Z",
+      "side": 1,
+      "message": "Looks like it is according to the change https://review.fuel-infra.org/#/c/39749/1/doc/mcp-deployment-guide/source/deploy-mcp-cluster-manually/deploy-openstack-env-manually/install-openstack-services/deploy-telemetry/deploy-telemetry-on-new-cluster.rst",
+      "parentUuid": "8c819026_4e56e51e",
+      "range": {
+        "startLine": 93,
+        "startChar": 38,
+        "endLine": 93,
+        "endChar": 47
+      },
+      "revId": "2f86478d189ddb5935333657ebe7e90976ea46f7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
