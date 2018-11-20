@@ -121,6 +121,8 @@ nodes:
       roles:
       - openstack_gateway
       - linux_system_codename_xenial
+      classes:
+      - system.linux.system.repo.mcp.apt_mirantis.docker
       interfaces:
         ens3:
           role: single_dhcp

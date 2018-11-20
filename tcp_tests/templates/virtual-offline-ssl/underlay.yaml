@@ -60,6 +60,7 @@ template:
         net: {{ os_env('ADMIN_ADDRESS_POOL01', '10.70.0.0/16:24') }}
         params:
           ip_reserved:
+            gateway: +122
             l2_network_device: +1
             default_{{ HOSTNAME_APT01 }}: +122
             default_{{ HOSTNAME_CFG01 }}: +90
@@ -102,6 +103,7 @@ template:
         net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '10.90.0.0/16:24') }}
         params:
           ip_reserved:
+            gateway: +1
             l2_network_device: +1
             default_{{ HOSTNAME_APT01 }}: +122
             default_{{ HOSTNAME_CFG01 }}: +100
