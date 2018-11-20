@@ -76,9 +76,18 @@ def build_shell_job(job_name, parameters, junit_report_filename=null, junit_repo
         parameters: parameters,
         propagate: false
 
+    def build_number = job_info.getNumber()
+    // Try to grab 'tar.gz' articacts from the shell job'
+    step($class: 'hudson.plugins.copyartifact.CopyArtifact',
+         projectName: job_name,
+         selector: specific("${build_number}"),
+         filter: "**/*.tar.gz1",
+         target: '.',
+         flatten: true,
+         fingerprintArtifacts: true)
+
     if (job_info.getResult() != "SUCCESS") {
         def build_status = job_info.getResult()
-        def build_number = job_info.getNumber()
         def build_url = job_info.getAbsoluteUrl()
         def job_url = "${build_url}"
         currentBuild.result = build_status
