@@ -40,19 +40,19 @@
   retry: {count: 1, delay: 15}
   skip_fail: false
 
-- description: Mount glusterfs.client volumes (resuires created 'keystone' system user)
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' state.sls glusterfs.client -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+#- description: Mount glusterfs.client volumes (resuires created 'keystone' system user)
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@keystone:server' state.sls glusterfs.client -b 1
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
-- description: Update fernet keys for keystone server on the mounted glusterfs volume
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@keystone:server' state.sls keystone.server -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+#- description: Update fernet keys for keystone server on the mounted glusterfs volume
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@keystone:server' state.sls keystone.server -b 1
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
 - description: Populate keystone services/tenants/admins
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
@@ -85,12 +85,12 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Mount glusterfs.client volumes (resuires created  'glusterfs' system user)
-  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
-    -C 'I@glance:server' state.sls glusterfs.client -b 1
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
+#- description: Mount glusterfs.client volumes (resuires created  'glusterfs' system user)
+#  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+#    -C 'I@glance:server' state.sls glusterfs.client -b 1
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
 
 - description: Check glance image-list
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
