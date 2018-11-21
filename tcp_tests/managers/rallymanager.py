@@ -93,12 +93,12 @@ class RallyManager(object):
         LOG.info("Pull {image}:{version}".format(image=image,
                                                  version=version))
         try:
-            cmd = ("apt-get -y install docker-ce &&"
+            cmd = ("apt-get -y install docker &&"
                    " docker pull {image}:{version}".format(image=image,
                                                            version=version))
             self._underlay.check_call(cmd, node_name=self._node_name)
         except Exception:
-            LOG.debug('Cannot install docker-ce')
+            LOG.debug('Cannot install docker')
             cmd = ("apt-get -y install docker.io &&"
                    " docker pull {image}:{version}".format(image=image,
                                                            version=version))
@@ -113,7 +113,7 @@ class RallyManager(object):
 
         LOG.info("Copy keystonercv3")
         tgt = self._node_name.split('.')[0]
-        cmd = "scp -3 ctl01:/root/keystonercv3 " \
+        cmd = "scp -3 ctl03:/root/keystonercv3 " \
               "{tgt}:/root/rally/keystonercv3".format(
                   tgt=tgt)
         domain = '.'.join(self._node_name.split('.')[1:])
