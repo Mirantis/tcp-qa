@@ -17,9 +17,9 @@ nodes:
       - openstack_control_leader
       - openstack_database_leader
       - openstack_message_queue
-      - features_designate_pool_manager_database
-      - features_designate_pool_manager
-      - features_designate_pool_manager_keystone
+      - features_designate_bind9_database
+      - features_designate_bind9
+      - features_designate_bind9_keystone
       - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
@@ -35,8 +35,8 @@ nodes:
       - openstack_control
       - openstack_database
       - openstack_message_queue
-      - features_designate_pool_manager_database
-      - features_designate_pool_manager
+      - features_designate_bind9_database
+      - features_designate_bind9
       - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
@@ -52,8 +52,8 @@ nodes:
       - openstack_control
       - openstack_database
       - openstack_message_queue
-      - features_designate_pool_manager_database
-      - features_designate_pool_manager
+      - features_designate_bind9_database
+      - features_designate_bind9
       - features_lvm_backend_control
       - linux_system_codename_xenial
       interfaces:
@@ -66,7 +66,7 @@ nodes:
       reclass_storage_name: openstack_proxy_node01
       roles:
       - openstack_proxy
-      - features_designate_pool_manager_proxy
+      - features_designate_bind9_proxy
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -148,7 +148,8 @@ nodes:
     dns01.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_dns_node01
       roles:
-      - features_designate_pool_manager_dns
+      - features_designate_bind9
+      - features_designate_bind9_dns
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -160,7 +161,8 @@ nodes:
     dns02.mcp11-ovs-dpdk.local:
       reclass_storage_name: openstack_dns_node02
       roles:
-      - features_designate_pool_manager_dns
+      - features_designate_bind9
+      - features_designate_bind9_dns
       - linux_system_codename_xenial
       interfaces:
         ens3:

@@ -2,6 +2,7 @@ default_context:
   bmk_enabled: 'False'
   ceph_enabled: 'False'
   cicd_enabled: 'False'
+  designate_backend: bind
   cluster_domain: cookied-mcp-mitaka-ovs.local
   cluster_name: cookied-mcp-mitaka-ovs
   compute_bond_mode: active-backup
