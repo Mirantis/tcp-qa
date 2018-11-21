@@ -1,0 +1,27 @@
+diff --git a/classes/cluster/virtual-mcp-mitaka-ovs-trusty/infra/config.yml b/classes/cluster/virtual-mcp-mitaka-ovs-trusty/infra/config.yml
+index dae5c34d..c4584110 100644
+--- a/classes/cluster/virtual-mcp-mitaka-ovs-trusty/infra/config.yml
++++ b/classes/cluster/virtual-mcp-mitaka-ovs-trusty/infra/config.yml
+@@ -9,7 +9,6 @@ classes:
+ - system.reclass.storage.salt
+ - system.salt.minion.ca.salt_master
+ - system.salt.minion.cert.proxy
+-- system.sphinx.server.doc.reclass
+ - system.keystone.client.core
+ - system.keystone.client.service.ceilometer
+ - system.keystone.client.service.designate
+@@ -60,14 +59,6 @@ parameters:
+           proto: static
+           address: 10.16.0.111
+           netmask: 255.255.255.0
+-  nginx:
+-    server:
+-      site:
+-        nginx_proxy_openstack_web:
+-          proxy:
+-            host: ${_param:openstack_proxy_address}
+-        nginx_proxy_openstack_api_heat_cfn:
+-          enabled: false
+   salt:
+     master:
+       reactor:
