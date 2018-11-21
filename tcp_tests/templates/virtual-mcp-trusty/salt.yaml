@@ -30,13 +30,23 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 {%- endfor %}
+{%- endif %}
+
+- description: Apply sphinx workaround - delete system.sphinx class
+  cmd: sed -i -e '/system.sphinx/d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: Apply sphinx workaround - delete nginx section
+  cmd: sed -i -e '/  nginx:/,+8d' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
 
 - description: Refresh pillar
   cmd: salt '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
-{%- endif %}
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
