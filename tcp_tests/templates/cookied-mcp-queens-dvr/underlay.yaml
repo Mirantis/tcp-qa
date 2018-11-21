@@ -202,10 +202,10 @@ template:
 
         group_volumes:
          - name: cloudimage1604    # This name is used for 'backing_store' option for node volumes.
-           source_image: !os_env IMAGE_PATH1604  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
+           source_image: !os_env MCP_IMAGE_PATH1604  # https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img
            format: qcow2
          - name: cfg01_day01_image               # Pre-configured day01 image
-           source_image: {{ os_env('IMAGE_PATH_CFG01_DAY01', os_env('IMAGE_PATH1604')) }} # http://images.mirantis.com/cfg01-day01.qcow2 or fallback to IMAGE_PATH1604
+           source_image: {{ os_env('IMAGE_PATH_CFG01_DAY01', os_env('MCP_IMAGE_PATH1604')) }} # http://images.mirantis.com/cfg01-day01.qcow2 or fallback to IMAGE_PATH1604
            format: qcow2
          - name: mcp_ubuntu_1604_image           # Pre-configured image for control plane
            source_image: !os_env MCP_IMAGE_PATH1604

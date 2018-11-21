@@ -43,7 +43,7 @@ class TestFailoverCeph(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_restart_osd_node(self, func_name, underlay, config,
-                              openstack_deployed, ceph_deployed,
+                              openstack_deployed,
                               openstack_actions, hardware,
                               rally, show_step):
         """Test restart ceph osd node
@@ -109,7 +109,7 @@ class TestFailoverCeph(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_restart_cmn_node(self, func_name, underlay, config,
-                              openstack_deployed, ceph_deployed,
+                              openstack_deployed,
                               core_actions,
                               salt_actions, openstack_actions,
                               rally, show_step, hardware):
@@ -176,7 +176,7 @@ class TestFailoverCeph(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_restart_rgw_node(self, func_name, underlay, config,
-                              openstack_deployed, ceph_deployed,
+                              openstack_deployed,
                               core_actions, hardware,
                               salt_actions, openstack_actions,
                               rally, show_step):
