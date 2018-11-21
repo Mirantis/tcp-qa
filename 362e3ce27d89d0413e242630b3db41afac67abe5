@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d62a730e_3ae5f47c",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 233,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2018-11-21T16:08:59Z",
+      "side": 1,
+      "message": "in this case we have to change pkg salt module to cmd.run apt-get",
+      "range": {
+        "startLine": 232,
+        "startChar": 0,
+        "endLine": 233,
+        "endChar": 71
+      },
+      "revId": "362e3ce27d89d0413e242630b3db41afac67abe5",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
