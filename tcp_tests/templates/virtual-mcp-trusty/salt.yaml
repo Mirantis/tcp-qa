@@ -30,13 +30,26 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 {%- endfor %}
+{%- endif %}
+
+- description: Apply sphinx workaround - Upload infra/config diff
+  upload:
+    local_path: {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}
+    local_filename: infra.config.diff
+    remote_path: /tmp/infra.config.diff
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: Apply sphinx workaround - Apply diff
+  cmd: cd /srv/salt/reclass/classes/cluster && git apply /tmp/infra.config.diff
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
 
 - description: Refresh pillar
   cmd: salt '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
-{%- endif %}
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
