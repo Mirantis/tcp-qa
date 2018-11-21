@@ -10,6 +10,14 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+# vkhlyunev: sometimes we have to verify fixes to mitaka openstack based on
+# ubuntu trusty OS deployment. Last discovered deploy-able configuration is based on
+# mcp-virtual-lab/salt-formulas/reclass-system parameters/commits/tags listed below
+{% set SHARED.SALT_MODELS_BRANCH = 'master' %}
+{% set SHARED.SALT_MODELS_COMMIT = 'fa85f84' %}
+{% set SHARED.SALT_MODELS_SYSTEM_TAG = '2018.8.0' %}
+{% set SHARED.REPOSITORY_SUITE = '2018.8.0' %}
+
 {{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
 
 {{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
@@ -30,13 +38,27 @@
   retry: {count: 1, delay: 1}
   skip_fail: false
 {%- endfor %}
+{%- endif %}
+
+# vkhlyunev: fa85f84 model commit contains sphinx on cfg01 node
+# which is not required for mitaka-trusty testing. Unfortunately we can not fix
+# it in model itself due to constantly updating models according to development
+# of main release.
+- description: Apply sphinx workaround - delete system.sphinx class
+  cmd: sed -i -e '/system.sphinx/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
+
+- description: Apply sphinx workaround - delete nginx section
+  cmd: sed -i -e '/  nginx:/,+8d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
 
 - description: Refresh pillar
   cmd: salt '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
-{%- endif %}
 
 {{ SHARED.MACRO_GENERATE_INVENTORY() }}
 
