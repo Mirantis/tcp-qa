@@ -180,8 +180,11 @@ def k8s_cncf_log_helper(request, func_name, underlay, k8s_deployed):
         if hasattr(request.node, 'rep_call') and \
                 (request.node.rep_call.passed or request.node.rep_call.failed)\
                 and cncf_publisher:
+            LOG.info("Waiting 60 sec for sonobuoy to generate results archive")
+            time.sleep(60)
+            LOG.info("Downloading sonobuoy results archive")
             files = utils.extract_name_from_mark(cncf_publisher) \
-                    or "{}".format(func_name)
+                or "{}".format(func_name)
             k8s_deployed.extract_file_to_node(
                 system='k8s', file_path='tmp/sonobuoy',
                 pod_name='sonobuoy', pod_namespace='heptio-sonobuoy'
