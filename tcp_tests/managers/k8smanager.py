@@ -227,7 +227,7 @@ class K8SManager(ExecuteCommandsMixin):
             LOG.info("Test results stderr: {}".format(stderr))
         return result
 
-    def start_k8s_cncf_verification(self, timeout=60 * 90):
+    def start_k8s_cncf_verification(self, timeout=60 * 180):
         """
             Build sonobuoy using golang docker image and install it in system
             Then generate sonobuoy verification manifest using gen command
@@ -259,7 +259,7 @@ class K8SManager(ExecuteCommandsMixin):
         LOG.info("Waiting for CNCF to complete")
         helpers.wait(
             lambda: sonobuoy_status() == 'complete',
-            interval=30, timeout=timeout,
+            interval=120, timeout=timeout,
             timeout_msg="Timeout for CNCF reached."
         )
 
