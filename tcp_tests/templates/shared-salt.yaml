@@ -5,16 +5,16 @@
 {# Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12 #}
 {% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
 {# Pin to a specified commit in salt-models/reclass-system #}
-{% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/reclass-system') %}
-{% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
-{% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
-{% set SALT_MODELS_SYSTEM_TAG = os_env('SALT_MODELS_SYSTEM_TAG','') %}
 {% set COOKIECUTTER_TEMPLATES_REPOSITORY_USER = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY_USER','mcp-gerrit') %}
 {% set COOKIECUTTER_TEMPLATES_REPOSITORY_KEY_PATH = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY_KEY_PATH','') %}
 {% set COOKIECUTTER_TEMPLATES_REPOSITORY = os_env('COOKIECUTTER_TEMPLATES_REPOSITORY','ssh://' + COOKIECUTTER_TEMPLATES_REPOSITORY_USER +'@gerrit.mcp.mirantis.com:29418/mk/cookiecutter-templates') %}
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
 {% set COOKIECUTTER_TAG = os_env('COOKIECUTTER_TAG','') %}
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
+{% set SALT_MODELS_SYSTEM_REPOSITORY = os_env('SALT_MODELS_SYSTEM_REPOSITORY','ssh://' + COOKIECUTTER_TEMPLATES_REPOSITORY_USER +'@gerrit.mcp.mirantis.com:29418/salt-models/reclass-system') %}
+{% set SALT_MODELS_SYSTEM_COMMIT = os_env('SALT_MODELS_SYSTEM_COMMIT','') %}
+{% set SALT_MODELS_SYSTEM_REF_CHANGE = os_env('SALT_MODELS_SYSTEM_REF_CHANGE','') %}
+{% set SALT_MODELS_SYSTEM_TAG = os_env('SALT_MODELS_SYSTEM_TAG','') %}
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 # Currently we support 2 salt version that can be set over bellow var
 {% set SALT_VERSION = os_env('SALT_VERSION','2017.7') %}
