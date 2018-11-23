@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "761c3ee0_46a37358",
+        "filename": "tcp_tests/templates/cookied-mcp-mitaka-dvr-ceph/overrides-policy.yml",
+        "patchSetId": 22
+      },
+      "lineNbr": 3,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-11-23T11:48:12Z",
+      "side": 1,
+      "message": "why do you need this? Are you test policy changes?",
+      "range": {
+        "startLine": 3,
+        "startChar": 14,
+        "endLine": 3,
+        "endChar": 15
+      },
+      "revId": "ba7e6c11b3d3003ad33765b366a11552b0c8c940",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
