@@ -192,7 +192,7 @@
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@nginx:server' state.sls salt.minion.cert
   node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 15}
+  retry: {count: 3, delay: 15}
   skip_fail: false
 
 - description: Install nginx server
