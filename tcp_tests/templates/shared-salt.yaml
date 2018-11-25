@@ -532,6 +532,29 @@
   node_name: {{ HOSTNAME_CFG01 }}
 {%- endfor %}
 
+- description: "Replace template addresses to actual environment addresses"
+  cmd: |
+    set -ex;
+    # Replace firstly to an intermediate value to avoid intersection between
+    # already replaced and replacing networks.
+    # For example, if generated IPV4_NET_ADMIN_PREFIX=10.16.0 , then there is a risk of replacing twice:
+    # 192.168.10 -> 10.16.0 (generated network for admin)
+    # 10.16.0 -> <external network>
+    # So let's replace constant networks to the keywords, and then keywords to the desired networks.
+    export REPLACE_DIRS="/root/environment/"
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.167\.5/==IPV4_NET_ADMIN_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.167\.4/==IPV4_NET_CONTROL_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/10\.167\.6/==IPV4_NET_TENANT_PREFIX==/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/172\.17\.16/==IPV4_NET_EXTERNAL_PREFIX==/g' {} +
+
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_ADMIN_PREFIX==/{{ IPV4_NET_ADMIN_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_CONTROL_PREFIX==/{{ IPV4_NET_CONTROL_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}/g' {} +
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: "[EXPERIMENTAL] Remove linux.network.interface object from the cluster/system models and use fixed 'environment' model instead"
   cmd: |
     set -e;

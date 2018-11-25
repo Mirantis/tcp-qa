@@ -144,7 +144,8 @@ default_context:
   openstack_nova_cpu_pinning: '4,5,8,9,10,11'
   openstack_ovs_dvr_enabled: 'False'
   openstack_ovs_encapsulation_type: vxlan
-  openstack_proxy_address: 10.167.4.80
+  openstack_proxy_address: 172.17.16.80  # external network endpoint
+  openstack_proxy_vip_interface: ens5
   openstack_proxy_hostname: prx
   openstack_proxy_node01_address: 10.167.4.121
   openstack_proxy_node01_hostname: prx01
