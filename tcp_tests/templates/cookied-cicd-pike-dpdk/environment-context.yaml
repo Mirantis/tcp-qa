@@ -188,6 +188,10 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl
+        ens5:
+          role: single_external
+          external_address: 172.17.16.121
+          external_network_netmask: 255.255.255.0
 
     # Generator-based computes. For compatibility only
     cmp<<count>>:
