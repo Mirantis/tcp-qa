@@ -1,0 +1,51 @@
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_CMP01 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_CMP02 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+{% set OVERRIDES = os_env('OVERRIDES', 'override_example: true') %}
+{% set OVERRIDES_FILENAME = os_env('OVERRIDES_FILENAME', '/srv/salt/reclass/classes/environment/cookied-mcp-ocata-dvr-ceph/overrides.yml') %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MASTER() }}
+
+{{ SHARED.MACRO_CLONE_RECLASS_MODELS() }}
+
+{{ SHARED.MACRO_CONFIGURE_RECLASS(FORMULA_SERVICES='\*') }}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{ SHARED.MACRO_RUN_SALT_MASTER_UNDERLAY_STATES() }}
+
+{%- if OVERRIDES != '' %}
+{%- for param in OVERRIDES.splitlines() %}
+{%- set key, value = param.replace(' ','').split(':', 1) %}
+- description: Override cluster parameters
+  cmd: |
+    salt-call reclass.cluster_meta_set name='{{ key }}' value='{{ value }}' file_name='{{OVERRIDES_FILENAME}}'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{%- endfor %}
+
+- description: Refresh pillar
+  cmd: salt '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{%- endif %}
+
+{{ SHARED.ADJUST_SL_OPTS(OVERRIDES_FILENAME='/srv/salt/reclass/classes/cluster/' + SHARED.CLUSTER_NAME + '/stacklight/server.yml') }}
+
+{{ SHARED.MACRO_GENERATE_INVENTORY() }}
+
+{{ SHARED.MACRO_BOOTSTRAP_ALL_MINIONS() }}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
