@@ -396,6 +396,8 @@ class TestOfflineDeployment(object):
             'core,kvm,ceph,cicd,openstack,stacklight,finalize'
         build = jenkins.run_build('deploy_openstack', params)
 
+        LOG.info("Take a look deploy progress here - %s. Build #%s",
+                 "http://172.16.44.33:8081/job/deploy_openstack/", build[1])
         jenkins.wait_end_of_build(
             name=build[0], build_id=build[1], timeout=60 * 60 * 4)
 
