@@ -59,7 +59,7 @@ class Test3rdpartySuites(object):
         sl_actions.run_sl_functional_tests(
                 'cfg01',
                 '/root/stacklight-pytest/stacklight_tests/',
-                'tests/prometheus',
+                'tests',
                 'test_alerts.py',
                 junit_report_name='stacklight_report.xml')
         # Download report
