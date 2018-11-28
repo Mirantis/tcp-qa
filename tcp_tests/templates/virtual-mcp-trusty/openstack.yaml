@@ -6,6 +6,10 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
+# vkhlyunev: shared steps are constantly updating due master development so
+# we cant use them for old release. For openstack.yaml we can use some shared
+# steps for now but TODO: bind deployment workflow to 2018.8.0 state
+
 # Install OpenStack control services
 - description: Sync time
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False -G 'oscodename:trusty' cmd.run "service ntp stop && ntpdate pool.ntp.org && service ntp start"
@@ -23,11 +27,94 @@
   retry: {count: 1, delay: 5}
   skip_fail: true
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
+- description: Install keystone service on primary node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server and *01*' state.sls keystone.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 15}
+  skip_fail: false
+
+- description: Install keystone service on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' state.sls keystone.server
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 15}
+  skip_fail: false
+
+- description: Restart apache due to PROD-10477
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*'
+    cmd.run "service apache2 restart"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Check apache status to PROD-10477
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl*'
+    cmd.run "service apache2 status"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 15}
+  skip_fail: false
+
+- description: Mount glusterfs.client volumes (resuires created 'keystone' system user)
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' state.sls glusterfs.client -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Update fernet keys for keystone server on the mounted glusterfs volume
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:server' state.sls keystone.server -b 1
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+  
+- description: Populate keystone services/tenants/admins
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C 'I@keystone:client' state.sls keystone.client
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+- description: Check keystone service-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "I@keystone:server" cmd.run ". /root/keystonercv3;
+    openstack service list"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_GLANCE() }}
 
-{{ SHARED_OPENSTACK.MACRO_INSTALL_NOVA() }}
+- description: Install nova service on primary node
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "I@nova:controller and *01*" state.sls nova.controller
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Install nova service on other nodes
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "I@nova:controller" state.sls nova.controller
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check nova service-list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "I@keystone:server" cmd.run ". /root/keystonercv3;
+    openstack compute service list"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check nova list
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False
+    -C "I@keystone:server" cmd.run ". /root/keystonercv3;
+    openstack server list"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_CINDER() }}
 
