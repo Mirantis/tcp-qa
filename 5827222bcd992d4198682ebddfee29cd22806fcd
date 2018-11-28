@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "cedbb213_01497e09",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 16
+      },
+      "lineNbr": 392,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-28T17:14:01Z",
+      "side": 1,
+      "message": "It\u0027d be better to get from pillar. Use salt master IP for jenkins on cfg01, or for cicd nodes:\n\ntgt\u003dI@docker:client:stack:jenkins\nhost_pillar\u003djenkins:client:master:host\nport_pillar\u003djenkins:client:master:port\nuser_pillar\u003djenkins:client:master:username\npass_pillar\u003djenkins:client:master:password",
+      "range": {
+        "startLine": 392,
+        "startChar": 18,
+        "endLine": 392,
+        "endChar": 42
+      },
+      "revId": "5827222bcd992d4198682ebddfee29cd22806fcd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
