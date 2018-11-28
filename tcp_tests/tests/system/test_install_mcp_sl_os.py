@@ -69,28 +69,6 @@ class TestMcpInstallStacklightOpenstack(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    def test_mcp_os_newton_install(self, underlay, openstack_deployed,
-                                   openstack_actions):
-        """Test for deploying an mcp environment and check it
-        Scenario:
-        1. Prepare salt on hosts
-        2. Setup controller nodes
-        3. Setup compute nodes
-        4. Run tempest
-
-        """
-        openstack_actions._salt.local(
-            tgt='*', fun='cmd.run',
-            args='service ntp stop; ntpd -gq; service ntp start')
-
-        if settings.RUN_TEMPEST:
-            openstack_actions.run_tempest(pattern=settings.PATTERN,
-                                          conf_name='lvm_mcp_newton.conf')
-            openstack_actions.download_tempest_report()
-        LOG.info("*************** DONE **************")
-
-    @pytest.mark.grab_versions
-    @pytest.mark.fail_snapshot
     def test_mcp_sl_os_install(self, underlay, config, openstack_deployed,
                                stacklight_deployed, openstack_actions):
         """Test for deploying an mcp environment and check it
