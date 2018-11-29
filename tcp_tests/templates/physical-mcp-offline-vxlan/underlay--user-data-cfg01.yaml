@@ -38,12 +38,18 @@
    - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
 
    # Run user data script from config drive
+   - iptables -I OUTPUT -p tcp --dport 53 -j DROP
+   - iptables -I OUTPUT -p udp --dport 53 -j DROP
    - ifdown --force ens3; ifconfig ens3 down; ip a flush dev ens3; rm -f /var/run/network/ifstate.ens3
    - ifdown --force ens4; ifconfig ens4 down; ip a flush dev ens4; rm -f /var/run/network/ifstate.ens4
    - ifdown --force ens5; ifconfig ens5 down; ip a flush dev ens5; rm -f /var/run/network/ifstate.ens5
-   - cp /root/config-drive/user-data /root/config.sh && chmod 664 /root/config.sh
-   - sed -i '/^reboot$/d' /root/config.sh
-   - cd /root && /bin/bash -xe ./config.sh
+   - ifdown --force ens6; ifconfig ens6 down; ip a flush dev ens5; rm -f /var/run/network/ifstate.ens6
+   - cd /root/config-drive && cloud-init --file /root/config-drive
+   # - [bash, -cex, *master_config]
+   # - cp /root/config-drive/user-data /root/config.sh && chmod 664 /root/config.sh
+   # - sed -i '/^reboot$/d' /root/config.sh
+   # - cd /root && /bin/bash -xe ./config.sh
+
 
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -69,6 +75,7 @@
             UserKnownHostsFile /dev/null
 
   ssh_pwauth: True
+  disable_root: false
   users:
    - name: root
      sudo: ALL=(ALL) NOPASSWD:ALL
@@ -77,3 +84,8 @@
      {% for key in config.underlay.ssh_keys %}
       - ssh-rsa {{ key['public'] }}
      {% endfor %}
+
+  chpasswd:
+     list: |
+      root:r00tme
+     expire: False
