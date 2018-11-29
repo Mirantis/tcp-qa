@@ -1,0 +1,19 @@
+#cloud-config-jsonp
+[
+  { "op": "add",
+    "path": "/bootcmd",
+    "value": [
+     "cloud-init-per once sudo echo 'sshd:ALL' >> /etc/hosts.deny",
+     "sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config",
+     "service sshd restart"
+    ]
+  },
+  { "op": "add",
+    "path": "/runcmd",
+    "value": [
+      "sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config",
+      "sed -i -e '/sshd:ALL/d' /etc/hosts.deny",
+      "touch /is_cloud_init_finish"
+    ]
+  }
+]
