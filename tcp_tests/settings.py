@@ -88,3 +88,6 @@ SL_TEST_COMMIT = os.environ.get('SL_TEST_COMMIT', 'master')
 
 EXTERNAL_ADDRESS_POOL_NAME = os.environ.get('EXTERNAL_ADDRESS_POOL_NAME',
                                             'external-pool01')
+
+STACK_INSTALL = os.environ.get('STACK_INSTALL', None)
+SKIP_SYNC_TIME = get_var_as_bool("SKIP_SYNC_TIME", False)
