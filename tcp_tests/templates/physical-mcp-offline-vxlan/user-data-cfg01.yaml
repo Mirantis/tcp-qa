@@ -1,0 +1,15 @@
+#cloud-config-jsonp
+[
+  { "op": "add",
+    "path": "/runcmd",
+    "value": [ "sed", "-i", "-e", "/^PermitRootLogin/s/^.*$/PermitRootLogin yes/", "/etc/ssh/sshd_config" ]
+  },
+  { "op": "add",
+    "path": "/runcmd",
+    "value": [ "sed", "-i", "-e", "/sshd:ALL/d", "/etc/hosts.deny" ]
+  },
+  { "op": "add",
+    "path": "/runcmd",
+    "value": [ "touch",  "/is_cloud_init_finish" ]
+  }
+]
