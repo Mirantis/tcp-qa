@@ -1,0 +1,173 @@
+{# Collection of common macroses shared across MaaS #}
+
+{%- macro AUTH_IN_MAAS() %}
+
+- description: MaaS auth
+  cmd: bash -x /var/lib/maas/.maas_login.sh
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro SET_LOCAL_DNS() %}
+
+- description: Set upstream dns in MaaS
+  cmd: sleep 30; maas mirantis maas set-config name=upstream_dns value='{{ ETH0_IP_ADDRESS_CFG01 }} 8.8.8.8 8.8.4.4'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro ADD_ROOT_SSH_KEY_NODES() %}
+
+- description: Add root key to root user on salt minions
+  cmd: salt "*" ssh.set_auth_key root "$(ssh-keygen -y -f ~/.ssh/id_rsa | cut -d " " -f 2)"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Add root key to ubuntu user on salt minions
+  cmd: salt "*" ssh.set_auth_key ubuntu "$(ssh-keygen -y -f ~/.ssh/id_rsa | cut -d " " -f 2)"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro ADD_ROOT_PUB_SSH_TO_MASS() %}
+
+- description: Generate public from from root private key
+  cmd: ssh-keygen -y -f ~root/.ssh/id_rsa > ~root/.ssh/id_rsa.pub
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Add root public key to MaaS user
+  cmd: maas mirantis sshkeys create key="$(cat ~root/.ssh/id_rsa.pub)"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro COMMISSION_VMS() %}
+
+- description: Wait dhcpd server
+  cmd: timeout 90s /bin/bash -c 'while ! pidof dhcpd; do echo "dhcpd still isnt running"; sleep 10; done'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Add machines and comission
+  cmd: salt-call state.sls maas.machines
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Wait finish of comissioning machines
+  cmd: salt-call state.sls maas.machines.wait_for_ready
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro DEPLOY_VMS() %}
+
+- description: Show salt keys before deploy
+  cmd: salt-key
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Assign IPs to machines
+  cmd: salt-call state.sls maas.machines.assign_ip
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Deploy machines
+  cmd: salt-call state.sls maas.machines.deploy
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Wait finish of deploying machines
+  cmd: salt-call state.sls maas.machines.wait_for_deployed
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show salt keys after deploy
+  cmd: salt-key
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Accept salt keys
+  cmd: salt-key -A -y --include-denied --include-rejected
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show salt keys after accepting
+  cmd: salt-key
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro CONFIG_MACHINES(target) %}
+
+- description: Refresh pillars
+  cmd: salt '*' saltutil.refresh_pillar
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Sync all
+  cmd: salt '*' saltutil.sync_all
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Show top of reclass
+  cmd: reclass-salt --top
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Set rebooted flag
+  cmd: salt -C '{target}' cmd.run 'touch /run/is_rebooted'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Config machines and reboot them
+  cmd: salt --async -C '{target}' cmd.run 'salt-call state.sls linux.system.repo,linux.system.user,openssh,linux.network;reboot'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Wait 10 minutes for machines reboot
+  cmd: sleep 600
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check salt minions
+  cmd: salt -C '{target}' test.ping
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Check reboot status of machines
+  cmd: ! salt -C '{target}' cmd.run '[ -f "/run/is_rebooted" ] && echo "Failed" || echo "Rebooted"' | grep -q Failed
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}

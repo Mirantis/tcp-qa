@@ -50,14 +50,31 @@ class RuntestManager(object):
         self.tempest_threads = tempest_threads
         self.tempest_pattern = tempest_pattern
         self.run_cmd = run_cmd or self.run_cmd
-        self.target_name = self.underlay.get_target_node_names(target)[0]
-        self.master_name = self.underlay.get_target_node_names(
-            self.master_host)[0]
-        self.control_name = self.underlay.get_target_node_names(
-            self.control_host)[0]
-        self.compute_name = self.underlay.get_target_node_names(
-            self.compute_host)[0]
+        self._target = target
+        # self.target_name = self.underlay.get_target_node_names(target)[0]
+        # self.master_name = self.underlay.get_target_node_names(
+        #     self.master_host)[0]
+        # self.control_name = self.underlay.get_target_node_names(
+        #     self.control_host)[0]
+        # self.compute_name = self.underlay.get_target_node_names(
+        #     self.compute_host)[0]
         self.barbican = False
+
+    @property
+    def master_name(self):
+        return self.underlay.get_target_node_names(self.master_host)[0]
+
+    @property
+    def target_name(self):
+        return self.underlay.get_target_node_names(self._target)[0]
+
+    @property
+    def control_name(self):
+        return self.underlay.get_target_node_names(self.control_host)[0]
+
+    @property
+    def compute_name(self):
+        return self.underlay.get_target_node_names(self.compute_host)[0]
 
     @property
     def salt_api(self):
