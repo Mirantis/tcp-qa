@@ -1,0 +1,100 @@
+#cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+vendor_data:
+    enabled: True
+
+ssh_pwauth: True
+users:
+  - name: root
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+
+disable_root: false
+chpasswd:
+  list: |
+    root:r00tme
+  expire: False
+
+bootcmd:
+ # Block access to SSH while node is preparing
+ - cloud-init-per once sudo echo 'sshd:ALL' >> /etc/hosts.deny
+ # Enable root access
+ - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+ - service sshd restart
+
+output:
+  all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+# runcmd:
+ # Mount config drive
+ # - mkdir /root/config-drive
+ # - mount /dev/sr0 /root/config-drive
+
+ # Create swap
+ # - fallocate -l 4G /swapfile
+ # - chmod 600 /swapfile
+ # - mkswap /swapfile
+ # - swapon /swapfile
+ # - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
+
+ # Run user data script from config drive
+ # - iptables -I OUTPUT -p tcp --dport 53 -j DROP
+ # - iptables -I OUTPUT -p udp --dport 53 -j DROP
+ # - ifdown --force ens3; ifconfig ens3 down; ip a flush dev ens3; rm -f /var/run/network/ifstate.ens3
+ # - ifdown --force ens4; ifconfig ens4 down; ip a flush dev ens4; rm -f /var/run/network/ifstate.ens4
+ # - ifdown --force ens5; ifconfig ens5 down; ip a flush dev ens5; rm -f /var/run/network/ifstate.ens5
+ # - ifdown --force ens6; ifconfig ens6 down; ip a flush dev ens5; rm -f /var/run/network/ifstate.ens6
+ # - [bash, -cex, *master_config]
+ # - cp /root/config-drive/user-data /root/config.sh && chmod 664 /root/config.sh
+ # - sed -i '/^reboot$/d' /root/config.sh
+ # - cd /root && /bin/bash -xe ./config.sh
+
+ # Enable root access
+ # - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+ # - systemctl reload sshd
+
+ # ########################################################
+ # # Node is ready, allow SSH access and reboot
+ # - echo "Allow SSH access ..."
+ # - "sed -i -e '/sshd:ALL/d' /etc/hosts.deny"
+ # - touch /is_cloud_init_finish
+ # - reboot
+ ########################################################
+
+# write_files:
+#  - path: /root/.ssh/config
+#    owner: root:root
+#    permissions: '0600'
+#    content: |
+#         Host *
+#           ServerAliveInterval 300
+#           ServerAliveCountMax 10
+#           StrictHostKeyChecking no
+#           UserKnownHostsFile /dev/null
+
+# merge_how: "dict(recurse_array)+list(append)"
+
+#cloud-config-jsonp
+[
+  { "op": "add",
+    "path": "/runcmd",
+    "value": [
+      "sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config",
+      "sed -i -e '/sshd:ALL/d' /etc/hosts.deny",
+      "touch /is_cloud_init_finish",
+    ]
+  },
+  { "op": "add",
+    "path": "/write_files",
+    "value": {
+      "path": "/root/.ssh/config",
+      "owner": "root:root",
+      "permissions": "0600",
+      "content": "Host *
+  ServerAliveInterval 300
+  ServerAliveCountMax 10
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null"
+    }
+  }
+]
