@@ -175,6 +175,10 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
                 string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
+                string(name: 'IPMI_USER', value: env.IPMI_USER),
+                string(name: 'IPMI_PASS', value: env.IPMI_PASS),
+                string(name: 'LAB_MANAGEMENT_IFACE', value: "${LAB_MANAGEMENT_IFACE}"),
+                string(name: 'LAB_CONTROL_IFACE', value: "${LAB_CONTROL_IFACE}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
@@ -291,6 +295,9 @@ def generate_cookied_model() {
                 string(name: 'IPV4_NET_CONTROL', value: IPV4_NET_CONTROL),
                 string(name: 'IPV4_NET_TENANT', value: IPV4_NET_TENANT),
                 string(name: 'IPV4_NET_EXTERNAL', value: IPV4_NET_EXTERNAL),
+                string(name: 'IPMI_USER', value: env.IPMI_USER),
+                string(name: 'IPMI_PASS', value: env.IPMI_PASS),
+                string(name: 'IMAGE_PATH_CFG01_DAY01', value: env.IMAGE_PATH_CFG01_DAY01),
             ]
 
         build_shell_job('swarm-cookied-model-generator', parameters, "deploy_generate_model.xml")
