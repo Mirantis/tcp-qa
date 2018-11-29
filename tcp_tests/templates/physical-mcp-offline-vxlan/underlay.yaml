@@ -1,13 +1,13 @@
 # Set the repository suite, one of the: 'nightly', 'testing', 'stable', or any other required
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
 
-{% import 'physical-mcp-ocata-offline-ovs/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
-{% import 'physical-mcp-ocata-offline-ovs/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'physical-mcp-offline-vxlan/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'physical-mcp-offline-vxlan/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
 
 
-{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'physical-mcp-ocata-offline-ovs') %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'mcp-offline-vxlan') %}
 {# set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' #}
-{% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'offline-ocata-vxlan.local') %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'mcp-offline-vxlan.local') %}
 {% set HOSTNAME_APT = os_env('HOSTNAME_CFG01', 'apt.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_APT01', 'cfg01.' + DOMAIN_NAME) %}
 
@@ -159,7 +159,7 @@ aliases:
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'phy-mcp-ocata-offline-ovs_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ os_env('ENV_NAME', 'phy-mcp-offline-vxlan_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
 
     address_pools:
       managment-pool01:
@@ -278,6 +278,16 @@ template:
             l2_network_device: +1
             default_{{ HOSTNAME_CFG01 }}: {{ ETH2_IP_ADDRESS_CFG01 }}
 
+      external-pool01:
+        net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '10.13.0.0/16:16') }}
+        params:
+          ip_reserved:
+            gateway: +1
+            l2_network_device: +1
+            default_{{ HOSTNAME_CFG01 }}: +15
+          ip_ranges:
+              dhcp: [+130, +230]
+
 
     groups:
 
@@ -296,6 +306,7 @@ template:
           admin: admin-pool01
           managment: managment-pool01
           public: public-pool01
+          external: external-pool01
 
         l2_network_devices:
           # Ironic management interface
@@ -323,6 +334,15 @@ template:
             parent_iface:
               phys_dev: !os_env PUBLIC_BRIDGE
 
+          external:
+            address_pool: external-pool01
+            dhcp: false
+            forward:
+              mode: bridge
+            parent_iface:
+              phys_dev: !os_env EXTERNAL_BRIDGE
+
+
           #admin:
           #  address_pool: admin-pool01
           #  dhcp: true
@@ -336,30 +356,30 @@ template:
           - name: {{ HOSTNAME_CFG01 }}
             role: salt_master
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              vcpu: !os_env SLAVE_NODE_CPU, 8
+              memory: !os_env SLAVE_NODE_MEMORY, 16384
               boot:
                 - hd
-              cloud_init_volume_name: iso
-              cloud_init_iface_up: ens3
+              # cloud_init_volume_name: iso
+              # cloud_init_iface_up: ens3
               volumes:
                 - name: system
                   capacity: !os_env NODE_VOLUME_SIZE, 150
                   shared_backing_store_name: !os_env CFG01_VOLUME_NAME
                   format: qcow2
-                - name: config
+                # - name: iso  # Volume with name 'iso' will be used
+                #              # for store image with cloud-init metadata.
+                #   capacity: 1
+                #   format: raw
+                #   device: cdrom
+                #   bus: ide
+                #   cloudinit_meta_data: *cloudinit_meta_data
+                #   cloudinit_user_data: *cloudinit_user_data_cfg01
+                - name: iso
                   format: raw
                   device: cdrom
                   bus: ide
                   source_image: !os_env CFG01_CONFIG_PATH
-                - name: iso  # Volume with name 'iso' will be used
-                             # for store image with cloud-init metadata.
-                  capacity: 1
-                  format: raw
-                  device: cdrom
-                  bus: ide
-                  cloudinit_meta_data: *cloudinit_meta_data
-                  cloudinit_user_data: *cloudinit_user_data_cfg01
 
 
               interfaces:
@@ -375,9 +395,9 @@ template:
                   l2_network_device: public
                   interface_model: *interface_model
 
-                #- label: ens6
-                #  l2_network_device: admin
-                #  interface_model: *interface_model
+                - label: ens6
+                  l2_network_device: external
+                  interface_model: *interface_model
 
 
               network_config:
@@ -390,9 +410,9 @@ template:
                 ens5:
                   networks:
                     - public
-                #ens6:
-                #  networks:
-                #    - admin
+                ens6:
+                 networks:
+                   - external
 
           - name: {{ HOSTNAME_APT }}
             role: salt_minion
