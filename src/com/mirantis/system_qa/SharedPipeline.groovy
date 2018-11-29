@@ -291,6 +291,8 @@ def generate_cookied_model() {
                 string(name: 'IPV4_NET_CONTROL', value: IPV4_NET_CONTROL),
                 string(name: 'IPV4_NET_TENANT', value: IPV4_NET_TENANT),
                 string(name: 'IPV4_NET_EXTERNAL', value: IPV4_NET_EXTERNAL),
+                string(name: 'IPMI_USER', value: IPMI_USER),
+                string(name: 'IPMI_PASS', value: IPMI_PASS),
             ]
 
         build_shell_job('swarm-cookied-model-generator', parameters, "deploy_generate_model.xml")
