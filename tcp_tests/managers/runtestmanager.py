@@ -33,14 +33,15 @@ class RuntestManager(object):
     image_version = settings.TEMPEST_IMAGE_VERSION
     container_name = 'run-tempest-ci'
     master_host = "cfg01"
+    control_host = "ctl01"
+    compute_host = "cmp"
     class_name = "runtest"
     run_cmd = '/bin/bash -c "run-tempest"'
 
     def __init__(self, config, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
                  tempest_pattern=settings.TEMPEST_PATTERN,
-                 run_cmd=None, target='gtw01*', control_host='ctl01*',
-                 compute_host='cmp001*'):
+                 run_cmd=None, target='gtw01'):
         self.__config = config
         self.underlay = underlay
         self.__salt_api = salt_api
@@ -49,12 +50,31 @@ class RuntestManager(object):
         self.tempest_threads = tempest_threads
         self.tempest_pattern = tempest_pattern
         self.run_cmd = run_cmd or self.run_cmd
-        self.target_name = self.underlay.get_target_node_names(target)[0]
-        self.master_name = self.underlay.get_target_node_names(
-            self.master_host)[0]
-        self.control_name = control_host
-        self.compute_name = compute_host
+        self._target = target
+        # self.target_name = self.underlay.get_target_node_names(target)[0]
+        # self.master_name = self.underlay.get_target_node_names(
+        #     self.master_host)[0]
+        # self.control_name = self.underlay.get_target_node_names(
+        #     self.control_host)[0]
+        # self.compute_name = self.underlay.get_target_node_names(
+        #     self.compute_host)[0]
         self.barbican = False
+
+    @property
+    def master_name(self):
+        return self.underlay.get_target_node_names(self.master_host)[0]
+
+    @property
+    def target_name(self):
+        return self.underlay.get_target_node_names(self._target)[0]
+
+    @property
+    def control_name(self):
+        return self.underlay.get_target_node_names(self.control_host)[0]
+
+    @property
+    def compute_name(self):
+        return self.underlay.get_target_node_names(self.compute_host)[0]
 
     @property
     def salt_api(self):
@@ -166,9 +186,10 @@ class RuntestManager(object):
                 node_name=self.master_name) as editor:
             editor.content = runtest_pillar or self.runtest_pillar
         with self.underlay.yaml_editor(
-                file_path="/srv/salt/reclass/nodes/_generated/"
-                          "cfg01.{domain_name}.yml".format(
-                              domain_name=self.domain_name),
+                file_path="/srv/salt/reclass/classes/cluster/"
+                          "{cluster_name}/infra/config/"
+                          "init.yml".format(
+                              cluster_name=self.cluster_name),
                 node_name=self.master_name) as editor:
             editor.content['classes'].append(
                 'cluster.{cluster_name}.infra.{class_name}'.format(

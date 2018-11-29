@@ -249,12 +249,14 @@ class YamlEditor(object):
 
     def __get_file(self, mode="r"):
         if self.host:
+            keys = map(paramiko.RSAKey.from_private_key,
+                       map(StringIO.StringIO, self.__private_keys))
             remote = ssh_client.SSHClient(
                 host=self.host,
                 port=self.port,
                 username=self.username,
                 password=self.__password,
-                private_keys=self.__private_keys)
+                private_keys=keys)
 
             return remote.open(self.__file_path, mode=mode)
         else:
