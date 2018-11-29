@@ -50,15 +50,15 @@ node ("${PARENT_NODE_NAME}") {
             def report_url = ''
 
             //  deployment_report_name = "deployment_${ENV_NAME}.xml"
-            def deployment_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"deployment_${ENV_NAME}.xml\"", returnStdout: true)
+            def deployment_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"deployment_${ENV_NAME}.xml\" -printf \"'%p'\" ", returnStdout: true)
             // tcpqa_report_name =~ "nosetests.xml"
-            def tcpqa_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"nosetests.xml\"", returnStdout: true)
+            def tcpqa_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"nosetests.xml\" -printf \"'%p'\" ", returnStdout: true)
             // tempest_report_name =~ "report_*.xml"
-            def tempest_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"report_*.xml\"", returnStdout: true)
+            def tempest_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"report_*.xml\" -printf \"'%p'\" ", returnStdout: true)
             // k8s_conformance_report_name =~ conformance_result.xml
-            def k8s_conformance_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_result.xml\"", returnStdout: true)
+            def k8s_conformance_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_result.xml\" -printf \"'%p'\" ", returnStdout: true)
             // k8s_conformance_report_name =~ conformance_virtlet_result.xml
-            def k8s_conformance_virtlet_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_virtlet_result.xml\"", returnStdout: true)
+            def k8s_conformance_virtlet_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_virtlet_result.xml\" -printf \"'%p'\" ", returnStdout: true)
             // stacklight_report_name =~ "stacklight_report.xml" or "report.xml"
             def stacklight_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"*report.xml\"", returnStdout: true)
             common.printMsg(deployment_report_name ? "Found deployment report: ${deployment_report_name}" : "Deployment report not found", deployment_report_name ? "blue" : "red")
