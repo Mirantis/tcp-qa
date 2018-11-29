@@ -1,0 +1,58 @@
+#cloud-config-jsonp
+[
+  { "op": "add",
+    "path": "/runcmd",
+    "value": [
+      "sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config",
+      "sed -i -e '/sshd:ALL/d' /etc/hosts.deny",
+      "touch /is_cloud_init_finish"
+    ]
+  },
+  { "op": "add",
+    "path": "/write_files",
+    "value": [
+      { "path": "/root/.ssh/config",
+        "owner": "root:root",
+        "permissions": "0600",
+        "content": "Host *
+  ServerAliveInterval 300
+  ServerAliveCountMax 10
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null"
+      }
+    ]
+  },
+  { "op": "add",
+    "path": "/bootcmd",
+    "value": [
+     "cloud-init-per once sudo echo 'sshd:ALL' >> /etc/hosts.deny",
+     "sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config",
+     "service sshd restart"
+    ]
+  },
+  { "op": "replace",
+    "path": "/output",
+    "value": { "all": "| tee -a /var/log/cloud-init-output.log /dev/tty0" }
+  },
+  { "op": "replace",
+    "path": "/ssh_pwauth",
+    "value": true
+  },
+  { "op": "replace",
+    "path": "/disable_root",
+    "value": false
+  },
+  { "op": "replace",
+    "path": "/chpasswd",
+    "value": {
+      "list": "root:r00tme",
+      "expire": false
+    }
+  },
+  { "op": "replace",
+    "path": "/users",
+    "value": [
+      { "name": "root", "sudo": "ALL=(ALL) NOPASSWD:ALL", "shell": "/bin/bash" }
+    ]
+  }
+]
