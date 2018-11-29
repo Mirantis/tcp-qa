@@ -1,1 +1,0 @@
-PoC templates. Do not use!
