@@ -1,4 +1,4 @@
-{% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'physical-mcp-offline-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
 
 
 - description: Approve cfg01 ssh key for jenkins user
