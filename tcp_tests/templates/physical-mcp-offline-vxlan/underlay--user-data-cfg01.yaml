@@ -38,6 +38,8 @@
    - echo "/swapfile   none    swap    defaults    0   0" >> /etc/fstab
 
    # Run user data script from config drive
+   - iptables -I OUTPUT -p tcp --dport 53 -j DROP
+   - iptables -I OUTPUT -p udp --dport 53 -j DROP
    - ifdown --force ens3; ifconfig ens3 down; ip a flush dev ens3; rm -f /var/run/network/ifstate.ens3
    - ifdown --force ens4; ifconfig ens4 down; ip a flush dev ens4; rm -f /var/run/network/ifstate.ens4
    - ifdown --force ens5; ifconfig ens5 down; ip a flush dev ens5; rm -f /var/run/network/ifstate.ens5
