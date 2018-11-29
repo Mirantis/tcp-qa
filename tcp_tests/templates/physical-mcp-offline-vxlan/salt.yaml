@@ -1,11 +1,9 @@
-{% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import HOSTNAME_CFG01 with context %}
-# {% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import LAB_CONFIG_NAME with context %}
-# {% from 'physical-mcp-ocata-offline-ovs/underlay.yaml' import DOMAIN_NAME with context %}
+{%- set test_public_key = config.underlay.ssh_keys[0]["public"] %}
 
-# Environment model name stored in https://github.com/Mirantis/tcp-qa/tree/master/tcp_tests/environments
-# {% set ENVIRONMENT_MODEL_NAME = os_env('ENVIRONMENT_MODEL_NAME','physical-mcp-ocata-offline-ovs') %}
+{% from 'physical-mcp-offline-vxlan/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'physical-mcp-offline-vxlan/underlay.yaml' import ETH0_IP_ADDRESS_CFG01 with context %}
 
-# {% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-maas.yaml' as SHARED_MAAS with context %}
 
 - description: Wait while a salt-minion is started
   cmd: timeout 90s bash -c 'while ! systemctl is-active salt-minion; do sleep 10; echo salt-minion isnt run; done'
@@ -25,18 +23,6 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: MaaS auth
-  cmd: bash -x  /var/lib/maas/.maas_login.sh
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
-- description: Set upstream dns in MaaS
-  cmd: sleep 30; maas mirantis maas set-config name=upstream_dns value='10.10.0.15 8.8.8.8 8.8.4.4'
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Setup NTP
   cmd: salt-call --hard-crash --state-output=mixed --state-verbose=False state.sls ntp.server
   node_name: {{ HOSTNAME_CFG01 }}
@@ -48,4 +34,15 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
+
+{{ SHARED_MAAS.AUTH_IN_MAAS() }}
+{{ SHARED_MAAS.SET_LOCAL_DNS() }}
+{{ SHARED_MAAS.ADD_ROOT_SSH_KEY_TO_NODES() }}
+{{ SHARED_MAAS.ADD_TEST_SSH_KEY_TO_NODES(test_public_key) }}
+{{ SHARED_MAAS.ADD_ROOT_PUB_SSH_TO_MASS() }}
+{{ SHARED_MAAS.COMMISSION_VMS() }}
+{{ SHARED_MAAS.DEPLOY_VMS() }}
+{{ SHARED_MAAS.CONFIG_MACHINES(target='I@salt:control or I@nova:compute or I@ceph:osd') }}
+{{ SHARED_MAAS.ADD_ROOT_SSH_KEY_NODES() }}
+{{ SHARED_MAAS.ADD_TEST_SSH_KEY_TO_NODES(test_public_key) }}
 
