@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "baa5c8cf_2d6e0533",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-ocata-contrail-nfv/openstack.yaml",
+        "patchSetId": 20
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-30T09:05:42Z",
+      "side": 1,
+      "message": "Please add an additional step with a periodic pull for these nodes using, for example, test.ping; and fail if the nodes are not accessible.\n\nExample:\n\n- description: Wait for compute nodes after reboot\n  cmd: |\n    salt \"cmp*\" test.ping\n  node_name: {{ HOSTNAME_CFG01 }}\n  retry: {count: 20, delay: 30}\n  skip_fail: false\n\nThat will wait compute nodes for additional 10 minutes and fail if something went wrong.",
+      "range": {
+        "startLine": 173,
+        "startChar": 0,
+        "endLine": 173,
+        "endChar": 17
+      },
+      "revId": "c4130bcd823a53c99ef1394ab179f628017e3101",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a330c42_82675ebd",
+        "filename": "tcp_tests/templates/cookied-bm-mcp-ocata-contrail-nfv/openstack.yaml",
+        "patchSetId": 20
+      },
+      "lineNbr": 242,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-30T09:05:42Z",
+      "side": 1,
+      "message": "Do you plan to extend RuntestManager instead of the steps below? Please add a PROD with details, what should be added (or what is missing) in RuntestManager to do the same things.",
+      "range": {
+        "startLine": 242,
+        "startChar": 0,
+        "endLine": 242,
+        "endChar": 26
+      },
+      "revId": "c4130bcd823a53c99ef1394ab179f628017e3101",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
