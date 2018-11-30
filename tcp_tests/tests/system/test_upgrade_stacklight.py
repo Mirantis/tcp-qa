@@ -51,7 +51,7 @@ class TestUpgradeStacklight(object):
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
             'tests',
-            'tests/prometheus')
+            'tests')
 
 # Download report
         stacklight_deployed.download_sl_test_report(

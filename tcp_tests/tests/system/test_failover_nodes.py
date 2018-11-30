@@ -167,7 +167,7 @@ class TestFailoverNodes(object):
         sl_os_deployed.check_prometheus_targets(mon_nodes)
         before_result = sl_os_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus/', 'test_alerts.py')
+            'tests/', 'test_alerts.py')
         failed_tests = [test['name'] for test in
                         before_result if 'passed' not in test['outcome']]
         # STEP #5
@@ -181,7 +181,7 @@ class TestFailoverNodes(object):
         # Run SL component tetsts
         after_result = sl_os_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus/', 'test_alerts.py')
+            'tests/', 'test_alerts.py')
         for test in after_result:
             if test['name'] not in failed_tests:
                 assert 'passed' in test['outcome'], \
@@ -217,7 +217,7 @@ class TestFailoverNodes(object):
         sl_os_deployed.check_prometheus_targets(mon_nodes)
         before_result = sl_os_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus/', 'test_alerts.py')
+            'tests/', 'test_alerts.py')
         failed_tests = [test['name'] for test in
                         before_result if 'passed' not in test['outcome']]
         # STEP #5
@@ -228,7 +228,7 @@ class TestFailoverNodes(object):
         # Run SL component tetsts
         after_result = sl_os_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus/', 'test_alerts.py')
+            'tests/', 'test_alerts.py')
         for test in after_result:
             if test['name'] not in failed_tests:
                 assert 'passed' in test['outcome'], \
@@ -270,7 +270,7 @@ class TestFailoverNodes(object):
         LOG.debug('Mon nodes list {0}'.format(mon_nodes))
         before_result = sl_os_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus/', 'test_alerts.py')
+            'tests/', 'test_alerts.py')
         failed_tests = [test['name'] for test in
                         before_result if 'passed' not in test['outcome']]
 
@@ -303,7 +303,7 @@ class TestFailoverNodes(object):
         # Run SL component tetsts
         after_result = sl_os_deployed.run_sl_tests_json(
             'cfg01', '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus/', 'test_alerts.py')
+            'tests/', 'test_alerts.py')
         for test in after_result:
             if test['name'] not in failed_tests:
                 assert 'passed' in test['outcome'], \
