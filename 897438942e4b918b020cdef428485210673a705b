@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6ea8f004_7db8a864",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 406,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-11-30T08:53:15Z",
+      "side": 1,
+      "message": "Please don\u0027t use hardcoded IP address. Use saltmaster IP for cfg01 node, or get it from grains for cicd nodes",
+      "range": {
+        "startLine": 406,
+        "startChar": 25,
+        "endLine": 406,
+        "endChar": 37
+      },
+      "revId": "897438942e4b918b020cdef428485210673a705b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
