@@ -382,12 +382,23 @@ class RuntestManager(object):
         return {'inspect': inspect,
                 'logs': logs}
 
-    def prepare_and_run_tempest(self, username='root'):
+    def prepare_tempest(self, username='root'):
+        """
+        Prepare pillars for tempest
+        :param username:
+        :return:
+        """
+        self.prepare()
+
+    def start_tempest(self, username='root'):
         """
         Run tempest tests
         """
         tempest_timeout = settings.TEMPEST_TIMEOUT
-        self.prepare()
         test_res = self.run_tempest(tempest_timeout)
         self.fetch_arficats(username=username)
         self.save_runtime_logs(**test_res)
+
+    def prepare_and_run_tempest(self):
+        self.prepare_tempest()
+        self.start_tempest()
