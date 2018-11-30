@@ -74,7 +74,7 @@ class TestMcpInstallOvsPike(object):
         stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus',
+            'tests',
             'test_alerts.py')
 
         # Download report
@@ -133,7 +133,7 @@ class TestMcpInstallOvsPike(object):
         stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus',
+            'tests',
             'test_alerts.py')
 
         # Download report

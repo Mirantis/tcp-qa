@@ -94,7 +94,7 @@ class TestMcpInstallQueensOvs(object):
         stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus',
+            'tests',
             'test_alerts.py')
 
         # Download report
@@ -152,7 +152,7 @@ class TestMcpInstallQueensDvr(object):
         stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus',
+            'tests',
             'test_alerts.py')
 
         # Download report
@@ -210,7 +210,7 @@ class TestMcpInstallQueensDvrSsl(object):
         stacklight_deployed.run_sl_functional_tests(
             'cfg01',
             '/root/stacklight-pytest/stacklight_tests/',
-            'tests/prometheus',
+            'tests',
             'test_alerts.py')
 
         # Download report
