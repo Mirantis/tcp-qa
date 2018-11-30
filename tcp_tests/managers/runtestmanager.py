@@ -197,12 +197,13 @@ class RuntestManager(object):
                                                indent=4, sort_keys=True)
                 f.write(container_inspect)
 
-    def prepare(self):
+    def prepare(self, store_run_test_model):
         barbican_pillar = "nova:controller:barbican:enabled"
         result = self.__salt_api.get_pillar(tgt=self.control_name,
                                             pillar=barbican_pillar)
         self.barbican = result[0].get(self.control_name, False)
-        self.store_runtest_model()
+        if store_run_test_model:
+            self.store_runtest_model()
         cirros_pillar = ("salt-call --out=newline_values_only "
                          "pillar.get "
                          "glance:client:identity:"
@@ -382,12 +383,13 @@ class RuntestManager(object):
         return {'inspect': inspect,
                 'logs': logs}
 
-    def prepare_and_run_tempest(self, username='root'):
+    def prepare_and_run_tempest(self, username='root',
+                                store_run_test_model=True):
         """
         Run tempest tests
         """
         tempest_timeout = settings.TEMPEST_TIMEOUT
-        self.prepare()
+        self.prepare(store_run_test_model=store_run_test_model)
         test_res = self.run_tempest(tempest_timeout)
         self.fetch_arficats(username=username)
         self.save_runtime_logs(**test_res)
