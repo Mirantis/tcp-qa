@@ -37,6 +37,11 @@
  #    (see generated '.ini' file after underlay is created),
  # 3. defaults #}
 {% set address_pools = config.underlay.address_pools %}
+{% set public_net = config.underlay.dhcp_ranges["external-pool01"] %}
+{% set public_gateway = public_net["gateway"].encode("ascii") %}
+{% set public_cidr = public_net["cidr"].encode("ascii") %}
+{% set public_allocation_start = public_net["start"].encode("ascii") %}
+{% set public_allocation_end = public_net["end"].encode("ascii") %}
 {% set IPV4_NET_ADMIN = os_env('IPV4_NET_ADMIN', address_pools.get('admin-pool01', '192.168.10.0/24')) %}
 {% set IPV4_NET_CONTROL = os_env('IPV4_NET_CONTROL', address_pools.get('private-pool01', '172.16.10.0/24')) %}
 {% set IPV4_NET_TENANT = os_env('IPV4_NET_TENANT', address_pools.get('tenant-pool01', '10.1.0.0/24')) %}
@@ -909,6 +914,23 @@
 
 {%- macro MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=false) %}
 {#################################################################}
+
+
+- description: "Configure public net for tempest"
+  cmd: |
+    set -e;
+    set -x;
+    apt-get -y install python-virtualenv python-pip build-essential python-dev libssl-dev;
+    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    . /root/venv-reclass-tools/bin/activate;
+    pip install git+https://github.com/dis-xcom/reclass-tools;
+    reclass-tools add-key parameters._param.openstack_public_neutron_subnet_gateway {{ public_gateway }} /srv/salt/reclass/classes/service/runtest/tempest/public_net.yml;
+    reclass-tools add-key parameters._param.openstack_public_neutron_subnet_cidr {{ public_cidr }} /srv/salt/reclass/classes/service/runtest/tempest/public_net.yml;
+    reclass-tools add-key parameters._param.openstack_public_neutron_subnet_allocation_start {{ public_allocation_start }} /srv/salt/reclass/classes/service/runtest/tempest/public_net.yml;
+    reclass-tools add-key parameters._param.openstack_public_neutron_subnet_allocation_end {{ public_allocation_end }} /srv/salt/reclass/classes/service/runtest/tempest/public_net.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
 
 - description: Refresh pillars before generating nodes
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
