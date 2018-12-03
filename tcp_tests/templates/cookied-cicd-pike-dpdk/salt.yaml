@@ -23,7 +23,7 @@
     set -ex
     git clone https://gerrit.mcp.mirantis.com/salt-formulas/linux /root/salt-formula-linux
     cd /root/salt-formula-linux
-    git fetch https://gerrit.mcp.mirantis.com/salt-formulas/linux refs/changes/32/29432/11 && git checkout FETCH_HEAD
+    git fetch https://gerrit.mcp.mirantis.com/salt-formulas/linux refs/changes/00/31200/2 && git checkout FETCH_HEAD
     cp -r /root/salt-formula-linux/linux/ /srv/salt/env/prd/
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
