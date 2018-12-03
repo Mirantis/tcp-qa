@@ -37,6 +37,11 @@
  #    (see generated '.ini' file after underlay is created),
  # 3. defaults #}
 {% set address_pools = config.underlay.address_pools %}
+{% set public_net = self.__config.underlay.dhcp_ranges[settings.EXTERNAL_ADDRESS_POOL_NAME] %}
+{% set public_gateway = public_net["gateway"].encode("ascii") %}
+{% set public_cidr = public_net["cidr"].encode("ascii") %}
+{% set public_allocation_start = public_net["start"].encode("ascii") %}
+{% set public_allocation_end = public_net["end"].encode("ascii") %}
 {% set IPV4_NET_ADMIN = os_env('IPV4_NET_ADMIN', address_pools.get('admin-pool01', '192.168.10.0/24')) %}
 {% set IPV4_NET_CONTROL = os_env('IPV4_NET_CONTROL', address_pools.get('private-pool01', '172.16.10.0/24')) %}
 {% set IPV4_NET_TENANT = os_env('IPV4_NET_TENANT', address_pools.get('tenant-pool01', '10.1.0.0/24')) %}
@@ -571,6 +576,20 @@
       reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}.reclass_datasource_local' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml --merge ;
       reclass-tools add-key 'classes' 'environment.{{ ENVIRONMENT_MODEL_INVENTORY_NAME }}' /srv/salt/reclass/nodes/_generated/cfg01.{{ DOMAIN_NAME }}.yml --merge ;
     fi;
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: "Configure public net for tempest"
+  cmd: |
+    set -e;
+    set -x;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.openstack_public_neutron_subnet_gateway {{ public_gateway }} /srv/salt/reclass/classes/service/runtest/tempest/public_net.yml
+    reclass-tools add-key parameters._param.openstack_public_neutron_subnet_cidr {{ public_cidr }} /srv/salt/reclass/classes/service/runtest/tempest/public_net.yml
+    reclass-tools add-key parameters._param.openstack_public_neutron_subnet_allocation_start {{ public_allocation_start }} /srv/salt/reclass/classes/service/runtest/tempest/public_net.yml
+    reclass-tools add-key parameters._param.openstack_public_neutron_subnet_allocation_end {{ public_allocation_end }} /srv/salt/reclass/classes/service/runtest/tempest/public_net.yml
 
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
