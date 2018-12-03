@@ -223,3 +223,8 @@ default_context:
   openstack_share_node01_deploy_address: 192.168.10.204
   openstack_share_hostname: share
   openstack_share_node01_hostname: share01
+env-contenxt:
+  public_net_gateway: 10.16.0.1
+  public_net_cidr: 10.16.0.0/24
+  public_net_allocation_start: 10.16.0.201
+  public_net_allocation_end: 10.16.0.245
