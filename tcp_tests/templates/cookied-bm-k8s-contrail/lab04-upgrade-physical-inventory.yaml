@@ -92,6 +92,13 @@ nodes:
           role: single_dhcp
         ens11f1:
           role: k8s_oc40_only_vhost_on_control_vlan
+
+environment_metadata:
+    public_gateway: 172.17.16.1
+    public_cidr: 172.17.16.0/24
+    public_allocation_start: 172.17.16.201
+    public_allocation_end: 172.17.16.245
+    tempest_test_target: ctl01*
           #    cmp001.bm-k8s-contrail.local:
           #      reclass_storage_name: kubernetes_compute_node001
           #      roles:
