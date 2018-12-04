@@ -1,8 +1,21 @@
 nodes:
-    cfg01.cookied-mcp-pike-dvr-ceph.local:
+    cfg01:
       reclass_storage_name: infra_config_node01
       roles:
       - infra_config
+      - linux_system_codename_xenial
+      classes:
+      - environment.cookied-cicd-pike-dvr-ceph.override_ntp_virtual
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_static_ctl
+
+    cid01:
+      reclass_storage_name: cicd_control_node01
+      roles:
+      - cicd_control_leader
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -10,7 +23,29 @@ nodes:
         ens4:
           role: single_ctl
 
-    ctl01.cookied-mcp-pike-dvr-ceph.local:
+    cid02:
+      reclass_storage_name: cicd_control_node02
+      roles:
+      - cicd_control_manager
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    cid03:
+      reclass_storage_name: cicd_control_node03
+      roles:
+      - cicd_control_manager
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    ctl01:
       reclass_storage_name: openstack_control_node01
       roles:
       - infra_kvm
@@ -24,7 +59,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    ctl02.cookied-mcp-pike-dvr-ceph.local:
+    ctl02:
       reclass_storage_name: openstack_control_node02
       roles:
       - infra_kvm
@@ -38,7 +73,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    ctl03.cookied-mcp-pike-dvr-ceph.local:
+    ctl03:
       reclass_storage_name: openstack_control_node03
       roles:
       - infra_kvm
@@ -52,7 +87,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    prx01.cookied-mcp-pike-dvr-ceph.local:
+    prx01:
       reclass_storage_name: openstack_proxy_node01
       roles:
       - openstack_proxy
@@ -64,7 +99,7 @@ nodes:
           role: single_ctl
 
     # Generator-based computes. For compatibility only
-    cmp<<count>>.cookied-mcp-pike-dvr-ceph.local:
+    cmp<<count>>:
       reclass_storage_name: openstack_compute_rack01
       roles:
       - openstack_compute
@@ -79,7 +114,7 @@ nodes:
         ens6:
           role: bond1_ab_ovs_floating
 
-    gtw01.cookied-mcp-pike-dvr-ceph.local:
+    gtw01:
       reclass_storage_name: openstack_gateway_node01
       roles:
       - openstack_gateway
@@ -96,7 +131,7 @@ nodes:
         ens6:
           role: bond1_ab_ovs_floating
 
-    osd<<count>>.cookied-mcp-pike-dvr-ceph.local:
+    osd<<count>>:
       reclass_storage_name: ceph_osd_rack01
       roles:
       - ceph_osd
@@ -107,7 +142,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    cmn01.cookied-mcp-pike-dvr-ceph.local:
+    cmn01:
       reclass_storage_name: ceph_mon_node01
       roles:
       - ceph_mon
@@ -118,7 +153,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    cmn02.cookied-mcp-pike-dvr-ceph.local:
+    cmn02:
       reclass_storage_name: ceph_mon_node02
       roles:
       - ceph_mon
@@ -129,7 +164,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    cmn03.cookied-mcp-pike-dvr-ceph.local:
+    cmn03:
       reclass_storage_name: ceph_mon_node03
       roles:
       - ceph_mon
@@ -140,7 +175,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    rgw01.cookied-mcp-pike-dvr-ceph.local:
+    rgw01:
       reclass_storage_name: ceph_rgw_node01
       roles:
       - ceph_rgw
@@ -151,7 +186,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    rgw02.cookied-mcp-pike-dvr-ceph.local:
+    rgw02:
       reclass_storage_name: ceph_rgw_node02
       roles:
       - ceph_rgw
@@ -162,7 +197,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    rgw03.cookied-mcp-pike-dvr-ceph.local:
+    rgw03:
       reclass_storage_name: ceph_rgw_node03
       roles:
       - ceph_rgw
@@ -173,7 +208,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    mdb01.cookied-mcp-pike-dvr-ceph.local:
+    mdb01:
       reclass_storage_name: openstack_telemetry_node01
       roles:
       - linux_system_codename_xenial
@@ -184,7 +219,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    mdb02.cookied-mcp-pike-dvr-ceph.local:
+    mdb02:
       reclass_storage_name: openstack_telemetry_node02
       roles:
       - linux_system_codename_xenial
@@ -195,7 +230,7 @@ nodes:
         ens4:
           role: single_ctl
 
-    mdb03.cookied-mcp-pike-dvr-ceph.local:
+    mdb03:
       reclass_storage_name: openstack_telemetry_node03
       roles:
       - linux_system_codename_xenial
@@ -205,11 +240,3 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl
-
-environment_metadata:
-    public_gateway: 172.17.16.1
-    public_cidr: 172.17.16.0/24
-    public_allocation_start: 172.17.16.201
-    public_allocation_end: 172.17.16.245
-    tempest_test_target: gtw01*
-
