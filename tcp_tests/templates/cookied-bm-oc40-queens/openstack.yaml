@@ -273,7 +273,7 @@
 - description: Run tempest from new docker image
   cmd: |
     OPENSTACK_VERSION=`salt-call --out=newline_values_only pillar.get _param:openstack_version`;
-    docker run -e ARGS="-r test -w 2" -v /tmp/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /tmp/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest:$OPENSTACK_VERSION /bin/bash -c "run-tempest";
+    docker  --net=host run -e ARGS="-r test -w 2" -v /tmp/test/tempest.conf:/etc/tempest/tempest.conf -v /tmp/:/tmp/ -v /tmp/test:/root/tempest -v /etc/ssl/certs/:/etc/ssl/certs/ --rm docker-prod-virtual.docker.mirantis.net/mirantis/cicd/ci-tempest:$OPENSTACK_VERSION /bin/bash -c "run-tempest";
   node_name: {{ HOSTNAME_CTL01 }}
   retry: {count: 1, delay: 30}
   skip_fail: true

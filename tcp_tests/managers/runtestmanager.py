@@ -313,6 +313,7 @@ class RuntestManager(object):
 
         docker_args = (
             " -t "
+            " --net=host "
             " --name {container_name} "
             " -e ARGS=\"-r {tempest_pattern} -w {tempest_threads}\""
             " -v {cfg_dir}/tempest.conf:/etc/tempest/tempest.conf"
