@@ -266,3 +266,9 @@ nodes:
           role: bond0_ab_ovs_vxlan_mesh
         ens6:
           role: bond1_ab_ovs_floating
+
+environment_metadata:
+    public_gateway: 172.17.16.1
+    public_cidr: 172.17.16.0/24
+    public_allocation_start: 172.17.16.201
+    public_allocation_end: 172.17.16.245

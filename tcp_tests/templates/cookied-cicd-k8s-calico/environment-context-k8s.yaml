@@ -143,3 +143,9 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl_calico
+
+environment_metadata:
+    public_gateway: 172.17.16.1
+    public_cidr: 172.17.16.0/24
+    public_allocation_start: 172.17.16.201
+    public_allocation_end: 172.17.16.245
