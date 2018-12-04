@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "89d37984_5c37596c",
+        "filename": "tcp_tests/templates/cookied-mcp-ocata-dvr-ceph/openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1015292
+      },
+      "writtenOn": "2018-12-04T15:50:34Z",
+      "side": 1,
+      "message": "Is it 30 second enough time for downloading image?",
+      "revId": "8645932a287a3a93a919c0b6c1d6948a9f6bc910",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b89bcb06_574282b8",
+        "filename": "tcp_tests/templates/cookied-mcp-ocata-dvr-ceph/openstack.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1015292
+      },
+      "writtenOn": "2018-12-04T15:50:34Z",
+      "side": 1,
+      "message": "I think 30 seconds too much for this operation.",
+      "revId": "8645932a287a3a93a919c0b6c1d6948a9f6bc910",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "535b95a5_90cc816e",
+        "filename": "tcp_tests/templates/cookied-mcp-ocata-dvr-ceph/salt.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 32,
+      "author": {
+        "id": 1015292
+      },
+      "writtenOn": "2018-12-04T15:50:34Z",
+      "side": 1,
+      "message": "Are you sure that we need this block? Because only one attempt will be executed.",
+      "revId": "8645932a287a3a93a919c0b6c1d6948a9f6bc910",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fdf199c6_da123311",
+        "filename": "tcp_tests/templates/cookied-mcp-ocata-dvr-ceph/underlay--user-data-cfg01.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 38,
+      "author": {
+        "id": 1015292
+      },
+      "writtenOn": "2018-12-04T15:50:34Z",
+      "side": 1,
+      "message": "Why this block without sudo?",
+      "revId": "8645932a287a3a93a919c0b6c1d6948a9f6bc910",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
