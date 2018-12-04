@@ -20,7 +20,8 @@
 # Currently we support 2 salt version that can be set over bellow var
 {% set SALT_VERSION = os_env('SALT_VERSION','2017.7') %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
-{% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME} ' + REPOSITORY_SUITE + ' salt extra') %}
+#{% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME} ' + REPOSITORY_SUITE + ' salt extra') %}
+{% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE+ "/salt-formulas"+"/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
 {% set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') %}
 #{# set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/2016.3 " + REPOSITORY_SUITE + " main") #}
 # Note repo is changed so new one looks like defined bellow
@@ -380,6 +381,7 @@
     set -e;
     set -x;
     sudo apt-get install python-setuptools -y
+    pip install python-gnupg
     pip install cookiecutter
 
     chmod 0600 /tmp/{{ COOKIECUTTER_TEMPLATES_REPOSITORY_KEY_PATH | basename }}
