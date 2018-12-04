@@ -81,3 +81,10 @@ nodes:
         enp2s0f0:
           role: single_vlan_ctl
           single_address: 10.167.8.102
+
+environment_metadata:
+    public_gateway: 172.17.16.1
+    public_cidr: 172.17.16.0/24
+    public_allocation_start: 172.17.16.201
+    public_allocation_end: 172.17.16.245
+    tempest_test_target: ctl01*
