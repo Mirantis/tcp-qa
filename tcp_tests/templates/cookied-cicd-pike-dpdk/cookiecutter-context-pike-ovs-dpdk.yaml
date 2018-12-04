@@ -204,3 +204,9 @@ default_context:
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
+
+envoronment_metadata:
+    public_gateway: 10.16.0.1
+    public_cidr: 10.16.0.0/24
+    public_allocation_start: 10.16.0.201
+    public_allocation_end: 10.16.0.245
