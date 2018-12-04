@@ -1,8 +1,8 @@
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'proposed') %}
 
-{% import 'cookied-mcp-pike-dvr-ceph/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
-{% import 'cookied-mcp-pike-dvr-ceph/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
-{% import 'cookied-mcp-pike-dvr-ceph/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
+{% import 'cookied-cicd-pike-dvr-ceph/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
+{% import 'cookied-cicd-pike-dvr-ceph/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
+{% import 'cookied-cicd-pike-dvr-ceph/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
 
 ---
 aliases:
@@ -11,12 +11,15 @@ aliases:
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
  - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
 
-{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-mcp-pike-dvr-ceph') %}
+{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-cicd-pike-dvr-ceph') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME + '.local') %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CID01 = os_env('HOSTNAME_CID01', 'cid01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CID02 = os_env('HOSTNAME_CID02', 'cid02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CID03 = os_env('HOSTNAME_CID03', 'cid03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp1.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp2.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMN01 = os_env('HOSTNAME_CMN01', 'cmn01.' + DOMAIN_NAME) %}
@@ -35,7 +38,7 @@ aliases:
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'cookied-mcp-pike-dvr-ceph_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ os_env('ENV_NAME', 'cookied-cicd-pike-dvr-ceph_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
 
     address_pools:
       private-pool01:
@@ -50,6 +53,10 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +13
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CID }}: +90
+            default_{{ HOSTNAME_CID01 }}: +91
+            default_{{ HOSTNAME_CID02 }}: +92
+            default_{{ HOSTNAME_CID03 }}: +93
             default_{{ HOSTNAME_OSD01 }}: +94
             default_{{ HOSTNAME_OSD02 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
@@ -78,6 +85,10 @@ template:
             default_{{ HOSTNAME_CTL03 }}: +13
             default_{{ HOSTNAME_CMP01 }}: +105
             default_{{ HOSTNAME_CMP02 }}: +106
+            default_{{ HOSTNAME_CID }}: +90
+            default_{{ HOSTNAME_CID01 }}: +91
+            default_{{ HOSTNAME_CID02 }}: +92
+            default_{{ HOSTNAME_CID03 }}: +93
             default_{{ HOSTNAME_OSD01 }}: +94
             default_{{ HOSTNAME_OSD02 }}: +95
             default_{{ HOSTNAME_CMN01 }}: +96
@@ -765,3 +776,81 @@ template:
 
               interfaces: *all_interfaces
               network_config: *all_network_config
+
+          - name: {{ HOSTNAME_CID01 }}
+            role: salt_minion
+            params:
+              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 8192) }}
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: {{ os_env('CID_NODE_VOLUME_SIZE', 150) }}
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_CID02 }}
+            role: salt_minion
+            params:
+              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 8192) }}
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: {{ os_env('CID_NODE_VOLUME_SIZE', 150) }}
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_CID03 }}
+            role: salt_minion
+            params:
+              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 8192) }}
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: {{ os_env('CID_NODE_VOLUME_SIZE', 150) }}
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
