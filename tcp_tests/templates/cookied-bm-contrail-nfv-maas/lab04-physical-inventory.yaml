@@ -79,3 +79,11 @@ nodes:
           tenant_address: 192.168.0.102
           dpdk_pci: "'0000:05:00.0'"
           dpdk_mac: '00:1b:21:87:21:98'
+
+environment_metadata:
+    public_gateway: 172.17.16.1
+    public_cidr: 172.17.16.0/24
+    public_allocation_start: 172.17.16.201
+    public_allocation_end: 172.17.16.245
+    tempest_test_target: ctl01*
+
