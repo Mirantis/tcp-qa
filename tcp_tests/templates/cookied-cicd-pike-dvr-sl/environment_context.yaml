@@ -4,6 +4,7 @@ nodes:
       roles:
       - infra_config
       - linux_system_codename_xenial
+      - features_runtest
       classes:
       - environment.cookied-cicd-pike-dvr-sl.override_ntp_virtual
       interfaces:
@@ -266,3 +267,9 @@ nodes:
           role: bond0_ab_ovs_vxlan_mesh
         ens6:
           role: bond1_ab_ovs_floating
+
+envoronment_metadata:
+    public_gateway: 10.16.0.1
+    public_cidr: 10.16.0.0/24
+    public_allocation_start: 10.16.0.201
+    public_allocation_end: 10.16.0.245
