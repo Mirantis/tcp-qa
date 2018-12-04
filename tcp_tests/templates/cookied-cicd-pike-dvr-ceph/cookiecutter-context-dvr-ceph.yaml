@@ -68,9 +68,46 @@ default_context:
   ceph_rgw_node03_address: 10.167.4.78
   ceph_rgw_node03_hostname: rgw03
   ceph_version: luminous
-  cicd_enabled: 'False'
-  cluster_domain: cookied-mcp-pike-dvr-ceph.local
-  cluster_name: cookied-mcp-pike-dvr-ceph
+  cicd_control_node01_address: 10.167.4.91
+  cicd_control_node01_hostname: cid01
+  cicd_control_node02_address: 10.167.4.92
+  cicd_control_node02_hostname: cid02
+  cicd_control_node03_address: 10.167.4.93
+  cicd_control_node03_hostname: cid03
+  cicd_control_vip_address: 10.167.4.90
+  cicd_control_vip_hostname: cid
+  cicd_enabled: 'True'
+  cicd_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEAv64AnFbEuuOQHLlmMkmaZ+Hh/8hJ+VfFpJ/MzW1wWzYyhis7
+    3A8rxNFWJ/I1/LJSsFI8qU0DpxjFjS9LMTTFXhDPPpuzgRLwfVusEmuQdXjOiT34
+    AIs07Q4w1nlvJ2+/l788ie1AEfnewd9erUHOs8Wt/PT3OOM/0ikY7EibvYF4L1Lb
+    xGRKYnUkY7G3eal9XcQpsTzAFRXoK3WafbCFBFsfzEWOhx1T+tn1SwaxPYJDt1OB
+    B1s77enFtBwbmbd0m1F1ufSXmdWea2xF3+5caS6tps/hwhCoOSJUQb7+dK4ri8og
+    q2YIhfEptrMP1R+nVqEY76P31aa/YSw4zOvcQwIDAQABAoIBAQCLKOzQlD4n4ObT
+    s9Z6U+2B1gCaDvOFzy9yoYGy8u1Li0GLHwBKd8kzDzgZsEN5vo1B7bKUx5ELU3S5
+    V8ijZMiVzmZn8eqUnwdyO4flp6otXxOzmAXhfy9hm5fhXjBQ1VSn+vMcv95wLpSG
+    9IBsEQbchXwX1lFWP8Yp8iRiByTqoz6A7qSxRzIOtq1/coYS9Vcy7VZDMiUjqvuc
+    pYvwYHvrgeYqxLXyDRzbZX1BbkSoNI/5VwxLb9IMG901IXph0r4V3uVgnnq+Xzkk
+    MoOfmB3cyOrvtWblZAjkyA+jzTs/QNALRUeI7wUeh4FvlwEGHE6v5G4G28zOS0vL
+    7IEhCqThAoGBAOeyDO07b060l+NOO+Jkv+NV31VD0w3S4TMyLPVSxXsrRPoHM9RM
+    udi6lewmALE4wk2Lc1Il6n0UrUGVbXxf55NJp2BQoSic+ZK2nTki0cZ/CkUDVNwY
+    R0WtWE0i3J+eF3e8j9VYm1mIlv0aDoYeH4qCp5is/JanvLy4MUl6tM7/AoGBANPJ
+    XheDO5lmqq1ejDTo3GAzYuAs44dQLDs0znEuuaUKZ4MKgQ4ax0L9n0MxvsuUGVcN
+    Nm7fZS4uMY3zLCOLcAXyD1jXY210gmOgFdXeYrH+2kSmqfflV8KHOLCatxLzRtbe
+    KBflcrEnrpUVNGKlpZaYr+4AyapXeMuXIxwveva9AoGAYtoDS9/UwHaqau+A+zlS
+    6TJFA8LZNAepz0b0CYLUAJXYavhRs508mWwZ9NPN7c6yj5UUkZLdtZnxxY50VOEy
+    ExQUljIwX/yBOogxEiR57b9b6U/fj7vIBMFNcDOUf4Far9pCX5rbRNrS2I+abLxD
+    ZrwRt0Duz3QnQTkwxhHVPI8CgYAaIjQJJLl7AW84O32DneRrvouJ7CAbd2ot2CNN
+    Vh20XudNBUPNkMJb4t3/Nak8h8bktg2sesaKf0rAIGym6jLlmOwJ43IydHkOgBeR
+    r4JwQml+pS4+F7/Pkk4NhNnobbqlEv7RjA+uCp6BaP9w2M3pGmhDLzezXF3ciYbc
+    mINM5QKBgQCyM9ZWwSiA0D3oitnhs7C4eC0IHBfnSoa7f40osKm4VvmqKBFgRu8L
+    qYK9qX++pUm4sk0q7poGUscc1udMlejAkfc/HLIlUi6MM+S7ZQ2NHtnZ7COZa5O4
+    9fG8FTiigLvMHka9ihYXtPbyGvusCaqyHp3D9VyOT+WsyM5eJe40lA==
+    -----END RSA PRIVATE KEY-----
+  cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/rgCcVsS645AcuWYySZpn4eH/yEn5V8Wkn8zNbXBbNjKGKzvcDyvE0VYn8jX8slKwUjypTQOnGMWNL0sxNMVeEM8+m7OBEvB9W6wSa5B1eM6JPfgAizTtDjDWeW8nb7+XvzyJ7UAR+d7B316tQc6zxa389Pc44z/SKRjsSJu9gXgvUtvEZEpidSRjsbd5qX1dxCmxPMAVFegrdZp9sIUEWx/MRY6HHVP62fVLBrE9gkO3U4EHWzvt6cW0HBuZt3SbUXW59JeZ1Z5rbEXf7lxpLq2mz+HCEKg5IlRBvv50riuLyiCrZgiF8Sm2sw/VH6dWoRjvo/fVpr9hLDjM69xD
+  cluster_domain: cookied-cicd-pike-dvr-ceph.local
+  cluster_name: cookied-cicd-pike-dvr-ceph
   compute_bond_mode: active-backup
   compute_padding_with_zeros: 'False'
   compute_primary_first_nic: eth1
@@ -88,7 +125,7 @@ default_context:
   deployment_type: physical
   dns_server01: 172.18.176.6
   dns_server02: 172.18.208.44
-  email_address: obutenko@mirantis.com
+  email_address: test@mirantis.com
   gainsight_service_enabled: 'False'
   gateway_primary_first_nic: eth1
   gateway_primary_second_nic: eth2
@@ -125,17 +162,20 @@ default_context:
   nova_vnc_tls_enabled: 'True'
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
-  openssh_groups: ''
+  openldap_domain: ${_param:cluster_name}.local
+  openldap_enabled: 'True'
+  openldap_organisation: ${_param:cluster_name}
+  openssh_groups: cicd
   openstack_benchmark_node01_address: 10.167.4.95
   openstack_benchmark_node01_hostname: bmk01
   openstack_cluster_size: compact
   openstack_compute_count: '2'
   openstack_compute_rack01_hostname: cmp
-  openstack_compute_rack01_single_subnet: 172.16.10
-  openstack_compute_rack01_tenant_subnet: 10.1.0
-  openstack_compute_single_address_ranges: 172.16.10.105-172.16.10.106
-  openstack_compute_deploy_address_ranges: 192.168.10.105-192.168.10.106
-  openstack_compute_tenant_address_ranges: 10.1.0.105-10.1.0.106
+  openstack_compute_rack01_single_subnet: 10.167.4
+  openstack_compute_rack01_tenant_subnet: 10.167.6
+  openstack_compute_single_address_ranges: 10.167.4.105-10.167.4.106
+  openstack_compute_deploy_address_ranges: 10.167.5.105-10.167.5.106
+  openstack_compute_tenant_address_ranges: 10.167.6.105-10.167.6.106
   openstack_control_address: 10.167.4.10
   openstack_control_hostname: ctl
   openstack_control_node01_address: 10.167.4.11
@@ -203,8 +243,6 @@ default_context:
   shared_reclass_branch: 'proposed'
   shared_reclass_url: https://github.com/Mirantis/reclass-system-salt-model.git
   sriov_network_subnet: 10.55.0.0/16
-  stacklight_enabled: 'False'
-  stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
   tenant_network_gateway: 10.167.6.1
   tenant_network_netmask: 255.255.255.0
@@ -215,11 +253,39 @@ default_context:
   use_default_network_scheme: 'True'
   version: proposed
   vnf_onboarding_enabled: 'False'
-  openstack_telemetry_address: 172.16.10.83
+  openstack_telemetry_address: 10.167.4.83
   openstack_telemetry_hostname: mdb
-  openstack_telemetry_node01_address: 172.16.10.84
+  openstack_telemetry_node01_address: 10.167.4.84
   openstack_telemetry_node01_hostname: mdb01
-  openstack_telemetry_node02_address: 172.16.10.85
+  openstack_telemetry_node02_address: 10.167.4.85
   openstack_telemetry_node02_hostname: mdb02
-  openstack_telemetry_node03_address: 172.16.10.86
+  openstack_telemetry_node03_address: 10.167.4.86
   openstack_telemetry_node03_hostname: mdb03
+  fluentd_enabled: 'True'
+  stacklight_enabled: 'True'
+  stacklight_log_address: 10.167.4.60
+  stacklight_log_hostname: log
+  stacklight_log_node01_address: 10.167.4.61
+  stacklight_log_node01_hostname: log01
+  stacklight_log_node02_address: 10.167.4.62
+  stacklight_log_node02_hostname: log02
+  stacklight_log_node03_address: 10.167.4.63
+  stacklight_log_node03_hostname: log03
+  stacklight_monitor_address: 10.167.4.70
+  stacklight_monitor_hostname: mon
+  stacklight_monitor_node01_address: 10.167.4.71
+  stacklight_monitor_node01_hostname: mon01
+  stacklight_monitor_node02_address: 10.167.4.72
+  stacklight_monitor_node02_hostname: mon02
+  stacklight_monitor_node03_address: 10.167.4.73
+  stacklight_monitor_node03_hostname: mon03
+  stacklight_telemetry_address: 10.167.4.50
+  stacklight_telemetry_hostname: mtr
+  stacklight_telemetry_node01_address: 10.167.4.51
+  stacklight_telemetry_node01_hostname: mtr01
+  stacklight_telemetry_node02_address: 10.167.4.52
+  stacklight_telemetry_node02_hostname: mtr02
+  stacklight_telemetry_node03_address: 10.167.4.53
+  stacklight_telemetry_node03_hostname: mtr03
+  stacklight_version: '2'
+  stacklight_long_term_storage_type: prometheus
