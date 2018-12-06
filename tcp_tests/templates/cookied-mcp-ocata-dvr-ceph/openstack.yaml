@@ -1,16 +1,15 @@
-{% from 'cookied-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_CTL01 with context %}
-{% from 'cookied-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_CTL02 with context %}
-{% from 'cookied-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_CTL03 with context %}
-{% from 'cookied-mcp-ocata-dvr/underlay.yaml' import HOSTNAME_GTW01 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_CTL01 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_CTL02 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_CTL03 with context %}
+{% from 'cookied-mcp-ocata-dvr-ceph/underlay.yaml' import HOSTNAME_GTW01 with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
-{% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
 
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
-# Install OpenStack control services
+{% import 'shared-ceph.yaml' as SHARED_CEPH with context %}
 
 # Deploy nginx before openstack services (PROD-22740)
 - description: Deploy nginx proxy
@@ -19,6 +18,14 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_MONS() }}
+
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_MGR() }}
+
+{{ SHARED_CEPH.MACRO_INSTALL_CEPH_OSD_AND_RADOSGW() }}
+
+{{ SHARED_CEPH.CONNECT_CEPH_TO_SERVICES() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_KEYSTONE() }}
 
