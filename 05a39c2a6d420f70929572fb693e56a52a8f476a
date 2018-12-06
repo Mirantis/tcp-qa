@@ -1,0 +1,326 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8f3ffa35_d11cae40",
+        "filename": "tcp_tests/managers/jenkins/client.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "Please log exception so that we can understand some reasons for False status",
+      "range": {
+        "startLine": 130,
+        "startChar": 25,
+        "endLine": 130,
+        "endChar": 30
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c85d4d90_7d14c38e",
+        "filename": "tcp_tests/managers/jenkins/client.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "it seems that you also here can Catch the same Connection error that you wrap above, why then do not wrap it here as well ?",
+      "range": {
+        "startLine": 136,
+        "startChar": 27,
+        "endLine": 136,
+        "endChar": 55
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "00819c4f_977e7ce8",
+        "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/Readme.txt",
+        "patchSetId": 7
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "is it still tue? better to not add it at all",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 1,
+        "endChar": 26
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e6be9d45_a1d834d0",
+        "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/openstack.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 5,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "Do we still use it?  seems thi ne not necessary at all",
+      "range": {
+        "startLine": 5,
+        "startChar": 23,
+        "endLine": 5,
+        "endChar": 29
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b117ba90_9ffe5d3b",
+        "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/underlay--user-data-cfg01.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 41,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "please add a comment why do you need that",
+      "range": {
+        "startLine": 41,
+        "startChar": 39,
+        "endLine": 41,
+        "endChar": 41
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "21860937_02b4c301",
+        "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/underlay.yaml",
+        "patchSetId": 7
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "why just not remove it ?:)",
+      "range": {
+        "startLine": 9,
+        "startChar": 7,
+        "endLine": 9,
+        "endChar": 18
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a764467_87a663dd",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 174,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "please remove unnecessary comment",
+      "range": {
+        "startLine": 174,
+        "startChar": 10,
+        "endLine": 174,
+        "endChar": 31
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1493ef40_06a4cb3c",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 190,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "Run tempest\nand then probably you also need to run additional post validation  tests",
+      "range": {
+        "startLine": 190,
+        "startChar": 30,
+        "endLine": 190,
+        "endChar": 33
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fcfaca51_220a61ea",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 193,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": ":)",
+      "range": {
+        "startLine": 193,
+        "startChar": 27,
+        "endLine": 193,
+        "endChar": 50
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ef55f58e_78cbc2bd",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 196,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "please avoid to const values here pinned to the Lab name, you can get it by node/ by role/ nodename + LAB_NAME and etc",
+      "range": {
+        "startLine": 196,
+        "startChar": 26,
+        "endLine": 196,
+        "endChar": 34
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "03d52f07_aa227409",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 267,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 267,
+        "startChar": 29,
+        "endLine": 267,
+        "endChar": 33
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5ee5355c_0efaa2cf",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 338,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "why do we not use here CICD?",
+      "range": {
+        "startLine": 338,
+        "startChar": 23,
+        "endLine": 338,
+        "endChar": 30
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "873db992_6aeebe16",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 350,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "the same here - why we do not use here cicd?",
+      "range": {
+        "startLine": 350,
+        "startChar": 17,
+        "endLine": 350,
+        "endChar": 27
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4a978dfe_909444c2",
+        "filename": "tcp_tests/tests/system/test_offline.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 478,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:05:11Z",
+      "side": 1,
+      "message": "Queens not on our plate now, so it currently can be disabled",
+      "range": {
+        "startLine": 478,
+        "startChar": 4,
+        "endLine": 478,
+        "endChar": 27
+      },
+      "revId": "05a39c2a6d420f70929572fb693e56a52a8f476a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
