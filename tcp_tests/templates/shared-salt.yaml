@@ -15,6 +15,7 @@
 {% set COOKIECUTTER_REF_CHANGE = os_env('COOKIECUTTER_REF_CHANGE','') %}
 {% set COOKIECUTTER_TAG = os_env('COOKIECUTTER_TAG','') %}
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
+{% set ENVIRONMENT_TEMPLATE_COMMIT = os_env('ENVIRONMENT_TEMPLATE_COMMIT','') %}
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 # Currently we support 2 salt version that can be set over bellow var
 {% set SALT_VERSION = os_env('SALT_VERSION','2017.7') %}
@@ -509,6 +510,18 @@
     export GIT_SSL_NO_VERIFY=true; git clone https://github.com/Mirantis/environment-template /root/environment/environment_template
   node_name: {{ HOSTNAME_CFG01 }}
   skip_fail: false
+
+{%- if ENVIRONMENT_TEMPLATE_COMMIT != '' %}
+- description: Checkout specific commit/tag/branch for environment templates
+  cmd: |
+    set -e;
+    set -x;
+    pushd /root/environment/environment_template &&
+    git checkout {{ ENVIRONMENT_TEMPLATE_COMMIT }}
+    popd
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: false
+{%- endif %}
 
 {%- if ENVIRONMENT_TEMPLATE_REF_CHANGE != '' %}
 - description: Fetch changes for environment templates
