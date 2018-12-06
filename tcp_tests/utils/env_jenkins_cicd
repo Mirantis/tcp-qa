@@ -22,12 +22,12 @@ if [ -z "$SALTAPI_URL" ]; then
     unset JENKINS_START_TIMEOUT
     unset JENKINS_BUILD_TIMEOUT
 else
-    MASTER="get_param.py -C I@docker:client:stack:jenkins pillar.get jenkins:client:master"
-    export JENKINS_HOST=$(${CURRENT_DIR}/${MASTER}:host)
-    export JENKINS_PORT=$(${CURRENT_DIR}/${MASTER}:port)
+    MASTER_TARGET='I@docker:client:stack:jenkins and cid01*'
+    export JENKINS_HOST=$(${CURRENT_DIR}/get_param.py -C "${MASTER_TARGET}" pillar.get jenkins:client:master:host)
+    export JENKINS_PORT=$(${CURRENT_DIR}/get_param.py -C "${MASTER_TARGET}" pillar.get jenkins:client:master:port)
     export JENKINS_URL=http://${JENKINS_HOST}:${JENKINS_PORT}
-    export JENKINS_USER=$(${CURRENT_DIR}/${MASTER}:username)
-    export JENKINS_PASS=$(${CURRENT_DIR}/${MASTER}:password)
+    export JENKINS_USER=$(${CURRENT_DIR}/get_param.py -C "${MASTER_TARGET}" pillar.get jenkins:client:master:username)
+    export JENKINS_PASS=$(${CURRENT_DIR}/get_param.py -C "${MASTER_TARGET}" pillar.get jenkins:client:master:password)
     export JENKINS_START_TIMEOUT=60
     export JENKINS_BUILD_TIMEOUT=1800
 fi
