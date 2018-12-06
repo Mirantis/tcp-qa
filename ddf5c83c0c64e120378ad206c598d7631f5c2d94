@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0437ebdb_c44eb55b",
+        "filename": "tcp_tests/tests/system/test_pipeline_deploy.py",
+        "patchSetId": 19
+      },
+      "lineNbr": 54,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:20:30Z",
+      "side": 1,
+      "message": ":)",
+      "range": {
+        "startLine": 54,
+        "startChar": 20,
+        "endLine": 54,
+        "endChar": 24
+      },
+      "revId": "ddf5c83c0c64e120378ad206c598d7631f5c2d94",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4b222963_ce80c319",
+        "filename": "tcp_tests/tests/system/test_pipeline_deploy.py",
+        "patchSetId": 19
+      },
+      "lineNbr": 67,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:20:30Z",
+      "side": 1,
+      "message": "now will be fail as jenkins from master node  as well as cid will be matched and you revived 2 targets",
+      "range": {
+        "startLine": 67,
+        "startChar": 28,
+        "endLine": 67,
+        "endChar": 34
+      },
+      "revId": "ddf5c83c0c64e120378ad206c598d7631f5c2d94",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f4c420c2_8482198a",
+        "filename": "tcp_tests/tests/system/test_pipeline_deploy.py",
+        "patchSetId": 19
+      },
+      "lineNbr": 92,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-06T20:20:30Z",
+      "side": 1,
+      "message": "note we still need run tempest and have this env running at least till December 31",
+      "range": {
+        "startLine": 92,
+        "startChar": 11,
+        "endLine": 92,
+        "endChar": 12
+      },
+      "revId": "ddf5c83c0c64e120378ad206c598d7631f5c2d94",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
