@@ -1440,3 +1440,20 @@
   skip_fail: false
 
 {%- endmacro %}
+
+
+{%- macro PREPARE_FOR_TEMPEST() %}
+{#####################################################}
+
+- description: 'temp WR, remove after migrate to cicd'
+  cmd: |
+    salt-call state.sls salt.minion && sleep 20;
+    salt-call state.sls keystone.client;
+    salt-call state.sls neutron.client;
+    salt-call state.sls nova.client;
+    salt-call state.sls glance.client;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
