@@ -87,8 +87,8 @@ default_context:
   deploy_network_netmask: 255.255.255.192
   deploy_network_subnet: 172.16.49.64/26
   deployment_type: physical
-  dns_server01: 172.18.208.44
-  dns_server02: 8.8.4.4
+  dns_server01: 172.18.176.6
+  dns_server02: 172.18.208.44
   email_address: sgudz@mirantis.com
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
@@ -140,7 +140,7 @@ default_context:
   opencontrail_control_node03_address: 10.167.8.23
   opencontrail_control_node03_hostname: ntw03
   opencontrail_enabled: 'True'
-  opencontrail_router01_address: 10.167.8.100
+  opencontrail_router01_address: 10.167.8.220
   opencontrail_router01_hostname: rtr01
   opencontrail_router02_address: 10.167.8.101
   opencontrail_router02_hostname: rtr02
@@ -236,7 +236,7 @@ default_context:
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: 192.168.0.1
+  tenant_network_gateway: 192.168.0.220
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: 192.168.0.0/24
   tenant_vlan: '2423'
