@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "17925b0a_7c3a7bc7",
+        "filename": "tcp_tests/templates/cookied-cicd-pike-dvr-ceph/underlay--user-data-cfg01.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-07T11:21:50Z",
+      "side": 1,
+      "message": "This file underlay--user-data-cfg01.yaml can be removed, it is not used anymore.\n\nTo bootstrap cfg01, cicd jobs use a combination from the product user-data [1] and our additional customisation [2]\n\n[1] https://github.com/Mirantis/mcp-common-scripts/blob/master/config-drive/master_config.yaml\n[2] https://github.com/Mirantis/tcp-qa/blob/master/jobs/pipelines/swarm-create-cfg-config-drive.groovy#L207-L228",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 83
+      },
+      "revId": "b990cfaf4ae0b6dac2c6b490b158a006eea309d3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0373df0e_5df40ff1",
         "filename": "tcp_tests/tests/system/test_ovs_pike_ceph.py",
         "patchSetId": 9
