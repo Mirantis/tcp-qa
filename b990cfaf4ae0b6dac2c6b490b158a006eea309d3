@@ -2,6 +2,98 @@
   "comments": [
     {
       "key": {
+        "uuid": "87ed46f7_5776f9f5",
+        "filename": "tcp_tests/templates/cookied-cicd-pike-dvr-ceph/cookiecutter-context-dvr-ceph.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 171,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-07T11:29:56Z",
+      "side": 1,
+      "message": "10.167.4  , see the comment below",
+      "range": {
+        "startLine": 171,
+        "startChar": 42,
+        "endLine": 171,
+        "endChar": 51
+      },
+      "revId": "b990cfaf4ae0b6dac2c6b490b158a006eea309d3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b429ffba_d9553721",
+        "filename": "tcp_tests/templates/cookied-cicd-pike-dvr-ceph/cookiecutter-context-dvr-ceph.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 173,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-07T11:29:56Z",
+      "side": 1,
+      "message": "-//- , see the comment below",
+      "range": {
+        "startLine": 173,
+        "startChar": 43,
+        "endLine": 173,
+        "endChar": 70
+      },
+      "revId": "b990cfaf4ae0b6dac2c6b490b158a006eea309d3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "43e45a03_c491bd39",
+        "filename": "tcp_tests/templates/cookied-cicd-pike-dvr-ceph/cookiecutter-context-dvr-ceph.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 261,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-07T11:29:56Z",
+      "side": 1,
+      "message": "These are wrong addresses. It should be control network, which is 10.167.4.x here :\nhttps://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/templates/shared-salt.yaml\n\nBecause we are using only MACRO_GENERATE_COOKIECUTTER_MODEL() at the model generation time, no other replaces are working.",
+      "range": {
+        "startLine": 255,
+        "startChar": 0,
+        "endLine": 261,
+        "endChar": 50
+      },
+      "revId": "b990cfaf4ae0b6dac2c6b490b158a006eea309d3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "39b0ea86_e90d6e7e",
+        "filename": "tcp_tests/templates/cookied-cicd-pike-dvr-ceph/salt.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 21,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-07T11:29:56Z",
+      "side": 1,
+      "message": "This step can be removed from here (and from other templates), the fix is landed into 2018.11.0 : https://gerrit.mcp.mirantis.com/#/c/29432/",
+      "range": {
+        "startLine": 12,
+        "startChar": 0,
+        "endLine": 21,
+        "endChar": 18
+      },
+      "revId": "b990cfaf4ae0b6dac2c6b490b158a006eea309d3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "17925b0a_7c3a7bc7",
         "filename": "tcp_tests/templates/cookied-cicd-pike-dvr-ceph/underlay--user-data-cfg01.yaml",
         "patchSetId": 9
