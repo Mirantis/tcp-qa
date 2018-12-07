@@ -63,88 +63,6 @@ class RuntestManager(object):
     def salt_api(self):
         return self.__salt_api
 
-    @property
-    def runtest_pillar(self):
-        public_net = self.__config.underlay.dhcp_ranges[
-            settings.EXTERNAL_ADDRESS_POOL_NAME]
-        public_gateway = public_net["gateway"].encode("ascii")
-        public_cidr = public_net["cidr"].encode("ascii")
-        public_allocation_start = public_net["start"].encode("ascii")
-        public_allocation_end = public_net["end"].encode("ascii")
-        tempest_test_target = self.target_name.encode("ascii") + "*"
-
-        pillar = {
-            'classes': ['service.runtest.tempest',
-                        'service.runtest.tempest.public_net',
-                        'service.runtest.tempest.services.manila.glance'],
-            'parameters': {
-                '_param': {
-                    'runtest_tempest_cfg_dir': TEMPEST_CFG_DIR,
-                    'runtest_tempest_cfg_name': 'tempest.conf',
-                    'runtest_tempest_public_net': 'public',
-                    'openstack_public_neutron_subnet_gateway': public_gateway,
-                    'openstack_public_neutron_subnet_cidr': public_cidr,
-                    'openstack_public_neutron_subnet_allocation_start':
-                        public_allocation_start,
-                    'openstack_public_neutron_subnet_allocation_end':
-                        public_allocation_end,
-                    'tempest_test_target': tempest_test_target,
-                    'glance_image_cirros_location':
-                        'http://cz8133.bud.mirantis.net:8099'
-                        '/cirros-0.3.5-x86_64-disk.img',
-                    'glance_image_fedora_location':
-                        'http://cz8133.bud.mirantis.net:8099'
-                        '/Fedora-Cloud-Base-27-1.6.x86_64.qcow2',
-                    'glance_image_manila_location':
-                        'http://cz8133.bud.mirantis.net:8099'
-                        '/manila-service-image-master.qcow2',
-                },
-                'neutron': {
-                    'client': {
-                        'enabled': True
-                    }
-                },
-                'runtest': {
-                    'enabled': True,
-                    'keystonerc_node': 'ctl01*',
-                    'tempest': {
-                        'enabled': True,
-                        'cfg_dir': '${_param:runtest_tempest_cfg_dir}',
-                        'cfg_name': '${_param:runtest_tempest_cfg_name}',
-                        'put_keystone_rc_enabled': True,
-                        'put_local_image_file_enabled': False,
-                        'DEFAULT': {
-                            'log_file': 'tempest.log'
-                        },
-                        'compute': {
-                            'min_compute_nodes': 2,
-                        },
-                        'convert_to_uuid': {
-                            'network': {
-                                'public_network_id':
-                                '${_param:runtest_tempest_public_net}'
-                            }
-                        },
-                        'heat_plugin': {
-                            'build_timeout': '600'
-                        },
-                        'share': {
-                            'capability_snapshot_support': True,
-                            'run_driver_assisted_migration_tests': False,
-                            'run_manage_unmanage_snapshot_tests': False,
-                            'run_manage_unmanage_tests': False,
-                            'run_migration_with_preserve_snapshots_tests':
-                                False,
-                            'run_quota_tests': True,
-                            'run_replication_tests': False,
-                            'run_snapshot_tests': True,
-                        }}}}}
-
-        if self.barbican:
-            pillar['classes'].append('service.runtest.tempest.barbican')
-
-        return pillar
-
     def fetch_arficats(self, username=None, file_format='xml'):
         with self.underlay.remote(node_name=self.target_name,
                                   username=None) as tgt:
@@ -158,25 +76,6 @@ class RuntestManager(object):
             tgt.download(
                 destination=report,  # noqa
                 target=os.getcwd())
-
-    def store_runtest_model(self, runtest_pillar=None):
-        with self.underlay.yaml_editor(
-                file_path="/srv/salt/reclass/classes/cluster/"
-                          "{cluster_name}/infra/"
-                          "{class_name}.yml".format(
-                              cluster_name=self.cluster_name,
-                              class_name=self.class_name),
-                node_name=self.master_name) as editor:
-            editor.content = runtest_pillar or self.runtest_pillar
-        with self.underlay.yaml_editor(
-                file_path="/srv/salt/reclass/nodes/_generated/"
-                          "cfg01.{domain_name}.yml".format(
-                              domain_name=self.domain_name),
-                node_name=self.master_name) as editor:
-            editor.content['classes'].append(
-                'cluster.{cluster_name}.infra.{class_name}'.format(
-                    cluster_name=self.cluster_name,
-                    class_name=self.class_name))
 
     def save_runtime_logs(self, logs=None, inspect=None):
         if logs:
@@ -197,13 +96,11 @@ class RuntestManager(object):
                                                indent=4, sort_keys=True)
                 f.write(container_inspect)
 
-    def prepare(self, store_run_test_model):
+    def prepare(self):
         barbican_pillar = "nova:controller:barbican:enabled"
         result = self.__salt_api.get_pillar(tgt=self.control_name,
                                             pillar=barbican_pillar)
         self.barbican = result[0].get(self.control_name, False)
-        if store_run_test_model:
-            self.store_runtest_model()
         cirros_pillar = ("salt-call --out=newline_values_only "
                          "pillar.get "
                          "glance:client:identity:"
@@ -220,12 +117,6 @@ class RuntestManager(object):
 
         commands = [
             {
-                'description': "Sync salt objects for runtest model",
-                'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_cmd + "'*' saltutil.refresh_pillar && " +
-                        salt_cmd + "'*' saltutil.sync_all")},
-            {
                 'description': ("Install docker-ce package and "
                                 "enable packets forwarding"),
                 'node_name': self.target_name,
@@ -238,32 +129,6 @@ class RuntestManager(object):
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " pip.install setuptools && " +
                         salt_call_cmd + " pip.install docker")},
-            {
-                'description': "Run salt.minion state for runtest formula",
-                'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls salt.minion && "
-                        " sleep 20")},
-            {
-                'description': "Enforce keystone state for neutronv2",
-                'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls keystone.client")},
-            {
-                'description': "Create networks for Tempest tests",
-                'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls neutron.client")},
-            {
-                'description': "Create flavors for Tempest tests",
-                'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls nova.client")},
-            {
-                'description': "Upload images for Tempest",
-                'node_name': self.master_name,
-                'cmd': ("set -ex;" +
-                        salt_call_cmd + " state.sls glance.client")},
             {
                 'description': "Generate config for Tempest",
                 'node_name': self.master_name,
@@ -383,13 +248,12 @@ class RuntestManager(object):
         return {'inspect': inspect,
                 'logs': logs}
 
-    def prepare_and_run_tempest(self, username='root',
-                                store_run_test_model=True):
+    def prepare_and_run_tempest(self, username='root'):
         """
         Run tempest tests
         """
         tempest_timeout = settings.TEMPEST_TIMEOUT
-        self.prepare(store_run_test_model=store_run_test_model)
+        self.prepare()
         test_res = self.run_tempest(tempest_timeout)
         self.fetch_arficats(username=username)
         self.save_runtime_logs(**test_res)
