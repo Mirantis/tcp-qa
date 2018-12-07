@@ -6,7 +6,7 @@
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-cicd-bm-os-contrail40-maas') %}
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-contrail.yaml' %}
-{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-physical-inventory.yaml'] %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-physical-inventory.yaml', 'salt-context-cookiecutter-contrail.yaml'] %}
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2422') %}
 {%- set TENANT_VLAN = os_env('TENANT_VLAN', '2423') %}
 
