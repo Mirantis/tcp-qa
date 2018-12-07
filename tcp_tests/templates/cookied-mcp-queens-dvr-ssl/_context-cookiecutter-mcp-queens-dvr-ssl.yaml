@@ -223,3 +223,8 @@ default_context:
   openstack_share_node01_deploy_address: 192.168.10.204
   openstack_share_hostname: share
   openstack_share_node01_hostname: share01
+  openstack_create_public_network: 'True'
+  openstack_public_neutron_subnet_gateway: 10.16.0.1
+  openstack_public_neutron_subnet_cidr: 10.16.0.0/24
+  openstack_public_neutron_subnet_allocation_start: 10.16.0.201
+  openstack_public_neutron_subnet_allocation_end: 10.16.0.245
