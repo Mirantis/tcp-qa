@@ -266,4 +266,8 @@ default_context:
   octavia_lb_mgmt_cidr: 192.168.1.0/24
   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
   octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
-
+  openstack_create_public_network: 'True'
+  openstack_public_neutron_subnet_gateway: 172.17.16.1
+  openstack_public_neutron_subnet_cidr: 172.17.16.0/24
+  openstack_public_neutron_subnet_allocation_start: 172.17.16.201
+  openstack_public_neutron_subnet_allocation_end: 172.17.16.245
