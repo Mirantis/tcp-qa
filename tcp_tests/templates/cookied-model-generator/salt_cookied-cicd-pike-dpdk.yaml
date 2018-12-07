@@ -6,7 +6,7 @@
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = 'cookiecutter-context-pike-ovs-dpdk.yaml' %}
-{%- set ENVIRONMENT_CONTEXT_NAMES = ['environment-context.yaml'] %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['environment-context.yaml', 'cookiecutter-context-pike-ovs-dpdk.yaml'] %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 

@@ -7,7 +7,7 @@
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-bm-mcp-dvr-vxlan') %}
 # Path to the context files used to render Cluster and Environment models
 {% set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs_dvr_vxlan.yaml' %}
-{% set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-lab03-environment.yaml'] %}
+{% set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-lab03-environment.yaml', 'salt-context-cookiecutter-openstack_ovs_dvr_vxlan.yaml'] %}
 {% set CONTROL_VLAN = os_env('CONTROL_VLAN', '2404') %}
 {% set TENANT_VLAN = os_env('TENANT_VLAN', '2406') %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'proposed') %}
