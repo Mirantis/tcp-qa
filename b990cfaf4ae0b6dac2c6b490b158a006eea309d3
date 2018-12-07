@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "0373df0e_5df40ff1",
+        "filename": "tcp_tests/tests/system/test_ovs_pike_ceph.py",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-07T11:15:57Z",
+      "side": 1,
+      "message": "*_deployed fixtures are to provide the environment in the specified state.\nIn this case, you will get \u0027salt_deployed\u0027 snapshot without platform.\n\nPlease either use salt_actions and underlay_actions, to not bound to any snapshot; OR better - use the existing tempest runner for cicd from the test_3rdparty_suites.py , with pytest mark \"run_tempest\" , which have no dependencies on snapshots.",
+      "range": {
+        "startLine": 30,
+        "startChar": 38,
+        "endLine": 30,
+        "endChar": 53
+      },
+      "revId": "b990cfaf4ae0b6dac2c6b490b158a006eea309d3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
