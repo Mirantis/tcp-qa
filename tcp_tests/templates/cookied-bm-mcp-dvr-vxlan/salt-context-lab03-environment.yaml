@@ -95,10 +95,3 @@ nodes:
           role: bond0_ab_dvr_vxlan_ctl_mesh_external
           external_address: 172.17.42.5
           external_network_netmask: 255.255.255.192
-
-environment_metadata:
-    public_gateway: 172.17.16.1
-    public_cidr: 172.17.16.0/24
-    public_allocation_start: 172.17.16.201
-    public_allocation_end: 172.17.16.245
-    tempest_test_target: gtw01*
