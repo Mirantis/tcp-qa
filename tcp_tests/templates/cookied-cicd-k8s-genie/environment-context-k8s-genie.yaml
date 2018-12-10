@@ -157,10 +157,3 @@ nodes:
           role: single_ctl_calico
         ens5:
           role: single_storage_dhcp
-
-environment_metadata:
-    public_gateway: 172.17.16.1
-    public_cidr: 172.17.16.0/24
-    public_allocation_start: 172.17.16.201
-    public_allocation_end: 172.17.16.245
-    tempest_test_target: gtw01*
