@@ -159,6 +159,10 @@ def swarm_bootstrap_salt_cluster_devops() {
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
+        def env_ipmi_user = env.IPMI_USER ?: ''
+        def env_ipmi_pass = env.IPMI_PASS ?: ''
+        def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
+        def env_lab_ctl_iface = env.LAB_CONTROL_IFACE ?: ''
         def parameters = [
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
@@ -175,10 +179,10 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
                 string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
-                string(name: 'IPMI_USER', value: env.IPMI_USER),
-                string(name: 'IPMI_PASS', value: env.IPMI_PASS),
-                string(name: 'LAB_MANAGEMENT_IFACE', value: "${LAB_MANAGEMENT_IFACE}"),
-                string(name: 'LAB_CONTROL_IFACE', value: "${LAB_CONTROL_IFACE}"),
+                string(name: 'IPMI_USER', value: env_ipmi_user),
+                string(name: 'IPMI_PASS', value: env_ipmi_pass),
+                string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
+                string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
