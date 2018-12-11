@@ -1,0 +1,92 @@
+parameters:
+  jenkins:
+    client:
+      job_template:
+        virtual-mcp:
+          name: virtual-mcp-{{name}}
+          jobs:
+            - name: "pike-ovs-l2gw-bgpvpn"
+              node: "cz8126"
+              cluster: "virtual-mcp-pike-ovs"
+              domain: "pike-ovs-l2gw-bgpvpn"
+              tempest_pattern: ""
+              test_group: "test_mcp_pike_ovs_l2gw_bgpvpn_install"
+              env_name: "swarm-pike-ovs-l2gw-bgpvpn"
+              lab: "virtual-mcp-pike-ovs-l2gw-bgpvpn"
+            - name: "Pike-dvr-Policy"
+              node: "cz8119"
+              cluster: ""
+              domain: ""
+              tempest_pattern: ""
+              test_group: ""
+              lab: ""
+            - name: "backup-cinder"
+              node: "cz8119"
+              cluster: ""
+              domain: ""
+              tempest_pattern: ""
+              test_group: ""
+              lab: ""
+          template:
+            concurrent: false
+            discard:
+             build:
+               keep_num: 30
+             artifact:
+               keep_num: 30
+            type: workflow-scm
+            scm:
+              type: git
+              url: "https://github.com/Mirantis/tcp-qa"
+              credentials: "gerrit"
+              branch: 'master'
+              github:
+                url: https://github.com/Mirantis/tcp-qa
+              script: jobs/pipelines/virtual-mcp.groovy
+            param:
+              NODE:
+                type: string
+                default: {{node}}
+              REPOSITORY_SUITE:
+                type: choice
+                choices:
+                  - proposed
+                  - testing
+                  - stable
+                  - nightly
+              RUN_TEMPEST:
+                type: boolean
+                default: true
+              SHUTDOWN_ENV_ON_TEARDOWN:
+                type: boolean
+                default: true
+              LAB_CONFIG_NAME:
+                type: string
+                default: {{lab}}
+              TCP_QA_REVIEW:
+                type: string
+                default: ''
+              CLUSTER_NAME:
+                type: string
+                default: {{cluster}}
+              PATTERN:
+                type: string
+                default: ''
+              TEMPEST_PATTERN:
+                type: string
+                default: ''
+              ROLES:
+                type: string
+                default: '["salt_master", "salt_minion", "k8s_controller", "vm"]'
+              MCP_IMAGE_PATH1604:
+                type: string
+                default: "/home/jenkins/images/ubuntu-16-04-x64-mcpproposed.qcow2"
+              PATTERN:
+                type: string
+                default: ''
+              TEST_GROUP:
+                type: string
+                default: {{test_group}}
+              TR_CREADS:
+                type: string
+                default: "testrail-tleontovhich"
