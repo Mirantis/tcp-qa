@@ -181,7 +181,8 @@ default_context:
   openstack_nova_compute_reserved_host_memory_mb: '900'
   openstack_ovs_dvr_enabled: 'True'
   openstack_ovs_encapsulation_type: vxlan
-  openstack_proxy_address: 10.167.4.80
+  openstack_proxy_address: ==IPV4_NET_EXTERNAL_PREFIX==.80
+  openstack_proxy_vip_interface: ens5
   openstack_proxy_hostname: prx
   openstack_proxy_node01_address: 10.167.4.81
   openstack_proxy_node01_hostname: prx01

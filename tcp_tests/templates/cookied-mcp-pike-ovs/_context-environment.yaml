@@ -65,6 +65,10 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl
+        ens5:
+          role: single_external
+          external_address: ==IPV4_NET_EXTERNAL_PREFIX==.121
+          external_network_netmask: 255.255.255.0
 
     mon01.mcp-pike-ovs.local:
       reclass_storage_name: stacklight_server_node01
