@@ -1,0 +1,211 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ebc644e5_67b3633f",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 113,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "What is that option for? Is it boolean flag, or it is a test run name?",
+      "range": {
+        "startLine": 113,
+        "startChar": 27,
+        "endLine": 113,
+        "endChar": 30
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5bd3d4c6_e417aa50",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 117,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "Please extend the help to show that this option takes effect only for mark_fails",
+      "range": {
+        "startLine": 117,
+        "startChar": 14,
+        "endLine": 117,
+        "endChar": 52
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "70de00dd_49e94839",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 121,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "the same",
+      "range": {
+        "startLine": 121,
+        "startChar": 14,
+        "endLine": 121,
+        "endChar": 61
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a6cffaa_a89ec001",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 206,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "Please do not hardcode result_type here.\n\nIt is better to split this code (starting from L197) into separated methods:\n\n- to not call \"t_client.results(run, result_type)\" twice in L515/L517, use a separated method that will get the \"results\" variable and re-use it later\n\n- use \"results\" variable to filter cases with empty or non-empty defects with specified resutl_type, for example a prototype:\n\ndef filter_results(results, result_type, is_defects\u003dFalse):\n\n   ...\n   return ret",
+      "range": {
+        "startLine": 199,
+        "startChar": 0,
+        "endLine": 206,
+        "endChar": 51
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "352ca6b9_9067441c",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 495,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "It\u0027s better to use the full variable name: \ntestrail_host \u003d kwargs.get(\u0027testrail_host\u0027)\n\nShortenings are not readable, especcially \"t_a_run\" below. Please keep the variable name as meaningful as it is possible.",
+      "range": {
+        "startLine": 495,
+        "startChar": 4,
+        "endLine": 495,
+        "endChar": 10
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d5f06099_c1fa05c0",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 507,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "the same",
+      "range": {
+        "startLine": 507,
+        "startChar": 4,
+        "endLine": 507,
+        "endChar": 13
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "dd858d5f_7d01935b",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 510,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "If t_a_run is set, what if search_coverage \u003d\u003d \"plan\" ?\n\nHow it will be processed in L514? \nMaybe, \"search_coverage\" option is not needed here at all, and we can just assume that \"test plan\" is selected if  t_a_run  is None ?",
+      "range": {
+        "startLine": 510,
+        "startChar": 7,
+        "endLine": 510,
+        "endChar": 26
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "24852c0b_61c2203b",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 516,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "Should \"Failed\" be included into \"marked_results\" ?",
+      "range": {
+        "startLine": 516,
+        "startChar": 51,
+        "endLine": 516,
+        "endChar": 52
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "66b83050_49cc16c7",
+        "filename": "tcp_tests/report.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 517,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-12T15:39:07Z",
+      "side": 1,
+      "message": "I think we should not hardcode this integers.\nResults status is a flexible field that is configured by our managers and can be occasionaly changed (I hope it will never happen).\n\nPlease add an additional method that gets the default statuses and find the ID of the status \"Failed\" instead.",
+      "range": {
+        "startLine": 517,
+        "startChar": 60,
+        "endLine": 517,
+        "endChar": 76
+      },
+      "revId": "30da22be7b233539c598888833e6526af840c96c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
