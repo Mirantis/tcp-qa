@@ -483,19 +483,23 @@ class UnderlaySSHManager(object):
                               timeout=600)
 
             # create target dir for archives
-            master.check_call("mkdir /root/dump/")
+            master.check_call("mkdir -p /root/dump/")
+
+            saltkeys_res = master.check_call("salt-key --list accepted |"
+                                             " fgrep -v 'Accepted Keys:'")
+            minions = saltkeys_res.stdout
 
             # get archived artifacts to the master node
-            for node in self.config_ssh:
-                LOG.info("Getting archived artifacts from the node {0}"
-                         .format(node['node_name']))
+            for minion in minions:
+                LOG.info("Getting archived artifacts from the minion {0}"
+                         .format(minion))
                 master.check_call("rsync -aruv {0}:/root/*.tar.gz "
-                                  "/root/dump/".format(node['node_name']),
+                                  "/root/dump/".format(minion.strip()),
                                   raise_on_err=False,
                                   timeout=120)
 
             destination_name = '/root/{0}_dump.tar.gz'.format(artifact_name)
-            # Archive the artifacts from all nodes
+            # Archive the artifacts from all minions
             master.check_call(
                 'cd /root/dump/;'
                 'tar --absolute-names --warning=no-file-changed -czf '
