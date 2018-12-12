@@ -62,7 +62,7 @@ timeout(time: install_timeout + 600, unit: 'SECONDS') {
 
             } catch (e) {
                 common.printMsg("Job is failed", "purple")
-                shared.download_logs("deploy_drivetrain")
+                shared.download_logs("deploy_drivetrain_${ENV_NAME}")
                 throw e
             } finally {
                 // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"

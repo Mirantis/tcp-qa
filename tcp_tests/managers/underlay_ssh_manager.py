@@ -483,23 +483,43 @@ class UnderlaySSHManager(object):
                               timeout=600)
 
             # create target dir for archives
-            master.check_call("mkdir /root/dump/")
+            master.check_call("mkdir -p /root/dump/")
+
+            saltkeys_res = master.check_call(
+                "salt-key --list all --out=yaml", verbose=True)
+
+            saltkeys_all = yaml.load(saltkeys_res.stdout_str)
+            minions = saltkeys_all['minions']
+
+            # add nodes registered self.config_ssh,
+            # to get logs from nodes without salt minions
+            for node in self.config_ssh:
+                # If there is no any minion which name starts
+                # with the same hostname as node['node_name']
+                if not any(minion.startswith(node['node_name'])
+                           for minion in minions):
+                    # Use IP address from node['host'] to access the node
+                    # because cfg01 node may not know it's hostname.
+                    # Note: SSH public key from system.openssh.server.team.lab
+                    #       should already be configured on that node
+                    #       in order to access the node from cfg01
+                    minions.append(str(node['host']))
 
             # get archived artifacts to the master node
-            for node in self.config_ssh:
-                LOG.info("Getting archived artifacts from the node {0}"
-                         .format(node['node_name']))
+            for minion in minions:
+                LOG.info("Getting archived artifacts from the minion {0}"
+                         .format(minion))
                 master.check_call("rsync -aruv {0}:/root/*.tar.gz "
-                                  "/root/dump/".format(node['node_name']),
+                                  "/root/dump/".format(minion.strip()),
                                   raise_on_err=False,
                                   timeout=120)
 
-            destination_name = '/root/{0}_dump.tar.gz'.format(artifact_name)
-            # Archive the artifacts from all nodes
+            destination_name = '/tmp/{0}_dump.tar.gz'.format(artifact_name)
+            # Archive the artifacts from all minions
             master.check_call(
                 'cd /root/dump/;'
                 'tar --absolute-names --warning=no-file-changed -czf '
-                ' {0} ./'.format(destination_name))
+                ' {0} ./'.format(destination_name), verbose=True)
 
             # Download the artifact to the host
             LOG.info("Downloading the artifact {0}".format(destination_name))

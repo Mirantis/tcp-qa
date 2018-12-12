@@ -108,7 +108,7 @@ node ("${PARENT_NODE_NAME}") {
             } catch (e) {
                   common.printMsg("Saltstack cluster deploy is failed", "purple")
                   if (fileExists(xml_report_name)) {
-                      shared.download_logs("deploy_salt")
+                      shared.download_logs("deploy_salt_${ENV_NAME}")
                       def String junit_report_xml = readFile(xml_report_name)
                       def String junit_report_xml_pretty = new XmlUtil().serialize(junit_report_xml)
                       throw new Exception(junit_report_xml_pretty)
