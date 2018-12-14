@@ -27,6 +27,14 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
+- description: Generate a public key for machines in MAAS
+  cmd: |
+    ssh-keygen -y -f ~root/.ssh/id_rsa > ~root/.ssh/id_rsa.pub
+    maas mirantis sshkeys create key="$(cat ~root/.ssh/id_rsa.pub)"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Run comissioning of BM nodes
   cmd: |
     salt-call maas.process_machines
