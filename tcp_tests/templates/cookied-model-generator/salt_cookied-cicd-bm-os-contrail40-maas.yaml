@@ -101,7 +101,7 @@
     set -e;
     set -x;
     . /root/venv-reclass-tools/bin/activate;
-    reclass-tools add-key 'classes' 'system.linux.system.repo.mcp.apt_mirantis.docker' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control_init.yml;
+    reclass-tools add-key 'classes' 'system.linux.system.repo.mcp.apt_mirantis.docker' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control_init.yml --merge;
     reclass-tools add-key parameters._param.apt_mk_version {{ SHARED.REPOSITORY_SUITE }} /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/control_init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
