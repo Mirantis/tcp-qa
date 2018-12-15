@@ -35,6 +35,51 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+#############################################################
+## Prevent registration salt-minions from previous deployment
+## to the newly bootstrapped salt-master
+
+- description: Power off all the machines registered to MAAS in the model
+  cmd: |
+    MACHINES=$(salt-call -l info maas.machines_status | grep system_id -A1|grep "              ")
+    for machine in ${MACHINES}; do
+      echo "Powering off ${machine} $(maas mirantis machine read ${machine} | grep hostname)";
+      maas mirantis machine power-off ${machine} > /dev/null;
+    done
+    sleep 30
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Wait for power status <off> for all MAAS machines
+  cmd: |
+    MACHINES=$(salt-call -l info maas.machines_status | grep system_id -A1|grep "              ")
+    STATES=""
+    for machine in $MACHINES; do
+      STATE=$(maas mirantis machine query-power-state ${machine}|grep state)
+      STATES="${STATES} ${STATE}"
+      echo "Power state of ${machine}: ${STATE}";
+    done
+    # Test that there is no machines with "on" status
+    echo $STATES | grep -qv "on"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 10, delay: 30}
+  skip_fail: false
+
+- description: Remove all the salt-minions and re-register the cfg01 minion
+  cmd: |
+    salt-key -y -D;
+    salt-call test.ping
+    sleep 5
+    # Check that the cfg01 is registered
+    salt-key | grep cfg01
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+## End workaround for unwanted salt-minions
+###########################################
+
 - description: Run comissioning of BM nodes
   cmd: |
     salt-call maas.process_machines
