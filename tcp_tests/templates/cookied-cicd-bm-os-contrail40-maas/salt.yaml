@@ -48,6 +48,17 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Remove all the salt-minions and re-register the cfg01 minion
+  cmd: |
+    salt-key -y -D;
+    salt-call test.ping
+    sleep 5
+    # Check that the cfg01 is registered
+    salt-key | grep cfg01
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: provision the automatically commissioned physical nodes through MAAS
   cmd: |
     salt-call maas.deploy_machines;
