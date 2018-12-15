@@ -6,6 +6,8 @@ nodes:
       - cicd_control_leader
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -15,6 +17,8 @@ nodes:
       - cicd_control_manager
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -24,8 +28,10 @@ nodes:
       - cicd_control_manager
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
-          role: single_ctl 
+          role: single_ctl
 
     ctl01.cookied-bm-mcp-ocata-contrail.local:
       reclass_storage_name: openstack_control_node01
@@ -33,6 +39,8 @@ nodes:
       - openstack_control_leader
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -42,6 +50,8 @@ nodes:
       - openstack_control
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -51,6 +61,8 @@ nodes:
       - openstack_control
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -60,6 +72,8 @@ nodes:
       - openstack_database_leader
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -69,6 +83,8 @@ nodes:
       - openstack_database
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -78,6 +94,8 @@ nodes:
       - openstack_database
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -87,6 +105,8 @@ nodes:
       - openstack_message_queue
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -96,6 +116,8 @@ nodes:
       - openstack_message_queue
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -105,6 +127,8 @@ nodes:
       - openstack_message_queue
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -114,6 +138,8 @@ nodes:
       - openstack_proxy
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -123,6 +149,8 @@ nodes:
       - openstack_proxy
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -132,6 +160,8 @@ nodes:
       - stacklightv2_server_leader
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -141,6 +171,8 @@ nodes:
       - stacklightv2_server
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -150,6 +182,8 @@ nodes:
       - stacklightv2_server
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -159,6 +193,8 @@ nodes:
       - opencontrail_analytics
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -168,6 +204,8 @@ nodes:
       - opencontrail_analytics
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -177,6 +215,8 @@ nodes:
       - opencontrail_analytics
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -186,6 +226,8 @@ nodes:
       - opencontrail_control
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -195,6 +237,8 @@ nodes:
       - opencontrail_control
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -204,6 +248,8 @@ nodes:
       - opencontrail_control
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -213,6 +259,8 @@ nodes:
       - stacklight_telemetry
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -222,6 +270,8 @@ nodes:
       - stacklight_telemetry
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -231,6 +281,8 @@ nodes:
       - stacklight_telemetry
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -240,6 +292,8 @@ nodes:
       - stacklight_log_leader_v2
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -249,6 +303,8 @@ nodes:
       - stacklight_log
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -258,6 +314,8 @@ nodes:
       - stacklight_log
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -267,6 +325,8 @@ nodes:
       - ceph_mon
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -276,6 +336,8 @@ nodes:
       - ceph_mon
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -285,6 +347,8 @@ nodes:
       - ceph_mon
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -294,6 +358,8 @@ nodes:
       - ceph_rgw
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -303,6 +369,8 @@ nodes:
       - ceph_rgw
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
@@ -312,6 +380,8 @@ nodes:
       - ceph_rgw
       - linux_system_codename_xenial
       interfaces:
+        ens2:
+          role: single_dhcp
         ens3:
           role: single_ctl
 
