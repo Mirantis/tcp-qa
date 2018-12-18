@@ -40,6 +40,9 @@ nosetests.xml
 .pydevproject
 .idea
 
+# Gradle
+.gradle
+
 # Local example
 example_local.py
 
