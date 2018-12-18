@@ -380,6 +380,11 @@
     set -e;
     set -x;
     sudo apt-get install python-setuptools -y
+
+    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    . /root/venv-reclass-tools/bin/activate;
+    pip install -U pip
+
     pip install cookiecutter
 
     chmod 0600 /tmp/{{ COOKIECUTTER_TEMPLATES_REPOSITORY_KEY_PATH | basename }}
