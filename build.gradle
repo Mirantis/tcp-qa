@@ -1,0 +1,79 @@
+apply plugin: 'groovy'
+
+ext {
+    jobDslVersion = '1.70'
+    jenkinsVersion = '2.150.1'
+}
+
+sourceSets {
+    jobs {
+        groovy {
+            srcDirs 'jobs'
+            compileClasspath += main.compileClasspath
+        }
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+repositories {
+    maven {
+        url 'https://repo.jenkins-ci.org/public/'
+    }
+    jcenter()
+}
+
+configurations {
+    testPlugins {}
+
+    testCompile {
+        exclude group: 'xalan'
+        exclude group: 'xerces'
+    }
+}
+
+dependencies {
+    compile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}"
+    compile "org.apache.ivy:ivy:2.4.0"
+
+    testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
+
+    // Jenkins Test Harness
+    testCompile "org.jenkins-ci.main:jenkins-test-harness:2.44"
+    testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}"
+    // testCompile "org.jenkins-ci.main:jenkins-war:${jenkinsVersion}:war-for-test@jar"
+
+    // Job DSL plugin including dependencies
+    testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}"
+    testCompile "org.jenkins-ci.plugins:job-dsl:${jobDslVersion}@jar"
+    testCompile "org.jenkins-ci.plugins:structs:1.6@jar"
+
+    // Jenkins plugins to install
+    testPlugins "org.jenkins-ci.plugins:ghprb:1.31.4"
+    testPlugins "org.jenkins-ci.plugins:heavy-job:1.1"
+    testPlugins "org.jenkins-ci.plugins:parameterized-trigger:2.26"
+    testPlugins "org.jenkins-ci.plugins.workflow:workflow-aggregator:2.6"
+    testPlugins "org.jenkins-ci.plugins:git:3.9.1"
+    testPlugins "org.jenkins-ci.plugins:git-client:2.7.5"
+    testPlugins "com.coravy.hudson.plugins.github:github:1.29.3"
+}
+
+task resolveTestPlugins(type: Copy) {
+    from configurations.testPlugins
+    into new File(sourceSets.test.output.resourcesDir, 'test-dependencies')
+    include "*.hpi"
+    include "*.jpi"
+
+    doLast {
+        def baseNames = source.collect { it.name[0..it.name.lastIndexOf('.')-1] }
+        new File(destinationDir, 'index').setText(baseNames.join("\n"), "UTF-8")
+    }
+}
+
+test {
+    dependsOn tasks.resolveTestPlugins
+    inputs.files sourceSets.jobs.groovy.srcDirs
+
+    // set build directory for Jenkins test harness
+    systemProperty 'buildDirectory', project.buildDir.absolutePath
+}
