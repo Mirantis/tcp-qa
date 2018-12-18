@@ -402,6 +402,10 @@
     popd
     {%- endif %}
 
+    if [ -f /root/cookiecutter-templates/requirements.txt ]; then
+        pip install -r /root/cookiecutter-templates/requirements.txt
+    fi
+
     mkdir -p /srv/salt/reclass/classes/cluster/
     mkdir -p /srv/salt/reclass/classes/system/
     mkdir -p /srv/salt/reclass/classes/service/
