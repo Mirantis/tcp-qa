@@ -380,6 +380,7 @@
   cmd: |
     set -e;
     set -x;
+    sudo apt-get install virtualenv -y
     sudo apt-get install python-setuptools -y
 
     [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
