@@ -720,6 +720,7 @@
     apt-get update
 
     # Install salt-minion
+    apt-get install eatmydata -y;
     eatmydata apt-get install -y salt-minion;
     # Install common packages
     eatmydata apt-get install -y python-pip git curl tmux byobu iputils-ping traceroute htop tree mc
