@@ -59,3 +59,26 @@
           iface lo inet loopback
           auto {interface_name}
           iface {interface_name} inet dhcp
+
+   - path: /usr/share/growlvm/image-layout.yml
+     content: |
+       root:
+         size: '50%VG'
+       home:
+         size: '100M'
+       var_log:
+         size: '15%VG'
+       var_log_audit:
+         size: '500M'
+       var_tmp:
+         size: '500M'
+       tmp:
+         size: '500M'
+     owner: root:root
+
+  growpart:
+    mode: auto
+    devices:
+      - '/'
+      - '/dev/vda3'
+    ignore_growroot_disabled: false
