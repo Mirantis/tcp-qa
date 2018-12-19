@@ -203,10 +203,8 @@ class RuntestManager(object):
                                             pillar=barbican_pillar)
         self.barbican = result[0].get(self.control_name, False)
         self.store_runtest_model()
-        cirros_pillar = ("salt-call --out=newline_values_only "
-                         "pillar.get "
-                         "glance:client:identity:"
-                         "admin_identity:image:cirros:location")
+        cirros_url = self.runtest_pillar['parameters']['_param'][
+            'glance_image_cirros_location']
         dpdk_pillar = "linux:network:dpdk:enabled"
         salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
@@ -270,11 +268,10 @@ class RuntestManager(object):
                         salt_call_cmd + " state.sls runtest")},
             {
                 'description': "Upload cirros image",
-                'node_name': self.master_name,
+                'node_name': self.target_name,
                 'cmd': ("set -ex;"
-                        "cirros_url=$({}) && {} '{}' cmd.run "
-                        "\"wget $cirros_url -O /tmp/TestCirros-0.3.5.img\""
-                        .format(cirros_pillar, salt_cmd, self.target_name))},
+                        "wget {} -O /tmp/TestCirros-0.3.5.img"
+                        .format(cirros_url))},
         ]
 
         if dpdk:
