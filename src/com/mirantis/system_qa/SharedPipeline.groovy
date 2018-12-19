@@ -159,6 +159,8 @@ def swarm_bootstrap_salt_cluster_devops() {
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
+        def mcp_salt_repo_url = env.MCP_SALT_REPO_URL ?: ''
+        def mcp_salt_repo_key = env.MCP_SALT_REPO_KEY ?: ''
         def env_ipmi_user = env.IPMI_USER ?: ''
         def env_ipmi_pass = env.IPMI_PASS ?: ''
         def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
@@ -179,6 +181,8 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
                 string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
+                string(name: 'MCP_SALT_REPO_URL', value: "${mcp_salt_repo_url}"),
+                string(name: 'MCP_SALT_REPO_KEY', value: "${mcp_salt_repo_key}"),
                 string(name: 'IPMI_USER', value: env_ipmi_user),
                 string(name: 'IPMI_PASS', value: env_ipmi_pass),
                 string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
@@ -328,6 +332,8 @@ def generate_configdrive_iso() {
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
+        def mcp_salt_repo_url = env.MCP_SALT_REPO_URL ?: ''
+        def mcp_salt_repo_key = env.MCP_SALT_REPO_KEY ?: ''
 
         def parameters = [
                 string(name: 'CLUSTER_NAME', value: "${LAB_CONFIG_NAME}"),
@@ -342,8 +348,8 @@ def generate_configdrive_iso() {
                 string(name: 'DEPLOY_NETWORK_GW', value: "${ADMIN_NETWORK_GW}"),
                 string(name: 'PIPELINE_REPO_URL', value: "https://github.com/Mirantis"),
                 booleanParam(name: 'PIPELINES_FROM_ISO', value: true),
-                string(name: 'MCP_SALT_REPO_URL', value: "http://apt.mirantis.com/xenial"),
-                string(name: 'MCP_SALT_REPO_KEY', value: "http://apt.mirantis.com/public.gpg"),
+                string(name: 'MCP_SALT_REPO_URL', value: "${mcp_salt_repo_url}"),
+                string(name: 'MCP_SALT_REPO_KEY', value: "${mcp_salt_repo_key}"),
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
