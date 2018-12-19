@@ -17,6 +17,13 @@
     root:r00tme
    expire: False
 
+  growpart:
+    mode: auto
+    devices:
+      - '/'
+      - '/dev/vda3'
+    ignore_growroot_disabled: false
+
   bootcmd:
    # Enable root access
    - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -25,6 +32,9 @@
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
   runcmd:
+   - if lvs vg0; then pvresize /dev/vda3; fi
+   - if lvs vg0; then /usr/bin/growlvm.py --image-layout-file /usr/share/growlvm/image-layout.yml; fi
+
    - export TERM=linux
    - export LANG=C
    # Configure dhclient
@@ -57,3 +67,18 @@
           auto ens3
           iface ens3 inet dhcp
 
+  - path: /usr/share/growlvm/image-layout.yml
+    content: |
+      root:
+        size: '50%VG'
+      home:
+        size: '100M'
+      var_log:
+        size: '15%VG'
+      var_log_audit:
+        size: '500M'
+      var_tmp:
+        size: '500M'
+      tmp:
+        size: '500M'
+    owner: root:root
