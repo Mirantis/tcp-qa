@@ -3,7 +3,6 @@
 
 {% import 'cookied-bm-contrail-maas/underlay--meta-data.yaml' as CLOUDINIT_META_DATA with context %}
 {% import 'cookied-bm-contrail-maas/underlay--user-data-cfg01.yaml' as CLOUDINIT_USER_DATA_CFG01 with context %}
-{% import 'cookied-bm-contrail-maas/underlay--user-data1604.yaml' as CLOUDINIT_USER_DATA_1604 with context %}
 
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-bm-contrail-maas') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
@@ -19,7 +18,6 @@ aliases:
  - &interface_model {{ os_env('INTERFACE_MODEL', 'virtio') }}
  - &cloudinit_meta_data {{ CLOUDINIT_META_DATA }}
  - &cloudinit_user_data_cfg01 {{ CLOUDINIT_USER_DATA_CFG01 }}
- - &cloudinit_user_data_1604 {{ CLOUDINIT_USER_DATA_1604 }}
 
 template:
   devops_settings:

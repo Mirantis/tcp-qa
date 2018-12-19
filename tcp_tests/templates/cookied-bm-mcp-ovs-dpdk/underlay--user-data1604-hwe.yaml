@@ -27,6 +27,9 @@
     all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
 
   runcmd:
+   - if lvs vg0; then pvresize /dev/vda3; fi
+   - if lvs vg0; then /usr/bin/growlvm.py --image-layout-file /usr/share/growlvm/image-layout.yml; fi
+
    - export TERM=linux
    - export LANG=C
    # Configure dhclient
@@ -98,3 +101,26 @@
           iface lo inet loopback
           auto {interface_name}
           iface {interface_name} inet dhcp
+
+   - path: /usr/share/growlvm/image-layout.yml
+     content: |
+       root:
+         size: '50%VG'
+       home:
+         size: '100M'
+       var_log:
+         size: '15%VG'
+       var_log_audit:
+         size: '500M'
+       var_tmp:
+         size: '500M'
+       tmp:
+         size: '500M'
+     owner: root:root
+
+  growpart:
+    mode: auto
+    devices:
+      - '/'
+      - '/dev/vda3'
+    ignore_growroot_disabled: false
