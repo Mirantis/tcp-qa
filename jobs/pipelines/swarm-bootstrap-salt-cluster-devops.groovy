@@ -19,6 +19,10 @@
  *   COOKIECUTTER_TEMPLATE_COMMIT  Commit/tag/branch for cookiecutter-templates repository. If empty, then takes ${MCP_VERSION} value
  *   SALT_MODELS_SYSTEM_COMMIT     Commit/tag/branch for reclass-system repository. If empty, then takes ${MCP_VERSION} value
  *   SHUTDOWN_ENV_ON_TEARDOWN      optional, shutdown fuel-devops environment at the end of the job
+ *   MCP_SALT_REPO_URL             Base URL for MCP repositories required to bootstrap cfg01 node. Leave blank to use default
+ *                                 (http://mirror.mirantis.com/ from mcp-common-scripts)
+ *   MCP_SALT_REPO_KEY             URL of the key file. Leave blank to use default
+ *                                 (${MCP_SALT_REPO_URL}/${MCP_VERSION}/salt-formulas/xenial/archive-salt-formulas.key from mcp-common-scripts)
  *
  */
 

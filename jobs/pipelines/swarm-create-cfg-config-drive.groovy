@@ -152,7 +152,10 @@ node (node_name) {
 
     stage("Set data"){
         for (i in entries(smc)) {
-            sh "sed -i \"s,export ${i[0]}=.*,export ${i[0]}=${i[1]},\" ${user_data_script_path}"
+            // Replace only if the variable is non-empty, leave default otherwise
+            if (i[1]) {
+                sh "sed -i \"s,export ${i[0]}=.*,export ${i[0]}=${i[1]},\" ${user_data_script_path}"
+            }
         }
     }
 
