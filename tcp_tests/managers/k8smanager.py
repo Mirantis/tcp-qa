@@ -41,6 +41,7 @@ class K8SManager(ExecuteCommandsMixin):
         self._api = None
         self.kubectl = K8SKubectlCli(self)
         self.virtlet = K8SVirtlet(self)
+        self.conformance_node = None
         super(K8SManager, self).__init__(config=config, underlay=underlay)
 
     def install(self, commands):
@@ -299,6 +300,51 @@ class K8SManager(ExecuteCommandsMixin):
             timeout_msg="Timeout for CNCF reached."
         )
 
+    def start_conformance_inside_pod(self, timeout=60 * 60):
+        """
+        Create conformance pod and wait for results
+        :param timeout:
+        :return:
+        """
+        conformance_cmd = "kubectl apply -f /srv/kubernetes/conformance.yml"
+        self.controller_check_call(conformance_cmd, timeout=900)
+
+        cnf_pod = self.api.pods.get('conformance', 'conformance')
+        cnf_pod.wait_running()
+
+        pod = cnf_pod.read()
+        target = "{}.".format(pod.spec.node_name)
+        self.conformance_node = self.__underlay.get_target_node_names(target)
+
+        def cnf_status():
+            pod = cnf_pod.read()
+            status = pod.status.phase
+            if status is not 'Running':
+                LOG.info("Conformance status: {}".format(status))
+            return status
+
+        LOG.info("Waiting for Conformance to complete")
+        helpers.wait(
+            lambda: cnf_status() == ('Succeeded' or 'Failed'),
+            interval=120, timeout=timeout,
+            timeout_msg="Timeout for Conformance reached."
+        )
+
+        pod = cnf_pod.read()
+        status = pod.status.phase
+        if status is 'Failed':
+            describe = "kubectl describe po conformance -n conformance"
+            LOG.info(self.controller_check_call(describe, timeout=30))
+            raise RuntimeError("Conformance failed")
+
+    def move_file_to_root_folder(self, node, filepath):
+        cmd = "mv {0} /root/".format(filepath)
+        if node:
+            self.__underlay.check_call(cmd=cmd, node_name=node,
+                                       raise_on_err=False)
+        else:
+            LOG.info("Node is not properly set")
+
     def extract_file_to_node(self, system='docker',
                              container='virtlet',
                              file_path='report.xml',
@@ -343,11 +389,16 @@ class K8SManager(ExecuteCommandsMixin):
         :param files:
         :return:
         """
+        if self.conformance_node:
+            node = self.conformance_node['node_name']
+        else:
+            node = self.controller_name
+        LOG.info("Trying to get logs at {}".format(node))
         master_host = self.__config.salt.salt_master_host
         with self.__underlay.remote(host=master_host) as r:
             for log_file in files:
                 cmd = "rsync -r \"{0}:/root/{1}\" /root/".format(
-                    self.controller_name, log_file)
+                    node, log_file)
                 r.check_call(cmd, raise_on_err=False)
                 LOG.info("Downloading the artifact {0}".format(log_file))
                 r.download(destination=log_file, target=os.getcwd())
@@ -362,7 +413,12 @@ class K8SManager(ExecuteCommandsMixin):
         :param output: Path to xml file where output will stored
         :return:
         """
-        with self.__underlay.remote(node_name=self.controller_name) as r:
+        if self.conformance_node:
+            node = self.conformance_node['node_name']
+        else:
+            node = self.controller_name
+        LOG.info("Trying to combine xunit at {}".format(node))
+        with self.__underlay.remote(node_name=node) as r:
             cmd = ("apt-get install python-setuptools -y; "
                    "pip install "
                    "https://github.com/mogaika/xunitmerge/archive/master.zip")
