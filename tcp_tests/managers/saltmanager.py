@@ -201,6 +201,10 @@ class SaltManager(ExecuteCommandsMixin):
                 'login': settings.SSH_NODE_CREDENTIALS['login'],
                 'password': settings.SSH_NODE_CREDENTIALS['password']
             }
+        LOG.info("POOL NAME: {},
+                  POOL NET: {},
+                  HOSTS: {}".format(pool_name,pool_net,hosts))
+        LOG.info("HOSTS.ITEMS data: {}".format(hosts.items()))
 
         try:
             ret = [
