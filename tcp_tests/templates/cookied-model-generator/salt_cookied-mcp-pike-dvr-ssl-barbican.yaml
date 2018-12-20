@@ -6,7 +6,7 @@
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME', LAB_CONFIG_NAME) %}
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = '_context-cookiecutter-mcp-pike-dvr-ssl-barbican.yaml' %}
-{%- set ENVIRONMENT_CONTEXT_NAMES = ['_context-environment.yaml'] %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['_context-environment.yaml', '_context-cookiecutter-mcp-pike-dvr-ssl-barbican.yaml'] %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
