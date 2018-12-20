@@ -17,11 +17,11 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        one1:
+        enp9s0f0:
           role: single_dhcp
-        one2:
+        enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
-        ten1:
+        ens11f0:
           role: single_mgm_manual
 
     kvm02.cookied-cicd-bm-os-contrail40-maas.local:
@@ -30,11 +30,11 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        one1:
+        enp9s0f0:
           role: single_dhcp
-        one2:
+        enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
-        ten1:
+        ens11f0:
           role: single_mgm_manual
 
     kvm03.cookied-cicd-bm-os-contrail40-maas.local:
@@ -43,11 +43,11 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        one1:
+        enp9s0f0:
           role: single_dhcp
-        one2:
+        enp9s0f1:
           role: bond0_ab_ovs_vlan_ctl
-        ten1:
+        ens11f0:
           role: single_mgm_manual
 
     osd<<count>>:
@@ -56,9 +56,9 @@ nodes:
       - ceph_osd
       - linux_system_codename_xenial
       interfaces:
-        one1:
+        enp2s0f0:
           role: single_dhcp
-        one2:
+        enp2s0f1:
           role: single_vlan_ctl
 #          role: bond0_ab_vlan_ceph_storage_backend
 
@@ -68,10 +68,9 @@ nodes:
       - openstack_compute
       - linux_system_codename_xenial
       interfaces:
-        #one1: unused
-        one2:
+        enp2s0f0:
           role: single_dhcp
-        ten1:
+        enp5s0f0:
           role: bond0_ab_contrail
-        ten2:
+        enp5s0f1:
           role: single_vlan_ctl
