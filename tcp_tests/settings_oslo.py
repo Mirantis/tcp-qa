@@ -325,11 +325,14 @@ k8s_deploy_opts = [
     ct.Cfg('kubernetes_admin_password', ct.String(),
            default='sbPfel23ZigJF3Bm'),
     ct.Cfg('kubernetes_docker_package', ct.String(), default=''),
-    ct.Cfg('kubernetes_hyperkube_image', ct.String(),
-           default='{}/mirantis/kubernetes/hyperkube-amd64:v1.11.3-2'.format(
-               settings.DOCKER_REGISTRY)),
+    ct.Cfg('kubernetes_hyperkube_source', ct.String(),
+           default='{}/mirantis/kubernetes/hyperkube-binaries/'
+                   'hyperkube_v1.12.3-2_1544133573591'.format(
+               settings.BINARY_REGISTRY)),
+    ct.Cfg('kubernetes_hyperkube_source_hash', ct.String(),
+           default='md5=fc23eaf3ba63d9ed9d141f465f584012'),
     ct.Cfg('kubernetes_pause_image', ct.String(),
-           default='{}/mirantis/kubernetes/pause-amd64:v1.11.3-2'.format(
+           default='{}/mirantis/kubernetes/pause-amd64:v1.12.3-2'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/node:v3.1.3'.format(
