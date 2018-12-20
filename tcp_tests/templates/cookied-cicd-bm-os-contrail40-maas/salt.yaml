@@ -19,14 +19,6 @@
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
 
-- description: Prepare maas
-  cmd: |
-    salt-call state.sls maas.cluster;
-    salt-call state.sls maas.region;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 2, delay: 5}
-  skip_fail: false
-
 - description: Generate a public key for machines in MAAS
   cmd: |
     ssh-keygen -y -f ~root/.ssh/id_rsa > ~root/.ssh/id_rsa.pub
