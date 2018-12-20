@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8d604594_a6843176",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-bm-mcp-ocata-contrail.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-20T13:41:13Z",
+      "side": 1,
+      "message": ".yaml",
+      "range": {
+        "startLine": 9,
+        "startChar": 103,
+        "endLine": 9,
+        "endChar": 142
+      },
+      "revId": "ca93c452ef8680893e3f0b4c02356b25614c2d39",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d4cac920_70feb946",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-cicd-k8s-calico-sl.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2018-12-20T13:41:13Z",
+      "side": 1,
+      "message": ".yaml",
+      "range": {
+        "startLine": 9,
+        "startChar": 73,
+        "endLine": 9,
+        "endChar": 100
+      },
+      "revId": "ca93c452ef8680893e3f0b4c02356b25614c2d39",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
