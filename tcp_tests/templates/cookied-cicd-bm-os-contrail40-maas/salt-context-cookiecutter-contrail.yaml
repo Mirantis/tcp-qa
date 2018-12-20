@@ -137,8 +137,7 @@ default_context:
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.117"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         kvm02: # #cz7342-kvm.host-telecom.com
@@ -154,8 +153,7 @@ default_context:
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.118"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         kvm03: # #cz7343-kvm.host-telecom.com
@@ -171,8 +169,7 @@ default_context:
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.119"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd001: # #cz7343-kvm.host-telecom.com
@@ -188,8 +185,7 @@ default_context:
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.243"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd002: # #cz7343-kvm.host-telecom.com
@@ -205,8 +201,7 @@ default_context:
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.244"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd003: # #cz7343-kvm.host-telecom.com
@@ -222,8 +217,7 @@ default_context:
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.245"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         cmp001: # #cz7345-kvm.host-telecom.com
@@ -239,8 +233,7 @@ default_context:
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.233"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         cmp002: # cz7346-kvm.host-telecom.com
@@ -256,8 +249,7 @@ default_context:
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.232"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
 
@@ -411,9 +403,9 @@ default_context:
   ceph_osd_rack01_backend_subnet: '10.167.8'
 
 # for 2018.11.0+
-#  ceph_osd_deploy_address_ranges: "172.16.49.70-172.16.49.72"
-#  ceph_osd_storage_address_ranges: "10.167.47.200-10.167.47.202"
-#  ceph_osd_backend_address_ranges: "10.167.49.200-10.167.49.202"
+  ceph_osd_deploy_address_ranges: "172.16.49.70-172.16.49.72"
+  ceph_osd_storage_address_ranges: "10.167.47.200-10.167.47.202"
+  ceph_osd_backend_address_ranges: "10.167.49.200-10.167.49.202"
 
   ceph_osd_data_disks: "/dev/sdb"
   ceph_osd_journal_or_block_db_disks: "/dev/sdb"
