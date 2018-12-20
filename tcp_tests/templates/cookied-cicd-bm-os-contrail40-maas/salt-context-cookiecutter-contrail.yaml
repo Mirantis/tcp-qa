@@ -129,7 +129,7 @@ default_context:
           # pxe_interface_mac:
           pxe_interface_mac: "0c:c4:7a:6c:83:56"
           interfaces:
-            one1:
+            enp9s0f0:
               mac: "0c:c4:7a:6c:83:56"
               mode: "static"
               ip: "172.16.49.67"
@@ -145,7 +145,7 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:6c:84:2c"
           interfaces:
-            one1:
+            enp9s0f0:
               mac: "0c:c4:7a:6c:84:2c"
               mode: "static"
               ip: "172.16.49.68"
@@ -161,7 +161,7 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:6c:83:54"
           interfaces:
-            one1:
+            enp9s0f0:
               mac: "0c:c4:7a:6c:83:54"
               mode: "static"
               ip: "172.16.49.69"
@@ -177,7 +177,7 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:55:6a:d4"
           interfaces:
-            one1:
+            enp2s0f0:
               mac: "0c:c4:7a:55:6a:d4"
               mode: "static"
               ip: "172.16.49.70"
@@ -193,7 +193,7 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:55:6a:57"
           interfaces:
-            one1:
+            enp2s0f0:
               mac: "0c:c4:7a:55:6a:57"
               mode: "static"
               ip: "172.16.49.71"
@@ -209,7 +209,7 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:55:6a:2a"
           interfaces:
-            one1:
+            enp2s0f0:
               mac: "0c:c4:7a:55:6a:2a"
               mode: "static"
               ip: "172.16.49.72"
@@ -225,7 +225,7 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:54:a2:5f"
           interfaces:
-            one2:
+            enp2s0f1:
               mac: "0c:c4:7a:54:a2:5f"
               mode: "static"
               ip: "172.16.49.73"
@@ -241,7 +241,7 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:54:a0:51"
           interfaces:
-            one2:
+            enp2s0f1:
               mac: "0c:c4:7a:54:a0:51"
               mode: "static"
               ip: "172.16.49.74"
