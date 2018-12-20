@@ -171,6 +171,30 @@ def k8s_logs(request, func_name, k8s_actions):
 
 
 @pytest.fixture(scope='function')
+def conformance_helper(request, func_name, k8s_actions):
+    prepare_log = request.keywords.get('prepare_log', None)
+    merge_xunit = request.keywords.get('merge_xunit', None)
+    download_target = request.keywords.get('download', None)
+
+    def test_fin():
+        if hasattr(request.node, 'rep_call') and \
+                (request.node.rep_call.passed or request.node.rep_call.failed)\
+                and download_target:
+            files = utils.extract_name_from_mark(download_target) \
+                    or "{}".format(func_name)
+            logfile = utils.extract_name_from_mark(prepare_log, 'filepath')
+            if prepare_log:
+                k8s_actions.move_file_to_root_folder(logfile)
+            if merge_xunit:
+                path = utils.extract_name_from_mark(merge_xunit, 'path')
+                output = utils.extract_name_from_mark(merge_xunit, 'output')
+                k8s_actions.combine_xunit(path, output)
+            k8s_actions.download_k8s_logs(files)
+
+    request.addfinalizer(test_fin)
+
+
+@pytest.fixture(scope='function')
 def k8s_cncf_log_helper(request, func_name, underlay, k8s_deployed):
     """Finalizer to prepare cncf tar.gz and save results from archive"""
 
