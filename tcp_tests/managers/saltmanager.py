@@ -182,6 +182,9 @@ class SaltManager(ExecuteCommandsMixin):
             self.__config.underlay.net_mgmt])
         hosts = self.local('*', 'grains.item', ['host', 'ipv4'])
 
+        LOG.info("POOL NAME: {}, POOL NET: {}, HOSTS: {}".format(pool_name,pool_net,hosts))
+        LOG.info("HOSTS.ITEMS data: {}".format(hosts.items()))
+
         if len(hosts.get('return', [])) == 0:
             raise LookupError("Hosts is empty or absent")
         hosts = hosts['return'][0]
