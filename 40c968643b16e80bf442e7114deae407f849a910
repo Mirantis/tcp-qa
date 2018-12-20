@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "c0de9ac8_03b6aacf",
+        "filename": "tcp_tests/templates/cookied-cicd-bm-os-contrail40-maas/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 136,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-12-20T11:39:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "aa57fea4_2f6f7203",
+      "range": {
+        "startLine": 136,
+        "startChar": 22,
+        "endLine": 136,
+        "endChar": 69
+      },
+      "revId": "40c968643b16e80bf442e7114deae407f849a910",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d22e1797_108cb96d",
         "filename": "tcp_tests/templates/cookied-cicd-bm-os-contrail40-maas/salt-context-cookiecutter-contrail.yaml",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2018-12-20T11:19:08Z",
       "side": 1,
       "message": "remove please",
+      "range": {
+        "startLine": 288,
+        "startChar": 0,
+        "endLine": 289,
+        "endChar": 51
+      },
+      "revId": "40c968643b16e80bf442e7114deae407f849a910",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a8a5163_295147f2",
+        "filename": "tcp_tests/templates/cookied-cicd-bm-os-contrail40-maas/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-12-20T11:39:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d22e1797_108cb96d",
       "range": {
         "startLine": 288,
         "startChar": 0,
@@ -71,6 +119,30 @@
     },
     {
       "key": {
+        "uuid": "aa6aeeb8_1bb4f51e",
+        "filename": "tcp_tests/templates/cookied-cicd-bm-os-contrail40-maas/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 403,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-12-20T11:39:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d5dafb3a_961822d8",
+      "range": {
+        "startLine": 400,
+        "startChar": 0,
+        "endLine": 403,
+        "endChar": 44
+      },
+      "revId": "40c968643b16e80bf442e7114deae407f849a910",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5cddec7d_90ecefbd",
         "filename": "tcp_tests/templates/cookied-cicd-bm-os-contrail40-maas/salt-context-environment.yaml",
         "patchSetId": 4
@@ -82,6 +154,30 @@
       "writtenOn": "2018-12-20T11:19:08Z",
       "side": 1,
       "message": "remove space please",
+      "range": {
+        "startLine": 28,
+        "startChar": 26,
+        "endLine": 28,
+        "endChar": 27
+      },
+      "revId": "40c968643b16e80bf442e7114deae407f849a910",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "706816e9_332d3cd7",
+        "filename": "tcp_tests/templates/cookied-cicd-bm-os-contrail40-maas/salt-context-environment.yaml",
+        "patchSetId": 4
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2018-12-20T11:39:58Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5cddec7d_90ecefbd",
       "range": {
         "startLine": 28,
         "startChar": 26,
