@@ -41,6 +41,7 @@ class K8SManager(ExecuteCommandsMixin):
         self._api = None
         self.kubectl = K8SKubectlCli(self)
         self.virtlet = K8SVirtlet(self)
+        self.conformance_node = None
         super(K8SManager, self).__init__(config=config, underlay=underlay)
 
     def install(self, commands):
@@ -298,6 +299,51 @@ class K8SManager(ExecuteCommandsMixin):
             interval=120, timeout=timeout,
             timeout_msg="Timeout for CNCF reached."
         )
+
+    def start_conformance_inside_pod(self, timeout=60 * 60):
+        """
+        Create conformance pod and wait for results
+        :param timeout:
+        :return:
+        """
+        conformance_cmd = "kubectl apply -f /srv/kubernetes/conformance.yml"
+        self.controller_check_call(conformance_cmd, timeout=900)
+
+        cnf_pod = self.api.pods.get('conformance', 'conformance')
+        cnf_pod.wait_running()
+
+        pod = cnf_pod.read()
+        target = "{}.".format(pod.spec.node_name)
+        self.conformance_node = self.__underlay.get_target_node_names(target)
+
+        def cnf_status():
+            pod = cnf_pod.read()
+            status = pod.status.phase
+            if status is not 'Running':
+                LOG.info("Conformance status: {}".format(status))
+            return status
+
+        LOG.info("Waiting for Conformance to complete")
+        helpers.wait(
+            lambda: cnf_status() == ('Succeeded' or 'Failed'),
+            interval=120, timeout=timeout,
+            timeout_msg="Timeout for Conformance reached."
+        )
+
+        pod = cnf_pod.read()
+        status = pod.status.phase
+        if status is 'Failed':
+            describe = "kubectl describe po conformance -n conformance"
+            LOG.info(self.controller_check_call(describe, timeout=30))
+            raise RuntimeError("Conformance failed")
+
+    def move_file_to_root_folder(self, node, filepath):
+        cmd = "mv {0} /root/".format(filepath)
+        if node:
+            self.__underlay.check_call(cmd=cmd, node_name=node,
+                                       raise_on_err=False)
+        else:
+            LOG.info("Node is not properly set")
 
     def extract_file_to_node(self, system='docker',
                              container='virtlet',
