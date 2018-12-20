@@ -288,6 +288,7 @@
     find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}/g' {} +
 
     find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/mcp_version:.*/mcp_version: {{ REPOSITORY_SUITE }}/g' {} +
 
     {%- if IS_CONTRAIL_LAB %}
     # vSRX IPs for tcp-qa images have 172.16.10.90 hardcoded
@@ -615,6 +616,7 @@
   cmd: |
     export REPLACE_DIRS="/srv/salt/reclass/classes/ /srv/salt/reclass/nodes/"
     find ${REPLACE_DIRS} -type f -exec sed -i 's/apt_mk_version:.*/apt_mk_version: {{ REPOSITORY_SUITE }}/g' {} +
+    find ${REPLACE_DIRS} -type f -exec sed -i 's/mcp_version:.*/mcp_version: {{ REPOSITORY_SUITE }}/g' {} +
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false

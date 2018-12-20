@@ -88,12 +88,16 @@ class TestVirtletActions(object):
         show_step(4)
         vm_pod.delete()
 
+    @pytest.mark.prepare_log(filepath='/tmp/virtlet-conformance/'
+                                      'virtlet_conformance.log')
+    @pytest.mark.merge_xunit(path='/tmp/virtlet-conformance',
+                             output='/root/report.xml')
+    @pytest.mark.download(name=['virtlet_conformance.log',
+                                'report.xml'])
     @pytest.mark.grab_versions
-    @pytest.mark.grab_k8s_results(name=['virtlet_conformance.log',
-                                        'report.xml'])
     @pytest.mark.fail_snapshot
     def test_virtlet_conformance(self, show_step, config, k8s_deployed,
-                                 k8s_logs):
+                                 conformance_helper):
         """Test run of virtlet conformance tests
 
         Scenario:
@@ -102,4 +106,4 @@ class TestVirtletActions(object):
         """
 
         show_step(1)
-        k8s_deployed.run_virtlet_conformance()
+        k8s_deployed.start_conformance_inside_pod(cnf_type='virtlet')

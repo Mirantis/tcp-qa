@@ -64,6 +64,9 @@ SALT_PASSWORD = os.environ.get('SALT_PASSWORD', 'hovno12345!')
 
 DOCKER_REGISTRY = os.environ.get('DOCKER_REGISTRY',
                                  'docker-prod-local.artifactory.mirantis.com')
+BINARY_REGISTRY = os.environ.get('BINARY_REGISTRY', 'https://'
+                                 'docker-prod-local.artifactory.mirantis.com/'
+                                 'artifactory/binary-prod-local')
 DOCKER_NAME = os.environ.get('DOCKER_NAME',
                              'mirantis/oscore/rally-tempest:latest')
 DOCKER_IMAGES_SL_TAG = os.environ.get('DOCKER_IMAGES_SL_TAG', 'latest')
