@@ -69,15 +69,15 @@ def load_params():
     return parser
 
 
-def get_deployment_result(opts):
+def get_deployment_result(host, username, password, job_name, build_number):
     """Get the pipeline job result from Jenkins
 
     Get all the stages resutls from the specified job,
     show error message if present.
     """
-    jenkins = client.JenkinsClient(host=opts.host,
-                                   username=opts.username,
-                                   password=opts.password)
+    jenkins = client.JenkinsClient(host=host,
+                                   username=username,
+                                   password=password)
 
     def get_stages(nodes, indent=0, show_status=True):
         res = []
@@ -90,15 +90,15 @@ def get_deployment_result(opts):
                 res.append(msg)
 
             if node['status'] != 'SUCCESS':
-                wf = jenkins.get_workflow(opts.job_name, opts.build_number,
+                wf = jenkins.get_workflow(job_name, build_number,
                                           int(node['id']))
                 if wf is not None:
                     if 'stageFlowNodes' in wf:
                         res += get_stages(wf['stageFlowNodes'], indent + 2,
                                           show_status=False)
                     elif '_links' in wf and 'log' in wf['_links']:
-                        log = jenkins.get_workflow(opts.job_name,
-                                                   opts.build_number,
+                        log = jenkins.get_workflow(job_name,
+                                                   build_number,
                                                    int(node['id']),
                                                    mode='log')
                         if "text" in log:
@@ -109,8 +109,8 @@ def get_deployment_result(opts):
         return res
 
     for _ in range(3):
-        wf = jenkins.get_workflow(opts.job_name, opts.build_number)
-        info = jenkins.build_info(opts.job_name, int(wf['id']))
+        wf = jenkins.get_workflow(job_name, build_number)
+        info = jenkins.build_info(job_name, int(wf['id']))
         if info.get('result'):
             break
         time.sleep(3)
@@ -120,7 +120,7 @@ def get_deployment_result(opts):
     stages = get_stages(wf['stages'], 0)
     if not stages:
         msg = wf['status'] + ":\n\n"
-        stages = [msg + jenkins.get_build_output(opts.job_name, int(wf['id']))]
+        stages = [msg + jenkins.get_build_output(job_name, int(wf['id']))]
     return (build_description, stages)
 
 
@@ -133,7 +133,12 @@ def main(args=None):
         parser.print_help()
         return 10
     else:
-        (build_description, stages) = get_deployment_result(opts)
+        (build_description, stages) = get_deployment_result(
+            opts.host,
+            opts.username,
+            opts.password,
+            opts.job_name,
+            opts.build_number)
         print(build_description)
         print('\n'.join(stages))
 
