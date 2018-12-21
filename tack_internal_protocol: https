@@ -1,0 +1,73 @@
+[1mdiff --git a/tcp_tests/templates/cookied-cicd-pike-dpdk/cookiecutter-context-pike-ovs-dpdk.yaml b/tcp_tests/templates/cookied-cicd-pike-dpdk/cookiecutter-context-pike-ovs-dpdk.yaml[m
+[1mindex 53c9687..150e001 100644[m
+[1m--- a/tcp_tests/templates/cookied-cicd-pike-dpdk/cookiecutter-context-pike-ovs-dpdk.yaml[m
+[1m+++ b/tcp_tests/templates/cookied-cicd-pike-dpdk/cookiecutter-context-pike-ovs-dpdk.yaml[m
+[36m@@ -204,3 +204,8 @@[m [mdefault_context:[m
+   tenant_vlan: '20'[m
+   upstream_proxy_enabled: 'False'[m
+   use_default_network_scheme: 'False'[m
+[32m+[m[32m  openstack_create_public_network: 'False'[m
+[32m+[m[32m  openstack_public_neutron_subnet_gateway: 172.17.16.1[m
+[32m+[m[32m  openstack_public_neutron_subnet_cidr: 172.17.16.0/24[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_start: 172.17.16.201[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_end: 172.17.16.245[m
+[1mdiff --git a/tcp_tests/templates/cookied-cicd-pike-dvr-ceph/cookiecutter-context-dvr-ceph.yaml b/tcp_tests/templates/cookied-cicd-pike-dvr-ceph/cookiecutter-context-dvr-ceph.yaml[m
+[1mindex b26a0dd..afceb17 100644[m
+[1m--- a/tcp_tests/templates/cookied-cicd-pike-dvr-ceph/cookiecutter-context-dvr-ceph.yaml[m
+[1m+++ b/tcp_tests/templates/cookied-cicd-pike-dvr-ceph/cookiecutter-context-dvr-ceph.yaml[m
+[36m@@ -294,4 +294,9 @@[m [mdefault_context:[m
+   openstack_mysql_x509_enabled: 'True'[m
+   rabbitmq_ssl_enabled: 'True'[m
+   openstack_rabbitmq_x509_enabled: 'True'[m
+[31m-  openstack_internal_protocol: 'https'[m
+\ No newline at end of file[m
+[32m+[m[32m  openstack_internal_protocol: 'https'[m
+[32m+[m[32m  openstack_create_public_network: 'False'[m
+[32m+[m[32m  openstack_public_neutron_subnet_gateway: 172.17.16.1[m
+[32m+[m[32m  openstack_public_neutron_subnet_cidr: 172.17.16.0/24[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_start: 172.17.16.201[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_end: 172.17.16.245[m
+\ No newline at end of file[m
+[1mdiff --git a/tcp_tests/templates/cookied-cicd-pike-dvr-sl/cookiecutter-context-pike-dvr-sl.yaml b/tcp_tests/templates/cookied-cicd-pike-dvr-sl/cookiecutter-context-pike-dvr-sl.yaml[m
+[1mindex b0c69e8..3f5da39 100644[m
+[1m--- a/tcp_tests/templates/cookied-cicd-pike-dvr-sl/cookiecutter-context-pike-dvr-sl.yaml[m
+[1m+++ b/tcp_tests/templates/cookied-cicd-pike-dvr-sl/cookiecutter-context-pike-dvr-sl.yaml[m
+[36m@@ -232,3 +232,8 @@[m [mdefault_context:[m
+   tenant_vlan: '20'[m
+   upstream_proxy_enabled: 'False'[m
+   use_default_network_scheme: 'False'[m
+[32m+[m[32m  openstack_create_public_network: 'False'[m
+[32m+[m[32m  openstack_public_neutron_subnet_gateway: 172.17.16.1[m
+[32m+[m[32m  openstack_public_neutron_subnet_cidr: 172.17.16.0/24[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_start: 172.17.16.201[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_end: 172.17.16.245[m
+\ No newline at end of file[m
+[1mdiff --git a/tcp_tests/templates/cookied-cicd-pike-ovs-sl/cookiecutter-context-pike-ovs-sl.yaml b/tcp_tests/templates/cookied-cicd-pike-ovs-sl/cookiecutter-context-pike-ovs-sl.yaml[m
+[1mindex a5a862b..1ced1bd 100644[m
+[1m--- a/tcp_tests/templates/cookied-cicd-pike-ovs-sl/cookiecutter-context-pike-ovs-sl.yaml[m
+[1m+++ b/tcp_tests/templates/cookied-cicd-pike-ovs-sl/cookiecutter-context-pike-ovs-sl.yaml[m
+[36m@@ -266,4 +266,8 @@[m [mdefault_context:[m
+   octavia_lb_mgmt_cidr: 192.168.1.0/24[m
+   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2[m
+   octavia_lb_mgmt_allocation_pool_end: 192.168.1.200[m
+[31m-[m
+[32m+[m[32m  openstack_create_public_network: 'False'[m
+[32m+[m[32m  openstack_public_neutron_subnet_gateway: 172.17.16.1[m
+[32m+[m[32m  openstack_public_neutron_subnet_cidr: 172.17.16.0/24[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_start: 172.17.16.201[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_end: 172.17.16.245[m
+[1mdiff --git a/tcp_tests/templates/cookied-cicd-queens-dvr-sl/cookiecutter-context-queens-dvr-sl.yaml b/tcp_tests/templates/cookied-cicd-queens-dvr-sl/cookiecutter-context-queens-dvr-sl.yaml[m
+[1mindex 0fa8367..8c02c8e 100644[m
+[1m--- a/tcp_tests/templates/cookied-cicd-queens-dvr-sl/cookiecutter-context-queens-dvr-sl.yaml[m
+[1m+++ b/tcp_tests/templates/cookied-cicd-queens-dvr-sl/cookiecutter-context-queens-dvr-sl.yaml[m
+[36m@@ -266,5 +266,9 @@[m [mdefault_context:[m
+   octavia_lb_mgmt_cidr: 192.168.1.0/24[m
+   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2[m
+   octavia_lb_mgmt_allocation_pool_end: 192.168.1.200[m
+[31m-[m
+[32m+[m[32m  openstack_create_public_network: 'False'[m
+[32m+[m[32m  openstack_public_neutron_subnet_gateway: 172.17.16.1[m
+[32m+[m[32m  openstack_public_neutron_subnet_cidr: 172.17.16.0/24[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_start: 172.17.16.201[m
+[32m+[m[32m  openstack_public_neutron_subnet_allocation_end: 172.17.16.245[m
+ [m
