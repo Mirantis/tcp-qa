@@ -167,6 +167,24 @@ class SaltManager(ExecuteCommandsMixin):
         result = self.local(tgt=tgt, fun='pillar.get', args=pillar)
         return result['return']
 
+    def get_single_pillar(self, tgt, pillar):
+        """Get a scalar value from a single node
+
+        :return: pillar value
+        """
+
+        result = self.get_pillar(tgt, pillar)
+        nodes = result[0].keys()
+
+        if not nodes:
+            raise LookupError("No minions selected "
+                              "for the target '{0}'".format(tgt))
+        if len(nodes) > 1:
+            raise LookupError("Too many minions selected "
+                              "for the target '{0}' , expected one: {1}"
+                              .format(tgt, nodes))
+        return result[0][nodes[0]]
+
     def get_grains(self, tgt, grains):
         result = self.local(tgt=tgt, fun='grains.get', args=grains)
         return result['return']
