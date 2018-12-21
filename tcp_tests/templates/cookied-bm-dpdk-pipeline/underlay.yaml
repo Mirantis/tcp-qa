@@ -118,7 +118,7 @@ template:
             role: salt_master
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 8192
+              memory: !os_env SLAVE_NODE_MEMORY, 12288
               boot:
                 - hd
               cloud_init_volume_name: iso
