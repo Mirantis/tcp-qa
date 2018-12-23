@@ -12,14 +12,14 @@
     -C 'I@docker:host' state.sls docker.host
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: true
 
 - description: Check docker
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
     -C 'I@docker:host' cmd.run 'docker ps'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: false
+  skip_fail: true
 
 - description:  Install keepalived on primary controller
   cmd: salt --hard-crash --state-output=mixed --state-verbose=False
