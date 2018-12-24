@@ -37,7 +37,7 @@ default_context:
   ceph_rgw_node03_hostname: rgw03
   ceph_version: luminous
   cicd_enabled: 'False'
-  cluster_domain: cookied-mcp-mitaka-dvr-ceph.local
+  cluster_domain: cookied-mcp-mitaka-dvr-ceph
   cluster_name: cookied-mcp-mitaka-dvr-ceph
   compute_bond_mode: active-backup
   compute_primary_first_nic: eth1
