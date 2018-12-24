@@ -31,6 +31,6 @@ def rally(request, config, underlay):
     with_rally = request.keywords.get('with_rally', None)
     rally_node = "gtw01."
     if with_rally:
-        rally_node = with_rally.kwargs.get("rally_node", "gtw01.")
+        rally_node = with_rally.kwargs.get("rally_node", "gtw01")
 
     return rallymanager.RallyManager(underlay, rally_node)
