@@ -16,7 +16,7 @@ aliases:
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', LAB_CONFIG_NAME + '_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ os_env('ENV_NAME', LAB_CONFIG_NAME + '_' + os_env('BUILD_NUMBER', '')) }}
 
     address_pools:
       admin-pool01:
