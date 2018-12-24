@@ -93,7 +93,7 @@ class TestFailoverOpenStackServices(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.with_rally(rally_node="gtw01.", prepare_openstack=True)
+    @pytest.mark.with_rally(rally_node="gtw01", prepare_openstack=True)
     def test_restart_keepalived(self, func_name, underlay, config,
                                 openstack_deployed,
                                 core_actions,
