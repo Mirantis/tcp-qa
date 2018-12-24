@@ -303,7 +303,7 @@ class RuntestManager(object):
         self.__salt_api.execute_commands(commands=commands,
                                          label="Prepare for Tempest")
 
-    def run_tempest(self, timeout=600):
+    def run_tempest(self, timeout=1800):
         tgt = self.target_name
         image_nameversion = "{}:{}".format(self.image_name, self.image_version)
 

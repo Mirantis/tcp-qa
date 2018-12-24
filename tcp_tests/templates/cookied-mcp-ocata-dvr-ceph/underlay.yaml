@@ -13,29 +13,29 @@ aliases:
 
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME', 'cookied-mcp-ocata-dvr-ceph') %}
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME) + '.local' %}
-{% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.') %}
-{% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.') %}
-{% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.') %}
-{% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.') %}
-{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp001.') %}
-{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp002.') %}
-{% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01.') %}
-{% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02.') %}
-{% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.') %}
-{% set HOSTNAME_CMN01 = os_env('HOSTNAME_CMN01', 'cmn01.') %}
-{% set HOSTNAME_CMN02 = os_env('HOSTNAME_CMN02', 'cmn02.') %}
-{% set HOSTNAME_CMN03 = os_env('HOSTNAME_CMN03', 'cmn03.') %}
-{% set HOSTNAME_RGW01 = os_env('HOSTNAME_CMN01', 'rgw01.') %}
-{% set HOSTNAME_RGW02 = os_env('HOSTNAME_CMN02', 'rgw02.') %}
-{% set HOSTNAME_RGW03 = os_env('HOSTNAME_CMN03', 'rgw03.') %}
-{% set HOSTNAME_OSD01 = os_env('HOSTNAME_OSD01', 'osd001.') %}
-{% set HOSTNAME_OSD02 = os_env('HOSTNAME_OSD02', 'osd002.') %}
-{% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.') %}
-{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.') %}
+{% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL01 = os_env('HOSTNAME_CTL01', 'ctl01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL02 = os_env('HOSTNAME_CTL02', 'ctl02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CTL03 = os_env('HOSTNAME_CTL03', 'ctl03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP01 = os_env('HOSTNAME_CMP01', 'cmp001.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp002.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMN01 = os_env('HOSTNAME_CMN01', 'cmn01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMN02 = os_env('HOSTNAME_CMN02', 'cmn02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_CMN03 = os_env('HOSTNAME_CMN03', 'cmn03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_RGW01 = os_env('HOSTNAME_CMN01', 'rgw01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_RGW02 = os_env('HOSTNAME_CMN02', 'rgw02.' + DOMAIN_NAME) %}
+{% set HOSTNAME_RGW03 = os_env('HOSTNAME_CMN03', 'rgw03.' + DOMAIN_NAME) %}
+{% set HOSTNAME_OSD01 = os_env('HOSTNAME_OSD01', 'osd001.' + DOMAIN_NAME) %}
+{% set HOSTNAME_OSD02 = os_env('HOSTNAME_OSD02', 'osd002.' + DOMAIN_NAME) %}
+{% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
+{% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
 
 template:
   devops_settings:
-    env_name: {{ os_env('ENV_NAME', 'cookied-mcp-ocata-dvr-ceph_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
+    env_name: {{ os_env('ENV_NAME', 'cookied-mcp-mitaka-dvr-ceph_' + REPOSITORY_SUITE + "_" + os_env('BUILD_NUMBER', '')) }}
 
     address_pools:
       private-pool01:
