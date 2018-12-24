@@ -40,8 +40,8 @@ default_context:
     9fG8FTiigLvMHka9ihYXtPbyGvusCaqyHp3D9VyOT+WsyM5eJe40lA==
     -----END RSA PRIVATE KEY-----
   cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/rgCcVsS645AcuWYySZpn4eH/yEn5V8Wkn8zNbXBbNjKGKzvcDyvE0VYn8jX8slKwUjypTQOnGMWNL0sxNMVeEM8+m7OBEvB9W6wSa5B1eM6JPfgAizTtDjDWeW8nb7+XvzyJ7UAR+d7B316tQc6zxa389Pc44z/SKRjsSJu9gXgvUtvEZEpidSRjsbd5qX1dxCmxPMAVFegrdZp9sIUEWx/MRY6HHVP62fVLBrE9gkO3U4EHWzvt6cW0HBuZt3SbUXW59JeZ1Z5rbEXf7lxpLq2mz+HCEKg5IlRBvv50riuLyiCrZgiF8Sm2sw/VH6dWoRjvo/fVpr9hLDjM69xD
-  cluster_domain: cookied-cicd-queens-dvr-sl.local
-  cluster_name: cookied-cicd-queens-dvr-sl
+  cluster_domain: cookied-cicd-queens-dvr-ceph-sl.local
+  cluster_name: cookied-cicd-queens-dvr-ceph-sl
   compute_bond_mode: active-backup
   compute_primary_first_nic: eth1
   compute_primary_second_nic: eth2
@@ -266,9 +266,16 @@ default_context:
   octavia_lb_mgmt_cidr: 192.168.1.0/24
   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
   octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
+  nova_vnc_tls_enabled: 'True'
+  galera_ssl_enabled: 'True'
+  openstack_mysql_x509_enabled: 'True'
+  rabbitmq_ssl_enabled: 'True'
+  openstack_rabbitmq_x509_enabled: 'True'
+  openstack_internal_protocol: 'https'
   openstack_create_public_network: 'False'
   openstack_public_neutron_subnet_gateway: 172.17.16.1
   openstack_public_neutron_subnet_cidr: 172.17.16.0/24
   openstack_public_neutron_subnet_allocation_start: 172.17.16.201
   openstack_public_neutron_subnet_allocation_end: 172.17.16.245
+
 
