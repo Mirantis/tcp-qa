@@ -34,7 +34,7 @@ class RallyManager(object):
     tempest_tag = "16.0.0"
     designate_tag = "0.2.0"
 
-    def __init__(self, underlay, rally_node='gtw01.'):
+    def __init__(self, underlay, rally_node='gtw01'):
         super(RallyManager, self).__init__()
         self._underlay = underlay
         self._node_name = self.get_target_node(target=rally_node)
@@ -64,7 +64,7 @@ class RallyManager(object):
         return docker_id
 
     # Move method to underlay
-    def get_target_node(self, target='gtw01.'):
+    def get_target_node(self, target='gtw01'):
         return [node_name for node_name
                 in self._underlay.node_names()
                 if node_name.startswith(target)][0]
