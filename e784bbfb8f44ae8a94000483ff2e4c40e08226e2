@@ -16,6 +16,24 @@
       "revId": "e784bbfb8f44ae8a94000483ff2e4c40e08226e2",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d855ded9_72d978b6",
+        "filename": "tcp_tests/templates/k8s-ha-calico/core.yaml",
+        "patchSetId": 12
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1008292
+      },
+      "writtenOn": "2018-12-24T13:39:18Z",
+      "side": 1,
+      "message": "No more docker target for k8s since containerd was pushed. But keeping this to have some compatibility with older mcps.",
+      "parentUuid": "6772908f_5e4383ca",
+      "revId": "e784bbfb8f44ae8a94000483ff2e4c40e08226e2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
