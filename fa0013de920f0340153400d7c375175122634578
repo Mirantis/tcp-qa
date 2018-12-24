@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b187f61e_3bab5316",
+        "filename": "tcp_tests/templates/k8s-ha-calico/core.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2018-12-24T14:13:44Z",
+      "side": 1,
+      "message": "Why we keep them if they are not relevant anymore?",
+      "range": {
+        "startLine": 16,
+        "startChar": 13,
+        "endLine": 16,
+        "endChar": 17
+      },
+      "revId": "fa0013de920f0340153400d7c375175122634578",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
