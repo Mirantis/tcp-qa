@@ -1,5 +1,5 @@
 {% from 'cookied-model-generator/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'cookied-model-generator/underlay.yaml' import DOMAIN_NAME with context %}
+{% set DOMAIN_NAME = os_env('DOMAIN_NAME', 'mitaka-dvr-ceph.local') %}
 
 {% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-virtual-lab') %}
 # Other salt model repository parameters see in shared-salt.yaml

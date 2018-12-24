@@ -546,7 +546,7 @@ class UnderlaySSHManager(object):
                         address_pool=address_pool, verbose=verbose,
                         timeout=timeout)
 
-    def get_target_node_names(self, target='gtw01.'):
+    def get_target_node_names(self, target='gtw01'):
         """Get all node names which names starts with <target>"""
         return [node_name for node_name
                 in self.node_names()
