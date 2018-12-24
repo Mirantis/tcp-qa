@@ -34,7 +34,7 @@ class RallyManager(object):
     tempest_tag = "16.0.0"
     designate_tag = "0.2.0"
 
-    def __init__(self, underlay, rally_node='gtw01.'):
+    def __init__(self, underlay, rally_node='gtw01'):
         super(RallyManager, self).__init__()
         self._underlay = underlay
         self._node_name = self.get_target_node(target=rally_node)
@@ -64,7 +64,7 @@ class RallyManager(object):
         return docker_id
 
     # Move method to underlay
-    def get_target_node(self, target='gtw01.'):
+    def get_target_node(self, target='gtw01'):
         return [node_name for node_name
                 in self._underlay.node_names()
                 if node_name.startswith(target)][0]
@@ -116,9 +116,9 @@ class RallyManager(object):
         cmd = "scp -3 ctl01:/root/keystonercv3 " \
               "{tgt}:/root/rally/keystonercv3".format(
                   tgt=tgt)
-        domain = '.'.join(self._node_name.split('.')[1:])
-        self._underlay.check_call(cmd, node_name="cfg01.{domain}".format(
-            domain=domain))
+        cfg_node_name = self._underlay.get_target_node_names(
+            target='cfg01')[0]
+        self._underlay.check_call(cmd, node_name=self.cfg_node_name)
         self._run()
 
         LOG.info("Create rally deployment")
@@ -127,7 +127,7 @@ class RallyManager(object):
                           "rally deployment create --fromenv --name=Abathur")
         self._docker_exec("rally deployment list")
 
-    def prepare_rally_task(self, target_node='ctl01.'):
+    def prepare_rally_task(self, target_node='ctl01'):
         """Prepare cirros image and private network for rally task"""
         ctl_node_name = self._underlay.get_target_node_names(
             target=target_node)[0]
