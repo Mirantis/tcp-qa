@@ -41,7 +41,7 @@ class RuntestManager(object):
     def __init__(self, config, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
                  tempest_pattern=settings.TEMPEST_PATTERN,
-                 run_cmd=None, target='gtw01'):
+                 run_cmd=None, target='gtw01.'):
         self.__config = config
         self.underlay = underlay
         self.__salt_api = salt_api
