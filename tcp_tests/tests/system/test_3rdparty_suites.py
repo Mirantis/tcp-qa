@@ -69,30 +69,28 @@ class Test3rdpartySuites(object):
                 'stacklight_report.xml')
 
     @pytest.mark.grab_versions
-    @pytest.mark.extract(container_system='docker', extract_from='conformance',
-                         files_to_extract=['report'])
-    @pytest.mark.merge_xunit(path='/root/report',
+    @pytest.mark.prepare_log(filepath='/tmp/conformance/conformance.log')
+    @pytest.mark.merge_xunit(path='/tmp/conformance',
                              output='/root/conformance_result.xml')
-    @pytest.mark.grab_k8s_results(name=['k8s_conformance.log',
-                                        'conformance_result.xml'])
+    @pytest.mark.download(name=['conformance.log',
+                                'conformance_result.xml'])
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.k8s_conformance
     def test_run_k8s_conformance(self, show_step, config, k8s_actions,
-                                 k8s_logs, _):
+                                 conformance_helper, _):
         """Test run of k8s conformance tests"""
-        k8s_actions.run_conformance()
+        k8s_actions.start_conformance_inside_pod()
 
     @pytest.mark.grab_versions
-    @pytest.mark.extract(container_system='docker',
-                         extract_from='mirantis/virtlet',
-                         files_to_extract=['conformance_virtlet_result.xml'])
-    @pytest.mark.grab_k8s_results(name=['virtlet_conformance.log',
-                                        'conformance_virtlet_result.xml'])
+    @pytest.mark.prepare_log(filepath='/tmp/virtlet-conformance/'
+                                      'virtlet_conformance.log')
+    @pytest.mark.merge_xunit(path='/tmp/virtlet-conformance',
+                             output='/root/conformance_virtlet_result.xml')
+    @pytest.mark.download(name=['virtlet_conformance.log',
+                                'conformance_virtlet_result.xml'])
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.k8s_conformance_virtlet
     def test_run_k8s_conformance_virtlet(self, show_step, config, k8s_actions,
-                                         k8s_logs, _):
+                                         conformance_helper, _):
         """Test run of k8s virtlet conformance tests"""
-        config.k8s.run_extended_virtlet_conformance = True
-        k8s_actions.run_virtlet_conformance(
-            report_name="conformance_virtlet_result.xml")
+        k8s_actions.start_conformance_inside_pod(cnf_type='virtlet')
