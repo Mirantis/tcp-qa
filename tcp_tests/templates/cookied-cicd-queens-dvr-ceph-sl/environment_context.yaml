@@ -5,45 +5,12 @@ nodes:
       - infra_config
       - linux_system_codename_xenial
       classes:
-      - environment.cookied-cicd-queens-dvr-sl.override_ntp_virtual
+      - environment.cookied-cicd-queens-dvr-ceph-sl.override_ntp_virtual
       interfaces:
         ens3:
           role: single_dhcp
         ens4:
           role: single_static_ctl
-
-    kvm01:
-      reclass_storage_name: infra_kvm_node01
-      roles:
-      - infra_kvm
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: single_ctl
-
-    kvm02:
-      reclass_storage_name: infra_kvm_node02
-      roles:
-      - infra_kvm
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: single_ctl
-
-    kvm03:
-      reclass_storage_name: infra_kvm_node03
-      roles:
-      - infra_kvm
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: single_ctl
 
     cid01:
       reclass_storage_name: cicd_control_node01
@@ -81,6 +48,7 @@ nodes:
     ctl01:
       reclass_storage_name: openstack_control_node01
       roles:
+      - infra_kvm
       - openstack_control_leader
       - openstack_database_leader
       - openstack_message_queue
@@ -95,6 +63,7 @@ nodes:
     ctl02:
       reclass_storage_name: openstack_control_node02
       roles:
+      - infra_kvm
       - openstack_control
       - openstack_database
       - openstack_message_queue
@@ -109,6 +78,7 @@ nodes:
     ctl03:
       reclass_storage_name: openstack_control_node03
       roles:
+      - infra_kvm
       - openstack_control
       - openstack_database
       - openstack_message_queue
@@ -266,3 +236,80 @@ nodes:
           role: bond0_ab_ovs_vxlan_mesh
         ens6:
           role: bond1_ab_ovs_floating
+
+    osd<<count>>:
+      reclass_storage_name: ceph_osd_rack01
+      roles:
+      - ceph_osd
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    cmn01:
+      reclass_storage_name: ceph_mon_node01
+      roles:
+      - ceph_mon
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    cmn02:
+      reclass_storage_name: ceph_mon_node02
+      roles:
+      - ceph_mon
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    cmn03:
+      reclass_storage_name: ceph_mon_node03
+      roles:
+      - ceph_mon
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    rgw01:
+      reclass_storage_name: ceph_rgw_node01
+      roles:
+      - ceph_rgw
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    rgw02:
+      reclass_storage_name: ceph_rgw_node02
+      roles:
+      - ceph_rgw
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
+
+    rgw03:
+      reclass_storage_name: ceph_rgw_node03
+      roles:
+      - ceph_rgw
+      - linux_system_codename_xenial
+      interfaces:
+        ens3:
+          role: single_dhcp
+        ens4:
+          role: single_ctl
