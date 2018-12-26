@@ -159,7 +159,6 @@ default_context:
   mcp_common_scripts_branch: 'proposed'
   mcp_version: proposed
   no_platform: 'False'
-  nova_vnc_tls_enabled: 'True'
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
   openldap_domain: ${_param:cluster_name}.local
@@ -295,7 +294,7 @@ default_context:
   rabbitmq_ssl_enabled: 'True'
   openstack_rabbitmq_x509_enabled: 'True'
   openstack_internal_protocol: 'https'
-  openstack_create_public_network: 'False'
+  openstack_create_public_network: 'True'
   openstack_public_neutron_subnet_gateway: 172.17.16.1
   openstack_public_neutron_subnet_cidr: 172.17.16.0/24
   openstack_public_neutron_subnet_allocation_start: 172.17.16.201

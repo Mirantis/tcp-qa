@@ -515,7 +515,7 @@ default_context:
   openstack_barbican_node02_hostname: kmn02
   openstack_barbican_node03_address: 10.167.11.47
   openstack_barbican_node03_hostname: kmn03
-  openstack_create_public_network: 'False'
+  openstack_create_public_network: 'True'
   openstack_public_neutron_subnet_gateway: 172.17.42.1
   openstack_public_neutron_subnet_cidr: 172.17.42.0/26
   openstack_public_neutron_subnet_allocation_start: 172.17.42.15
