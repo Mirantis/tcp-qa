@@ -97,10 +97,10 @@ def load_params():
     return parser
 
 
-def print_build_header(build, job_params, build_timeout):
+def print_build_header(build, job_params, opts):
     print('\n#############################################################')
     print('##### Building job [{0}] #{1} (timeout={2}) with the following '
-          'parameters:'.format(build[0], build[1], build_timeout))
+          'parameters:'.format(build[0], build[1], opts.build_timeout))
     print('##### ' + '\n##### '.join(
         [str(key) + ": " + str(val) for key, val in job_params.iteritems()]
     ))
@@ -114,44 +114,41 @@ def print_build_footer(build, result, url):
     print('#############################################################\n')
 
 
-def run_job(host, username, password,
-            job_name, job_parameters=None, job_output_prefix='',
-            start_timeout=1800, build_timeout=3600 * 4, verbose=False):
+def run_job(opts):
 
     jenkins = JenkinsClient(
-        host=host,
-        username=username,
-        password=password)
+        host=opts.host,
+        username=opts.username,
+        password=opts.password)
 
-    job_params = jenkins.make_defults_params(job_name)
-    if job_parameters is not None:  # job_parameters = {}
-        job_params.update(job_parameters)
+    job_params = jenkins.make_defults_params(opts.job_name)
+    job_params.update(opts.job_parameters)
 
-    build = jenkins.run_build(job_name,
+    build = jenkins.run_build(opts.job_name,
                               job_params,
-                              verbose=verbose,
-                              timeout=start_timeout)
-    if verbose:
-        print_build_header(build, job_params, build_timeout)
+                              verbose=opts.verbose,
+                              timeout=opts.start_timeout)
+    if opts.verbose:
+        print_build_header(build, job_params, opts)
 
     try:
         jenkins.wait_end_of_build(
             name=build[0],
             build_id=build[1],
-            timeout=build_timeout,
+            timeout=opts.build_timeout,
             interval=1,
-            verbose=verbose,
-            job_output_prefix=job_output_prefix)
+            verbose=opts.verbose,
+            job_output_prefix=opts.job_output_prefix)
     except Exception as e:
         print(str(e))
         raise
 
     result = jenkins.build_info(name=build[0],
                                 build_id=build[1])['result']
-    if verbose:
-        print_build_footer(build, result, host)
+    if opts.verbose:
+        print_build_footer(build, result, opts.host)
 
-    return result
+    return EXIT_CODES.get(result, 2)
 
 
 def main(args=None):
@@ -163,8 +160,8 @@ def main(args=None):
         parser.print_help()
         return 10
     else:
-        result = run_job(opts)
-        return EXIT_CODES.get(result, 2)
+        exit_code = run_job(opts)
+        return exit_code
 
 
 if __name__ == "__main__":
