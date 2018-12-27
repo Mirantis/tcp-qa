@@ -17,6 +17,7 @@
  *   MCP_IMAGE_PATH1604            Not used (backward compatibility, for manual deployment steps only)
  *   IMAGE_PATH_CFG01_DAY01        Not used (backward compatibility, for manual deployment steps only)
  *   TEMPEST_IMAGE_VERSION         Tempest image version: pike by default, can be queens.
+ *   TEMPEST_TARGET                Node where tempest will be run
  */
 
 @Library('tcp-qa')_
@@ -56,6 +57,7 @@ node ("${PARENT_NODE_NAME}") {
                 if (steps.contains('openstack')) {
                     sources += """
                     export TEMPEST_IMAGE_VERSION=${TEMPEST_IMAGE_VERSION}
+                    export TEMPEST_TARGET=${TEMPEST_TARGET}
                     # TODO: . ./tcp_tests/utils/env_keystonercv3\n"""
                 }
                 def installed = steps.collect {"""\
