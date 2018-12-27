@@ -67,10 +67,10 @@ default_context:
     l8kv0xXAElriC1RE1CNtvoOn/uxyRs+2OnNgBVxtAGqUWVdpm6CD
     -----END RSA PRIVATE KEY-----
   cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4ELbbhdBkXLOoLnoTJLvKv+uWlFFiyva+OLvt9qhZAWaBhtmh7Kqqqbx5I3QJzTACfFaxDsfdk325OfJZWuyiCzW/Hzn3uKitkBPgy7okNuRaVmEhQej0/2K1Yl1RanGMNq+oi+Nmj4OY47WZ+/0rVqw/wI5qdASyAdLK5/5cowGDSSiQRqaYBS1L0dHEIAnjtCAs9IIWKPmKH8xFZjcdYVQUQXeBF1Sh1aZ4k2Zb7skftPbAh3WSfyhHJrt5p0rF3rARoIabkgtfDBUWYWQ4aUR4LzAeduRq138DncPHNR84cGLbsZp/zcM/EqoNZbRoCHtvj0ScWF2S4XdnJdtj
-  cluster_domain: cookied-bm-4.0-contrail.local
-  cluster_name: cookied-bm-4.0-contrail
-  opencontrail_version: 4.0
-  linux_repo_contrail_component: oc40
+  cluster_domain: cookied-cicd-bm-ocata-contrail-maas.local
+  cluster_name: cookied-cicd-bm-ocata-contrail-maas
+  opencontrail_version: 4.1
+  linux_repo_contrail_component: oc41
   compute_bond_mode: active-backup
   compute_padding_with_zeros: 'True'
   compute_primary_first_nic: eth1
@@ -328,7 +328,7 @@ default_context:
   openstack_proxy_node02_address: 10.167.8.82
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: 10.167.8.19
-  openstack_version: pike
+  openstack_version: ocata
   oss_enabled: 'False'
   oss_node03_address: ${_param:stacklight_monitor_node03_address}
   oss_webhook_app_id: '24'
@@ -377,7 +377,7 @@ default_context:
   tenant_network_subnet: 192.168.0.0/24
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
-  openldap_domain: cookied-bm-4.0-contrail.local
+  openldap_domain: cookied-cicd-bm-ocata-contrail-maas.local
   openldap_enabled: 'True'
   openldap_organisation: ${_param:cluster_name}
   ceph_enabled: 'True'
@@ -396,7 +396,6 @@ default_context:
   ceph_cluster_network: "10.167.8.0/24"
 
 # for 2018.11.0+
-  ceph_osd_single_address_ranges: "10.167.8.200-10.167.8.202"
   ceph_osd_deploy_address_ranges: "172.16.49.70-172.16.49.72"
   ceph_osd_storage_address_ranges: "10.167.8.200-10.167.8.202"
   ceph_osd_backend_address_ranges: "10.167.10.200-10.167.10.202"
