@@ -122,7 +122,7 @@ class TestMCPK8sActions(object):
         assert sample.is_service_available()
 
         show_step(6)
-        k8s_deployed.run_conformance(log_out="k8s_conformance.log")
+        k8s_deployed.start_conformance_inside_pod()
 
         show_step(7)
         chain_versions = config.k8s.k8s_update_chain.split(" ")
@@ -135,7 +135,7 @@ class TestMCPK8sActions(object):
 
             LOG.info("Running conformance on {} version".format(version))
             log_name = "k8s_conformance_{}.log".format(version)
-            k8s_deployed.run_conformance(log_out=log_name, raise_on_err=False)
+            k8s_deployed.start_conformance_inside_pod()
 
         assert sample.is_service_available()
 
@@ -186,7 +186,7 @@ class TestMCPK8sActions(object):
             assert sample.is_service_available(external=True)
 
         show_step(6)
-        k8s_deployed.run_conformance()
+        k8s_deployed.start_conformance_inside_pod()
 
         show_step(7)
         for sample in samples:
@@ -305,7 +305,7 @@ class TestMCPK8sActions(object):
         check_pods_availability()
 
         show_step(12)
-        k8s_deployed.run_conformance()
+        k8s_deployed.start_conformance_inside_pod()
 
         show_step(13)
         check_pods_availability()
