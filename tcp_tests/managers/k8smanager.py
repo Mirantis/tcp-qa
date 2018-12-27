@@ -300,6 +300,15 @@ class K8SManager(ExecuteCommandsMixin):
             timeout_msg="Timeout for CNCF reached."
         )
 
+    def determine_conformance_node(self, target):
+        masters_fqdn = self._salt.get_pillar(
+            tgt='I@kubernetes:master', pillar='linux:network:fqdn')
+        node_names = [v for pillar in masters_fqdn for
+                      k, v in pillar.items()]
+        return [node_name for node_name
+                in node_names
+                if node_name.startswith(target)][0]
+
     def start_conformance_inside_pod(self, cnf_type='k8s', timeout=60 * 60):
         """
         Create conformance pod and wait for results
@@ -323,8 +332,8 @@ class K8SManager(ExecuteCommandsMixin):
 
         pod = cnf_pod.read()
         target = "{}.".format(pod.spec.node_name)
-        self.conformance_node = self.__underlay.get_target_node_names(
-            target)[0]
+
+        self.conformance_node = self.determine_conformance_node(target)
 
         def cnf_status():
             pod = cnf_pod.read()
