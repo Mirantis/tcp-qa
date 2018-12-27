@@ -230,6 +230,7 @@ def swarm_run_pytest(String passed_steps) {
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def tempest_image_version = env.TEMPEST_IMAGE_VERSION ?: 'pike'
+        def tempest_target=env.TEMPEST_TARGET ?: 'gtw01'
         def parameters = [
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
@@ -243,6 +244,7 @@ def swarm_run_pytest(String passed_steps) {
                 string(name: 'MCP_IMAGE_PATH1604', value: "${MCP_IMAGE_PATH1604}"),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
                 string(name: 'TEMPEST_IMAGE_VERSION', value: "${tempest_image_version}"),
+                string(name: 'TEMPEST_TARGET', value: "${tempest_target}"),
 
             ]
         common.printMsg("Start building job 'swarm-run-pytest' with parameters:", "purple")
@@ -258,6 +260,7 @@ def swarm_testrail_report(String passed_steps) {
         def tempest_test_suite_name = env.TEMPEST_TEST_SUITE_NAME
         def parameters = [
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
+                string(name: 'LAB_NAME', value: "${LAB_NAME}"),
                 string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
@@ -525,7 +528,7 @@ def create_xml_report(String filename, String classname, String name, String sta
 
 def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
   def venvPath = '/home/jenkins/venv_testrail_reporter'
-  def testPlanDesc = env.ENV_NAME
+  def testPlanDesc = env.LAB_NAME
   def testrailURL = "https://mirantis.testrail.com"
   def testrailProject = "Mirantis Cloud Platform"
   def testPlanName = "[MCP-Q2]System-${MCP_VERSION}-${new Date().format('yyyy-MM-dd')}"

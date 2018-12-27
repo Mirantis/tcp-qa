@@ -5,6 +5,7 @@
  * Expected parameters:
 
  *   ENV_NAME                      Fuel-devops environment name
+ *   LAB_NAME                      MCP cluster name
  *   MCP_VERSION                   MCP version, like 2018.4 or proposed
  *   PASSED_STEPS                  Steps passed to install components using Jenkins on CICD cluster: "salt,core,cicd,openstack:3200,stacklight:2400",
                                    where 3200 and 2400 might be timeouts (not used in the testing pipeline)
