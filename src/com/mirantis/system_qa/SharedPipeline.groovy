@@ -230,6 +230,7 @@ def swarm_run_pytest(String passed_steps) {
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def tempest_image_version = env.TEMPEST_IMAGE_VERSION ?: 'pike'
+        def tempest_target=env.TEMPEST_TARGET ?: 'gtw01'
         def parameters = [
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
@@ -243,6 +244,7 @@ def swarm_run_pytest(String passed_steps) {
                 string(name: 'MCP_IMAGE_PATH1604', value: "${MCP_IMAGE_PATH1604}"),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
                 string(name: 'TEMPEST_IMAGE_VERSION', value: "${tempest_image_version}"),
+                string(name: 'TEMPEST_TARGET', value: "${tempest_target}"),
 
             ]
         common.printMsg("Start building job 'swarm-run-pytest' with parameters:", "purple")
