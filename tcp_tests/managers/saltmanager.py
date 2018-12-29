@@ -248,6 +248,10 @@ class SaltManager(ExecuteCommandsMixin):
         result = self.local(tgt=tgt, fun='service.stop', args=service)
         return result['return']
 
+    def cmd_run(self, tgt, cmd):
+        result = self.local(tgt=tgt, fun='cmd.run', args=cmd)
+        return result['return']
+
     @utils.retry(3, exception=libpepper.PepperException)
     def sync_time(self, tgt='*'):
         LOG.info("NTP time sync on the salt minions '{0}'".format(tgt))

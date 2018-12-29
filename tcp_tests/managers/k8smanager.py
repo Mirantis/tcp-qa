@@ -356,11 +356,11 @@ class K8SManager(ExecuteCommandsMixin):
             raise RuntimeError("Conformance failed")
 
     def move_file_to_root_folder(self, filepath):
-        cmd = "mv {0} /root/".format(filepath)
+        # Using || true to avoid salt fails if no file found
+        cmd = "mv {0} /root/ || true".format(filepath)
         if self.conformance_node:
-            self.__underlay.check_call(
-                cmd=cmd, node_name=self.conformance_node,
-                raise_on_err=False)
+            LOG.info("Managing results on {}".format(self.conformance_node))
+            self._salt.cmd_run(tgt=self.conformance_node, cmd=cmd)
         else:
             LOG.info("Node is not properly set")
 
@@ -437,18 +437,17 @@ class K8SManager(ExecuteCommandsMixin):
         else:
             node = self.controller_name
         LOG.info("Trying to combine xunit at {}".format(node))
-        with self.__underlay.remote(node_name=node) as r:
-            cmd = ("apt-get install python-setuptools -y; "
-                   "pip install "
-                   "https://github.com/mogaika/xunitmerge/archive/master.zip")
-            LOG.debug('Installing xunitmerge')
-            r.check_call(cmd, raise_on_err=False)
-            LOG.debug('Merging xunit')
-            cmd = ("cd {0}; arg=''; "
-                   "for i in $(ls | grep xml); "
-                   "do arg=\"$arg $i\"; done && "
-                   "xunitmerge $arg {1}".format(path, output))
-            r.check_call(cmd, raise_on_err=False)
+        cmd = ("apt-get install python-setuptools -y; "
+               "pip install "
+               "https://github.com/mogaika/xunitmerge/archive/master.zip")
+        LOG.debug('Installing xunitmerge')
+        self._salt.cmd_run(tgt=node, cmd=cmd)
+        LOG.debug('Merging xunit')
+        cmd = ("cd {0}; arg=''; "
+               "for i in $(ls | grep xml); "
+               "do arg=\"$arg $i\"; done && "
+               "xunitmerge $arg {1} || true".format(path, output))
+        self._salt.cmd_run(tgt=node, cmd=cmd)
 
     def manage_cncf_archive(self):
         """
