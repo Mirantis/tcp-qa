@@ -33,15 +33,14 @@ class RuntestManager(object):
     image_version = settings.TEMPEST_IMAGE_VERSION
     container_name = 'run-tempest-ci'
     master_host = "cfg01"
-    control_host = "ctl01"
-    compute_host = "cmp"
     class_name = "runtest"
     run_cmd = '/bin/bash -c "run-tempest"'
 
     def __init__(self, config, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
                  tempest_pattern=settings.TEMPEST_PATTERN,
-                 run_cmd=None, target='gtw01'):
+                 run_cmd=None, target='gtw01*', control_host='ctl01*',
+                 compute_host='cmp001*'):
         self.__config = config
         self.underlay = underlay
         self.__salt_api = salt_api
@@ -53,10 +52,8 @@ class RuntestManager(object):
         self.target_name = self.underlay.get_target_node_names(target)[0]
         self.master_name = self.underlay.get_target_node_names(
             self.master_host)[0]
-        self.control_name = self.underlay.get_target_node_names(
-            self.control_host)[0]
-        self.compute_name = self.underlay.get_target_node_names(
-            self.compute_host)[0]
+        self.control_name = control_host
+        self.compute_name = compute_host
         self.barbican = False
 
     @property
