@@ -416,9 +416,14 @@ class K8SManager(ExecuteCommandsMixin):
         master_host = self.__config.salt.salt_master_host
         with self.__underlay.remote(host=master_host) as r:
             for log_file in files:
-                cmd = "rsync -r \"{0}:/root/{1}\" /root/".format(
-                    node, log_file)
-                r.check_call(cmd, raise_on_err=False)
+                try:
+                    cmd = "rsync -r \"{0}:/root/{1}\" /root/".format(
+                        node, log_file)
+                    r.check_call(cmd, raise_on_err=False)
+                except Exception:
+                    cmd = "scp -r \"{0}:/root/{1}\" /root/".format(node,
+                                                                   log_file)
+                    r.check_call(cmd, raise_on_err=True)
                 LOG.info("Downloading the artifact {0}".format(log_file))
                 r.download(destination=log_file, target=os.getcwd())
         self.store_server_version(os.path.join(os.getcwd(), 'env_k8s_version'))
