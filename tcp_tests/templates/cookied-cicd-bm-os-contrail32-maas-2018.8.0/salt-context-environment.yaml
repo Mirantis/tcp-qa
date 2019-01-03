@@ -224,7 +224,7 @@ nodes:
       reclass_storage_name: opencontrail_control_node01
       roles:
       - opencontrail_control
-      - linux_system_codename_tursty
+      - linux_system_codename_trusty
       interfaces:
         eth1:
           role: single_dhcp
