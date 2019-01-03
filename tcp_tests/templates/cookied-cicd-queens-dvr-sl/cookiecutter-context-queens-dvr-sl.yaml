@@ -63,16 +63,16 @@ default_context:
   gateway_primary_second_nic: eth2
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
-  infra_kvm01_control_address: 10.167.4.241
-  infra_kvm01_deploy_address: 10.167.5.91
+  infra_kvm01_control_address: 10.167.4.101
+  infra_kvm01_deploy_address: 10.167.5.101
   infra_kvm01_hostname: kvm01
-  infra_kvm02_control_address: 10.167.4.242
-  infra_kvm02_deploy_address: 10.167.5.92
+  infra_kvm02_control_address: 10.167.4.102
+  infra_kvm02_deploy_address: 10.167.5.102
   infra_kvm02_hostname: kvm02
-  infra_kvm03_control_address: 10.167.4.243
-  infra_kvm03_deploy_address: 10.167.5.93
+  infra_kvm03_control_address: 10.167.4.103
+  infra_kvm03_deploy_address: 10.167.5.103
   infra_kvm03_hostname: kvm03
-  infra_kvm_vip_address: 10.167.4.240
+  infra_kvm_vip_address: 10.167.4.100
   infra_primary_first_nic: eth1
   infra_primary_second_nic: eth2
   kubernetes_enabled: 'False'
