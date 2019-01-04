@@ -356,13 +356,16 @@ class K8SManager(ExecuteCommandsMixin):
             raise RuntimeError("Conformance failed")
 
     def move_file_to_root_folder(self, filepath):
-        # Using || true to avoid salt fails if no file found
-        cmd = "mv {0} /root/ || true".format(filepath)
+        cmd = "mv {0} /root/".format(filepath)
         if self.conformance_node:
             LOG.info("Managing results on {}".format(self.conformance_node))
-            self._salt.cmd_run(tgt=self.conformance_node, cmd=cmd)
+            step = {'cmd': cmd, 'node_name': self.conformance_node}
+            self.execute_command(step,
+                                 'Move {0} to /root/ on {1}'.format(
+                                     filepath, self.conformance_node))
         else:
             LOG.info("Node is not properly set")
+            raise EnvironmentError()
 
     def extract_file_to_node(self, system='docker',
                              container='virtlet',
