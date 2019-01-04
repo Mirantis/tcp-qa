@@ -355,15 +355,24 @@ class K8SManager(ExecuteCommandsMixin):
             LOG.info(self.controller_check_call(describe, timeout=30))
             raise RuntimeError("Conformance failed")
 
+    def get_node_name(self, tgt):
+        res = [node_name for node_name in
+               self.__underlay.node_names() if tgt in node_name]
+        assert len(res) > 0, 'Can not find node name by tgt {}'.format(tgt)
+        return res[0]
+
     def move_file_to_root_folder(self, filepath):
-        # Using || true to avoid salt fails if no file found
-        cmd = "mv {0} /root/ || true".format(filepath)
+        cmd = "mv {0} /root/".format(filepath)
         if self.conformance_node:
+            short_name = self.conformance_node.split('.')[0]
             LOG.info("Managing results on {}".format(self.conformance_node))
-            self._salt.cmd_run(tgt=self.conformance_node, cmd=cmd)
+            step = {'cmd': cmd, 'node_name': self.get_node_name(short_name)}
+            self.execute_command(step,
+                                 'Move {0} to /root/ on {1}'.format(
+                                     filepath, self.conformance_node))
         else:
             LOG.info("Node is not properly set")
-
+            
     def extract_file_to_node(self, system='docker',
                              container='virtlet',
                              file_path='report.xml',
