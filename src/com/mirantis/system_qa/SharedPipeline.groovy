@@ -154,6 +154,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         def common = new com.mirantis.mk.Common()
         def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: env.MCP_VERSION
         def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: env.MCP_VERSION
+        def salt_models_system_change = env.SALT_MODELS_REF_CHANGE ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
@@ -179,6 +180,7 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
                 string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecutter_template_commit}"),
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
+                string(name: 'SALT_MODELS_REF_CHANGE', value: "${salt_models_system_change}"),
                 string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
                 string(name: 'MCP_SALT_REPO_URL', value: "${mcp_salt_repo_url}"),
