@@ -193,8 +193,7 @@ class Testk8sInstall(object):
                                 'conformance_result.xml'])
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
-    @pytest.mark.cz8116
-    @pytest.mark.k8s_calico
+    @pytest.mark.k8s_calico_only_k8s
     def test_only_k8s_install(self, config, show_step,
                               k8s_deployed, conformance_helper):
         """Test for deploying MCP environment with k8s and check it
