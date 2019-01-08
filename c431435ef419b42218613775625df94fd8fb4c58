@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "86880211_2a6c44ef",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 26
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-01-08T15:01:54Z",
+      "side": 1,
+      "message": "In this way you remove compatibility with contrail envs",
+      "range": {
+        "startLine": 42,
+        "startChar": 24,
+        "endLine": 42,
+        "endChar": 25
+      },
+      "revId": "c431435ef419b42218613775625df94fd8fb4c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "721700d9_6313018d",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 26
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-01-08T15:01:54Z",
+      "side": 1,
+      "message": "If you remove target to be set when initialize the class, why you set it None?",
+      "range": {
+        "startLine": 53,
+        "startChar": 29,
+        "endLine": 53,
+        "endChar": 33
+      },
+      "revId": "c431435ef419b42218613775625df94fd8fb4c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5766498f_621173ed",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 26
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-01-08T15:01:54Z",
+      "side": 1,
+      "message": "what if we will have gtw* as target host?",
+      "range": {
+        "startLine": 65,
+        "startChar": 45,
+        "endLine": 65,
+        "endChar": 46
+      },
+      "revId": "c431435ef419b42218613775625df94fd8fb4c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3e578ced_c2704415",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 26
+      },
+      "lineNbr": 68,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-01-08T15:01:54Z",
+      "side": 1,
+      "message": "could you please ass doc string and explain such manipulations\nBecause at least self.__target_name \u003d self.underlay.get_target_node_names will be for sure fail on bm deploys over mass if target differs from cfg",
+      "range": {
+        "startLine": 68,
+        "startChar": 17,
+        "endLine": 68,
+        "endChar": 30
+      },
+      "revId": "c431435ef419b42218613775625df94fd8fb4c58",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
