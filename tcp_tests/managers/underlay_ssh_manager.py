@@ -509,6 +509,11 @@ class UnderlaySSHManager(object):
             for minion in minions:
                 LOG.info("Getting archived artifacts from the minion {0}"
                          .format(minion))
+                master.check_call(
+                    "salt {minion} pkg.install rsync".format(
+                        minion=minion.strip()),
+                    raise_on_err=False,
+                    timeout=120)
                 master.check_call("rsync -aruv {0}:/root/*.tar.gz "
                                   "/root/dump/".format(minion.strip()),
                                   raise_on_err=False,
