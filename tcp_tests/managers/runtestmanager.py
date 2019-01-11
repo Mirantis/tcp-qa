@@ -48,7 +48,7 @@ class RuntestManager(object):
         self.tempest_threads = tempest_threads
         self.tempest_pattern = tempest_pattern
         self.run_cmd = run_cmd or self.run_cmd
-        self.master_name = self.underlay.get_target_node_names(
+        self.master_name = self.underlay.get_target_minion_ids(
             self.master_host)[0]
         self.__target_name = None
 
