@@ -88,3 +88,5 @@ SL_TEST_COMMIT = os.environ.get('SL_TEST_COMMIT', 'master')
 
 EXTERNAL_ADDRESS_POOL_NAME = os.environ.get('EXTERNAL_ADDRESS_POOL_NAME',
                                             'external-pool01')
+UPDATE_LINUX_KERNEL = get_var_as_bool('UPDATE_LINUX_KERNEL', False)
+UPDATE_LINUX_KERNEL_NAME = os.environ.get('UPDATE_LINUX_KERNEL_NAME')
