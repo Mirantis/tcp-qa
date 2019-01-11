@@ -499,3 +499,11 @@
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
 {%- endmacro %}
+
+{%- macro MACRO_KERNEL_UPDATE() %}
+- description: Update linux kernel
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run "DEBIAN_FRONTEND=noninteractive apt-get install -y linux-image-generic-hwe-16.04 && reboot"; sleep 210
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+{%- endmacro %}
