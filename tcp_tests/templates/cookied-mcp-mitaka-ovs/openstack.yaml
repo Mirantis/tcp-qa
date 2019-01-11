@@ -6,6 +6,9 @@
 {% from 'shared-salt.yaml' import IPV4_NET_EXTERNAL_PREFIX with context %}
 {% from 'shared-salt.yaml' import IPV4_NET_TENANT_PREFIX with context %}
 
+
+{% set UPDATE_LINUX_KERNEL = os_env('UPDATE_LINUX_KERNEL', 'false') %}
+
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
@@ -80,3 +83,7 @@
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE(CELL_MAPPING=true) }}
+
+{{ SHARED_OPENSTACK.MACRO_KERNEL_UPDATE(UPDATE=true) }}
+
+{{ SHARED_OPENSTACK.MACRO_KERNEL_UPDATE(UPDATE_LINUX_KERNEL) }}

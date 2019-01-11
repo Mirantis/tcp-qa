@@ -9,6 +9,8 @@
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+{% set UPDATE_LINUX_KERNEL = os_env('UPDATE_LINUX_KERNEL', 'false') %}
+
 {% import 'shared-ceph.yaml' as SHARED_CEPH with context %}
 
 # Deploy nginx before openstack services (PROD-22740)
@@ -44,3 +46,5 @@
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE(CELL_MAPPING=true) }}
+
+{{ SHARED_OPENSTACK.MACRO_KERNEL_UPDATE(UPDATE_LINUX_KERNEL) }}
