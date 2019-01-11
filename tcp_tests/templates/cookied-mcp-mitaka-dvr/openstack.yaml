@@ -8,6 +8,8 @@
 {% set LAB_CONFIG_NAME = os_env('LAB_CONFIG_NAME') %}
 {% set OVERRIDE_POLICY = os_env('OVERRIDE_POLICY', '') %}
 
+{% set UPDATE_LINUX_KERNEL = os_env('UPDATE_LINUX_KERNEL', 'false') %}
+
 {% import 'shared-openstack.yaml' as SHARED_OPENSTACK with context %}
 {% import 'shared-salt.yaml' as SHARED with context %}
 
@@ -58,3 +60,8 @@
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE(CELL_MAPPING=true) }}
+
+
+{%- if UPDATE_LINUX_KERNEL != 'false' %}
+{{ SHARED_OPENSTACK.MACRO_KERNEL_UPDATE() }}
+{%- endif %}
