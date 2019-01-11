@@ -50,6 +50,8 @@ class RuntestManager(object):
         self.run_cmd = run_cmd or self.run_cmd
         self.master_name = self.underlay.get_target_node_names(
             self.master_host)[0]
+        self.master_minion = self.underlay.get_target_minion_ids(
+            self.master_host)[0]
         self.__target_name = None
 
     @property
@@ -60,7 +62,7 @@ class RuntestManager(object):
     def target_name(self):
         if not self.__target_name:
             target_host = self.__salt_api.get_single_pillar(
-                tgt=self.master_name,
+                tgt=self.master_minion,
                 pillar="runtest:tempest:test_target")
             if target_host[-1] == "*":
                 target_host = target_host[:-1]
