@@ -499,3 +499,18 @@
     salt --hard-crash --state-output=mixed --state-verbose=False '*' saltutil.refresh_pillar
   node_name: {{ HOSTNAME_CFG01 }}
 {%- endmacro %}
+
+# Updateing Linux kernel on all nodes after openstack deploy
+{%- macro MACRO_KERNEL_UPDATE() %}
+- description: Update linux kernel
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False '*' cmd.run "DEBIAN_FRONTEND=noninteractive apt-get install -y {{ UPDATE_LINUX_KERNEL_NAME }}
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Reboot all nodes
+  cmd: salt --timeout=600  '*' system.reboot
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
+{%- endmacro %}

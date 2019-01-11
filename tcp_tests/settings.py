@@ -88,3 +88,6 @@ SL_TEST_COMMIT = os.environ.get('SL_TEST_COMMIT', 'master')
 
 EXTERNAL_ADDRESS_POOL_NAME = os.environ.get('EXTERNAL_ADDRESS_POOL_NAME',
                                             'external-pool01')
+UPDATE_LINUX_KERNEL = os.environ.get('UPDATE_LINUX_KERNEL', 'false')
+UPDATE_LINUX_KERNEL_NAME = os.environ.get('UPDATE_LINUX_KERNEL_NAME',
+                                          'linux-image-generic-hwe-16.04')
