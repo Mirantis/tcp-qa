@@ -335,17 +335,41 @@ k8s_deploy_opts = [
            default='{}/mirantis/kubernetes/pause-amd64:v1.12.3-2'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/node:v3.1.3'.format(
+           default='{}/mirantis/projectcalico/calico/node:v3.3.2'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_calicoctl_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/ctl:v3.1.3'.format(
+           default='{}/mirantis/projectcalico/calico/ctl:v3.3.2'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_cni_image', ct.String(),
-           default='{}/mirantis/projectcalico/calico/cni:v3.1.3'.format(
+           default='{}/mirantis/projectcalico/calico/cni:v3.3.2'.format(
                settings.DOCKER_REGISTRY)),
     ct.Cfg('kubernetes_calico_kube_controllers_image', ct.String(),
            default='{}/mirantis/projectcalico/calico/kube-controllers:'
-                   'v3.1.3'.format(settings.DOCKER_REGISTRY)),
+                   'v3.3.2'.format(settings.DOCKER_REGISTRY)),
+    ct.Cfg('kubernetes_calico_calicoctl_source', ct.String(),
+           default='{}/mirantis/projectcalico/calicoctl/'
+                   'calicoctl-v3.3.2'.format(
+               settings.BINARY_REGISTRY)),
+    ct.Cfg('kubernetes_calico_calicoctl_source_hash', ct.String(),
+           default='md5=bb38517fdd6b8bb7c130ae7550a9d335'),
+    ct.Cfg('kubernetes_calico_birdcl_source', ct.String(),
+           default='{}/mirantis/projectcalico/bird/'
+                   'birdcl-v0.3.3'.format(
+               settings.BINARY_REGISTRY)),
+    ct.Cfg('kubernetes_calico_birdcl_source_hash', ct.String(),
+           default='md5=0327442efd2592ddce449b66c5d0fc9d'),
+    ct.Cfg('kubernetes_calico_cni_source', ct.String(),
+           default='{}/mirantis/projectcalico/cni-plugin/'
+                   'calico-v3.3.2'.format(
+               settings.BINARY_REGISTRY)),
+    ct.Cfg('kubernetes_calico_cni_source_hash', ct.String(),
+           default='md5=2544bc1865c1451cac7a61264c25a2cb'),
+    ct.Cfg('kubernetes_calico_cni_ipam_source', ct.String(),
+           default='{}/mirantis/projectcalico/cni-plugin/'
+                   'calico-ipam-v3.3.2'.format(
+               settings.BINARY_REGISTRY)),
+    ct.Cfg('kubernetes_calico_cni_ipam_source_hash', ct.String(),
+           default='md5=b22623eeea3b29ba8ec071d859ac7055'),
     ct.Cfg('kubernetes_netchecker_enabled', ct.Boolean(),
            help="", default=True),
     ct.Cfg('kubernetes_netchecker_agent_image', ct.String(),
