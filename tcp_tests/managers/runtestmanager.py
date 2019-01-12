@@ -104,7 +104,18 @@ class RuntestManager(object):
 
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+        salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         commands = [
+            {
+                'description': "Sleep 60",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd + " sleep 60")},
+            {
+                'description': "Test ping",
+                'node_name': self.target_name,
+                'cmd': ("set -ex;" +
+                        salt_cmd + " '*' test.ping")},
             {
                 'description': ("Install docker-ce package and "
                                 "enable packets forwarding"),
