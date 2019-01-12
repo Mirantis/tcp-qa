@@ -14,6 +14,7 @@
 
 import json
 import os
+import time
 
 from devops.helpers import helpers
 
@@ -67,6 +68,7 @@ class RuntestManager(object):
                 target_host = target_host[:-1]
             self.__target_name = self.underlay.get_target_node_names(
                 target_host)[0]
+            print self.__target_name
         return self.__target_name
 
     def fetch_arficats(self, username=None, file_format='xml'):
@@ -104,26 +106,44 @@ class RuntestManager(object):
 
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+        salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         commands = [
+            {
+                'description': "Test ping",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_cmd + " '*' test.ping")},
             {
                 'description': ("Install docker-ce package and "
                                 "enable packets forwarding"),
-                'node_name': self.target_name,
+                'node_name': self.master_name,
                 'cmd': ("set -ex;" +
-                        salt_call_cmd + " pkg.install docker-ce && " +
-                        " iptables --policy FORWARD ACCEPT")},
+                        salt_cmd + self.target_name +
+                        " cmd.run 'apt install -y docker-ce python-pip &&"
+                        " iptables --policy FORWARD ACCEPT'")},
             {
                 'description': "Install PyPI docker package",
-                'node_name': self.target_name,
+                'node_name': self.master_name,
                 'cmd': ("set -ex;" +
-                        salt_call_cmd + " pip.install setuptools && " +
-                        salt_call_cmd + " pip.install docker")},
+                        salt_cmd + self.target_name +
+                        " cmd.run 'pip install setuptools && "
+                        "pip install docker'")},
             {
                 'description': "Generate config for Tempest",
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
                         "salt-run state.orchestrate " +
                         "runtest.orchestrate.tempest")},
+            {
+                'description': "Configure barbican",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd +
+                        " state.sls barbican.client && " +
+                        salt_call_cmd +
+                        " state.sls runtest.test_accounts && " +
+                        salt_call_cmd +
+                        " state.sls runtest.barbican_sign_image")},
         ]
         self.__salt_api.execute_commands(commands=commands,
                                          label="Prepare for Tempest")
