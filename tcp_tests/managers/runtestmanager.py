@@ -59,14 +59,14 @@ class RuntestManager(object):
     @property
     def target_name(self):
         if not self.__target_name:
-            result = self.salt_api.get_pillar(
+            target_host =  self.__salt_api.get_single_pillar(
                 tgt=self.master_name,
                 pillar="runtest:tempest:test_target")
-            target_host = (result[0].get(self.master_name))
             if target_host[-1] == "*":
                 target_host = target_host[:-1]
             self.__target_name = self.underlay.get_target_node_names(
                 target_host)[0]
+            LOG.debug("Target host: {0}".format(self.__target_name))
         return self.__target_name
 
     def fetch_arficats(self, username=None, file_format='xml'):
@@ -104,6 +104,10 @@ class RuntestManager(object):
 
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+        barbican_integration = self.__salt_api.get_single_pillar(
+            tgt="I@barbican:client",
+            pillar="_param:barbican_integration_enabled")
+        LOG.info("barbican_integration: {}".format(barbican_integration))
         commands = [
             {
                 'description': ("Install docker-ce package and "
@@ -125,6 +129,20 @@ class RuntestManager(object):
                         "salt-run state.orchestrate " +
                         "runtest.orchestrate.tempest")},
         ]
+
+        if barbican_integration == 'True':
+            commands.append({
+                'description': "Configure barbican",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd +
+                        " state.sls barbican.client && " +
+                        salt_call_cmd +
+                        " state.sls runtest.test_accounts && " +
+                        salt_call_cmd +
+                        " state.sls runtest.barbican_sign_image")},
+            )
+
         self.__salt_api.execute_commands(commands=commands,
                                          label="Prepare for Tempest")
 
@@ -134,6 +152,7 @@ class RuntestManager(object):
 
         docker_args = (
             " -t "
+            " --net host "
             " --name {container_name} "
             " -e ARGS=\"-r {tempest_pattern} -w {tempest_threads}\""
             " -v {cfg_dir}/tempest.conf:/etc/tempest/tempest.conf"
