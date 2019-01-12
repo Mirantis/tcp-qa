@@ -104,6 +104,13 @@ class RuntestManager(object):
 
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+        barbican_pillar = self.salt_api.get_pillar(
+            tgt="I@nova:controller:enabled:True and ctl01*",
+            pillar=" _param:barbican_integration_enabled")
+        control_name = "ctl01." + self.domain_name
+        LOG.info("Control node name: {}".format(control_name))
+        barbican_integration = barbican_pillar[0].get(control_name, False)
+        LOG.info("Barbican integration enabled: {}".format(bool(barbican_integration)))
         commands = [
             {
                 'description': ("Install docker-ce package and "
@@ -124,7 +131,29 @@ class RuntestManager(object):
                 'cmd': ("set -ex;" +
                         "salt-run state.orchestrate " +
                         "runtest.orchestrate.tempest")},
+            {
+                'description': "Configure barbican",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd +
+                        " state.sls barbican.client && " +
+                        salt_call_cmd +
+                        " state.sls runtest.test_accounts && " +
+                        salt_call_cmd +
+                        " state.sls runtest.barbican_sign_image")},
         ]
+
+        if barbican_integration:
+            commands.append({
+                'description': "Configure barbican",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd +
+                        " state.sls barbican.client && " +
+                        salt_call_cmd +
+                        " state.sls runtest.test_accounts && ")},
+            )
+
         self.__salt_api.execute_commands(commands=commands,
                                          label="Prepare for Tempest")
 
@@ -134,6 +163,7 @@ class RuntestManager(object):
 
         docker_args = (
             " -t "
+            " --net host "
             " --name {container_name} "
             " -e ARGS=\"-r {tempest_pattern} -w {tempest_threads}\""
             " -v {cfg_dir}/tempest.conf:/etc/tempest/tempest.conf"
