@@ -14,6 +14,7 @@
 
 import json
 import os
+import time
 
 from devops.helpers import helpers
 
@@ -104,7 +105,13 @@ class RuntestManager(object):
 
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+        salt_cmd = "salt -l info --hard-crash --state-output=mixed "
         commands = [
+            {
+                'description': "Test ping",
+                'node_name': self.target_name,
+                'cmd': ("set -ex;" +
+                        salt_cmd + " '*' test.ping")},
             {
                 'description': ("Install docker-ce package and "
                                 "enable packets forwarding"),
@@ -209,6 +216,7 @@ class RuntestManager(object):
         Run tempest tests
         """
         tempest_timeout = settings.TEMPEST_TIMEOUT
+        time.sleep(60)
         self.prepare()
         test_res = self.run_tempest(tempest_timeout)
         self.fetch_arficats(username=username)
