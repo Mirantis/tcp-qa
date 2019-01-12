@@ -104,6 +104,19 @@ class RuntestManager(object):
 
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+        salt_cmd = "salt -l info --hard-crash --state-output=mixed "
+        command = [
+            {
+                'description': ("Check barbican integration"),
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_cmd + " 'ctl01*' pillar.get " +
+                        " nova:controller:barbican:enabled")},
+        ]
+        result = self.__salt_api.execute_commands(commands=command,
+                                                  label="Check barbican")
+        control_name = "ctl01." + self.domain_name
+        barbican = result[0].get(control_name, False)
         commands = [
             {
                 'description': ("Install docker-ce package and "
@@ -125,6 +138,20 @@ class RuntestManager(object):
                         "salt-run state.orchestrate " +
                         "runtest.orchestrate.tempest")},
         ]
+
+        if barbican:
+            commands.append({
+                'description': "Configure barbican",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd +
+                        " state.sls barbican.client && " +
+                        salt_call_cmd +
+                        " state.sls runtest.test_accounts && " +
+                        salt_call_cmd +
+                        " state.sls runtest.barbican_sign_image")},
+            )
+
         self.__salt_api.execute_commands(commands=commands,
                                          label="Prepare for Tempest")
 
