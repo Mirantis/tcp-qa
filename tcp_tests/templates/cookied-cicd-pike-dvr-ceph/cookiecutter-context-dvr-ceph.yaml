@@ -223,9 +223,9 @@ default_context:
   openstack_proxy_address: 172.17.16.80  # external network endpoint
   openstack_proxy_vip_interface: ens5
   openstack_proxy_hostname: prx
-  openstack_proxy_node01_address: 10.167.4.81
+  openstack_proxy_node01_address: 10.167.4.121
   openstack_proxy_node01_hostname: prx01
-  openstack_proxy_node02_address: 10.167.4.82
+  openstack_proxy_node02_address: 10.167.4.122
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: 10.167.4.19
   openstack_version: pike
