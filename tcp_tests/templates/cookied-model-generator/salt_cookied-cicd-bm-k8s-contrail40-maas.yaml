@@ -8,7 +8,7 @@
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-k8s-contrail.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-physical-inventory.yaml','salt-context-cookiecutter-k8s-contrail.yaml'] %}
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2410') %}
-{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2411') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2410') %}
 
 {%- set IPMI_USER = os_env('IPMI_USER', 'mcp-qa') %}
 {%- set IPMI_PASS = os_env('IPMI_PASS', 'password') %}
