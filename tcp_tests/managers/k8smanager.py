@@ -105,10 +105,16 @@ class K8SManager(ExecuteCommandsMixin):
         return [self.__underlay.host_by_node_name(node_name=v)
                 for pillar in masters_fqdn for k, v in pillar.items()]
 
+    def get_masters_name(self):
+        """ Return list of kubernetes masters hosts fqdn """
+        masters_fqdn = self._salt.get_pillar(
+            tgt='I@kubernetes:master', pillar='linux:network:fqdn')
+        return [v for pillar in masters_fqdn for k, v in pillar.items()]
+
     @property
     def controller_name(self):
         """ Return node name of controller node that used for all actions """
-        names = [node['node_name'] for node in self.get_controllers()]
+        names = [node for node in self.get_masters_name()]
         # we want to return same controller name every time
         names.sort()
         return names[0]
