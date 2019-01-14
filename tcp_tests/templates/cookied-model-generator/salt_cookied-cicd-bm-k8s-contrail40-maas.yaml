@@ -8,7 +8,7 @@
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-k8s-contrail.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-physical-inventory.yaml','salt-context-cookiecutter-k8s-contrail.yaml'] %}
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2410') %}
-{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2411') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2410') %}
 
 {%- set IPMI_USER = os_env('IPMI_USER', 'mcp-qa') %}
 {%- set IPMI_PASS = os_env('IPMI_PASS', 'password') %}
@@ -27,6 +27,15 @@
   cmd: |
     sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
     sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Use correct compute interface"
+  cmd: |
+    set -e;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.opencontrail_compute_iface 'ens11f1.${_param:control_vlan}' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/opencontrail/init.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false

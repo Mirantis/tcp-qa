@@ -14,7 +14,7 @@
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-k8s-contrail.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml','lab04-upgrade-physical-inventory.yaml'] %}
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2410') %}
-{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2411') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2410') %}
 
 
 {% import 'shared-salt.yaml' as SHARED with context %}
