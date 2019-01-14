@@ -161,7 +161,7 @@ class K8SManager(ExecuteCommandsMixin):
         :return: str, IP address
         """
         ctl_vip_pillar = self._salt.get_pillar(
-            tgt="I@kubernetes:control:enabled:True",
+            tgt="I@kubernetes:control",
             pillar="_param:cluster_vip_address")[0]
         return ctl_vip_pillar.values()[0]
 
