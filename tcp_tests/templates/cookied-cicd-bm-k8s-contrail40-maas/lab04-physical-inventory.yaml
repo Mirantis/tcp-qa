@@ -92,5 +92,7 @@ nodes:
       interfaces:
         enp9s0f0:
           role: single_dhcp
+        enp9s0f1:
+          role: single_vlan_ctl
         ens11f1:
-          role: k8s_oc40_only_vhost_on_control_vlan
+          role: bond0_ab_contrail
