@@ -130,3 +130,25 @@ nodes:
           role: single_dhcp
         ens3:
           role: single_ctl
+
+    prx01:
+      reclass_storage_name: kubernetes_proxy_node01
+      roles:
+      - kubernetes_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens2:
+          role: single_dhcp
+        ens3:
+          role: single_ctl
+
+    prx02:
+      reclass_storage_name: kubernetes_proxy_node02
+      roles:
+      - kubernetes_proxy
+      - linux_system_codename_xenial
+      interfaces:
+        ens2:
+          role: single_dhcp
+        ens3:
+          role: single_ctl
