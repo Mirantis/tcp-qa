@@ -16,6 +16,7 @@
 {% set COOKIECUTTER_TAG = os_env('COOKIECUTTER_TAG','') %}
 {% set COOKIECUTTER_TEMPLATE_COMMIT = os_env('COOKIECUTTER_TEMPLATE_COMMIT','') %}
 {% set ENVIRONMENT_TEMPLATE_COMMIT = os_env('ENVIRONMENT_TEMPLATE_COMMIT','') %}
+{% set ENVIRONMENT_TEMPLATE_BRANCH = os_env('ENVIRONMENT_TEMPLATE_BRANCH','') %}
 {% set ENVIRONMENT_TEMPLATE_REF_CHANGE = os_env('ENVIRONMENT_TEMPLATE_REF_CHANGE','') %}
 # Currently we support 2 salt version that can be set over bellow var
 {% set SALT_VERSION = os_env('SALT_VERSION','2017.7') %}
@@ -508,7 +509,11 @@
     set -e;
     mkdir -p /root/environment/;
     export GIT_SSL_NO_VERIFY=true; git clone https://github.com/Mirantis/environment-template /root/environment/environment_template
-
+    {%- if ENVIRONMENT_TEMPLATE_BRANCH!= '' %}
+    pushd /root/environment/environment-template
+    git checkout {{ ENVIRONMENT_TEMPLATE_BRANCH  }}
+    popd
+    {%- endif %}
     {%- if ENVIRONMENT_TEMPLATE_REF_CHANGE != '' %}
     pushd /root/environment/environment_template &&
     git fetch https://github.com/Mirantis/environment-template {{ ENVIRONMENT_TEMPLATE_REF_CHANGE }} &&
