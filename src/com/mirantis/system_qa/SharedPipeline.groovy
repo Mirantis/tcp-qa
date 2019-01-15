@@ -308,7 +308,7 @@ def generate_cookied_model() {
                 string(name: 'IPV4_NET_EXTERNAL', value: IPV4_NET_EXTERNAL),
                 string(name: 'IPMI_USER', value: env.IPMI_USER),
                 string(name: 'IPMI_PASS', value: env.IPMI_PASS),
-                string(name: 'IMAGE_PATH_CFG01_DAY01', value: env.IMAGE_PATH_CFG01_DAY01),
+                string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
             ]
 
         build_shell_job('swarm-cookied-model-generator', parameters, "deploy_generate_model.xml")
