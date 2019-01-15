@@ -158,6 +158,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
+        def mcp_common_scripts_refs = env.MCP_COMMON_SCRIPTS_REFS ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
         def env_ipmi_user = env.IPMI_USER ?: ''
         def env_ipmi_pass = env.IPMI_PASS ?: ''
@@ -176,6 +177,7 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
                 string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecutter_template_commit}"),
+                string(name: 'MCP_COMMON_SCRIPTS_REFS', value: "${mcp_common_scripts_refs}"),
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
                 string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
