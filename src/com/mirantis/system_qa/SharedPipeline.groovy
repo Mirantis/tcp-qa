@@ -328,6 +328,7 @@ def generate_configdrive_iso() {
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
+        def mcp_common_scripts_refs = env.MCP_COMMON_SCRIPTS_REFS ?: ''
 
         def parameters = [
                 string(name: 'CLUSTER_NAME', value: "${LAB_CONFIG_NAME}"),
@@ -336,6 +337,7 @@ def generate_configdrive_iso() {
                 booleanParam(name: 'DOWNLOAD_CONFIG_DRIVE', value: true),
                 string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
                 string(name: 'COMMON_SCRIPTS_COMMIT', value: "${MCP_VERSION}"),
+                string(name: 'MCP_COMMON_SCRIPTS_REFS', value: "${mcp_common_scripts_refs}"),
                 string(name: 'NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'CONFIG_DRIVE_ISO_NAME', value: "${CFG01_CONFIG_IMAGE_NAME}"),
                 string(name: 'SALT_MASTER_DEPLOY_IP', value: SALT_MASTER_IP),
