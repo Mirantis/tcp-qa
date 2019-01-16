@@ -75,7 +75,7 @@ def test(shared, common, steps) {
 }
 
 // main
-throttle(['fuel_devops_environment']) {
+//throttle(['fuel_devops_environment']) {
   node ("${NODE_NAME}") {
     try {
         // run deploy stages
@@ -106,4 +106,4 @@ throttle(['fuel_devops_environment']) {
 
     }
   }
-}
+//}
