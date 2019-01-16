@@ -56,6 +56,7 @@ node ("${PARENT_NODE_NAME}") {
                 if (steps.contains('openstack')) {
                     sources += """
                     export TEMPEST_IMAGE_VERSION=${TEMPEST_IMAGE_VERSION}
+                    export TEMPEST_TARGET=${TEMPEST_TARGET}
                     # TODO: . ./tcp_tests/utils/env_keystonercv3\n"""
                 }
                 def installed = steps.collect {"""\
