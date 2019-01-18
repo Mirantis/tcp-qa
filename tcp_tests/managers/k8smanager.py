@@ -343,7 +343,7 @@ class K8SManager(ExecuteCommandsMixin):
 
         LOG.info("Waiting for Conformance to complete")
         helpers.wait(
-            lambda: cnf_status() == ('Succeeded' or 'Failed'),
+            lambda: cnf_status() in ('Succeeded', 'Failed'),
             interval=120, timeout=timeout,
             timeout_msg="Timeout for Conformance reached."
         )
