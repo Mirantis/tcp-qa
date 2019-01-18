@@ -240,7 +240,7 @@ merge_how: "dict(recurse_array)+list(append)"
     stage("Create config-drive"){
       // create cfg config-drive
       // apt package genisoimage is required for this stage
-      sh "./${config_drive_script_path} ${args}; touch /is_cloud_init_finished"
+      sh "./${config_drive_script_path} ${args}"
     }
 
     stage("Save artifacts") {
