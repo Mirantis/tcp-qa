@@ -195,10 +195,10 @@ default_context:
         osd002: # #cz7343-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:55:6a:57"
+          pxe_interface_mac: "0c:c4:7a:55:6a:56"
           interfaces:
             one1:
-              mac: "0c:c4:7a:55:6a:57"
+              mac: "0c:c4:7a:55:6a:56"
               mode: "static"
               ip: "172.16.49.71"
               subnet: "172.16.49.64/26" # create it manually... in UI
