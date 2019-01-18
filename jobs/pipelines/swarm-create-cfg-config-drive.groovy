@@ -131,7 +131,12 @@ node (node_name) {
     stage("Prepare arguments for generation config drive") {
 
         config_drive_script_path = "mcp-common-scripts-git/config-drive/create_config_drive.sh"
+        def version = env.MCP_VERSION
+        if (version in ['2018.8.0']){
+          user_data_script_path = "mcp-common-scripts-git/config-drive/master_config.sh"
+        } else {
         user_data_script_path = "mcp-common-scripts-git/config-drive/master_config.yaml"
+        }
         sh "chmod +x ${config_drive_script_path}"
 
         //args = "--user-data user_data --vendor-data user_data2 --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
