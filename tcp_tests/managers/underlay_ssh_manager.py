@@ -476,6 +476,11 @@ class UnderlaySSHManager(object):
 
         master_host = self.__config.salt.salt_master_host
         with self.remote(host=master_host) as master:
+            LOG.info("Make sure that 'rsync' is installed on all nodes")
+            master.check_call("salt '*' pkg.install rsync",
+                              raise_on_err=False,
+                              timeout=240)
+
             # dump files
             LOG.info("Archive artifacts on all nodes")
             master.check_call('salt "*" cmd.run "{0}"'.format(dump_commands),
