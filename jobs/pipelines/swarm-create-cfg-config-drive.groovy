@@ -135,7 +135,7 @@ node (node_name) {
         if (version in ['2018.8.0']){
           user_data_script_path = "mcp-common-scripts-git/config-drive/master_config.sh"
         } else {
-        user_data_script_path = "mcp-common-scripts-git/config-drive/master_config.yaml"
+          user_data_script_path = "mcp-common-scripts-git/config-drive/master_config.yaml"
         }
         sh "chmod +x ${config_drive_script_path}"
 
@@ -240,7 +240,7 @@ merge_how: "dict(recurse_array)+list(append)"
     stage("Create config-drive"){
       // create cfg config-drive
       // apt package genisoimage is required for this stage
-      sh "./${config_drive_script_path} ${args}"
+      sh "./${config_drive_script_path} ${args}; touch /is_cloud_init_finished"
     }
 
     stage("Save artifacts") {
