@@ -1,0 +1,11 @@
+{% from 'cookied-cicd-queens-dvr-sl-barbican/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-cicd-queens-dvr-sl-barbican/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-cicd-queens-dvr-sl-barbican/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
