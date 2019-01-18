@@ -129,15 +129,16 @@ default_context:
           # pxe_interface_mac:
           pxe_interface_mac: "0c:c4:7a:6c:83:56"
           interfaces:
-            enp9s0f0:
+            one1:
               mac: "0c:c4:7a:6c:83:56"
               mode: "static"
               ip: "172.16.49.67"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              subnet: "172.16.49.64/26" # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.117"
-            power_pass: ==IPMI_PASS==
+            #power_pass: ==IPMI_PASS==
+            power_password: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         kvm02: # #cz7342-kvm.host-telecom.com
@@ -145,15 +146,16 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:6c:84:2c"
           interfaces:
-            enp9s0f0:
+            one1:
               mac: "0c:c4:7a:6c:84:2c"
               mode: "static"
               ip: "172.16.49.68"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              subnet: "172.16.49.64/26" # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.118"
-            power_pass: ==IPMI_PASS==
+            #power_pass: ==IPMI_PASS==
+            power_password: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         kvm03: # #cz7343-kvm.host-telecom.com
@@ -161,15 +163,16 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:6c:83:54"
           interfaces:
-            enp9s0f0:
+            one1:
               mac: "0c:c4:7a:6c:83:54"
               mode: "static"
               ip: "172.16.49.69"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              subnet: "172.16.49.64/26" # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.119"
-            power_pass: ==IPMI_PASS==
+            #power_pass: ==IPMI_PASS==
+            power_password: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd001: # #cz7343-kvm.host-telecom.com
@@ -177,31 +180,33 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:55:6a:d4"
           interfaces:
-            enp2s0f0:
+            one1:
               mac: "0c:c4:7a:55:6a:d4"
               mode: "static"
               ip: "172.16.49.70"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              subnet: "172.16.49.64/26" # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.243"
-            power_pass: ==IPMI_PASS==
+            #power_pass: ==IPMI_PASS==
+            power_password: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd002: # #cz7343-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:55:6a:56"
+          pxe_interface_mac: "0c:c4:7a:55:6a:57"
           interfaces:
-            enp2s0f0:
-              mac: "0c:c4:7a:55:6a:56"
+            one1:
+              mac: "0c:c4:7a:55:6a:57"
               mode: "static"
               ip: "172.16.49.71"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              subnet: "172.16.49.64/26" # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.244"
-            power_pass: ==IPMI_PASS==
+            #power_pass: ==IPMI_PASS==
+            power_password: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd003: # #cz7343-kvm.host-telecom.com
@@ -209,15 +214,16 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:55:6a:2a"
           interfaces:
-            enp2s0f0:
+            one1:
               mac: "0c:c4:7a:55:6a:2a"
               mode: "static"
               ip: "172.16.49.72"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              subnet: "172.16.49.64/26" # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.245"
-            power_pass: ==IPMI_PASS==
+            #power_pass: ==IPMI_PASS==
+            power_password: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         cmp001: # #cz7345-kvm.host-telecom.com
@@ -225,15 +231,16 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:54:a2:5f"
           interfaces:
-            enp2s0f1:
+            one2:
               mac: "0c:c4:7a:54:a2:5f"
               mode: "static"
               ip: "172.16.49.73"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              subnet: "172.16.49.64/26" # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.233"
-            power_pass: ==IPMI_PASS==
+            #power_pass: ==IPMI_PASS==
+            power_password: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         cmp002: # cz7346-kvm.host-telecom.com
@@ -241,15 +248,16 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:54:a0:51"
           interfaces:
-            enp2s0f1:
+            one2:
               mac: "0c:c4:7a:54:a0:51"
               mode: "static"
               ip: "172.16.49.74"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              subnet: "172.16.49.64/26" # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.232"
-            power_pass: ==IPMI_PASS==
+            #power_pass: ==IPMI_PASS==
+            power_password: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
 

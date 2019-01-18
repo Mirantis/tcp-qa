@@ -1,5 +1,5 @@
 nodes:
-    cfg01.cookied-cicd-bm-os-contrail40-maas.local:
+    cfg01.cookied-cicd-bm-os-contrail32-maas.local:
       reclass_storage_name: infra_config_node01
       roles:
       - infra_config
@@ -11,43 +11,43 @@ nodes:
           role: single_static_ctl
     # Physical nodes
 
-    kvm01.cookied-cicd-bm-os-contrail40-maas.local:
+    kvm01.cookied-cicd-bm-os-contrail32-maas.local:
       reclass_storage_name: infra_kvm_node01
       roles:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp9s0f0:
+        one1:
           role: single_dhcp
-        enp9s0f1:
+        one2:
           role: bond0_ab_ovs_vlan_ctl
-        ens11f0:
+        ten1:
           role: single_mgm_manual
 
-    kvm02.cookied-cicd-bm-os-contrail40-maas.local:
+    kvm02.cookied-cicd-bm-os-contrail32-maas.local:
       reclass_storage_name: infra_kvm_node02
       roles:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp9s0f0:
+        one1:
           role: single_dhcp
-        enp9s0f1:
+        one2:
           role: bond0_ab_ovs_vlan_ctl
-        ens11f0:
+        ten1:
           role: single_mgm_manual
 
-    kvm03.cookied-cicd-bm-os-contrail40-maas.local:
+    kvm03.cookied-cicd-bm-os-contrail32-maas.local:
       reclass_storage_name: infra_kvm_node03
       roles:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp9s0f0:
+        one1:
           role: single_dhcp
-        enp9s0f1:
+        one2:
           role: bond0_ab_ovs_vlan_ctl
-        ens11f0:
+        ten1:
           role: single_mgm_manual
 
     osd<<count>>:
@@ -56,9 +56,9 @@ nodes:
       - ceph_osd
       - linux_system_codename_xenial
       interfaces:
-        enp2s0f0:
+        one1:
           role: single_dhcp
-        enp2s0f1:
+        one2:
           role: single_vlan_ctl
 #          role: bond0_ab_vlan_ceph_storage_backend
 
@@ -68,9 +68,10 @@ nodes:
       - openstack_compute
       - linux_system_codename_xenial
       interfaces:
-        enp2s0f1:
+        #one1: unused
+        one2:
           role: single_dhcp
-        enp5s0f0:
+        ten1:
           role: bond0_ab_contrail
-        enp5s0f1:
+        ten2:
           role: single_vlan_ctl
