@@ -1,6 +1,10 @@
 default_context:
   bmk_enabled: 'False'
   designate_backend: bind
+  auditd_enabled: 'False'
+  backend_network_netmask: 255.255.255.0
+  backend_network_subnet: 172.16.10.0/24
+  backend_vlan: '30'
   ceph_cluster_network: 172.16.10.0/24
   ceph_enabled: 'True'
   ceph_hyper_converged: 'False'
