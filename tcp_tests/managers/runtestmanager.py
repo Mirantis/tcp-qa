@@ -39,7 +39,7 @@ class RuntestManager(object):
     def __init__(self, config, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
                  tempest_pattern=settings.TEMPEST_PATTERN,
-                 run_cmd=None):
+                 run_cmd=None, target=settings.TEMPEST_TARGET):
         self.__config = config
         self.underlay = underlay
         self.__salt_api = salt_api
@@ -50,7 +50,7 @@ class RuntestManager(object):
         self.run_cmd = run_cmd or self.run_cmd
         self.master_name = self.underlay.get_target_node_names(
             self.master_host)[0]
-        self.__target_name = None
+        self.__target_name = target
 
     @property
     def salt_api(self):
@@ -109,9 +109,11 @@ class RuntestManager(object):
                 'description': ("Install docker-ce package and "
                                 "enable packets forwarding"),
                 'node_name': self.target_name,
+                'skip_fail': 'true',
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " pkg.install docker-ce && " +
                         " iptables --policy FORWARD ACCEPT")},
+
             {
                 'description': "Install PyPI docker package",
                 'node_name': self.target_name,
