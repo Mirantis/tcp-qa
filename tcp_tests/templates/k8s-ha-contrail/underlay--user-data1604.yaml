@@ -80,17 +80,17 @@
    - path: /usr/share/growlvm/image-layout.yml
      content: |
        root:
-         size: '50%VG'
+         size: '30%VG'
        home:
-         size: '100M'
+         size: '1G'
        var_log:
-         size: '15%VG'
+         size: '11%VG'
        var_log_audit:
-         size: '500M'
+         size: '5G'
        var_tmp:
-         size: '500M'
+         size: '11%VG'
        tmp:
-         size: '500M'
+         size: '5G'
      owner: root:root
 
   growpart:
