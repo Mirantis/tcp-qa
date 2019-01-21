@@ -53,7 +53,7 @@ class K8sPod(K8sBaseResource):
                                  '"{1}"'.format(self.name, phases))
         return self
 
-    def wait_running(self, timeout=240, interval=3):
+    def wait_running(self, timeout=600, interval=3):
         return self.wait_phase('Running', timeout=timeout, interval=interval)
 
 
