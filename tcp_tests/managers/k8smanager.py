@@ -350,7 +350,7 @@ class K8SManager(ExecuteCommandsMixin):
 
         pod = cnf_pod.read()
         status = pod.status.phase
-        if status is 'Failed':
+        if status == 'Failed':
             describe = "kubectl describe po {0} -n {0}".format(pod_mark)
             LOG.info(self.controller_check_call(describe, timeout=30))
             raise RuntimeError("Conformance failed")
@@ -390,7 +390,7 @@ class K8SManager(ExecuteCommandsMixin):
         :return:
         """
         with self.__underlay.remote(node_name=self.controller_name) as remote:
-            if system is 'docker':
+            if system == 'docker':
                 cmd = ("docker ps --all | grep \"{0}\" |"
                        " awk '{{print $1}}'".format(container))
                 result = remote.check_call(cmd, raise_on_err=False)
