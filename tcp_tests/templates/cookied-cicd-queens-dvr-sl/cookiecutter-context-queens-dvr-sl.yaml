@@ -275,4 +275,10 @@ default_context:
   openstack_public_neutron_subnet_cidr: 172.17.16.0/24
   openstack_public_neutron_subnet_allocation_start: 172.17.16.201
   openstack_public_neutron_subnet_allocation_end: 172.17.16.245
+  nova_vnc_tls_enabled: 'True'
+  galera_ssl_enabled: 'True'
+  openstack_mysql_x509_enabled: 'True'
+  rabbitmq_ssl_enabled: 'True'
+  openstack_rabbitmq_x509_enabled: 'True'
+  openstack_internal_protocol: 'https'
 
