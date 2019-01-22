@@ -530,6 +530,7 @@ default_context:
   kqueen_custom_mail_enabled: 'False'
   kqueen_enabled: 'False'
   manila_enabled: 'False'
+  openscap_enabled: 'True'
   octavia_health_manager_node01_address: 192.168.1.10
   octavia_health_manager_node02_address: 192.168.1.11
   octavia_health_manager_node03_address: 192.168.1.12
