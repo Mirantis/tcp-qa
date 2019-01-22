@@ -177,10 +177,10 @@ default_context:
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
   vnf_onboarding_enabled: 'False'
-
-  kubernetes_network_calico_enabled: 'True'
   kubernetes_network_flannel_enabled: 'True'
   flannel_network: 10.20.0.0/16
   kubernetes_network_genie_enabled: 'True'
   kubernetes_genie_default_plugin: 'calico'
   kubernetes_virtlet_enabled: 'True'
+  manila_enabled: 'False'
+  barbican_enabled: 'False'

@@ -447,3 +447,5 @@ default_context:
   #ceph_rgw_node03_deploy_address: "172.16.48.78"
   ceph_rgw_node03_address: "10.167.8.78"
   ceph_rgw_node03_hostname: "rgw03"
+  manila_enabled: 'False'
+  barbican_enabled: 'False'

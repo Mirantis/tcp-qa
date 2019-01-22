@@ -207,3 +207,5 @@ default_context:
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
   vnf_onboarding_enabled: 'False'
+  manila_enabled: 'False'
+  barbican_enabled: 'False'
