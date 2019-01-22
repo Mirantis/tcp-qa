@@ -122,6 +122,11 @@ class RuntestManager(object):
                         salt_call_cmd + " pip.install setuptools && " +
                         salt_call_cmd + " pip.install docker")},
             {
+                'description': "temp",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
+                        salt_call_cmd + " state.sls runtest.test_accounts")},
+            {
                 'description': "Generate config for Tempest",
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
