@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "371bde90_b5d0ad45",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 32
+      },
+      "lineNbr": 112,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-01-22T09:49:16Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "837d747a_95fa2570",
+      "range": {
+        "startLine": 107,
+        "startChar": 0,
+        "endLine": 112,
+        "endChar": 73
+      },
+      "revId": "3fbaecd8ea57021a181fc2455be35826ba6594e2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "a0e3b7d8_ec12f0c3",
         "filename": "tcp_tests/managers/runtestmanager.py",
         "patchSetId": 32
@@ -36,6 +60,30 @@
       "writtenOn": "2019-01-21T17:59:36Z",
       "side": 1,
       "message": "Is it Ok to execute barbican states after \"runtest.orchestrate.tempest\" ?",
+      "range": {
+        "startLine": 137,
+        "startChar": 0,
+        "endLine": 147,
+        "endChar": 13
+      },
+      "revId": "3fbaecd8ea57021a181fc2455be35826ba6594e2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d739fd14_92804dee",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 32
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-01-22T09:49:16Z",
+      "side": 1,
+      "message": "yes, it\u0027s correct",
+      "parentUuid": "a0e3b7d8_ec12f0c3",
       "range": {
         "startLine": 137,
         "startChar": 0,
