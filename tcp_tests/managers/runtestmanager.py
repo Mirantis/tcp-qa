@@ -104,8 +104,8 @@ class RuntestManager(object):
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
         barbican_integration = self.__salt_api.get_single_pillar(
-            tgt="I@barbican:client and ctl*",
-            pillar="_param:barbican_integration_enabled")
+            tgt="I@barbican:client or ctl*",
+            pillar="barbican:client:enabled")
         LOG.info("barbican_integration: {}".format(barbican_integration))
         commands = [
             {
