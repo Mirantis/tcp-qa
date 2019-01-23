@@ -9,6 +9,7 @@ import argparse
 
 from testrail import TestRail
 from testrail.test import Test
+# from testrail_api import APIClient
 from functools32 import lru_cache
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -28,6 +29,11 @@ def run_cli():
         "create-report",
         help="Create summary report",
         description="Create summary report")
+    cli_process_link = commands.add_parser(
+        "mark-fails",
+        help="Extract linked bugs from previous reports",
+        description="Extract linked bugs from previous reports"
+                    " and mark current")
     cli_process.add_argument(
         "-T", "--testrail-host", dest="testrail_host",
         required=True,
@@ -77,6 +83,39 @@ def run_cli():
         required=True,
         help="JIRA user password")
 
+    # link fail bugs parameters
+    cli_process_link.add_argument(
+        "-T", "--testrail-host", dest="testrail_host",
+        required=True,
+        help="TestRail hostname")
+    cli_process_link.add_argument(
+        "-U", "--testrail-user", dest="testrail_user",
+        required=True,
+        help="TestRail user email")
+    cli_process_link.add_argument(
+        "-K", "--testrail-user-key", dest="testrail_user_key",
+        required=True,
+        help="TestRail user key")
+    cli_process_link.add_argument(
+        "-R", "--testrail-plan", dest="testrail_plan",
+        required=True,
+        help="TestRail test plan for analize")
+    cli_process_link.add_argument(
+        "-M", "--testrail-marked-plan", dest="testrail_marked_plan",
+        required=False,
+        help="TestRail test plan for parse")
+    cli_process_link.add_argument(
+        "-P", "--testrail-project", dest="testrail_project",
+        required=True,
+        help="TestRail project name")
+    cli_process_link.add_argument(
+        "--testrail-only-run", dest="testrail_only_run",
+        help="Name to update only specified run in selected plan")
+    cli_process_link.add_argument(
+        "--push-to-testrail", dest="update_report_flag", action="store_true",
+        default=False,
+        help="Save report in plan description")
+
     if len(sys.argv) == 1:
         cli.print_help()
         sys.exit(1)
@@ -107,6 +146,19 @@ def get_all_results(t_client, list_of_runs):
     return ret
 
 
+def get_all_failed_results(t_client, list_of_runs, result_type):
+    """
+    returned result format:
+    [[run(id,name), result(id,status,defects...), test(id,name..)],
+     [run(id,name), result(id,status,defects...), test(id,name..)],
+                                                                ...]
+    """
+    ret = []
+    for run in list_of_runs:
+        ret.extend(get_failed_results(t_client, run, result_type))
+    return ret
+
+
 @lru_cache()
 def fetch_test(api, test_id, run_id):
     return Test(api.test_with_id(test_id, run_id))
@@ -123,6 +175,72 @@ def get_results(t_client, run):
         test = fetch_test(result.api, result.raw_data()['test_id'], run_id)
         LOG.info("Test {} - {} - {}".format(test.title, result.status.name,
                                             ','.join(result.defects)))
+    return ret
+
+
+def get_failed_results(t_client, run, result_type):
+    """
+    returned result format:
+    [run(id,name),
+     result(id,status,defects...),
+     test(id,name..)]
+    """
+    LOG.info("Get results for run - {}".format(run.name))
+    results = t_client.results(run, result_type)
+    results_with_test = []
+    if result_type is '5':
+        ret = [(run, r) for r in results
+               if r.raw_data()['status_id'] is int(result_type) and
+               r.raw_data()['defects'] is None]
+    else:
+        ret = [(run, r) for r in results
+               if r.raw_data()['status_id'] is not None and
+               r.raw_data()['defects'] is not None]
+    for r in ret:
+        run, result = r
+        test = fetch_test(result.api, result.raw_data()['test_id'], run.id)
+        LOG.info("Test {} - {} - {} - {}"
+                 .format(test.title, result.status.name,
+                         result.raw_data()['status_id'],
+                         ','.join(result.defects)))
+        results_with_test.append([run, result, test])
+    return results_with_test
+
+
+def mark_failed_results(t_cl, marked_res, failed_res, t_h):
+    """
+    Extract list tests with defect and compare it with tests to be marked,
+    and add defects and result from marked tests
+    Returned result format:
+    [[target_tests_to_update_with_defect, target_run_id],
+     [target_tests_to_update_with_defect, target_run_id],
+                                                         ...]
+    """
+    LOG.info("Extract marked tests and attach to failed")
+
+    def generate_result(t_c, tst, m_r, m_t):
+        link_comment = "{url}/index.php?/tests/view/{uid}".format(
+                url=t_h, uid=m_t.id)
+        tmp_result = t_c.result()
+        tmp_result.test = tst
+        tmp_result.status = m_r.status
+        tmp_result.comment = "Result taked from: " + link_comment
+        tmp_result.defects = [str(m_r.defects[0])]
+        return tmp_result
+
+    # def check_if_marked():
+    #     if ret.count()
+
+    ret = []
+    for run, result, test in failed_res:
+        for m_run, m_result, m_test in marked_res:
+            if run.name == m_run.name \
+             and test.title == m_test.title:
+                LOG.info(" MARKED FOUND: Run:{} test: .. {}-{}"
+                         .format(run.id, test.title[-72:],
+                                 m_result.defects[0]))
+                ret.append([generate_result(t_cl, test, m_result,
+                                            m_test), run.id])
     return ret
 
 
@@ -230,7 +348,7 @@ def get_md_table(table):
             "title": test.title.replace('[', '{').replace(']', '}'),
             "uid": test.id,
             "link": "{url}/index.php?/tests/view/{uid}".format(
-                    url=test.api._conf()['url'], uid=test.id)
+                url=test.api._conf()['url'], uid=test.id)
         }
 
     def list_of_defect_tests(results):
@@ -278,12 +396,12 @@ def get_html_table(table):
             "title": test.title,
             "uid": test.id,
             "link": "{url}/index.php?/tests/view/{uid}".format(
-                    url=test.api._conf()['url'], uid=test.id)
+                url=test.api._conf()['url'], uid=test.id)
         }
 
     def list_of_defect_tests(results):
         ret = ["<a href='{link}'>{title} #{uid}</a>".format(
-               **title_uid_link(r)) for r in results]
+            **title_uid_link(r)) for r in results]
         return ' '.join(ret)
 
     for k in table:
@@ -318,8 +436,8 @@ def push_report(t_client, plan_name, table):
     text = "Bugs Statistics (generated on {date})\n" \
            "=======================================================\n" \
            "{table}".format(
-               date=datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
-               table=get_md_table(table))
+            date=datetime.datetime.now().strftime("%a %b %d %H:%M:%S %Y"),
+            table=get_md_table(table))
     plan = t_client.plan(plan_name)
     if plan:
         plan.description = text
@@ -330,6 +448,17 @@ def push_report(t_client, plan_name, table):
                 'description': plan.description,
                 'milestone_id': plan.milestone.id
             })
+
+
+def update_report(t_client, plan_name, tests_table):
+    LOG.info("Update report table into plan - {}".format(plan_name)
+             + "\n===\nList tests to udate:")
+    plan = t_client.plan(plan_name)
+    if plan:
+        for r_test, run in tests_table:
+            t_client.add(r_test)
+            print(r_test.test.title)
+    LOG.info("\n===\nUpdate plan finished - {}".format(plan_name))
 
 
 def create_report(**kwargs):
@@ -359,8 +488,50 @@ def create_report(**kwargs):
         push_report(t_client, t_plan, table)
 
 
+def mark_fails(**kwargs):
+    testrail_host = kwargs.get('testrail_host')
+    testrail_user = kwargs.get('testrail_user')
+    testrail_user_key = kwargs.get('testrail_user_key')
+    testrail_plan = kwargs.get('testrail_plan')
+    testrail_m_plan = kwargs.get('testrail_marked_plan')
+    testrail_project = kwargs.get('testrail_project')
+    testrail_active_run = kwargs.get('testrail_only_run')
+    if testrail_active_run == '':
+        testrail_active_run = None
+    update_report_flag = kwargs.get('update_report_flag')
+
+    testrail_client = TestRail(email=testrail_user, key=testrail_user_key,
+                               url=testrail_host)
+    testrail_client.set_project_id(testrail_client.project(
+        testrail_project).id)
+
+    # Get list runs with marked results
+    marked_runs = get_runs(testrail_client, testrail_m_plan,
+                           testrail_active_run)
+
+    # Get list runs to update
+    runs = get_runs(testrail_client, testrail_plan, testrail_active_run)
+
+    # Get list (failed, prod_failed, test_failed,skipped..) tests with defects
+    marked_results = get_all_failed_results(testrail_client, marked_runs,
+                                            '2,3,4,5,6,7,8,9')
+
+    # Get list (failed) tests without defects to mark
+    failed_results = get_all_failed_results(testrail_client,
+                                            runs, '5')  # 5-failed
+
+    # Generate list tests to update based on compare (defected
+    # results for tests with failed and not defected)
+    tests_to_update = mark_failed_results(testrail_client, marked_results,
+                                          failed_results, testrail_host)
+
+    if update_report_flag:
+        update_report(testrail_client, testrail_plan, tests_to_update)
+
+
 COMMAND_MAP = {
-    'create-report': create_report
+    'create-report': create_report,
+    'mark-fails': mark_fails
 }
 
 
