@@ -19,6 +19,7 @@ smc['MCP_VERSION'] = "${MCP_VERSION}"
 // smc['LOCAL_REPOS'] = 'true'
 smc['MCP_SALT_REPO_KEY'] = "${MCP_SALT_REPO_KEY}"
 smc['MCP_SALT_REPO_URL'] = "${MCP_SALT_REPO_URL}"
+smc['MCP_SALT_REPO_URL'] = "deb [arch=amd64] http://mirror.mirantis.com//2018.8.0/salt-formulas/xenial xenial main"
 
 def entries(m) {
     m.collect {k, v -> [k, v]}
