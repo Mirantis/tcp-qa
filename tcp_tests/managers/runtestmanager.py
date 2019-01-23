@@ -103,10 +103,14 @@ class RuntestManager(object):
 
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
+        barbican_enabled = self.__salt_api.get_single_pillar(
+            tgt='ctl01*', pillar='_param:barbican_enabled')
         barbican_integration = self.__salt_api.get_single_pillar(
-            tgt="I@barbican:client and ctl*",
+            tgt="ctl01*",
             pillar="_param:barbican_integration_enabled")
-        LOG.info("barbican_integration: {}".format(barbican_integration))
+
+        LOG.info("Barbican enabled {0}: Barbican integration {1}".format(
+            barbican_enabled, barbican_integration))
         commands = [
             {
                 'description': ("Install docker-ce package and "
@@ -129,7 +133,7 @@ class RuntestManager(object):
                         "runtest.orchestrate.tempest")},
         ]
 
-        if barbican_integration == 'True':
+        if 'True' in barbican_enabled:
             commands.append({
                 'description': "Configure barbican",
                 'node_name': self.master_name,
@@ -137,7 +141,13 @@ class RuntestManager(object):
                         salt_call_cmd +
                         " state.sls barbican.client && " +
                         salt_call_cmd +
-                        " state.sls runtest.test_accounts && " +
+                        " state.sls runtest.test_accounts")},
+            )
+        if 'True' in barbican_integration:
+            commands.append({
+                'description': "Configure barbican",
+                'node_name': self.master_name,
+                'cmd': ("set -ex;" +
                         salt_call_cmd +
                         " state.sls runtest.barbican_sign_image")},
             )
