@@ -103,10 +103,15 @@ class RuntestManager(object):
 
     def prepare(self):
         salt_call_cmd = "salt-call -l info --hard-crash --state-output=mixed "
-        barbican_integration = self.__salt_api.get_single_pillar(
-            tgt="I@barbican:client and ctl*",
+        barbican_pillars = self.__salt_api.get_pillar(
+            tgt="ctl*",
             pillar="_param:barbican_integration_enabled")
-        LOG.info("barbican_integration: {}".format(barbican_integration))
+
+        LOG.info("barbican_integration: {}".format(barbican_pillars))
+        barbican_integration = set([val
+                                    for item in barbican_pillars
+                                    for node, val in item.items()
+                                    if 'True' in val])
         commands = [
             {
                 'description': ("Install docker-ce package and "
@@ -129,7 +134,7 @@ class RuntestManager(object):
                         "runtest.orchestrate.tempest")},
         ]
 
-        if barbican_integration == 'True':
+        if barbican_integration:
             commands.append({
                 'description': "Configure barbican",
                 'node_name': self.master_name,
