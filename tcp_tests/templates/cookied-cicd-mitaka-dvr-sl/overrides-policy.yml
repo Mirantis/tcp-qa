@@ -1,0 +1,40 @@
+parameters:
+  nova:
+    controller:
+      policy:
+        context_is_admin: 'role:admin or role:administrator'
+        'compute:create': 'rule:admin_or_owner'
+        'compute:create:attach_network':
+  cinder:
+    controller:
+      policy:
+        'volume:delete': 'rule:admin_or_owner'
+        'volume:extend':
+  neutron:
+    server:
+      policy:
+        create_subnet: 'rule:admin_or_network_owner'
+        'get_network:queue_id': 'rule:admin_only'
+        'create_network:shared':
+  glance:
+    server:
+      policy:
+        publicize_image: "role:admin"
+        add_member:
+  keystone:
+    server:
+      policy:
+        admin_or_token_subject: 'rule:admin_required or rule:token_subject'
+  heat:
+    server:
+      policy:
+        context_is_admin: 'role:admin and is_admin_project:True'
+        deny_stack_user: 'not role:heat_stack_user'
+        deny_everybody: '!'
+        'cloudformation:ValidateTemplate': 'rule:deny_everybody'
+        'cloudformation:DescribeStackResources':
+  ceilometer:
+    server:
+      policy:
+        segregation: 'rule:context_is_admin'
+        'telemetry:get_resource':
