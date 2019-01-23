@@ -98,7 +98,7 @@ class RallyManager(object):
                                                            version=version))
             self._underlay.check_call(cmd, node_name=self._node_name)
         except Exception:
-            LOG.debug('Cannot install docker-ce')
+            LOG.debug('Cannot install docker.io')
             cmd = ("apt-get -y install docker.io &&"
                    " docker pull {image}:{version}".format(image=image,
                                                            version=version))
