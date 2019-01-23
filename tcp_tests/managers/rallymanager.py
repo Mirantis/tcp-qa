@@ -93,13 +93,13 @@ class RallyManager(object):
         LOG.info("Pull {image}:{version}".format(image=image,
                                                  version=version))
         try:
-            cmd = ("apt-get -y install docker-ce &&"
+            cmd = ("apt-get -y install docker.io &&"
                    " docker pull {image}:{version}".format(image=image,
                                                            version=version))
             self._underlay.check_call(cmd, node_name=self._node_name)
         except Exception:
-            LOG.debug('Cannot install docker-ce')
-            cmd = ("apt-get -y install docker.io &&"
+            LOG.debug('Cannot install docker.io')
+            cmd = ("apt-get -y install docker-ce &&"
                    " docker pull {image}:{version}".format(image=image,
                                                            version=version))
             self._underlay.check_call(cmd, node_name=self._node_name)

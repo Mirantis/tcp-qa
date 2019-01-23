@@ -113,11 +113,11 @@ class RuntestManager(object):
             barbican_enabled, barbican_integration))
         commands = [
             {
-                'description': ("Install docker-ce package and "
+                'description': ("Install docker.io package and "
                                 "enable packets forwarding"),
                 'node_name': self.target_name,
                 'cmd': ("set -ex;" +
-                        salt_call_cmd + " pkg.install docker-ce && " +
+                        salt_call_cmd + " pkg.install docker.io && " +
                         " iptables --policy FORWARD ACCEPT")},
             {
                 'description': "Install PyPI docker package",
