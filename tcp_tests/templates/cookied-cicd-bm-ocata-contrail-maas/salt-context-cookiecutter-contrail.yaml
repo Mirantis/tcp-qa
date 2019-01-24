@@ -372,9 +372,9 @@ default_context:
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: 192.168.0.220
+  tenant_network_gateway: 10.167.10.253
   tenant_network_netmask: 255.255.255.0
-  tenant_network_subnet: 192.168.0.0/24
+  tenant_network_subnet: 10.167.10.0/24
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
   openldap_domain: cookied-cicd-bm-ocata-contrail-maas.local
