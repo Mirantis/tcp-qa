@@ -1,0 +1,54 @@
+{% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', "cfg01.{}".format(LAB_CONFIG_NAME)) %}
+
+- description: Create heat-net before external net create
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron net-create heat-net'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Create public network for contrail
+  cmd: |
+    salt 'ntw01*' contrail.virtual_network_create public '{"external":true,"ip_prefix":"192.168.200.0","ip_prefix_len":24,"asn":64512,"target":10000}'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+- description: Steps from neutron client for contrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron subnet-create heat-net 10.20.30.0/24 --allocation-pool start=10.20.30.10,end=10.20.30.254 --gateway 10.20.30.1 --name heat-subnet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Steps from neutron client for contrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-create heat-router'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Steps from neutron client for contrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-gateway-set heat-router public'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Steps from neutron client for contrail
+  cmd: salt --hard-crash --state-output=mixed --state-verbose=False 'ctl01*' cmd.run
+    '. /root/keystonercv3; neutron router-interface-add heat-router heat-subnet'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: false
+
+- description: Fix default security group for access to external net from outside
+  cmd: |
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule list --column ID -f value | xargs openstack security group rule delete';
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule create default --egress --protocol tcp';
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule create default --ingress --protocol tcp';
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule create default --egress --protocol icmp';
+    salt 'ctl01*' cmd.run '. /root/keystonercv3; openstack security group rule create default --ingress --protocol icmp';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 30}
+  skip_fail: true
