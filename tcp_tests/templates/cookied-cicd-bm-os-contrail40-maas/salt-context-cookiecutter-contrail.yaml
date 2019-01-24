@@ -435,3 +435,4 @@ default_context:
   ceph_rgw_node03_hostname: "rgw03"
   manila_enabled: 'False'
   barbican_enabled: 'False'
+  barbican_integration_enabled: 'False'
