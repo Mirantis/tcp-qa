@@ -182,5 +182,3 @@ default_context:
   kubernetes_network_genie_enabled: 'True'
   kubernetes_genie_default_plugin: 'calico'
   kubernetes_virtlet_enabled: 'True'
-  manila_enabled: 'False'
-  barbican_enabled: 'False'
