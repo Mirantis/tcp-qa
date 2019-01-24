@@ -111,6 +111,20 @@ class RuntestManager(object):
 
         LOG.info("Barbican enabled {0}: Barbican integration {1}".format(
             barbican_enabled, barbican_integration))
+
+        contrail_enabled = self.__salt_api.get_single_pillar(
+            tgt="ctl01*",
+            pillar="opencontrail:client:enabled")
+
+        LOG.info('Contrail enabled: {}'.format(contrail_enabled))
+
+        if contrail_enabled:
+            steps_path = "{}/post_contrail.yaml".format(
+                self.__config.salt_deployed.templates_dir)
+            commands = self.underlay.read_template(steps_path)
+            self.salt_api.execute_commands(
+                commands, label="Prepare contrail for tests")
+
         commands = [
             {
                 'description': ("Install docker-ce package and "
