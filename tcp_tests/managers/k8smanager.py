@@ -108,7 +108,7 @@ class K8SManager(ExecuteCommandsMixin):
     @property
     def controller_name(self):
         """ Return node name of controller node that used for all actions """
-        names = [node['node_name'] for node in self.get_controllers()]
+        names = [node['node_name'] for node in self.get_masters()]
         # we want to return same controller name every time
         names.sort()
         return names[0]
