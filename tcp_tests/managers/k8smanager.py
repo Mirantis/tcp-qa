@@ -39,6 +39,7 @@ class K8SManager(ExecuteCommandsMixin):
         self.__underlay = underlay
         self._salt = salt
         self._api = None
+        self._controller_name = None
         self.kubectl = K8SKubectlCli(self)
         self.virtlet = K8SVirtlet(self)
         self.conformance_node = None
@@ -105,13 +106,28 @@ class K8SManager(ExecuteCommandsMixin):
         return [self.__underlay.host_by_node_name(node_name=v)
                 for pillar in masters_fqdn for k, v in pillar.items()]
 
+    def renew_controller(self, controller_node_name=None):
+        """ Changes controller returned by controller_name property """
+        if controller_node_name is not None:
+            self._controller_name = controller_node_name
+            return self._controller_name
+        names = [node['node_name'] for node in self.get_controllers()]
+        if len(names) == 1 and names[0] == self._controller_name:
+            LOG.warn(
+                "Cannot change controller because there is only 1 of them")
+            return
+        else:
+            for name in names:
+                if name != self._controller_name:
+                    self._controller_name = name
+                    return
+
     @property
     def controller_name(self):
         """ Return node name of controller node that used for all actions """
-        names = [node['node_name'] for node in self.get_controllers()]
-        # we want to return same controller name every time
-        names.sort()
-        return names[0]
+        if self._controller_name is None:
+            self.renew_controller()
+        return self._controller_name
 
     @property
     def controller_minion_id(self):
@@ -479,12 +495,12 @@ class K8SManager(ExecuteCommandsMixin):
 
         self.controller_check_call(cmd, raise_on_err=False)
 
-    @retry(300, exception=DevopsCalledProcessError)
+    @retry(100, exception=DevopsCalledProcessError, interval=20)
     def nslookup(self, host, src):
         """ Run nslookup on controller and return result """
         return self.controller_check_call("nslookup {0} {1}".format(host, src))
 
-    @retry(300, exception=DevopsCalledProcessError)
+    @retry(100, exception=DevopsCalledProcessError, interval=20)
     def curl(self, url, *args):
         """
         Run curl on controller and return stdout

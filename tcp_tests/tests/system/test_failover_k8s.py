@@ -71,5 +71,7 @@ class TestFailoverK8s(object):
             host=config.salt.salt_master_host, raise_on_err=False)['stdout'])
         assert "apiVersion" in curl_output
 
+        k8s_actions.renew_controller(controller_node_name=new_minion_vip)
+
         show_step(8)
-        k8s_actions.run_conformance(node_name=new_minion_vip)
+        k8s_actions.start_conformance_inside_pod()
