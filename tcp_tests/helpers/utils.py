@@ -176,7 +176,7 @@ def clean_dir(dirpath):
     shutil.rmtree(dirpath)
 
 
-def retry(tries_number=2, exception=Exception):
+def retry(tries_number=2, exception=Exception, interval=0):
     def _retry(func):
         assert tries_number >= 1, 'ERROR! @retry is called with no tries!'
 
@@ -195,6 +195,9 @@ def retry(tries_number=2, exception=Exception):
                         LOG.debug('Failed to execute function "{0}" with {1} '
                                   'tries!'.format(func.__name__, tries_number))
                         raise e
+                    else:
+                        if interval > 0:
+                            time.sleep(interval)
                 iter_number += 1
         return wrapper
     return _retry
