@@ -261,11 +261,11 @@ default_context:
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
-  openstack_octavia_enabled: 'True'
+  openstack_octavia_enabled: 'False'
   octavia_health_manager_node01_address: 192.168.1.10
   octavia_health_manager_node02_address: 192.168.1.11
   octavia_health_manager_node03_address: 192.168.1.12
-  octavia_manager_cluster: 'True'
+  octavia_manager_cluster: 'False'
   octavia_hm_bind_ip: 192.168.1.12
   octavia_lb_mgmt_cidr: 192.168.1.0/24
   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
