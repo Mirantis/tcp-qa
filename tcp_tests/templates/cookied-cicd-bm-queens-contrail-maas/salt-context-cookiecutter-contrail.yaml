@@ -436,3 +436,10 @@ default_context:
   manila_enabled: 'False'
   barbican_enabled: 'False'
   barbican_integration_enabled: 'False'
+  # SSL settings
+  nova_vnc_tls_enabled: 'True'
+  galera_ssl_enabled: 'True'
+  openstack_mysql_x509_enabled: 'True'
+  rabbitmq_ssl_enabled: 'True'
+  openstack_rabbitmq_x509_enabled: 'True'
+  openstack_internal_protocol: 'https'
