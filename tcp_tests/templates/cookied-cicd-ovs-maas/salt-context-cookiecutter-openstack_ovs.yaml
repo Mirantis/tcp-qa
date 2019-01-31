@@ -335,7 +335,7 @@ default_context:
   openldap_organisation: ${_param:cluster_name}
   openstack_benchmark_node01_address: 10.167.11.95
   openstack_benchmark_node01_hostname: bmk01
-  openstack_cluster_size: golden
+  openstack_cluster_size: compact
   openstack_compute_count: '2'
   openstack_compute_rack01_hostname: cmp
   openstack_compute_single_address_ranges: 10.167.11.3-10.167.11.4
