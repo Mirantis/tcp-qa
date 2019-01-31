@@ -46,6 +46,12 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
+- description: Assign drive partitions to machines
+  cmd: salt-call state.sls maas.machines.storage
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Remove all the salt-minions and re-register the cfg01 minion
   cmd: |
     salt-key -y -D;
