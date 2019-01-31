@@ -73,6 +73,8 @@ nodes:
       roles:
       - openstack_gateway
       - linux_system_codename_xenial
+      - system.linux.system.repo.mcp.apt_mirantis.ceph
+      - system.linux.system.repo.mcp.apt_mirantis.update.ceph
       interfaces:
         enp3s0f0:
           role: single_mgm_dhcp
@@ -86,6 +88,8 @@ nodes:
       roles:
       - openstack_gateway
       - linux_system_codename_xenial
+      - system.linux.system.repo.mcp.apt_mirantis.ceph
+      - system.linux.system.repo.mcp.apt_mirantis.update.ceph
       interfaces:
         enp3s0f0:
           role: single_mgm_dhcp
@@ -99,6 +103,8 @@ nodes:
       roles:
       - openstack_gateway
       - linux_system_codename_xenial
+      - system.linux.system.repo.mcp.apt_mirantis.ceph
+      - system.linux.system.repo.mcp.apt_mirantis.update.ceph
       interfaces:
         enp2s0f0:
           role: single_mgm_dhcp
