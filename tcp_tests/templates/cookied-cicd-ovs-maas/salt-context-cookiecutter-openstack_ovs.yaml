@@ -133,6 +133,28 @@ default_context:
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
+          disk_layout:
+            type: custom
+            bootable_device: sda
+            disk:
+              vgroot:
+                devices:
+                  - sda
+                type: lvm
+                volume:
+                  root:
+                    mount: /
+                    size: 80G
+                    type: ext4
+              vgvar:
+                devices:
+                  - sdb
+                type: lvm
+                volume:
+                  var:
+                    mount: /var/
+                    size: 1T
+                    type: ext4
         kvm02: # #cz7049-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
@@ -149,6 +171,28 @@ default_context:
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
+          disk_layout:
+            type: custom
+            bootable_device: sda
+            disk:
+              vgroot:
+                devices:
+                  - sda
+                type: lvm
+                volume:
+                  root:
+                    mount: /
+                    size: 80G
+                    type: ext4
+              vgvar:
+                devices:
+                  - sdb
+                type: lvm
+                volume:
+                  var:
+                    mount: /var/
+                    size: 1T
+                    type: ext4
         kvm03: # #cz7048-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
@@ -165,6 +209,28 @@ default_context:
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
+          disk_layout:
+            type: custom
+            bootable_device: sda
+            disk:
+              vgroot:
+                devices:
+                  - sda
+                type: lvm
+                volume:
+                  root:
+                    mount: /
+                    size: 80G
+                    type: ext4
+              vgvar:
+                devices:
+                  - sdb
+                type: lvm
+                volume:
+                  var:
+                    mount: /var/
+                    size: 1T
+                    type: ext4
         gtw01: # #cz7052-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
