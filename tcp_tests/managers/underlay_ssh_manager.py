@@ -571,3 +571,9 @@ class UnderlaySSHManager(object):
         return [node_name for node_name
                 in self.node_names()
                 if node_name.startswith(target)]
+
+    def get_target_minion_ids(self, target='gtw01.'):
+        """Get all minion ids which names starts with <target>"""
+        return [minion_id for minion_id
+                in self.minion_ids()
+                if minion_id.startswith(target)]
