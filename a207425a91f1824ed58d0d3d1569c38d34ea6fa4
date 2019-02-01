@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ae9a965a_cb513022",
+        "filename": "tcp_tests/managers/rallymanager.py",
+        "patchSetId": 33
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-02-01T13:09:03Z",
+      "side": 1,
+      "message": "please change to \"docker.io\" for mitaka",
+      "range": {
+        "startLine": 96,
+        "startChar": 39,
+        "endLine": 96,
+        "endChar": 48
+      },
+      "revId": "a207425a91f1824ed58d0d3d1569c38d34ea6fa4",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
