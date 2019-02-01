@@ -129,16 +129,15 @@ default_context:
           # pxe_interface_mac:
           pxe_interface_mac: "0c:c4:7a:6c:83:56"
           interfaces:
-            one1:
+            enp9s0f0:
               mac: "0c:c4:7a:6c:83:56"
               mode: "static"
               ip: "172.16.49.67"
-              subnet: "172.16.49.64/26" # create it manually... in UI
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.117"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         kvm02: # #cz7342-kvm.host-telecom.com
@@ -146,16 +145,15 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:6c:84:2c"
           interfaces:
-            one1:
+            enp9s0f0:
               mac: "0c:c4:7a:6c:84:2c"
               mode: "static"
               ip: "172.16.49.68"
-              subnet: "172.16.49.64/26" # create it manually... in UI
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.118"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         kvm03: # #cz7343-kvm.host-telecom.com
@@ -163,16 +161,15 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:6c:83:54"
           interfaces:
-            one1:
+            enp9s0f0:
               mac: "0c:c4:7a:6c:83:54"
               mode: "static"
               ip: "172.16.49.69"
-              subnet: "172.16.49.64/26" # create it manually... in UI
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "5.43.225.119"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd001: # #cz7343-kvm.host-telecom.com
@@ -180,33 +177,31 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:55:6a:d4"
           interfaces:
-            one1:
+            enp2s0f0:
               mac: "0c:c4:7a:55:6a:d4"
               mode: "static"
               ip: "172.16.49.70"
-              subnet: "172.16.49.64/26" # create it manually... in UI
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.243"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd002: # #cz7343-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:55:6a:57"
+          pxe_interface_mac: "0c:c4:7a:55:6a:56"
           interfaces:
-            one1:
-              mac: "0c:c4:7a:55:6a:57"
+            enp2s0f0:
+              mac: "0c:c4:7a:55:6a:56"
               mode: "static"
               ip: "172.16.49.71"
-              subnet: "172.16.49.64/26" # create it manually... in UI
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.244"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         osd003: # #cz7343-kvm.host-telecom.com
@@ -214,16 +209,15 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:55:6a:2a"
           interfaces:
-            one1:
+            enp2s0f0:
               mac: "0c:c4:7a:55:6a:2a"
               mode: "static"
               ip: "172.16.49.72"
-              subnet: "172.16.49.64/26" # create it manually... in UI
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.245"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         cmp001: # #cz7345-kvm.host-telecom.com
@@ -231,16 +225,15 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:54:a2:5f"
           interfaces:
-            one2:
+            enp2s0f1:
               mac: "0c:c4:7a:54:a2:5f"
               mode: "static"
               ip: "172.16.49.73"
-              subnet: "172.16.49.64/26" # create it manually... in UI
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.233"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
         cmp002: # cz7346-kvm.host-telecom.com
@@ -248,19 +241,17 @@ default_context:
           # hwe_kernel: "hwe-16.04"
           pxe_interface_mac: "0c:c4:7a:54:a0:51"
           interfaces:
-            one2:
+            enp2s0f1:
               mac: "0c:c4:7a:54:a0:51"
               mode: "static"
               ip: "172.16.49.74"
-              subnet: "172.16.49.64/26" # create it manually... in UI
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
           power_parameters:
             power_address: "185.8.59.232"
-            #power_pass: ==IPMI_PASS==
-            power_password: ==IPMI_PASS==
+            power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
-
   mcp_common_scripts_branch: ''
   mcp_version: proposed
   offline_deployment: 'False'
@@ -293,8 +284,6 @@ default_context:
   openstack_cluster_size: compact
   openstack_compute_count: '2'
   openstack_compute_rack01_hostname: cmp
-  openstack_compute_rack01_single_subnet: 10.167.8
-  openstack_compute_rack01_tenant_subnet: 192.168.0
   openstack_compute_single_address_ranges: 10.167.8.101-10.167.8.102
   openstack_compute_deploy_address_ranges: 172.16.49.73-172.16.49.74
   openstack_compute_tenant_address_ranges: 10.167.10.101-10.167.10.102
@@ -382,9 +371,9 @@ default_context:
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: 192.168.0.220
+  tenant_network_gateway: 10.167.10.253
   tenant_network_netmask: 255.255.255.0
-  tenant_network_subnet: 192.168.0.0/24
+  tenant_network_subnet: 10.167.10.0/24
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
   openldap_domain: cookied-bm-4.0-contrail.local
@@ -405,15 +394,11 @@ default_context:
   ceph_public_network: "10.167.8.0/24"
   ceph_cluster_network: "10.167.8.0/24"
 
-  # For compatibility with 2018.8.0
-  ceph_osd_rack01_deploy_subnet: '172.16.49'
-  ceph_osd_rack01_single_subnet: '10.167.8'
-  ceph_osd_rack01_backend_subnet: '10.167.8'
-
 # for 2018.11.0+
-#  ceph_osd_deploy_address_ranges: "172.16.49.70-172.16.49.72"
-#  ceph_osd_storage_address_ranges: "10.167.47.200-10.167.47.202"
-#  ceph_osd_backend_address_ranges: "10.167.49.200-10.167.49.202"
+  ceph_osd_single_address_ranges: "10.167.8.200-10.167.8.202"
+  ceph_osd_deploy_address_ranges: "172.16.49.70-172.16.49.72"
+  ceph_osd_storage_address_ranges: "10.167.8.200-10.167.8.202"
+  ceph_osd_backend_address_ranges: "10.167.10.200-10.167.10.202"
 
   ceph_osd_data_disks: "/dev/sdb"
   ceph_osd_journal_or_block_db_disks: "/dev/sdb"
@@ -447,3 +432,6 @@ default_context:
   #ceph_rgw_node03_deploy_address: "172.16.48.78"
   ceph_rgw_node03_address: "10.167.8.78"
   ceph_rgw_node03_hostname: "rgw03"
+  manila_enabled: 'False'
+  barbican_enabled: 'False'
+  barbican_integration_enabled: 'False'
