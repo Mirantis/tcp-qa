@@ -27,6 +27,14 @@
   retry: {count: 2, delay: 5}
   skip_fail: false
 
+- description: Generate a public key for machines in MAAS
+  cmd: |
+    ssh-keygen -y -f ~root/.ssh/id_rsa > ~root/.ssh/id_rsa.pub
+    maas mirantis sshkeys create key="$(cat ~root/.ssh/id_rsa.pub)"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: Run comissioning of BM nodes
   cmd: |
     salt-call maas.process_machines
@@ -44,6 +52,17 @@
 - description: Enforce the interfaces configuration defined in the model for servers
   cmd: |
     salt-call state.sls maas.machines.assign_ip;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Remove all the salt-minions and re-register the cfg01 minion
+  cmd: |
+    salt-key -y -D;
+    salt-call test.ping
+    sleep 5
+    # Check that the cfg01 is registered
+    salt-key | grep cfg01
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
