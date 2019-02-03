@@ -28,6 +28,7 @@ aliases:
 {% set HOSTNAME_RGW03 = os_env('HOSTNAME_RGW03', 'rgw03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_OSD01 = os_env('HOSTNAME_OSD01', 'osd1.' + DOMAIN_NAME) %}
 {% set HOSTNAME_OSD02 = os_env('HOSTNAME_OSD02', 'osd2.' + DOMAIN_NAME) %}
+{% set HOSTNAME_OSD03 = os_env('HOSTNAME_OSD03', 'osd3.' + DOMAIN_NAME) %}
 {% set HOSTNAME_GTW01 = os_env('HOSTNAME_GTW01', 'gtw01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01.' + DOMAIN_NAME) %}
@@ -63,6 +64,7 @@ template:
             default_{{ HOSTNAME_CID03 }}: +93
             default_{{ HOSTNAME_OSD01 }}: +94
             default_{{ HOSTNAME_OSD02 }}: +95
+            default_{{ HOSTNAME_OSD03 }}: +89
             default_{{ HOSTNAME_CMN01 }}: +96
             default_{{ HOSTNAME_CMN02 }}: +97
             default_{{ HOSTNAME_CMN03 }}: +98
@@ -101,6 +103,7 @@ template:
             default_{{ HOSTNAME_CID03 }}: +93
             default_{{ HOSTNAME_OSD01 }}: +94
             default_{{ HOSTNAME_OSD02 }}: +95
+            default_{{ HOSTNAME_OSD03 }}: +89
             default_{{ HOSTNAME_CMN01 }}: +96
             default_{{ HOSTNAME_CMN02 }}: +97
             default_{{ HOSTNAME_CMN03 }}: +98
@@ -135,6 +138,7 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_OSD01 }}: +94
             default_{{ HOSTNAME_OSD02 }}: +95
+            default_{{ HOSTNAME_OSD03 }}: +89
             default_{{ HOSTNAME_CMN01 }}: +96
             default_{{ HOSTNAME_CMN02 }}: +97
             default_{{ HOSTNAME_CMN03 }}: +98
@@ -169,6 +173,7 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +106
             default_{{ HOSTNAME_OSD01 }}: +94
             default_{{ HOSTNAME_OSD02 }}: +95
+            default_{{ HOSTNAME_OSD03 }}: +89
             default_{{ HOSTNAME_CMN01 }}: +96
             default_{{ HOSTNAME_CMN02 }}: +97
             default_{{ HOSTNAME_CMN03 }}: +98
@@ -477,6 +482,38 @@ template:
               network_config: *network_config
 
           - name: {{ HOSTNAME_OSD02 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: ceph_osd
+                  capacity: 50
+                  format: qcow2
+                - name: ceph_journal
+                  capacity: 50
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_OSD03 }}
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
