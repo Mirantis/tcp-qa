@@ -45,19 +45,19 @@ default_context:
   ceph_osd_backend: bluestore
   ceph_osd_block_db_size: '10'
   ceph_osd_bond_mode: active-backup
-  ceph_osd_count: '2'
+  ceph_osd_count: '3'
   ceph_osd_data_disks: /dev/vdb
   ceph_osd_journal_or_block_db_disks: /dev/vdc
-  ceph_osd_node_count: '2'
+  ceph_osd_node_count: '3'
   ceph_osd_journal_size: '10'
   ceph_osd_primary_first_nic: eth1
   ceph_osd_primary_second_nic: eth2
   ceph_osd_rack01_backend_subnet: 10.167.4
   ceph_osd_rack01_hostname: osd
   ceph_osd_rack01_single_subnet: 10.167.4
-  ceph_osd_single_address_ranges: 10.167.4.94-10.167.4.95
-  ceph_osd_deploy_address_ranges: 10.167.5.94-10.167.5.95
-  ceph_osd_backend_address_ranges: 10.167.4.94-10.167.4.95
+  ceph_osd_single_address_ranges: 10.167.4.87-10.167.4.89
+  ceph_osd_deploy_address_ranges: 10.167.5.87-10.167.5.89
+  ceph_osd_backend_address_ranges: 10.167.4.87-10.167.4.89
   ceph_public_network: 10.167.4.0/24
   ceph_rgw_address: 10.167.4.75
   ceph_rgw_hostname: rgw
