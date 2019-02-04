@@ -15,15 +15,6 @@
 {% set HOSTNAME_CMP02 = os_env('HOSTNAME_CMP02', 'cmp002.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP03 = os_env('HOSTNAME_CMP03', 'cmp003.' + DOMAIN_NAME) %}
 {% set HOSTNAME_CMP04 = os_env('HOSTNAME_CMP04', 'cmp004.' + DOMAIN_NAME) %}
-{% set HOSTNAME_LOG01 = os_env('HOSTNAME_LOG01', 'log01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_LOG02 = os_env('HOSTNAME_LOG02', 'log02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_LOG03 = os_env('HOSTNAME_LOG03', 'log03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MTR01 = os_env('HOSTNAME_MTR01', 'mtr01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MTR02 = os_env('HOSTNAME_MTR02', 'mtr02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MTR03 = os_env('HOSTNAME_MTR03', 'mtr03.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MON01 = os_env('HOSTNAME_MON01', 'mon01.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MON02 = os_env('HOSTNAME_MON02', 'mon02.' + DOMAIN_NAME) %}
-{% set HOSTNAME_MON03 = os_env('HOSTNAME_MON03', 'mon03.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01.' + DOMAIN_NAME) %}
 {% set HOSTNAME_PRX02 = os_env('HOSTNAME_PRX02', 'prx02.' + DOMAIN_NAME) %}
 {% set HOSTNAME_KVM01 = os_env('HOSTNAME_KVM01', 'kvm01.' + DOMAIN_NAME) %}
@@ -85,18 +76,6 @@ template:
             default_{{ HOSTNAME_CMP02 }}: +102
             default_{{ HOSTNAME_CMP03 }}: +103
             default_{{ HOSTNAME_CMP04 }}: +104
-            default_{{ HOSTNAME_LOG }}: +60
-            default_{{ HOSTNAME_LOG01 }}: +61
-            default_{{ HOSTNAME_LOG02 }}: +62
-            default_{{ HOSTNAME_LOG03 }}: +63
-            default_{{ HOSTNAME_MON }}: +70
-            default_{{ HOSTNAME_MON01 }}: +71
-            default_{{ HOSTNAME_MON02 }}: +72
-            default_{{ HOSTNAME_MON03 }}: +73
-            default_{{ HOSTNAME_MTR }}: +85
-            default_{{ HOSTNAME_MTR01 }}: +86
-            default_{{ HOSTNAME_MTR02 }}: +87
-            default_{{ HOSTNAME_MTR03 }}: +88
             default_{{ HOSTNAME_PRX01 }}: +221
             default_{{ HOSTNAME_PRX02 }}: +222
             default_{{ HOSTNAME_KVM }}: +240
