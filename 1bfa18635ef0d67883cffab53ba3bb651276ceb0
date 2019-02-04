@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "791c3c29_f4af5056",
+        "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/underlay--user-data-cfg01.yaml",
+        "patchSetId": 53
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-02-04T10:10:04Z",
+      "side": 1,
+      "message": "ens6",
+      "range": {
+        "startLine": 46,
+        "startChar": 61,
+        "endLine": 46,
+        "endChar": 65
+      },
+      "revId": "1bfa18635ef0d67883cffab53ba3bb651276ceb0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
