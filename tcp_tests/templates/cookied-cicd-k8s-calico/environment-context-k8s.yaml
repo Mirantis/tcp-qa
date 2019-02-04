@@ -80,6 +80,7 @@ nodes:
       reclass_storage_name: kubernetes_control_node01
       roles:
       - kubernetes_control
+      - features_kubernetes_rbac
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -91,6 +92,7 @@ nodes:
       reclass_storage_name: kubernetes_control_node02
       roles:
       - kubernetes_control
+      - features_kubernetes_rbac
       - linux_system_codename_xenial
       interfaces:
         ens3:
@@ -102,6 +104,7 @@ nodes:
       reclass_storage_name: kubernetes_control_node03
       roles:
       - kubernetes_control
+      - features_kubernetes_rbac
       - linux_system_codename_xenial
       interfaces:
         ens3:
