@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "fcb60abe_4cab9d63",
+        "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/salt.yaml",
+        "patchSetId": 53
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-02-04T10:12:40Z",
+      "side": 1,
+      "message": "It can be like a single command:\ncmd: systemctl is-active salt-minion\n\n, but in L11 :\nretry: {count: 10, delay: 10}  # ~ 100sec timeout",
+      "range": {
+        "startLine": 9,
+        "startChar": 36,
+        "endLine": 9,
+        "endChar": 67
+      },
+      "revId": "1bfa18635ef0d67883cffab53ba3bb651276ceb0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "791c3c29_f4af5056",
         "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/underlay--user-data-cfg01.yaml",
         "patchSetId": 53
