@@ -467,7 +467,7 @@ default_context:
   openstack_proxy_node02_address: 10.167.11.82
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: 10.167.11.19
-  openstack_version: pike
+  openstack_version: queens
   cinder_version: ${_param:openstack_version}
   oss_enabled: 'False'
   oss_node03_address: ${_param:stacklight_monitor_node03_address}
