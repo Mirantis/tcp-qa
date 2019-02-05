@@ -18,11 +18,9 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp9s0f0:
-          role: single_dhcp
+          role: single_mgm_dhcp
         enp9s0f1:
           role: single_vlan_ctl
-        ens11f0:
-          role: single_mgm_manual_vlan
 
     kvm02.cookied-cicd-bm-k8s-contrail40-maas.local:
       reclass_storage_name: infra_kvm_node02
@@ -31,11 +29,9 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp9s0f0:
-          role: single_dhcp
+          role: single_mgm_dhcp
         enp9s0f1:
           role: single_vlan_ctl
-        ens11f0:
-          role: single_mgm_manual_vlan
 
     kvm03.cookied-cicd-bm-k8s-contrail40-maas.local:
       reclass_storage_name: infra_kvm_node03
@@ -44,11 +40,9 @@ nodes:
       - linux_system_codename_xenial
       interfaces:
         enp9s0f0:
-          role: single_dhcp
+          role: single_mgm_dhcp
         enp9s0f1:
           role: single_vlan_ctl
-        ens11f0:
-          role: single_mgm_manual_vlan
 
     ctl01.cookied-cicd-bm-k8s-contrail40-maas.local:
       reclass_storage_name: kubernetes_control_node01
@@ -59,7 +53,7 @@ nodes:
         enp2s0f0:
           role: single_dhcp
         enp2s0f1:
-          role: single_vlan_ctl
+          role: single_k8s_contrail_ctl
 
     ctl02.cookied-cicd-bm-k8s-contrail40-maas.local:
       reclass_storage_name: kubernetes_control_node02
@@ -70,7 +64,7 @@ nodes:
         enp2s0f0:
           role: single_dhcp
         enp2s0f1:
-          role: single_vlan_ctl
+          role: single_k8s_contrail_ctl
 
     ctl03.cookied-cicd-bm-k8s-contrail40-maas.local:
       reclass_storage_name: kubernetes_control_node03
@@ -81,7 +75,7 @@ nodes:
         enp2s0f0:
           role: single_dhcp
         enp2s0f1:
-          role: single_vlan_ctl
+          role: single_k8s_contrail_ctl
 
     cmp<<count>>:
       reclass_storage_name: kubernetes_compute_rack01
@@ -92,5 +86,7 @@ nodes:
       interfaces:
         enp9s0f0:
           role: single_dhcp
+        enp9s0f1:
+          role: single_vlan_ctl
         ens11f1:
-          role: k8s_oc40_only_vhost_on_control_vlan
+          role: bond0_ab_contrail
