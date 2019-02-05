@@ -106,11 +106,12 @@ default_context:
   infra_kvm_vip_address: 10.167.13.240
   infra_primary_first_nic: eth1
   infra_primary_second_nic: eth2
+  internal_proxy_enabled: 'False'
   kubernetes_enabled: 'True'
   kubernetes_compute_count: 2
   kubernetes_compute_rack01_hostname: cmp
   kubernetes_compute_single_address_ranges: 10.167.13.103-10.167.13.104
-  kubernetes_compute_tenant_address_ranges: 10.167.13.103-10.167.13.104
+  kubernetes_compute_tenant_address_ranges: 10.167.14.103-10.167.14.104
   kubernetes_network_opencontrail_enabled: 'True'
   kubernetes_keepalived_vip_interface: br_ctl
   kubernetes_metallb_enabled: 'False'  # Not used with opencontrail
@@ -265,14 +266,23 @@ default_context:
   offline_deployment: 'False'
   kubernetes_control_address: 10.167.13.236
   kubernetes_control_node01_deploy_address: 172.17.41.9
+  kubernetes_control_node01_tenant_address: 10.167.14.111
   kubernetes_control_node01_address: 10.167.13.239
   kubernetes_control_node01_hostname: ctl01
   kubernetes_control_node02_deploy_address: 172.17.41.10
+  kubernetes_control_node02_tenant_address: 10.167.14.112
   kubernetes_control_node02_address: 10.167.13.238
   kubernetes_control_node02_hostname: ctl02
-  kubernetes_control_node02_deploy_address: 172.17.41.11
+  kubernetes_control_node03_deploy_address: 172.17.41.11
+  kubernetes_control_node03_tenant_address: 10.167.14.113
   kubernetes_control_node03_address: 10.167.13.237
   kubernetes_control_node03_hostname: ctl03
+  kubernetes_proxy_hostname: prx
+  kubernetes_proxy_node01_hostname: prx01
+  kubernetes_proxy_node02_hostname: prx02
+  kubernetes_proxy_address: 10.167.13.80
+  kubernetes_proxy_node01_address: 10.167.13.81
+  kubernetes_proxy_node02_address: 10.167.13.82
   linux_repo_contrail_component: oc40
   opencontrail_analytics_hostname: ctl
   opencontrail_analytics_node01_hostname: ctl01
@@ -293,9 +303,9 @@ default_context:
   opencontrail_control_node03_address: 10.167.13.237
   opencontrail_control_node03_hostname: ctl03
   opencontrail_enabled: 'True'
-  opencontrail_router01_address: 10.167.13.100
+  opencontrail_router01_address: 10.167.13.220
   opencontrail_router01_hostname: rtr01
-  opencontrail_router02_address: 10.167.13.101
+  opencontrail_router02_address: 10.167.13.221
   opencontrail_router02_hostname: rtr02
   opencontrail_public_ip_range: 172.17.41.128/26
   opencontrail_version: '4.0'
@@ -351,10 +361,10 @@ default_context:
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: 10.167.13.1
+  tenant_network_gateway: 10.167.14.253
   tenant_network_netmask: 255.255.255.0
-  tenant_network_subnet: 10.167.13.0/24
-  tenant_vlan: '2410'
+  tenant_network_subnet: 10.167.14.0/24
+  tenant_vlan: '2411'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
   vnf_onboarding_enabled: 'False'
