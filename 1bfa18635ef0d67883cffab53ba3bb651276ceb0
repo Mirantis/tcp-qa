@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "057096e6_2f88aa7a",
+        "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/salt.yaml",
+        "patchSetId": 53
+      },
+      "lineNbr": 9,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-02-07T11:42:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fcb60abe_4cab9d63",
+      "range": {
+        "startLine": 9,
+        "startChar": 36,
+        "endLine": 9,
+        "endChar": 67
+      },
+      "revId": "1bfa18635ef0d67883cffab53ba3bb651276ceb0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "791c3c29_f4af5056",
         "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/underlay--user-data-cfg01.yaml",
         "patchSetId": 53
@@ -36,6 +60,30 @@
       "writtenOn": "2019-02-04T10:10:04Z",
       "side": 1,
       "message": "ens6",
+      "range": {
+        "startLine": 46,
+        "startChar": 61,
+        "endLine": 46,
+        "endChar": 65
+      },
+      "revId": "1bfa18635ef0d67883cffab53ba3bb651276ceb0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "14a9aff6_8a6ccf4c",
+        "filename": "tcp_tests/templates/physical-mcp-offline-vxlan/underlay--user-data-cfg01.yaml",
+        "patchSetId": 53
+      },
+      "lineNbr": 46,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-02-07T11:42:41Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "791c3c29_f4af5056",
       "range": {
         "startLine": 46,
         "startChar": 61,
