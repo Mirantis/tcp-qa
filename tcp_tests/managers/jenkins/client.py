@@ -196,3 +196,26 @@ class JenkinsClient(object):
                 self.__client._build_url(WORKFLOW_DESCRIPTION, locals()))
         response = self.__client.jenkins_open(req)
         return json.loads(response)
+
+    def get_artifact(self, name, build_id, artifact_path, destination_name):
+        '''Wait until the specified build is finished
+
+        :param name: ``str``, job name
+        :param build_id: ``str``, build id or "lastBuild"
+        :param artifact_path: ``str``, path and filename of the artifact
+                              relative to the job URL
+        :param artifact_path: ``str``, destination path and filename
+                              on the local filesystem where to save
+                              the artifact content
+        :returns: requests object with headers and console output,  ``obj``
+        '''
+        folder_url, short_name = self.__client._get_job_folder(name)
+
+        DOWNLOAD_URL = ('%(folder_url)sjob/%(short_name)s/%(build_id)s/'
+                        'artifact/%(artifact_path)s')
+        req = requests.Request(
+                'GET',
+                self.__client._build_url(DOWNLOAD_URL, locals()))
+
+        response = self.__client.jenkins_request(req)
+        return response.content
