@@ -12,12 +12,15 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+import jenkins
 import pytest
+import os
 
 from tcp_tests import logger
 from tcp_tests import settings
 from tcp_tests.utils import run_jenkins_job
 from tcp_tests.utils import get_jenkins_job_stages
+from tcp_tests.utils import get_jenkins_job_artifact
 
 LOG = logger.logger
 
@@ -100,6 +103,7 @@ class TestCvpPipelines(object):
             1. Get CICD Jenkins access credentials from salt
             2. Run job cvp-sanity
             3. Get passed stages from cvp-sanity
+            4. Download XML report from the job
         """
         salt = salt_actions
         show_step(1)
@@ -146,8 +150,24 @@ class TestCvpPipelines(object):
         LOG.info(description)
         LOG.info('\n'.join(stages))
 
-        assert cvp_func_sanity_result == 'SUCCESS', "{0}\n{1}".format(
-            description, '\n'.join(stages))
+        # Download XML report
+        show_step(4)
+        destination_name = os.path.join(settings.LOGS_DIR,
+                                        "cvp_sanity_report.xml")
+        # Do not fail the test case when the job is failed, but
+        # artifact with the XML report is present in the job.
+        try:
+            get_jenkins_job_artifact.download_artifact(
+                host=jenkins_url,
+                username=jenkins_user,
+                password=jenkins_pass,
+                job_name=job_name,
+                build_number='lastBuild',
+                artifact_path='validation_artifacts/cvp-sanity_report.xml',
+                destination_name=destination_name)
+        except jenkins.NotFoundException:
+            raise jenkins.NotFoundException("{0}\n{1}".format(
+                description, '\n'.join(stages)))
 
     @pytest.mark.grab_versions
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
