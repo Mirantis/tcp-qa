@@ -265,7 +265,7 @@ default_context:
   octavia_health_manager_node01_address: 192.168.1.10
   octavia_health_manager_node02_address: 192.168.1.11
   octavia_health_manager_node03_address: 192.168.1.12
-  octavia_manager_cluster: 'False'
+  octavia_manager_cluster: 'True'
   octavia_hm_bind_ip: 192.168.1.12
   octavia_lb_mgmt_cidr: 192.168.1.0/24
   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
@@ -275,7 +275,24 @@ default_context:
   openstack_public_neutron_subnet_cidr: 172.17.16.0/24
   openstack_public_neutron_subnet_allocation_start: 172.17.16.201
   openstack_public_neutron_subnet_allocation_end: 172.17.16.245
+
   manila_enabled: 'False'
-  barbican_enabled: 'False'
+  barbican_enabled: 'True'
+  barbican_backend: dogtag
   barbican_integration_enabled: 'False'
 
+  openstack_barbican_address: 10.167.4.44
+  openstack_barbican_hostname: kmn
+  openstack_barbican_node01_address: 10.167.4.45
+  openstack_barbican_node01_hostname: kmn01
+  openstack_barbican_node02_address: 10.167.4.46
+  openstack_barbican_node02_hostname: kmn02
+  openstack_barbican_node03_address: 10.167.4.47
+  openstack_barbican_node03_hostname: kmn03
+
+  nova_vnc_tls_enabled: 'True'
+  galera_ssl_enabled: 'True'
+  openstack_mysql_x509_enabled: 'True'
+  rabbitmq_ssl_enabled: 'True'
+  openstack_rabbitmq_x509_enabled: 'True'
+  openstack_internal_protocol: 'https'
