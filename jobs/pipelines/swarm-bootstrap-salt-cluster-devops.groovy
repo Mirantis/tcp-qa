@@ -13,6 +13,7 @@
  *   MCP_IMAGE_PATH1604            Local path to the image http://ci.mcp.mirantis.net:8085/images/ubuntu-16-04-x64-mcpproposed.qcow2
  *   IMAGE_PATH_CFG01_DAY01        Local path to the image http://ci.mcp.mirantis.net:8085/images/cfg01-day01-proposed.qcow2
  *   CFG01_CONFIG_IMAGE_NAME       Name for the creating config drive image, like cfg01.${LAB_CONFIG_NAME}-config-drive.iso
+ *   TCP_QA_BRANCH                 Branch of to the tcp-qa, like master or release/2019.2.0
  *   TCP_QA_REFS                   Reference to the tcp-qa change on review.gerrithub.io, like refs/changes/46/418546/41
  *   PIPELINE_LIBRARY_REF          Reference to the pipeline-library change
  *   MK_PIPELINES_REF              Reference to the mk-pipelines change
