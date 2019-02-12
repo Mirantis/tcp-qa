@@ -303,6 +303,22 @@ class RuntestManager(object):
                         " state.sls runtest.barbican_sign_image")},
             )
 
+        if self.image_version == 'mitaka':
+            commands.append({
+                'description': "Change max microversion",
+                'node_name': self.target_name,
+                'cmd': ("sed -i 's/max_microversion = 2.42/max_microversion = 2.25/' "
+                        " /tmp/test/tempest.conf")},
+            )
+
+        if self.image_version == 'newton':
+            commands.append({
+                'description': "Change max microversion",
+                'node_name': self.target_name,
+                'cmd': ( "sed -i 's/max_microversion = 2.42/max_microversion = 2.38/' "
+                         "/tmp/test/tempest.conf")},
+            )
+
         self.__salt_api.execute_commands(commands=commands,
                                          label="Prepare for Tempest")
 
