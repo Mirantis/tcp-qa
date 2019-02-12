@@ -80,3 +80,11 @@
 {{ SHARED_OPENSTACK.MACRO_INSTALL_HORIZON() }}
 
 {{ SHARED_OPENSTACK.MACRO_INSTALL_COMPUTE(CELL_MAPPING=true) }}
+
+- description: Upload tempest template
+  upload:
+    local_path: {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
+    local_filename: runtest.yml
+    remote_path: /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/
+  node_name: {{ HOSTNAME_CFG01 }}
+  skip_fail: False
