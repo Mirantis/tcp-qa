@@ -1,0 +1,28 @@
+#cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+vendor_data:
+    enabled: True
+
+ssh_pwauth: True
+users:
+  - name: root
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_pwauth: True
+
+
+disable_root: false
+chpasswd:
+  list: |
+    root:r00tme
+  expire: False
+
+bootcmd:
+ # Block access to SSH while node is preparing
+ # - cloud-init-per once sudo echo 'sshd:ALL' >> /etc/hosts.deny
+ # Enable root access
+ - touch /is_cloud_init_started
+ - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+ - service sshd restart
+
+merge_how: "dict(recurse_array)+list(append)"
