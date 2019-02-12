@@ -1,0 +1,2101 @@
+default_context:
+  # alertmanager_notification_email_enabled: 'True'
+  # alertmanager_notification_email_from: john.doe@example.org
+  # alertmanager_notification_email_hostname: 127.0.0.1
+  # alertmanager_notification_email_password: password
+  # alertmanager_notification_email_port: '587'
+  # alertmanager_notification_email_require_tls: 'True'
+  # alertmanager_notification_email_to: jane.doe@example.org
+  # auditd_enabled: 'False'
+# "=== CLUSTER GLOBALS ==="
+  cluster_domain: mcp-offline-vxlan.local
+  cluster_name: mcp-offline-vxlan
+  openldap_domain: mcp-offline-vxlan.local
+  mcp_version: 2019.2.0
+  cookiecutter_template_branch: master
+  cookiecutter_template_url: https://gerrit.mcp.mirantis.net/mk/cookiecutter-templates.git
+  shared_reclass_branch: ''
+  shared_reclass_url: https://gerrit.mcp.mirantis.net/salt-models/reclass-system.git
+  mcp_common_scripts_branch: ''
+
+# "=== COMPONENT SWITCHES ==="
+  cicd_enabled: 'True'
+  infra_enabled:      'True'
+  kubernetes_enabled: 'False'
+  ceph_enabled: 'True'
+  opencontrail_enabled: 'False'
+  openstack_enabled: 'True'
+  stacklight_enabled: 'True'
+  manila_enabled: 'False'
+
+# === CICD|INFRA COMPONENT SWITCHES ==="
+  maas_enabled: 'True'
+  openldap_enabled: 'True'
+  local_repositories: 'True'
+  offline_deployment: 'True'
+# Other
+  bmk_enabled: 'False'
+  upstream_proxy_enabled: 'False'
+  fluentd_enabled: 'True'
+## END of basic CC config
+  ceph_osd_count: '3'
+  openstack_compute_count: '4'
+  openscap_enabled: 'True'
+  openssh_groups: "qa_scale,oscore_devops,networking,stacklight,k8s_team,mcp_qa,drivetrain"
+  backup_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEogIBAAKCAQEArK5R0R/X4kmWID1A+/vIH/L2wT2SJOCZ9hw/byVVUANJUI0U
+    bDPap3fYMsC/w8/sfb0hI7QjXvKKTT1fSTzKwt8idMrSMQfnjPIbwcFfu6E5i7jv
+    RfqY4g9mspP6tkeoiolxw5BMdxnKaNIJ00T4/uIr4naiGK1OEqzFN9k6aFBMkYhh
+    IAahLM60Ja4ANy521LO2O5NDarVze9l3Mk77diKPm+OFkfc9XgxTxj92vhuG0B6X
+    7Z9nMuF4zxXZascu7wqiMkQnaq0pABJEcXbhLxjFvno7g8e5NuwYcTwuazkx8+Di
+    mdC1uTD91EFrvc7hnFHGzXU843xejkMDPaWt6wIDAQABAoIBAFDVvZku1empVuy6
+    n+wVvmYuX5KwVvSKa6hJKuzFxj0RfMWHdXL9hzL0KDICBwMMF4H5AkVrc09kLJfh
+    zfRD0AsPV1rjAyhOsfdJ8vJtqnn0DDM7HE9e8yiH2yRnn2qq+tv3YVkR+KmcWiNd
+    h5nt5L20dKSrsk/o+O5HEH+HYg8oGrmZYLmq5qOMLp2JGfKH7BS5a8z2fIrFdGeN
+    CStkFbv3vIgzu7X+S40s3b0tfgXz0Kdg+yUZb86i4qm3AjiWhb39jJ7wnw6m9dtQ
+    2ynBHRZs7Sir9C7nUJL0JicVg+w/Lpp4fBnR3Q7kuu7o2jYKMdykYsUtpnJ6Y3iF
+    il2pTgkCgYEA3jEwx7v+Ch7LN98cE0EWjQS9kGnQKwbbuz49IyKBLHXQqfwHQUvJ
+    nXRQSRQmHJUElzN3CfGq+FJz5xP7ZKWQdQZsEjMZ3hWvGIuJgLZAdUdq8bF64NVF
+    eaRinuaoKu5pzUr8FzkGsqItwgqgK1HU2peEmjdJHE6ZeF0RrPj8EkUCgYEAxvSS
+    jvn6fD+hnsHjEC+2i4GPn4l2lKMVu02UC22LKQeAJW1B4MbmZEeOaBYuQN+ARYIf
+    RLPP4HPgmod+23o7hYJsFwxDlBzkdY30MhTyW2MEvUx7ND1pelth40FmYtEWoZXq
+    7EC0dZYeC7fXXVHQOPHw3k1r+VQAR854HZ/P2m8CgYAKyN5yQ2iwOxBoFNc7BATB
+    MYK1+LzW6c1OiFXVV75nVwyaw5XikHgnwVaIRYcYCg+f+yqC/AztYqsngyvHldWu
+    KHKka4CM7AaErXkuGyqDxsSlGJU7Rn7JybXTuqRc+Rd/lG0p/2WY1BBeg7+EesNX
+    HNWd2qMc0Z/XXMUX3Tn29QKBgCIuyy99i6flVuNr9JNHX1nAvOhwOct36bfwsEr2
+    Wz6FZ2MGzpbMFbGNCc6gYPoMbIGExdKMAl9SCXkDZqxW5/scWW3sUYAVJrt71ET2
+    jF1fOeU8Sr7C/mhjYwIkrm6z9et1UpOc2mSJkkf5IiuKbvgZuYS4UKDZ6eJsev68
+    An5JAoGAJTQ1wQXo8Gp1oI1hXG70zoU9AjSVin6rs8cAWzoqdr5aLiTD1OtMeEMF
+    AupRxHgOVKb7RZoePcdusTEErWaYvxPS6vAeGgHf/aKIb8BDL4Rn7FS1DAa8R+s9
+    FN15hAhG2BGLujWvwLWL3aLlxmYWukSmx5QBa//TaFwIJvqF7HU=
+    -----END RSA PRIVATE KEY-----
+  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsrlHRH9fiSZYgPUD7+8gf8vbBPZIk4Jn2HD9vJVVQA0lQjRRsM9qnd9gywL/Dz+x9vSEjtCNe8opNPV9JPMrC3yJ0ytIxB+eM8hvBwV+7oTmLuO9F+pjiD2ayk/q2R6iKiXHDkEx3Gcpo0gnTRPj+4ividqIYrU4SrMU32TpoUEyRiGEgBqEszrQlrgA3LnbUs7Y7k0NqtXN72XcyTvt2Io+b44WR9z1eDFPGP3a+G4bQHpftn2cy4XjPFdlqxy7vCqIyRCdqrSkAEkRxduEvGMW+ejuDx7k27BhxPC5rOTHz4OKZ0LW5MP3UQWu9zuGcUcbNdTzjfF6OQwM9pa3r
+  ceph_cluster_network: 10.11.0.0/16
+
+
+
+  aptly_server_control_address: 10.11.0.14
+  aptly_server_deploy_address: 10.10.0.14
+  aptly_server_hostname: apt
+
+
+  # backend_network_netmask: 255.255.0.0
+  # backend_network_subnet: 10.11.0.0/16
+  backend_vlan: '1111'
+
+  ceph_hyper_converged: 'False'
+  ceph_mon_node01_deploy_address: 10.10.0.66
+  ceph_mon_node01_address: 10.11.0.66
+  ceph_mon_node01_ceph_public_address: 10.11.0.66
+  ceph_mon_node01_hostname: cmn01
+  ceph_mon_node02_deploy_address: 10.10.0.67
+  ceph_mon_node02_address: 10.11.0.67
+  ceph_mon_node02_ceph_public_address: 10.11.0.67
+  ceph_mon_node02_hostname: cmn02
+  ceph_mon_node03_deploy_address: 10.10.0.68
+  ceph_mon_node03_address: 10.11.0.68
+  ceph_mon_node03_ceph_public_address: 10.11.0.68
+  ceph_mon_node03_hostname: cmn03
+  ceph_osd_backend: bluestore
+  ceph_osd_block_db_size: '20'
+  ceph_osd_bond_mode: active-backup
+  ceph_osd_data_disks: /dev/sdb
+  ceph_osd_journal_or_block_db_disks: /dev/sdb
+  ceph_osd_node_count: '5'
+  ceph_osd_primary_first_nic: ten1
+  ceph_osd_primary_second_nic: ten2
+  ceph_osd_rack01_hostname: osd
+  ceph_osd_single_address_ranges: "10.11.0.201-10.11.0.203"
+  ceph_osd_deploy_address_ranges: "10.10.0.201-10.10.0.203"
+  ceph_osd_ceph_public_address_ranges: "10.11.0.201-10.11.0.203"
+  ceph_osd_backend_address_ranges: "10.13.0.201-10.13.0.203"
+  ceph_public_vlan: '1110'
+
+  ceph_public_network: 10.11.0.0/16
+  ceph_rgw_address: 10.11.0.75
+  ceph_rgw_hostname: rgw
+  ceph_rgw_node01_deploy_address: 10.10.0.76
+  ceph_rgw_node01_address: 10.11.0.76
+  ceph_rgw_node01_hostname: rgw01
+  ceph_rgw_node02_deploy_address: 10.10.0.77
+  ceph_rgw_node02_address: 10.11.0.77
+  ceph_rgw_node02_hostname: rgw02
+  ceph_rgw_node03_deploy_address: 10.10.0.78
+  ceph_rgw_node03_address: 10.11.0.78
+  ceph_rgw_node03_hostname: rgw03
+  ceph_version: luminous
+  cicd_control_node01_deploy_address: 10.10.0.91
+  cicd_control_node01_address: 10.11.0.91
+  cicd_control_node01_hostname: cid01
+  cicd_control_node02_deploy_address: 10.10.0.92
+  cicd_control_node02_address: 10.11.0.92
+  cicd_control_node02_hostname: cid02
+  cicd_control_node03_deploy_address: 10.10.0.93
+  cicd_control_node03_address: 10.11.0.93
+  cicd_control_node03_hostname: cid03
+  cicd_control_vip_address: 10.11.0.90
+  cicd_control_vip_hostname: cid
+  cicd_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEAp+1TRJaP/LuTBLLgVEJpIFHvw8kE/WL0oCVfKaTbbAZHTrpi
+    4Mf3WDdlDrc9ujp4w8r9LC5HXOWLtIotzi9vlIUmvotDYF7H4vvcVVa3NTzpgZHq
+    1vKzraJv7Ay1c+iV5AlG5ExulyrDb7fHdUsh72BZmgLh4zjw21Hk3wEOx5UZ4804
+    eAZgTsTtBrfFtZ7GyF9Lqp2m72Jg7Zqb0VXCBuMi2giaoV3hdNtnftF5zzgMey9l
+    8PbPNvTuNuRo9Lnz3kFq5pnGf1tBRRqbAx7xxPy8q7pzrj9kw3LfJWAGBJN2z4kn
+    GDKvy5TjEIcKRYiKpFZ8tDsVnhJYUaePvrZ/wwIDAQABAoIBAGQ2Zsi5qTfDoJrf
+    PKxL7XySKSmHnuiv0xh29PFfJmqy3H8JD9TgwKTueepsQ/QMzODbFHb3LzMq8VJO
+    W8N933Kce2Cerxilt1enwfdThoXI0fi24ZRgxgVKuMv/UZHYLQsm1h2L1ztzE6pp
+    3CgNLDU0JISaT79Pzby0hIbolK9ZPccmdhcyXOo9T1Xa1hRxnn9zJX4I3B1HEgPr
+    GiZXSWIWDK1tTxb7M2QvXjp/3MGeI5JabxTzdlW6xJgrpTzx4Mms2GjXe5HO/vDq
+    TTv++oOcC+NlHrF64wrtkxAkV3ofA0m15KfZ4KljqinCdyZ07D9fm1kRZC3isLMz
+    xHx/oHECgYEA1UVGOFepQwPXnvZwDzSiOe0TeUy7yZ43r30rXrVf5+KwJDjaKsYW
+    msHzzxjnUopFelAPc5zIM3GQ0TWMtbxpGT5HzoGpDmhegwl4iCRXcBEA/mkcpV/N
+    VpeKUS8LFGu4XnbgJKuJs20rkoYCZSuEhSj1W2nB0u9tSRSzjMMI1m0CgYEAyZJd
+    LccoIh6SflYsYPUA4JTatPgVCZCPYf6tVIh9ov3v5ZbkSNe3N58odbu23dtY799k
+    RhCP4aGlB+VdbMJDsvK6OO3FZbleKdtgu/Eyhkf6BLidWNxRiH9mi4rNzhB3uRo/
+    DzCsH9Z+3aSGwn+kkXppX3GjUImalSmgm/CdkO8CgYEAtoqKpeLyLzf0sEzCcWFd
+    kTMIPgSdnt5bT0tVecTIh9ORbA91PLM72c40fogURqOvABfSgeQpv05u44JwI4VW
+    d5LFJ033gyt16baLgguJA5SqQxd4u1uah4lBjGc1lo70yXX6N6jTPc4tQ0aMekeb
+    L9Z0239TtNXVtn2PiOXOhKkCgYEAwzO0fKKDIReOMj5tV6+sG9DLQ7mDVfHiiLnD
+    TTuov3E/Io1PoaMVUQ4Wdn1Eh/DlXdZuGtPrIkwRr2XVZX9zZBZfdMX+BZbPs6U5
+    NohLr3KAkpXd+rHRW2hU/Al9aHLWHjFmo+U0qthjn2y2/B/0VNXAuacoytOXGaBo
+    YttPG40CgYA18z21jGveCpNwbov3G8eAeSWK6KudCNfjxJ2wqnjaLJQlbDoB89IQ
+    1yt4cQB15Tl2WhuCHSKUanPSG6ke8H4vNSht3aVXqHNFpOCwsfsAol2OcSHGrbhh
+    L+Ptf/em7cJ19QZEOKUGfBhsy6IdZE2+y/U5fbJwNTUMSUVxUfBIYQ==
+    -----END RSA PRIVATE KEY-----
+  cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCn7VNElo/8u5MEsuBUQmkgUe/DyQT9YvSgJV8ppNtsBkdOumLgx/dYN2UOtz26OnjDyv0sLkdc5Yu0ii3OL2+UhSa+i0NgXsfi+9xVVrc1POmBkerW8rOtom/sDLVz6JXkCUbkTG6XKsNvt8d1SyHvYFmaAuHjOPDbUeTfAQ7HlRnjzTh4BmBOxO0Gt8W1nsbIX0uqnabvYmDtmpvRVcIG4yLaCJqhXeF022d+0XnPOAx7L2Xw9s829O425Gj0ufPeQWrmmcZ/W0FFGpsDHvHE/LyrunOuP2TDct8lYAYEk3bPiScYMq/LlOMQhwpFiIqkVny0OxWeElhRp4++tn/D
+
+  compute_bond_mode: active-backup
+  compute_deploy_nic: one1
+  compute_padding_with_zeros: 'True'
+  compute_primary_first_nic: ten1
+  compute_primary_second_nic: ten2
+  context_seed: hfadwDXYaA63EQY0T1Vug9JKAjh6miJ3gdBNBgkBuag5fJvsp9dxZamK7Q9BbVY5
+  control_network_netmask: 255.255.0.0
+  control_network_subnet: 10.11.0.0/16
+  control_vlan: '1110'
+  # cookiecutter_template_credentials: gerrit
+  deploy_network_gateway: 10.10.0.1
+  deploy_network_netmask: 255.255.0.0
+  deploy_network_subnet: 10.10.0.0/16
+  deployment_type: physical
+  dns_server01: 10.10.0.15
+  dns_server02: 10.11.0.15
+  email_address: product@mirantis.com
+  gainsight_service_enabled: 'False'
+  gateway_deploy_nic: one1
+  gateway_primary_first_nic: ten1
+  gateway_primary_second_nic: ten2
+  infra_bond_mode: active-backup
+  infra_deploy_nic: one1
+  #infra_kvm_vip_address: 10.11.0.239
+  infra_kvm_vip_address: 10.11.0.239
+  infra_kvm01_control_address: 10.11.0.241
+  infra_kvm01_deploy_address: 10.10.0.241
+  infra_kvm01_hostname: kvm01
+  infra_kvm02_control_address: 10.11.0.242
+  infra_kvm02_deploy_address: 10.10.0.242
+  infra_kvm02_hostname: kvm02
+  infra_kvm03_control_address: 10.11.0.243
+  infra_kvm03_deploy_address: 10.10.0.243
+  infra_kvm03_hostname: kvm03
+  infra_kvm04_control_address: 10.11.0.244
+  infra_kvm04_deploy_address: 10.10.0.244
+  infra_kvm04_hostname: kvm04
+  infra_kvm05_control_address: 10.11.0.245
+  infra_kvm05_deploy_address: 10.10.0.245
+  infra_kvm05_hostname: kvm05
+  infra_kvm06_control_address: 10.11.0.246
+  infra_kvm06_deploy_address: 10.10.0.246
+  infra_kvm06_hostname: kvm06
+  infra_primary_first_nic: ten1
+  infra_primary_second_nic: ten2
+  # internal_proxy_enabled: 'False'
+  # keycloak_enabled: 'False'
+  # kubernetes_ctl_on_kvm: 'False'
+  local_docker_images: 'True'
+  local_pipelines: 'True'
+  local_python_repo: 'True'
+  local_repo_url: ${_param:aptly_server_deploy_address}
+  # no_platform: 'False'
+  nova_vnc_tls_enabled: 'True'
+  openldap_organisation: ${_param:cluster_name}
+  # openssh_groups: ''
+  # For tempest tests which require access to instnaces via floating ips
+  openstack_create_public_network: 'True'
+  openstack_public_neutron_subnet_gateway: 10.16.250.1
+  openstack_public_neutron_subnet_cidr: 10.16.0.0/16
+  openstack_public_neutron_subnet_allocation_start: 10.16.250.10
+  openstack_public_neutron_subnet_allocation_end: 10.16.254.254
+
+  openstack_benchmark_node01_deploy_address: 10.10.0.95
+  openstack_benchmark_node01_address: 10.11.0.95
+  openstack_benchmark_node01_hostname: bmk01
+  # openstack_cluster_size: small
+  # openstack_cluster_size: small
+  openstack_cluster_size: golden
+  openstack_compute_rack01_hostname: cmp
+  openstack_compute_single_address_ranges: "10.11.0.101-10.11.0.104"
+  openstack_compute_deploy_address_ranges: "10.10.0.101-10.10.0.104"
+  openstack_compute_tenant_address_ranges: "10.12.0.101-10.12.0.104"
+  openstack_compute_backend_address_ranges: "10.11.0.101-10.11.0.104"
+  openstack_control_address: 10.11.0.10
+  openstack_control_hostname: ctl
+  openstack_control_node01_address: 10.11.0.11
+  openstack_control_node01_deploy_address: 10.10.0.11
+  openstack_control_node01_hostname: ctl01
+  openstack_control_node02_address: 10.11.0.12
+  openstack_control_node02_deploy_address: 10.10.0.12
+  openstack_control_node02_hostname: ctl02
+  openstack_control_node03_address: 10.11.0.13
+  openstack_control_node03_deploy_address: 10.10.0.13
+  openstack_control_node03_hostname: ctl03
+  openstack_database_address: 10.11.0.50
+  openstack_database_hostname: dbs
+  openstack_database_node01_address: 10.11.0.51
+  openstack_database_node01_deploy_address: 10.10.0.51
+  openstack_database_node01_hostname: dbs01
+  openstack_database_node02_address: 10.11.0.52
+  openstack_database_node02_deploy_address: 10.10.0.52
+  openstack_database_node02_hostname: dbs02
+  openstack_database_node03_address: 10.11.0.53
+  openstack_database_node03_deploy_address: 10.10.0.53
+  openstack_database_node03_hostname: dbs03
+  openstack_gateway_node01_address: 10.11.0.224
+  openstack_gateway_node01_deploy_address: 10.10.0.224
+  openstack_gateway_node01_tenant_address: 10.12.0.6
+  openstack_gateway_node01_hostname: gtw01
+  openstack_gateway_node02_address: 10.11.0.225
+  openstack_gateway_node02_deploy_address: 10.10.0.225
+  openstack_gateway_node02_tenant_address: 10.12.0.7
+  openstack_gateway_node02_hostname: gtw02
+  openstack_gateway_node03_address: 10.11.0.226
+  openstack_gateway_node03_deploy_address: 10.10.0.226
+  openstack_gateway_node03_tenant_address: 10.12.0.8
+  openstack_gateway_node03_hostname: gtw03
+  openstack_message_queue_address: 10.11.0.40
+  openstack_message_queue_hostname: msg
+  openstack_message_queue_node01_address: 10.11.0.41
+  openstack_message_queue_node01_deploy_address: 10.10.0.41
+  openstack_message_queue_node01_hostname: msg01
+  openstack_message_queue_node02_address: 10.11.0.42
+  openstack_message_queue_node02_deploy_address: 10.10.0.42
+  openstack_message_queue_node02_hostname: msg02
+  openstack_message_queue_node03_address: 10.11.0.43
+  openstack_message_queue_node03_deploy_address: 10.10.0.43
+  openstack_message_queue_node03_hostname: msg03
+  openstack_barbican_address: 10.11.0.44
+  openstack_barbican_hostname: kmn
+  openstack_barbican_node01_address: 10.11.0.45
+  openstack_barbican_node01_deploy_address: 10.10.0.45
+  openstack_barbican_node01_hostname: kmn01
+  openstack_barbican_node02_address: 10.11.0.46
+  openstack_barbican_node02_deploy_address: 10.10.0.46
+  openstack_barbican_node02_hostname: kmn02
+  openstack_barbican_node03_address: 10.11.0.47
+  openstack_barbican_node03_deploy_address: 10.10.0.47
+  openstack_barbican_node03_hostname: kmn03
+  openstack_network_engine: ovs
+  # openstack_neutron_bgp_vpn_driver: bagpipe
+  openstack_neutron_l2gw: 'False'
+  openstack_neutron_bgp_vpn: 'False'
+  openstack_neutron_qos: 'True'
+  openstack_neutron_vlan_aware_vms: 'True'
+  openstack_nfv_dpdk_enabled: 'False'
+  openstack_nfv_sriov_enabled: 'False'
+  openstack_nova_compute_nfv_req_enabled: 'False'
+  # openstack_nova_compute_reserved_host_memory_mb: '900'
+  openstack_ovs_dvr_enabled: 'True'
+  openstack_ovs_encapsulation_type: vxlan
+  openstack_proxy_address: 10.11.0.80
+  # openstack_proxy_address: 10.16.250.9
+  openstack_proxy_vip_interface: ens6
+  openstack_proxy_hostname: prx
+  openstack_proxy_node01_address: 10.11.0.81
+  openstack_proxy_node01_deploy_address: 10.10.0.81
+  openstack_proxy_node01_hostname: prx01
+  openstack_proxy_node02_address: 10.11.0.82
+  openstack_proxy_node02_deploy_address: 10.10.0.82
+  openstack_proxy_node02_hostname: prx02
+  openstack_nginx_proxy_glance_image_size: 30000m
+  openstack_upgrade_node01_address: 10.11.0.19
+  openstack_upgrade_node01_deploy_address: 10.10.0.19
+  openstack_version: pike
+  ovsdb_server: 'ovsdbx:127.0.0.1:6632'
+  ironic_enabled: 'False'
+  openstack_baremetal_address: 10.11.0.5
+  openstack_baremetal_deploy_address: 10.10.0.5
+  openstack_baremetal_hostname: bmt
+  openstack_baremetal_node01_address: 10.11.0.6
+  openstack_baremetal_node02_address: 10.11.0.7
+  openstack_baremetal_node03_address: 10.11.0.8
+  openstack_baremetal_node01_deploy_address: 10.10.0.6
+  openstack_baremetal_node02_deploy_address: 10.10.0.7
+  openstack_baremetal_node03_deploy_address: 10.10.0.8
+  openstack_baremetal_node01_hostname: bmt01
+  openstack_baremetal_node02_hostname: bmt02
+  openstack_baremetal_node03_hostname: bmt03
+  openstack_baremetal_address_baremetal: 10.15.0.10
+  openstack_baremetal_node01_baremetal_address: 10.15.0.11
+  openstack_baremetal_node02_baremetal_address: 10.15.0.12
+  openstack_baremetal_node03_baremetal_address: 10.15.0.13
+  openstack_baremetal_neutron_subnet_cidr: 10.15.0.0/16
+  openstack_baremetal_neutron_subnet_allocation_start: 10.15.90.1
+  openstack_baremetal_neutron_subnet_allocation_end: 10.15.199.255
+  openstack_dns_hostname: dns
+  openstack_dns_node01_address: 10.11.0.54
+  openstack_dns_node01_deploy_address: 10.10.0.54
+  openstack_dns_node01_hostname: dns01
+  openstack_dns_node02_address: 10.11.0.55
+  openstack_dns_node02_deploy_address: 10.10.0.55
+  openstack_dns_node02_hostname: dns02
+
+  openstack_telemetry_address: 10.11.0.35
+  openstack_telemetry_hostname: mdb
+  openstack_telemetry_node01_address: 10.11.0.36
+  openstack_telemetry_node01_deploy_address: 10.10.0.36
+  # openstack_telemetry_node01_storage_address: 10.11.0.36
+  openstack_telemetry_node01_hostname: mdb01
+  openstack_telemetry_node02_address: 10.11.0.37
+  openstack_telemetry_node02_deploy_address: 10.10.0.37
+  # openstack_telemetry_node02_storage_address: 10.11.0.37
+  openstack_telemetry_node02_hostname: mdb02
+  openstack_telemetry_node03_address: 10.11.0.38
+  openstack_telemetry_node03_deploy_address: 10.10.0.38
+  # openstack_telemetry_node03_storage_address: 10.11.0.38
+  openstack_telemetry_node03_hostname: mdb03
+
+  # oss_enabled: 'False'
+  # oss_node03_address: ${_param:stacklight_monitor_node03_address}
+  # oss_webhook_app_id: '24'
+  # oss_webhook_login_id: '13'
+  # platform: openstack_enabled
+  public_host: ${_param:openstack_proxy_address}
+  publication_method: email
+  # physical_lab_setup: 'False'
+  reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
+  salt_api_password: nlRtYRLbBuvqk3b2XJGrSp7HCcDW0Mgr
+  salt_api_password_hash: $6$IXWjGjZz$6YfimiwAzBxmb6hs1IZ2vzdslJiiwQXAN/PdlrxdxLWBlPLb57wkkFRd5wUwXoWAPfAkkZFhP8rUKE14ucQ3e1
+  salt_master_address: 10.11.0.15
+  salt_master_hostname: cfg01
+  salt_master_management_address: 10.10.0.15
+
+  # sriov_network_subnet: 10.55.0.0/16
+  stacklight_log_address: 10.11.0.60
+  stacklight_log_hostname: log
+  stacklight_log_node01_address: 10.11.0.61
+  stacklight_log_node01_deploy_address: 10.10.0.61
+  stacklight_log_node01_hostname: log01
+  stacklight_log_node02_address: 10.11.0.62
+  stacklight_log_node02_deploy_address: 10.10.0.62
+  stacklight_log_node02_hostname: log02
+  stacklight_log_node03_address: 10.11.0.63
+  stacklight_log_node03_deploy_address: 10.10.0.63
+  stacklight_log_node03_hostname: log03
+  stacklight_long_term_storage_type: prometheus
+  stacklight_monitor_address: 10.11.0.70
+  stacklight_monitor_hostname: mon
+  stacklight_monitor_node01_address: 10.11.0.71
+  stacklight_monitor_node01_deploy_address: 10.10.0.71
+  stacklight_monitor_node01_hostname: mon01
+  stacklight_monitor_node02_address: 10.11.0.72
+  stacklight_monitor_node02_deploy_address: 10.10.0.72
+  stacklight_monitor_node02_hostname: mon02
+  stacklight_monitor_node03_address: 10.11.0.73
+  stacklight_monitor_node03_deploy_address: 10.10.0.73
+  stacklight_monitor_node03_hostname: mon03
+  stacklight_telemetry_address: 10.11.0.85
+  stacklight_telemetry_hostname: mtr
+  stacklight_telemetry_node01_address: 10.11.0.86
+  stacklight_telemetry_node01_deploy_address: 10.10.0.86
+  stacklight_telemetry_node01_hostname: mtr01
+  stacklight_telemetry_node02_address: 10.11.0.87
+  stacklight_telemetry_node02_deploy_address: 10.10.0.87
+  stacklight_telemetry_node02_hostname: mtr02
+  stacklight_telemetry_node03_address: 10.11.0.88
+  stacklight_telemetry_node03_deploy_address: 10.10.0.88
+  stacklight_telemetry_node03_hostname: mtr03
+  stacklight_version: '2'
+  static_ips_on_deploy_network_enabled: 'True'
+  tenant_network_gateway: 10.12.0.1
+  tenant_network_netmask: 255.255.255.0
+  tenant_network_subnet: 10.12.0.0/16
+  tenant_vlan: '1111'
+  use_default_network_scheme: 'False'
+  vnf_onboarding_enabled: 'False'
+  designate_enabled: 'True'
+  galera_ssl_enabled: 'True'
+  openstack_mysql_x509_enabled: 'True'
+  rabbitmq_ssl_enabled: 'True'
+  openstack_rabbitmq_x509_enabled: 'True'
+  openstack_internal_protocol: 'https'
+  tenant_telemetry_enabled: 'True'
+  gnocchi_aggregation_storage: 'ceph'
+  barbican_enabled: 'True'
+  barbican_integration_enabled: 'False'
+  barbican_backend: 'dogtag'
+  openstack_octavia_enabled: 'True'
+  octavia_manager_cluster: 'False'
+  octavia_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEAtjnPDJsQToHBtoqIo15mdSYpfi8z6DFMi8Gbo0KCN33OUn5u
+    OctbdtjUfeuhvI6px1SCnvyWi09Ft8eWwq+KwLCGKbUxLvqKltuJ7K3LIrGXkt+m
+    qZN4O9XKeVKfZH+mQWkkxRWgX2r8RKNV3GkdNtd74VjhP+R6XSKJQ1Z8b7eHM10v
+    6IjTY/jPczjK+eyCeEj4qbSnV8eKlqLhhquuSQRmUO2DRSjLVdpdf2BB4/BdWFsD
+    YOmX7mb8kpEr9vQ+c1JKMXDwD6ehzyU8kE+1kVm5zOeEy4HdYIMpvUfN49P1anRV
+    2ISQ1ZE+r22IAMKl0tekrGH0e/1NP1DF5rINMwIDAQABAoIBAQCkP/cgpaRNHyg8
+    ISKIHs67SWqdEm73G3ijgB+JSKmW2w7dzJgN//6xYUAnP/zIuM7PnJ0gMQyBBTMS
+    NBTv5spqZLKJZYivj6Tb1Ya8jupKm0jEWlMfBo2ZYVrfgFmrfGOfEebSvmuPlh9M
+    vuzlftmWVSSUOkjODmM9D6QpzgrbpktBuA/WpX+6esMTwJpOcQ5xZWEnHXnVzuTc
+    SncodVweE4gz6F1qorbqIJz8UAUQ5T0OZTdHzIS1IbamACHWaxQfixAO2s4+BoUK
+    ANGGZWkfneCxx7lthvY8DiKn7M5cSRnqFyDToGqaLezdkMNlGC7v3U11FF5blSEW
+    fL1o/HwBAoGBAOavhTr8eqezTchqZvarorFIq7HFWk/l0vguIotu6/wlh1V/KdF+
+    aLLHgPgJ5j+RrCMvTBoKqMeeHfVGrS2udEy8L1mK6b3meG+tMxU05OA55abmhYn7
+    7vF0q8XJmYIHIXmuCgF90R8Piscb0eaMlmHW9unKTKo8EOs5j+D8+AMJAoGBAMo4
+    8WW+D3XiD7fsymsfXalf7VpAt/H834QTbNZJweUWhg11eLutyahyyfjjHV200nNZ
+    cnU09DWKpBbLg7d1pyT69CNLXpNnxuWCt8oiUjhWCUpNqVm2nDJbUdlRFTzYb2fS
+    ZC4r0oQaPD5kMLSipjcwzMWe0PniySxNvKXKInFbAoGBAKxW2qD7uKKKuQSOQUft
+    aAksMmEIAHWKTDdvOA2VG6XvX5DHBLXmy08s7rPfqW06ZjCPCDq4Velzvgvc9koX
+    d/lP6cvqlL9za+x6p5wjPQ4rEt/CfmdcmOE4eY+1EgLrUt314LHGjjG3ScWAiirE
+    QyDrGOIGaYoQf89L3KqIMr0JAoGARYAklw8nSSCUvmXHe+Gf0yKA9M/haG28dCwo
+    780RsqZ3FBEXmYk1EYvCFqQX56jJ25MWX2n/tJcdpifz8Q2ikHcfiTHSI187YI34
+    lKQPFgWb08m1NnwoWrY//yx63BqWz1vjymqNQ5GwutC8XJi5/6Xp+tGGiRuEgJGH
+    EIPUKpkCgYAjBIVMkpNiLCREZ6b+qjrPV96ed3iTUt7TqP7yGlFI/OkORFS38xqC
+    hBP6Fk8iNWuOWQD+ohM/vMMnvIhk5jwlcwn+kF0ra04gi5KBFWSh/ddWMJxUtPC1
+    2htvlEc6zQAR6QfqXHmwhg1hP81JcpqpicQzCMhkzLoR1DC6stXdLg==
+    -----END RSA PRIVATE KEY-----
+  octavia_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2Oc8MmxBOgcG2ioijXmZ1Jil+LzPoMUyLwZujQoI3fc5Sfm45y1t22NR966G8jqnHVIKe/JaLT0W3x5bCr4rAsIYptTEu+oqW24nsrcsisZeS36apk3g71cp5Up9kf6ZBaSTFFaBfavxEo1XcaR0213vhWOE/5HpdIolDVnxvt4czXS/oiNNj+M9zOMr57IJ4SPiptKdXx4qWouGGq65JBGZQ7YNFKMtV2l1/YEHj8F1YWwNg6ZfuZvySkSv29D5zUkoxcPAPp6HPJTyQT7WRWbnM54TLgd1ggym9R83j0/VqdFXYhJDVkT6vbYgAwqXS16SsYfR7/U0/UMXmsg0z
+
+
+## MAAS BEGIN
+  maas_deploy_address: 10.10.0.15
+  maas_deploy_network_name: deploy_network
+  maas_deploy_range_end: 10.10.254.255
+  maas_deploy_range_start: 10.10.254.1
+  maas_deploy_vlan: '0'
+  maas_fabric_name: deploy_fabric
+  maas_hostname: cfg01
+  maas_machines: |
+    kvm04:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      # pxe_interface_mac:
+      pxe_interface_mac: "0c:c4:7a:33:1f:e4"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:33:1f:e4"
+          mode: "static"
+          ip: ${_param:infra_kvm_node04_deploy_address}
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:33:1f:e5"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:ea"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:eb"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.161
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    kvm05:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:33:20:fc"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:33:20:fc"
+          mode: "static"
+          ip: ${_param:infra_kvm_node05_deploy_address}
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:33:20:fd"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:e6"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:e7"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.162
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    kvm06:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:31:fb:b6"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:31:fb:b6"
+          mode: "static"
+          ip: ${_param:infra_kvm_node06_deploy_address}
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:31:fb:b7"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:fa"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:fb"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.163
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    kvm01:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:31:f0:12"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:31:f0:12"
+          mode: "static"
+          ip: ${_param:infra_kvm_node01_deploy_address}
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:31:f0:13"
+          name: one2
+        fourty1:
+          mode: UNCONFIGURED
+          mac: "00:02:c9:44:82:70"
+          name: ten1
+        fourty2:
+          mode: UNCONFIGURED
+          mac: "00:02:c9:44:82:71"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.17
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 120G
+                type: ext4
+
+    kvm02:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:31:ef:bc"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:31:ef:bc"
+          mode: "static"
+          ip: ${_param:infra_kvm_node02_deploy_address}
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:31:ef:bd"
+          name: one2
+        fourty1:
+          mode: UNCONFIGURED
+          mac: "00:02:c9:44:81:40"
+          name: ten1
+        fourty2:
+          mode: UNCONFIGURED
+          mac: "00:02:c9:44:81:41"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.18
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 120G
+                type: ext4
+
+    kvm03:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:31:ef:aa"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:31:ef:aa"
+          mode: "static"
+          ip: ${_param:infra_kvm_node03_deploy_address}
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:31:ef:ab"
+          name: one2
+        fourty1:
+          mode: UNCONFIGURED
+          mac: "e4:1d:2d:72:23:b1"
+          name: ten1
+        fourty2:
+          mode: UNCONFIGURED
+          mac: "e4:1d:2d:72:23:b2"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.19
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 120G
+                type: ext4
+
+    cmp001:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:6d:33:12"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:6d:33:12"
+          mode: "static"
+          ip: 10.10.0.101
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:6d:33:13"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:92:8b:bc"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:92:8b:bd"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:65:bc"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:65:bd"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.81
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    cmp002:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:cb:6a"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:cb:6a"
+          mode: "static"
+          ip: 10.10.0.102
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:cb:6b"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:58:41:d0"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:58:41:d1"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1f:00:18"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1f:00:19"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.82
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    cmp003:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:91:5a"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:91:5a"
+          mode: "static"
+          ip: 10.10.0.103
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:91:5b"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:97:e5:9c"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:97:e5:9d"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:a4:70:7c"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:a4:70:7d"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.83
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    cmp004:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:cb:5a"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:cb:5a"
+          mode: "static"
+          ip: 10.10.0.104
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:cb:5b"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:87:17:90"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:87:17:91"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:45:74"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:45:75"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.84
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    # OSD Nodes
+    osd001:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:cb:7a"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:cb:7a"
+          mode: "static"
+          ip: 10.10.0.201
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:cb:7b"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "90:e2:ba:1a:6c:98"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "90:e2:ba:1a:6c:99"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:97:df:84"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:97:df:85"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.85
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    osd002:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:6d:2e:1e"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:6d:2e:1e"
+          mode: "static"
+          ip: 10.10.0.202
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:6d:2e:1f"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:6d:20"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:6d:21"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:70:e8"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:70:e9"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.86
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    osd003:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:d1:10"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:d1:10"
+          mode: "static"
+          ip: 10.10.0.203
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:d1:11"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8a:c1:90"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8a:c1:91"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:92:a3:10"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:92:a3:11"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.87
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    # GTW Nodes
+    gtw01:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:d6:76"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:d6:76"
+          mode: "static"
+          ip: 10.10.0.224
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:d6:77"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:7c:5d:90"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:7c:5d:91"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:3e:e8"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:3e:e9"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.88
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    gtw02:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:c9:64"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:c9:64"
+          mode: "static"
+          ip: 10.10.0.225
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:c9:65"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:7c:a8:4c"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:7c:a8:4d"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:13:b8"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:13:b9"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.89
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    gtw03:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:cb:78"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:cb:78"
+          mode: "static"
+          ip: 10.10.0.226
+          subnet: "10.10.0.0/16"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:cb:79"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8a:80:48"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8a:80:49"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:6e:40"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:6e:41"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.90
+        power_type: ipmi
+      disk_layout:
+        bootable_device: sdc
+        type: custom
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+#$ MAAS END
+
+
+
+
+nodes:
+  cfg01.mcp-offline-vxlan.local:
+    reclass_storage_name: infra_config_node01
+    classes:
+    - cluster.${_param:cluster_name}.infra.config
+    - system.linux.system.repo.mcp.apt_mirantis.docker
+    roles:
+    - infra_config
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens3:
+        role: single_mgm
+        deploy_address: 10.10.0.15
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ens4:
+        role: single_ctl
+        single_address: 10.11.0.15
+      ens5:
+        role: single_ctl
+        single_address: 172.16.44.33
+      ens6:
+        role: single_ctl
+        single_address: 10.16.0.15
+
+  apt.mcp-offline-vxlan.local:
+    reclass_storage_name: aptly_server_node01
+    roles:
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    classes:
+    - cluster.${_param:cluster_name}.infra
+    interfaces:
+      ens3:
+        role: single_mgm
+        deploy_address: 10.10.0.14
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+
+  kvm01.mcp-offline-vxlan.local:
+    reclass_storage_name: infra_kvm_node01
+    roles:
+    - infra_kvm
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    # - features_vcp_gateway
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.241
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.241
+        tenant_address: 10.12.0.241
+      ten2:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.241
+        tenant_address: 10.12.0.241
+
+  kvm02.mcp-offline-vxlan.local:
+    reclass_storage_name: infra_kvm_node02
+    roles:
+    - infra_kvm
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    # - features_vcp_gateway
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.242
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.242
+        tenant_address: 10.12.0.242
+      ten2:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.242
+        tenant_address: 10.12.0.242
+
+  kvm03.mcp-offline-vxlan.local:
+    reclass_storage_name: infra_kvm_node03
+    roles:
+    - infra_kvm
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    # - features_vcp_gateway
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.243
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.243
+        tenant_address: 10.12.0.243
+      ten2:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.243
+        tenant_address: 10.12.0.243
+
+  kvm04.mcp-offline-vxlan.local:
+    reclass_storage_name: infra_kvm_node04
+    roles:
+    - infra_kvm_wo_gluster
+    - linux_system_codename_xenial
+    - salt_master_host
+    - features_offline_resolv
+    - features_offline_ntp
+    # - features_vcp_gateway
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.244
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.244
+        tenant_address: 10.12.0.244
+      ten2:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.244
+        tenant_address: 10.12.0.244
+
+  kvm05.mcp-offline-vxlan.local:
+    reclass_storage_name: infra_kvm_node05
+    roles:
+    - infra_kvm_wo_gluster
+    - linux_system_codename_xenial
+    - salt_master_host
+    - features_offline_resolv
+    - features_offline_ntp
+    # - features_vcp_gateway
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.245
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.245
+        tenant_address: 10.12.0.245
+      ten2:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.245
+        tenant_address: 10.12.0.245
+
+  kvm06.mcp-offline-vxlan.local:
+    reclass_storage_name: infra_kvm_node06
+    roles:
+    - infra_kvm_wo_gluster
+    - linux_system_codename_xenial
+    - salt_master_host
+    - features_offline_resolv
+    - features_offline_ntp
+    # - features_vcp_gateway
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.246
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.246
+        tenant_address: 10.12.0.246
+      ten2:
+        role: bond0_ab_nondvr_vxlan_ctl_mesh_raw
+        single_address: 10.11.0.246
+        tenant_address: 10.12.0.246
+
+  cmp<<count>>.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_compute_rack01
+    roles:
+    - openstack_compute
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      one1:
+        role: single_mgm
+      ten1:
+        role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
+        # external_vlan: 1112
+        # external_address: 10.16.0.224
+        # external_network_netmask: 255.255.0.0
+      ten2:
+        role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
+        # external_vlan: 1112
+
+  osd<<count>>.mcp-offline-vxlan.local:
+    reclass_storage_name: ceph_osd_rack01
+    roles:
+    - ceph_osd
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      one1:
+        role: single_mgm
+      ten1:
+        role: bond0_ab_vlan_ceph_public_backend
+      ten2:
+        role: bond0_ab_vlan_ceph_public_backend
+
+  gtw01.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_gateway_node01
+    roles:
+    - openstack_gateway_octavia
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.224
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_external
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+        single_address: 10.11.0.224
+        tenant_address: 10.12.0.224
+        external_address: 10.16.0.224
+        external_network_netmask: 255.255.0.0
+        external_vlan: 1112
+      ten2:
+        role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_external
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+        single_address: 10.11.0.224
+        tenant_address: 10.12.0.224
+        external_address: 10.16.0.224
+        external_network_netmask: 255.255.0.0
+        external_vlan: 1112
+
+  gtw02.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_gateway_node02
+    roles:
+    - openstack_gateway
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.225
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_external
+        single_address: 10.11.0.225
+        tenant_address: 10.12.0.225
+        external_address: 10.16.0.225
+        external_network_netmask: 255.255.0.0
+        external_vlan: 1112
+      ten2:
+        role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_external
+        single_address: 10.11.0.225
+        tenant_address: 10.12.0.225
+        external_address: 10.16.0.225
+        external_network_netmask: 255.255.0.0
+        external_vlan: 1112
+
+  gtw03.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_gateway_node03
+    roles:
+    - openstack_gateway
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      one1:
+        role: single_mgm
+        deploy_address: 10.10.0.226
+        deploy_network_netmask: 255.255.0.0
+        deploy_network_gateway: 10.10.0.1
+      ten1:
+        role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_external
+        single_address: 10.11.0.226
+        tenant_address: 10.12.0.226
+        external_address: 10.16.0.226
+        external_network_netmask: 255.255.0.0
+        external_vlan: 1112
+      ten2:
+        role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_floating
+        # role: bond0_ab_dvr_vxlan_ctl_mesh_external
+        single_address: 10.11.0.226
+        tenant_address: 10.12.0.226
+        external_address: 10.16.0.226
+        external_network_netmask: 255.255.0.0
+        external_vlan: 1112
+
+
+  ######
+  ######
+  #
+  # VCP Nodes
+  #
+  ######
+  ######
+
+  ctl01.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_control_node01
+    roles:
+    - openstack_control_leader
+    - linux_system_codename_xenial
+    - features_control_external_vlan
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.11
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+        # keepalived_vip_priority: 103
+
+  ctl02.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_control_node02
+    roles:
+    - openstack_control
+    - linux_system_codename_xenial
+    - features_control_external_vlan
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.12
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+        # keepalived_vip_priority: 102
+
+  ctl03.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_control_node03
+    roles:
+    - openstack_control
+    - linux_system_codename_xenial
+    - features_control_external_vlan
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.13
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+        # keepalived_vip_priority: 101
+
+  cid01.mcp-offline-vxlan.local:
+    reclass_storage_name: cicd_control_node01
+    roles:
+    - cicd_control_leader
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.91
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+
+  cid02.mcp-offline-vxlan.local:
+    reclass_storage_name: cicd_control_node02
+    roles:
+    - cicd_control_manager
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.92
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+
+  cid03.mcp-offline-vxlan.local:
+    reclass_storage_name: cicd_control_node03
+    roles:
+    - cicd_control_manager
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.93
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+
+  dbs01.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_database_node01
+    roles:
+    - openstack_database_leader
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.51
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+
+  dbs02.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_database_node02
+    roles:
+    - openstack_database
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.52
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+
+  dbs03.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_database_node03
+    roles:
+    - openstack_database
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+      # ens2:
+        # deploy_address: 10.10.0.53
+        # deploy_network_netmask: 255.255.0.0
+        # deploy_network_gateway: 10.10.0.1
+
+  msg01.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_message_queue_node01
+    roles:
+    - openstack_message_queue
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  msg02.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_message_queue_node02
+    roles:
+    - openstack_message_queue
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  msg03.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_message_queue_node03
+    roles:
+    - openstack_message_queue
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  prx01.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_proxy_node01
+    roles:
+    - openstack_proxy
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  prx02.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_proxy_node02
+    roles:
+    - openstack_proxy
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  dns01.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_dns_node01
+    roles:
+    - openstack_dns
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  dns02.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_dns_node02
+    roles:
+    - openstack_dns
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mon01.mcp-offline-vxlans.local:
+    reclass_storage_name: stacklight_server_node01
+    roles:
+    - stacklightv2_server_leader
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mon02.mcp-offline-vxlans.local:
+    reclass_storage_name: stacklight_server_node02
+    roles:
+    - stacklightv2_server
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mon03.mcp-offline-vxlans.local:
+    reclass_storage_name: stacklight_server_node03
+    roles:
+    - stacklightv2_server
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+   interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  log01.mcp-offline-vxlan.local:
+    reclass_storage_name: stacklight_log_node01
+    roles:
+    - stacklight_log_leader_v2
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  log02.mcp-offline-vxlan.local:
+    reclass_storage_name: stacklight_log_node02
+    roles:
+    - stacklight_log
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  log03.mcp-offline-vxlan.local:
+    reclass_storage_name: stacklight_log_node03
+    roles:
+    - stacklight_log
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mtr01.mcp-offline-vxlan.local:
+    reclass_storage_name: stacklight_telemetry_node01
+    roles:
+    - stacklight_telemetry_leader
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mtr02.mcp-offline-vxlan.local:
+    reclass_storage_name: stacklight_telemetry_node02
+    roles:
+    - stacklight_telemetry
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mtr03.mcp-offline-vxlan.local:
+    reclass_storage_name: stacklight_telemetry_node03
+    roles:
+    - stacklight_telemetry
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+
+  cmn01.mcp-offline-vxlan.local:
+    reclass_storage_name: ceph_mon_node01
+    roles:
+    - ceph_mon
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  cmn02.mcp-offline-vxlan.local:
+    reclass_storage_name: ceph_mon_node02
+    roles:
+    - ceph_mon
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  cmn03.mcp-offline-vxlan.local:
+    reclass_storage_name: ceph_mon_node03
+    roles:
+    - ceph_mon
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  rgw01.mcp-offline-vxlan.local:
+    reclass_storage_name: ceph_rgw_node01
+    roles:
+    - ceph_rgw
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  rgw02.mcp-offline-vxlan.local:
+    reclass_storage_name: ceph_rgw_node02
+    roles:
+    - ceph_rgw
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  rgw03.mcp-offline-vxlan.local:
+    reclass_storage_name: ceph_rgw_node03
+    roles:
+    - ceph_rgw
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mdb01.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_telemetry_node01
+    roles:
+    - openstack_telemetry
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+   interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mdb02.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_telemetry_node02
+    roles:
+    - openstack_telemetry
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  mdb03.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_telemetry_node03
+    roles:
+    - openstack_telemetry
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  kmn01.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_barbican_node01
+    roles:
+    - openstack_barbican
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  kmn02.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_barbican_node02
+    roles:
+    - openstack_barbican
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
+
+  kmn03.mcp-offline-vxlan.local:
+    reclass_storage_name: openstack_barbican_node03
+    roles:
+    - openstack_barbican
+    - linux_system_codename_xenial
+    - features_offline_resolv
+    - features_offline_ntp
+    interfaces:
+      ens2:
+        role: single_mgm
+      ens3:
+        role: single_ctl
