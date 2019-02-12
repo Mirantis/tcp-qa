@@ -165,6 +165,8 @@ def swarm_bootstrap_salt_cluster_devops() {
         def env_ipmi_pass = env.IPMI_PASS ?: ''
         def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
         def env_lab_ctl_iface = env.LAB_CONTROL_IFACE ?: ''
+        def apt_volume_name = env.APT_VOLUME_NAME ?: ''
+        def apt_config_path = env.APT_CONFIG_PATH ?: ''
         def parameters = [
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
@@ -187,6 +189,8 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'IPMI_PASS', value: env_ipmi_pass),
                 string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
                 string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
+                string(name: 'APT_VOLUME_NAME', value: apt_volume_name),
+                string(name: 'APT_CONFIG_PATH', value: apt_config_path),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
