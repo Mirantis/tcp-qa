@@ -31,6 +31,7 @@ class RuntestManager(object):
 
     image_name = settings.TEMPEST_IMAGE
     image_version = settings.TEMPEST_IMAGE_VERSION
+    lab_conf_name = settings.LAB_CONFIG_NAME
     container_name = 'run-tempest-ci'
     master_host = "cfg01"
     control_host = "ctl01"
@@ -275,6 +276,16 @@ class RuntestManager(object):
                         "cirros_url=$({}) && {} '{}' cmd.run "
                         "\"wget $cirros_url -O /tmp/TestCirros-0.3.5.img\""
                         .format(cirros_pillar, salt_cmd, self.target_name))},
+            {
+                'description': "Upload config specific skip.list",
+                'node_name': self.target_name,
+                'upload':
+                    {
+                    'local_path': os.getcwd() + "/" + self.lab_conf_name + "/",
+                    'local_filename': "skip.list",
+                    'remote_path': "/tmp/test/tempest/env/"},
+                'skip_fail': "true",
+            }
         ]
 
         if dpdk:
