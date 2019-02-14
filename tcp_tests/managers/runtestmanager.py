@@ -20,7 +20,6 @@ from devops.helpers import helpers
 from tcp_tests import logger
 from tcp_tests import settings
 
-
 LOG = logger.logger
 
 TEMPEST_CFG_DIR = '/tmp/test'
@@ -31,6 +30,7 @@ class RuntestManager(object):
 
     image_name = settings.TEMPEST_IMAGE
     image_version = settings.TEMPEST_IMAGE_VERSION
+    lab_conf_name = settings.LAB_CONFIG_NAME
     container_name = 'run-tempest-ci'
     master_host = "cfg01"
     control_host = "ctl01"
@@ -122,7 +122,7 @@ class RuntestManager(object):
                         'convert_to_uuid': {
                             'network': {
                                 'public_network_id':
-                                '${_param:runtest_tempest_public_net}'
+                                    '${_param:runtest_tempest_public_net}'
                             }
                         },
                         'heat_plugin': {
@@ -164,14 +164,14 @@ class RuntestManager(object):
                 file_path="/srv/salt/reclass/classes/cluster/"
                           "{cluster_name}/infra/"
                           "{class_name}.yml".format(
-                              cluster_name=self.cluster_name,
-                              class_name=self.class_name),
+                    cluster_name=self.cluster_name,
+                    class_name=self.class_name),
                 node_name=self.master_name) as editor:
             editor.content = runtest_pillar or self.runtest_pillar
         with self.underlay.yaml_editor(
                 file_path="/srv/salt/reclass/nodes/_generated/"
                           "cfg01.{domain_name}.yml".format(
-                              domain_name=self.domain_name),
+                    domain_name=self.domain_name),
                 node_name=self.master_name) as editor:
             editor.content['classes'].append(
                 'cluster.{cluster_name}.infra.{class_name}'.format(
@@ -242,7 +242,7 @@ class RuntestManager(object):
                 'node_name': self.master_name,
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " state.sls salt.minion && "
-                        " sleep 20")},
+                                        " sleep 20")},
             {
                 'description': "Enforce keystone state for neutronv2",
                 'node_name': self.master_name,
@@ -275,6 +275,17 @@ class RuntestManager(object):
                         "cirros_url=$({}) && {} '{}' cmd.run "
                         "\"wget $cirros_url -O /tmp/TestCirros-0.3.5.img\""
                         .format(cirros_pillar, salt_cmd, self.target_name))},
+            {
+                'description': "Upload config specific skip.list",
+                'node_name': self.target_name,
+                'upload':
+                    {
+                        'local_path': ("{}/templates/{}/"
+                                       .format(os.getcwd(),
+                                               self.lab_conf_name)),
+                        'local_filename': "custom_skip.list",
+                        'remote_path': "/tmp/test/env/"},
+                'skip_fail': "true"},
         ]
 
         if dpdk:
@@ -283,11 +294,11 @@ class RuntestManager(object):
                 'node_name': self.control_name,
                 'cmd': ("set -ex;" +
                         salt_call_cmd + " cmd.run "
-                        " '. /root/keystonercv3;"
-                        "  openstack flavor set m1.extra_tiny_test"
-                        "  --property hw:mem_page_size=any;"
-                        "  openstack flavor set m1.tiny_test"
-                        "  --property hw:mem_page_size=any'")},
+                                        " '. /root/keystonercv3;"
+                                        "  openstack flavor set m1.extra_tiny_test"
+                                        "  --property hw:mem_page_size=any;"
+                                        "  openstack flavor set m1.tiny_test"
+                                        "  --property hw:mem_page_size=any'")},
             )
 
         if self.barbican:
@@ -340,7 +351,7 @@ class RuntestManager(object):
             " -v /etc/ssl/certs/:/etc/ssl/certs/"
             " -d "
             " {image_nameversion} {run_cmd}"
-            .format(
+                .format(
                 container_name=self.container_name,
                 image_nameversion=image_nameversion,
                 tempest_pattern=self.tempest_pattern,
