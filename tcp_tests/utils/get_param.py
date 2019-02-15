@@ -20,35 +20,52 @@ from __future__ import print_function
 
 import sys
 import json
+import yaml
 
 from pepper import cli
-
-
-runner = cli.PepperCli()
-runner.parser.description = __doc__
 
 
 if len(sys.argv) <= 1:
     sys.argv.append('--help')
 
-results = []
-for res in runner.run():
-    results.append(res)
+# Use async request with checking for failed minions
+sys.argv.append("--fail-if-incomplete")
 
-if not results:
+tries = 3
+for _ in range(tries):
+    results = []
+
+    runner = cli.PepperCli()
+    runner.parser.description = __doc__
+
+    for res in runner.run():
+        results.append(res)
+    if results and len(results) > 1:
+        break
+
+# Expected: list of two touples:
+# - first touple should contain the result in string format (pepper issue)
+# - second touple should contain failed nodes
+# Example:
+#   [(None, '"{cid01.cookied-cicd-queens-dvr-sl.local: "some data"}"'),
+#    (0, '"{Failed: []}"')]
+# Example when node is not responding:
+#   [(1, '"{Failed: [u\'cid01.cookied-cicd-queens-dvr-sl.local\']}"')]
+
+if not results or len(results) < 2:
     print("Empty response", file=sys.stderr)
     sys.exit(1)
 
-if len(results) > 1:
+if len(results) > 2:
     print("Too many results", file=sys.stderr)
     sys.exit(1)
 
-if results[0][0] != 0:
+if results[-1][0] != 0:
     print("Error code returned", file=sys.stderr)
     sys.exit(results[0][0])
 
-data = json.loads(results[0][1])
-nodes = data['return'][0].keys()
+data = yaml.load(json.loads(results[0][1]))
+nodes = data.keys()
 
 if not nodes:
     print("Wrong target: no minions selected", file=sys.stderr)
@@ -59,4 +76,4 @@ if len(nodes) > 1:
           .format(nodes), file=sys.stderr)
     sys.exit(1)
 
-print(data['return'][0][nodes[0]])
+print(data[nodes[0]])
