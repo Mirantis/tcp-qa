@@ -144,7 +144,7 @@ default_context:
                 volume:
                   root:
                     mount: /
-                    size: 80G
+                    size: 74G
                     type: ext4
               vgvar:
                 devices:
@@ -153,7 +153,7 @@ default_context:
                 volume:
                   var:
                     mount: /var/
-                    size: 1T
+                    size: 931G
                     type: ext4
         kvm02: # #cz7049-kvm.host-telecom.com
           distro_series: "xenial"
@@ -182,7 +182,7 @@ default_context:
                 volume:
                   root:
                     mount: /
-                    size: 80G
+                    size: 74G
                     type: ext4
               vgvar:
                 devices:
@@ -191,7 +191,7 @@ default_context:
                 volume:
                   var:
                     mount: /var/
-                    size: 1T
+                    size: 931G
                     type: ext4
         kvm03: # #cz7048-kvm.host-telecom.com
           distro_series: "xenial"
@@ -220,7 +220,7 @@ default_context:
                 volume:
                   root:
                     mount: /
-                    size: 80G
+                    size: 74G
                     type: ext4
               vgvar:
                 devices:
@@ -229,7 +229,7 @@ default_context:
                 volume:
                   var:
                     mount: /var/
-                    size: 1T
+                    size: 931G
                     type: ext4
         gtw01: # #cz7052-kvm.host-telecom.com
           distro_series: "xenial"
