@@ -473,9 +473,15 @@ class EnvironmentManager(object):
         :return: string
         """
         LOG.debug('Trying to determine {0} ip.'.format(node.name))
+
+        admin_interfaces = node.interfaces.all().filter(
+            l2_network_device__name__startswith=ext.NETWORK_TYPE.admin)
+        interface = None
+        if admin_interfaces:
+            interface = admin_interfaces[0]
+
         return node.get_ip_address_by_network_name(
-            ext.NETWORK_TYPE.admin
-        )
+            name=ext.NETWORK_TYPE.admin, interface=interface)
 
     @property
     def nameserver(self):
