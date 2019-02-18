@@ -146,7 +146,7 @@ node (node_name) {
         } else {
             sh "git clone --recursive $model_url -b ${MCP_VERSION} model"
             // remove .git file with hardcoded path
-            sh "rm model/classes/system/.git"
+            // sh "rm model/classes/system/.git"
         }
     }
 
