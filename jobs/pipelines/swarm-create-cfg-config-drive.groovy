@@ -145,8 +145,9 @@ node (node_name) {
             sh "mkdir model && cd model && tar zxfv ../model.tar.gz"
         } else {
             sh "git clone --recursive $model_url -b ${MCP_VERSION} model"
-            // remove .git file with hardcoded path
+            // remove .git file with absolute path and re-init the file with relative path
             sh "rm model/classes/system/.git"
+            sh "cd model && git submodule update"
         }
     }
 
