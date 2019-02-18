@@ -187,6 +187,7 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'IPMI_PASS', value: env_ipmi_pass),
                 string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
                 string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
+                string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${UPDATE_REPO_CUSTOM_TAG}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
@@ -308,6 +309,7 @@ def generate_cookied_model() {
                 string(name: 'IPV4_NET_EXTERNAL', value: IPV4_NET_EXTERNAL),
                 string(name: 'IPMI_USER', value: env.IPMI_USER),
                 string(name: 'IPMI_PASS', value: env.IPMI_PASS),
+                string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${UPDATE_REPO_CUSTOM_TAG}"),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: env.IMAGE_PATH_CFG01_DAY01),
             ]
 

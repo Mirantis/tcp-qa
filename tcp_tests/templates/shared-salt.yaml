@@ -34,6 +34,7 @@
 {% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-security main restricted universe") %}
 {% set UBUNTU_KEY_SERVER = os_env('UBUNTU_KEY_SERVER', 'keyserver.ubuntu.com') %}
 {% set UBUNTU_KEY_ID = os_env('UBUNTU_KEY_ID', '0E08A149DE57BFBE') %}
+{% set UPDATE_REPO_CUSTOM_TAG = os_env('UPDATE_REPO_CUSTOM_TAG', '') %}
 
 {# Address pools for reclass cluster model are taken in the following order:
  # 1. environment variables,
@@ -620,6 +621,15 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
   skip_fail: false
+
+{%- if UPDATE_REPO_CUSTOM_TAG != '' %}
+- description: "[EXPERIMENTAL] Change update repos tag acording to defined in job"
+  cmd: |
+    reclass-tools add-key parameters._param.linux_system_repo_update_url 'http://mirror.mirantis.com/update/{{ UPDATE_REPO_CUSTOM_TAG }}/' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/openstack/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+{%- endif %}
 
 {%- endmacro %}
 
