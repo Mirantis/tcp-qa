@@ -45,6 +45,39 @@ nodes:
         enp3s0f1:
           role: bond0_ab_ovs_vlan_ctl
 
+    kvm04.cookied-cicd-ovs-maas.local:
+      reclass_storage_name: infra_kvm_node04
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: single_mgm_dhcp
+        enp3s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    kvm05.cookied-cicd-ovs-maas.local:
+      reclass_storage_name: infra_kvm_node05
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: single_mgm_dhcp
+        enp3s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
+    kvm06.cookied-cicd-ovs-maas.local:
+      reclass_storage_name: infra_kvm_node06
+      roles:
+      - infra_kvm
+      - linux_system_codename_xenial
+      interfaces:
+        enp3s0f0:
+          role: single_mgm_dhcp
+        enp3s0f1:
+          role: bond0_ab_ovs_vlan_ctl
+
     osd<<count>>:
       reclass_storage_name: ceph_osd_rack01
       roles:
