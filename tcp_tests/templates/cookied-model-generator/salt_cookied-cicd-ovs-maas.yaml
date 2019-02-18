@@ -57,18 +57,9 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 
-- description: Temporary workaround !! Fix or debug
+- description: "WR for PROD-27976"
   cmd: |
-    sed -i 's/pg_num: 128/pg_num: 4/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/ceph/setup.yml;
-    sed -i 's/pgp_num: 128/pgp_num: 4/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/ceph/setup.yml;
+    sed -i 's/physical\_control\_cluster/physical\_control\_small/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config/init.yml;;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
-  skip_fail: true
-
-- description: Temporary workaround for removing virtual gtw nodes
-  cmd: |
-    sed -i 's/\-\ system\.salt\.control\.sizes\.ovs\.compact//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-    sed -i 's/\-\ system\.salt\.control\.placement\.ovs\.compact//g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
+  skip_fail: false
