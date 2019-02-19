@@ -165,6 +165,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         def env_ipmi_pass = env.IPMI_PASS ?: ''
         def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
         def env_lab_ctl_iface = env.LAB_CONTROL_IFACE ?: ''
+        def update_repo_custom_tag = env.UPDATE_REPO_CUSTOM_TAG ?: ''
         def parameters = [
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
@@ -187,6 +188,7 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'IPMI_PASS', value: env_ipmi_pass),
                 string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
                 string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
+                string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
@@ -291,6 +293,7 @@ def generate_cookied_model() {
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
+        def update_repo_custom_tag = env.UPDATE_REPO_CUSTOM_TAG ?: ''
 
         def parameters = [
                 string(name: 'LAB_CONTEXT_NAME', value: "${LAB_CONFIG_NAME}"),
@@ -308,6 +311,7 @@ def generate_cookied_model() {
                 string(name: 'IPV4_NET_EXTERNAL', value: IPV4_NET_EXTERNAL),
                 string(name: 'IPMI_USER', value: env.IPMI_USER),
                 string(name: 'IPMI_PASS', value: env.IPMI_PASS),
+                string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: env.IMAGE_PATH_CFG01_DAY01),
             ]
 
