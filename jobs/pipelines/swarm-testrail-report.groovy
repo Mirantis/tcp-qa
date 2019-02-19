@@ -50,19 +50,19 @@ node ("${PARENT_NODE_NAME}") {
             def report_url = ''
 
             //  deployment_report_name = "deployment_${ENV_NAME}.xml"
-            def deployment_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"deployment_${ENV_NAME}.xml\" -printf \"'%p'\" ", returnStdout: true)
+            def deployment_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"deployment_${ENV_NAME}.xml\" -printf \"'%p'\" ", returnStdout: true).trim()
             // tcpqa_report_name =~ "nosetests.xml"
-            def tcpqa_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"nosetests.xml\" -printf \"'%p'\" ", returnStdout: true)
+            def tcpqa_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"nosetests.xml\" -printf \"'%p'\" ", returnStdout: true).trim()
             // tempest_report_name =~ "report_*.xml"
-            def tempest_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"report_*.xml\" -printf \"'%p'\" ", returnStdout: true)
+            def tempest_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"report_*.xml\" -printf \"'%p'\" ", returnStdout: true).trim()
             // k8s_conformance_report_name =~ conformance_result.xml
-            def k8s_conformance_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_result.xml\" -printf \"'%p'\" ", returnStdout: true)
+            def k8s_conformance_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_result.xml\" -printf \"'%p'\" ", returnStdout: true).trim()
             // k8s_conformance_report_name =~ conformance_virtlet_result.xml
-            def k8s_conformance_virtlet_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_virtlet_result.xml\" -printf \"'%p'\" ", returnStdout: true)
+            def k8s_conformance_virtlet_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"conformance_virtlet_result.xml\" -printf \"'%p'\" ", returnStdout: true).trim()
             // stacklight_report_name =~ "stacklight_report.xml" or "report.xml"
-            def stacklight_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"*report.xml\"", returnStdout: true)
+            def stacklight_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"*report.xml\"", returnStdout: true).trim()
             // cvp_sanity_report_name =~ cvp_sanity_report.xml
-            def cvp_sanity_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"cvp_sanity_results.xml\" -printf \"'%p'\" ", returnStdout: true)
+            def cvp_sanity_report_name = sh(script: "find ${PARENT_WORKSPACE} -name \"cvp_sanity_results.xml\" -printf \"'%p'\" ", returnStdout: true).trim()
             common.printMsg(deployment_report_name ? "Found deployment report: ${deployment_report_name}" : "Deployment report not found", deployment_report_name ? "blue" : "red")
             common.printMsg(tcpqa_report_name ? "Found tcp-qa report: ${tcpqa_report_name}" : "tcp-qa report not found", tcpqa_report_name ? "blue" : "red")
             common.printMsg(tempest_report_name ? "Found tempest report: ${tempest_report_name}" : "tempest report not found", tempest_report_name ? "blue" : "red")
