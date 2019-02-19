@@ -290,9 +290,41 @@ default_context:
   openstack_barbican_node03_address: 10.167.4.47
   openstack_barbican_node03_hostname: kmn03
 
-  nova_vnc_tls_enabled: 'True'
-  galera_ssl_enabled: 'True'
-  openstack_mysql_x509_enabled: 'True'
-  rabbitmq_ssl_enabled: 'True'
-  openstack_rabbitmq_x509_enabled: 'True'
-  openstack_internal_protocol: 'https'
+  #nova_vnc_tls_enabled: 'True'
+  #galera_ssl_enabled: 'True'
+  #openstack_mysql_x509_enabled: 'True'
+  #rabbitmq_ssl_enabled: 'True'
+  #openstack_rabbitmq_x509_enabled: 'True'
+  #openstack_internal_protocol: 'https'
+
+  nova_vnc_tls_enabled: 'False'
+  galera_ssl_enabled: 'False'
+  openstack_mysql_x509_enabled: 'False'
+  rabbitmq_ssl_enabled: 'False'
+  openstack_rabbitmq_x509_enabled: 'False'
+  openstack_internal_protocol: 'http'
+
+  ironic_enabled: 'True'
+
+  openstack_baremetal_hostname: bmt
+
+  openstack_baremetal_node01_address: 10.167.4.76
+  openstack_baremetal_node01_baremetal_address: 10.13.0.11
+  openstack_baremetal_node01_deploy_address: 10.167.5.76
+  openstack_baremetal_node01_hostname: bmt01
+  openstack_baremetal_node02_address: 10.167.4.77
+  openstack_baremetal_node02_baremetal_address: 10.13.0.12
+  openstack_baremetal_node02_deploy_address: 10.167.5.77
+  openstack_baremetal_node02_hostname: bmt02
+  openstack_baremetal_node03_address: 10.167.4.78
+  openstack_baremetal_node03_baremetal_address: 10.13.0.13
+  openstack_baremetal_node03_deploy_address: 10.167.5.78
+  openstack_baremetal_node03_hostname: bmt03
+
+  openstack_baremetal_address: 10.167.4.75
+  openstack_baremetal_address_baremetal: 10.13.0.10
+  openstack_baremetal_neutron_subnet_allocation_end: 10.13.199.255
+  openstack_baremetal_neutron_subnet_allocation_start: 10.13.90.1
+  openstack_baremetal_neutron_subnet_cidr: 10.13.0.0/16
+  openstack_baremetal_interface: ens7
+  openstack_baremetal_vip_interface: ens7
