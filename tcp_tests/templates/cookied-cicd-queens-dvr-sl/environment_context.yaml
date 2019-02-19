@@ -267,6 +267,8 @@ nodes:
           role: bond0_ab_ovs_vxlan_mesh
         ens6:
           role: bond1_ab_ovs_floating
+        ens7:
+          role: single_ovs_br_baremetal
 
     gtw02:
       reclass_storage_name: openstack_gateway_node02
@@ -281,6 +283,8 @@ nodes:
           role: bond0_ab_ovs_vxlan_mesh
         ens6:
           role: bond1_ab_ovs_floating
+        ens7:
+          role: single_ovs_br_baremetal
 
     gtw03:
       reclass_storage_name: openstack_gateway_node03
@@ -295,3 +299,5 @@ nodes:
           role: bond0_ab_ovs_vxlan_mesh
         ens6:
           role: bond1_ab_ovs_floating
+        ens7:
+          role: single_ovs_br_baremetal

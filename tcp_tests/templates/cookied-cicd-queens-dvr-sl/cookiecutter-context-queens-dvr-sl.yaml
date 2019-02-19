@@ -296,3 +296,5 @@ default_context:
   rabbitmq_ssl_enabled: 'True'
   openstack_rabbitmq_x509_enabled: 'True'
   openstack_internal_protocol: 'https'
+
+  ironic_enabled: 'True'
