@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "feb31b99_a70d890c",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 289,
+      "author": {
+        "id": 1014413
+      },
+      "writtenOn": "2019-02-20T10:29:34Z",
+      "side": 1,
+      "message": "Need additional check \"if skiplist exists:\" like in code below",
+      "range": {
+        "startLine": 281,
+        "startChar": 12,
+        "endLine": 289,
+        "endChar": 38
+      },
+      "revId": "ae8ae85c929d247866bba0877a0e33b53e72d62e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "840d96ac_40827cd7",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 345,
+      "author": {
+        "id": 1014413
+      },
+      "writtenOn": "2019-02-20T10:29:34Z",
+      "side": 1,
+      "message": "IMO it\u0027s better to check file on remote node instead of local one",
+      "range": {
+        "startLine": 345,
+        "startChar": 8,
+        "endLine": 345,
+        "endChar": 60
+      },
+      "revId": "ae8ae85c929d247866bba0877a0e33b53e72d62e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
