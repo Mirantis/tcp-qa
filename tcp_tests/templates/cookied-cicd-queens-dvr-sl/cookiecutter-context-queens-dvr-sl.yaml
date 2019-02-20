@@ -1,7 +1,6 @@
 default_context:
   auditd_enabled: 'False'
   bmk_enabled: 'False'
-  ceph_enabled: 'False'
   cicd_control_node01_address: 10.167.4.91
   cicd_control_node01_hostname: cid01
   cicd_control_node02_address: 10.167.4.92
@@ -42,6 +41,41 @@ default_context:
   cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/rgCcVsS645AcuWYySZpn4eH/yEn5V8Wkn8zNbXBbNjKGKzvcDyvE0VYn8jX8slKwUjypTQOnGMWNL0sxNMVeEM8+m7OBEvB9W6wSa5B1eM6JPfgAizTtDjDWeW8nb7+XvzyJ7UAR+d7B316tQc6zxa389Pc44z/SKRjsSJu9gXgvUtvEZEpidSRjsbd5qX1dxCmxPMAVFegrdZp9sIUEWx/MRY6HHVP62fVLBrE9gkO3U4EHWzvt6cW0HBuZt3SbUXW59JeZ1Z5rbEXf7lxpLq2mz+HCEKg5IlRBvv50riuLyiCrZgiF8Sm2sw/VH6dWoRjvo/fVpr9hLDjM69xD
   cluster_domain: cookied-cicd-queens-dvr-sl.local
   cluster_name: cookied-cicd-queens-dvr-sl
+  ceph_cluster_network: 10.167.4.0/24
+  ceph_enabled: 'True'
+  ceph_hyper_converged: 'False'
+  ceph_mon_node01_address: 10.167.4.96
+  ceph_mon_node01_hostname: cmn01
+  ceph_mon_node02_address: 10.167.4.97
+  ceph_mon_node02_hostname: cmn02
+  ceph_mon_node03_address: 10.167.4.98
+  ceph_mon_node03_hostname: cmn03
+  ceph_osd_backend: bluestore
+  ceph_osd_block_db_size: '10'
+  ceph_osd_bond_mode: active-backup
+  ceph_osd_count: '3'
+  ceph_osd_data_disks: /dev/vdb
+  ceph_osd_journal_or_block_db_disks: /dev/vdc
+  ceph_osd_node_count: '3'
+  ceph_osd_journal_size: '10'
+  ceph_osd_primary_first_nic: eth1
+  ceph_osd_primary_second_nic: eth2
+  ceph_osd_rack01_backend_subnet: 10.167.4
+  ceph_osd_rack01_hostname: osd
+  ceph_osd_rack01_single_subnet: 10.167.4
+  ceph_osd_single_address_ranges: 10.167.4.37-10.167.4.39
+  ceph_osd_deploy_address_ranges: 10.167.5.37-10.167.5.39
+  ceph_osd_backend_address_ranges: 10.167.4.37-10.167.4.39
+  ceph_public_network: 10.167.4.0/24
+  ceph_rgw_address: 10.167.4.75
+  ceph_rgw_hostname: rgw
+  ceph_rgw_node01_address: 10.167.4.76
+  ceph_rgw_node01_hostname: rgw01
+  ceph_rgw_node02_address: 10.167.4.77
+  ceph_rgw_node02_hostname: rgw02
+  ceph_rgw_node03_address: 10.167.4.78
+  ceph_rgw_node03_hostname: rgw03
+  ceph_version: luminous
   compute_bond_mode: active-backup
   compute_primary_first_nic: eth1
   compute_primary_second_nic: eth2
