@@ -330,3 +330,8 @@ default_context:
   rabbitmq_ssl_enabled: 'True'
   openstack_rabbitmq_x509_enabled: 'True'
   openstack_internal_protocol: 'https'
+
+#  designate_backend: powerdns
+#  designate_enabled: 'True'
+#  openstack_dns_node01_address: 10.167.4.113
+#  openstack_dns_node02_address: 10.167.4.114

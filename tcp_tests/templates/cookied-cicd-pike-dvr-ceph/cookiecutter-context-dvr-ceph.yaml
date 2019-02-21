@@ -301,5 +301,19 @@ default_context:
   openstack_public_neutron_subnet_allocation_start: 172.17.16.201
   openstack_public_neutron_subnet_allocation_end: 172.17.16.245
   manila_enabled: 'False'
-  barbican_enabled: 'False'
+  barbican_enabled: 'True'
   barbican_integration_enabled: 'False'
+
+  openstack_barbican_address: 10.167.4.44
+  openstack_barbican_hostname: kmn
+  openstack_barbican_node01_address: 10.167.4.45
+  openstack_barbican_node01_hostname: kmn01
+  openstack_barbican_node02_address: 10.167.4.46
+  openstack_barbican_node02_hostname: kmn02
+  openstack_barbican_node03_address: 10.167.4.47
+  openstack_barbican_node03_hostname: kmn03
+
+#  designate_backend: powerdns
+#  designate_enabled: 'True'
+#  openstack_dns_node01_address: 10.167.4.113
+#  openstack_dns_node02_address: 10.167.4.114
