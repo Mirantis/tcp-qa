@@ -34,6 +34,7 @@ aliases:
 {% set HOSTNAME_GTW02 = os_env('HOSTNAME_GTW02', 'gtw02') %}
 {% set HOSTNAME_GTW03 = os_env('HOSTNAME_GTW03', 'gtw03') %}
 {% set HOSTNAME_PRX01 = os_env('HOSTNAME_PRX01', 'prx01') %}
+{% set HOSTNAME_PRX02 = os_env('HOSTNAME_PRX02', 'prx02') %}
 {% set HOSTNAME_KMN01 = os_env('HOSTNAME_KMN01', 'kmn01') %}
 {% set HOSTNAME_KMN02 = os_env('HOSTNAME_KMN02', 'kmn02') %}
 {% set HOSTNAME_KMN03 = os_env('HOSTNAME_KMN03', 'kmn03') %}
@@ -46,6 +47,9 @@ aliases:
 {% set HOSTNAME_OSD01 = os_env('HOSTNAME_OSD01', 'osd001') %}
 {% set HOSTNAME_OSD02 = os_env('HOSTNAME_OSD02', 'osd002') %}
 {% set HOSTNAME_OSD03 = os_env('HOSTNAME_OSD03', 'osd003') %}
+{% set HOSTNAME_DNS01 = os_env('HOSTNAME_DNS01', 'dns01') %}
+{% set HOSTNAME_DNS02 = os_env('HOSTNAME_DNS02', 'dns02') %}
+
 
 
 template:
@@ -85,6 +89,7 @@ template:
             default_{{ HOSTNAME_GTW02 }}: +111
             default_{{ HOSTNAME_GTW03 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX02 }}: +122
             default_{{ HOSTNAME_OSD01 }}: +37
             default_{{ HOSTNAME_OSD02 }}: +38
             default_{{ HOSTNAME_OSD03 }}: +39
@@ -94,6 +99,8 @@ template:
             default_{{ HOSTNAME_RGW01 }}: +76
             default_{{ HOSTNAME_RGW02 }}: +77
             default_{{ HOSTNAME_RGW03 }}: +78
+            default_{{ HOSTNAME_DNS01 }}: +113
+            default_{{ HOSTNAME_DNS02 }}: +114
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -129,6 +136,7 @@ template:
             default_{{ HOSTNAME_GTW02 }}: +111
             default_{{ HOSTNAME_GTW03 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX02 }}: +122
             default_{{ HOSTNAME_OSD01 }}: +37
             default_{{ HOSTNAME_OSD02 }}: +38
             default_{{ HOSTNAME_OSD03 }}: +39
@@ -138,6 +146,8 @@ template:
             default_{{ HOSTNAME_RGW01 }}: +76
             default_{{ HOSTNAME_RGW02 }}: +77
             default_{{ HOSTNAME_RGW03 }}: +78
+            default_{{ HOSTNAME_DNS01 }}: +113
+            default_{{ HOSTNAME_DNS02 }}: +114
           ip_ranges:
             dhcp: [+90, -10]
 
@@ -169,6 +179,7 @@ template:
             default_{{ HOSTNAME_GTW02 }}: +111
             default_{{ HOSTNAME_GTW03 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX02 }}: +122
             default_{{ HOSTNAME_OSD01 }}: +37
             default_{{ HOSTNAME_OSD02 }}: +38
             default_{{ HOSTNAME_OSD03 }}: +39
@@ -178,6 +189,8 @@ template:
             default_{{ HOSTNAME_RGW01 }}: +76
             default_{{ HOSTNAME_RGW02 }}: +77
             default_{{ HOSTNAME_RGW03 }}: +78
+            default_{{ HOSTNAME_DNS01 }}: +113
+            default_{{ HOSTNAME_DNS02 }}: +114
           ip_ranges:
             dhcp: [+10, -10]
 
@@ -209,6 +222,7 @@ template:
             default_{{ HOSTNAME_GTW02 }}: +111
             default_{{ HOSTNAME_GTW03 }}: +112
             default_{{ HOSTNAME_PRX01 }}: +121
+            default_{{ HOSTNAME_PRX02 }}: +122
             default_{{ HOSTNAME_OSD01 }}: +37
             default_{{ HOSTNAME_OSD02 }}: +38
             default_{{ HOSTNAME_OSD03 }}: +39
@@ -218,6 +232,8 @@ template:
             default_{{ HOSTNAME_RGW01 }}: +76
             default_{{ HOSTNAME_RGW02 }}: +77
             default_{{ HOSTNAME_RGW03 }}: +78
+            default_{{ HOSTNAME_DNS01 }}: +113
+            default_{{ HOSTNAME_DNS02 }}: +114
           ip_ranges:
             dhcp: [+180, +220]
 
@@ -678,10 +694,54 @@ template:
                   networks:
                     - external
 
+          - name: {{ HOSTNAME_PRX02 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 1
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: mcp_ubuntu_1604_image
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604_swp
+
+              interfaces:
+                - label: ens3
+                  l2_network_device: admin
+                  interface_model: *interface_model
+                - label: ens4
+                  l2_network_device: private
+                  interface_model: *interface_model
+                - label: ens5
+                  l2_network_device: external
+                  interface_model: *interface_model
+              network_config:
+                ens3:
+                  networks:
+                    - admin
+                ens4:
+                  networks:
+                    - private
+                ens5:
+                  networks:
+                    - external
+
           - name: {{ HOSTNAME_CMP01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 3
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
@@ -735,7 +795,7 @@ template:
           - name: {{ HOSTNAME_CMP02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 3
+              vcpu: !os_env SLAVE_NODE_CPU, 2
               memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
@@ -764,7 +824,7 @@ template:
           - name: {{ HOSTNAME_GTW01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
@@ -790,7 +850,7 @@ template:
           - name: {{ HOSTNAME_GTW02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
@@ -816,7 +876,7 @@ template:
           - name: {{ HOSTNAME_GTW03 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 4096
               boot:
                 - hd
@@ -842,8 +902,8 @@ template:
           - name: {{ HOSTNAME_CID01 }}
             role: salt_minion
             params:
-              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
-              memory: {{ os_env('CID_NODE_MEMORY', 8192) }}
+              vcpu: {{ os_env('CID_NODE_CPU', 2) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 16384) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -868,8 +928,8 @@ template:
           - name: {{ HOSTNAME_CID02 }}
             role: salt_minion
             params:
-              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
-              memory: {{ os_env('CID_NODE_MEMORY', 8192) }}
+              vcpu: {{ os_env('CID_NODE_CPU', 2) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 16384) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -894,8 +954,8 @@ template:
           - name: {{ HOSTNAME_CID03 }}
             role: salt_minion
             params:
-              vcpu: {{ os_env('CID_NODE_CPU', 3) }}
-              memory: {{ os_env('CID_NODE_MEMORY', 8192) }}
+              vcpu: {{ os_env('CID_NODE_CPU', 2) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 16384) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -920,7 +980,7 @@ template:
           - name: {{ HOSTNAME_KMN01 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -946,7 +1006,7 @@ template:
           - name: {{ HOSTNAME_KMN02 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -972,7 +1032,7 @@ template:
           - name: {{ HOSTNAME_KMN03 }}
             role: salt_minion
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 2
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
@@ -1225,6 +1285,58 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604_swp
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_DNS01 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 1
+              memory: !os_env SLAVE_NODE_MEMORY, 2048
+              boot:
+                - hd
+              cloud_init_volume_name: iso
+              cloud_init_iface_up: ens3
+              volumes:
+                - name: system
+                  capacity: !os_env NODE_VOLUME_SIZE, 150
+                  backing_store: cloudimage1604
+                  format: qcow2
+                - name: iso  # Volume with name 'iso' will be used
+                             # for store image with cloud-init metadata.
+                  capacity: 1
+                  format: raw
+                  device: cdrom
+                  bus: ide
+                  cloudinit_meta_data: *cloudinit_meta_data
+                  cloudinit_user_data: *cloudinit_user_data_1604_swp
+
+              interfaces: *interfaces
+              network_config: *network_config
+
+          - name: {{ HOSTNAME_DNS02 }}
+            role: salt_minion
+            params:
+              vcpu: !os_env SLAVE_NODE_CPU, 1
               memory: !os_env SLAVE_NODE_MEMORY, 2048
               boot:
                 - hd
