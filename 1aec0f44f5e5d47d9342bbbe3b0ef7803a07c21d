@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "361d20a8_c4650d33",
+        "filename": "jobs/pipelines/swarm-bootstrap-salt-cluster-devops.groovy",
+        "patchSetId": 20
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-02-21T15:29:38Z",
+      "side": 1,
+      "message": "why do you need it ?  you can use existing ref with putting there refs/heads/2018.11.0",
+      "range": {
+        "startLine": 16,
+        "startChar": 5,
+        "endLine": 16,
+        "endChar": 18
+      },
+      "revId": "1aec0f44f5e5d47d9342bbbe3b0ef7803a07c21d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
