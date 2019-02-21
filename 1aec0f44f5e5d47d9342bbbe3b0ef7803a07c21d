@@ -22,6 +22,30 @@
       "revId": "1aec0f44f5e5d47d9342bbbe3b0ef7803a07c21d",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b7cff672_b5ecd6b2",
+        "filename": "jobs/pipelines/swarm-bootstrap-salt-cluster-devops.groovy",
+        "patchSetId": 20
+      },
+      "lineNbr": 16,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-02-21T15:42:31Z",
+      "side": 1,
+      "message": "In case when we need use review for release branch, we have to clone release branch before checkout review",
+      "parentUuid": "361d20a8_c4650d33",
+      "range": {
+        "startLine": 16,
+        "startChar": 5,
+        "endLine": 16,
+        "endChar": 18
+      },
+      "revId": "1aec0f44f5e5d47d9342bbbe3b0ef7803a07c21d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }

@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "bcf425ab_2a673caa",
+        "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
+        "patchSetId": 20
+      },
+      "lineNbr": 296,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-02-21T15:42:31Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "e91536ce_ae0ad868",
+      "range": {
+        "startLine": 296,
+        "startChar": 41,
+        "endLine": 296,
+        "endChar": 63
+      },
+      "revId": "0ea26dc42099ba207911f9c106eb3fe11ee4201b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "fad39f3c_5357041c",
         "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
         "patchSetId": 20
@@ -36,6 +60,30 @@
       "writtenOn": "2019-02-21T15:29:38Z",
       "side": 0,
       "message": "the same, do not remove this one",
+      "range": {
+        "startLine": 314,
+        "startChar": 61,
+        "endLine": 314,
+        "endChar": 62
+      },
+      "revId": "0ea26dc42099ba207911f9c106eb3fe11ee4201b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2b1838b7_e9b5a627",
+        "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
+        "patchSetId": 20
+      },
+      "lineNbr": 314,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-02-21T15:42:31Z",
+      "side": 0,
+      "message": "Done",
+      "parentUuid": "fad39f3c_5357041c",
       "range": {
         "startLine": 314,
         "startChar": 61,
