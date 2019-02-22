@@ -1,5 +1,5 @@
 nodes:
-  kvm01.mcp-offline-vxlan.local:
+  kvm01.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: infra_kvm_node01
     roles:
     - infra_kvm
@@ -22,7 +22,7 @@ nodes:
         # single_address: 10.11.0.241
         # tenant_address: 10.12.0.241
 
-  kvm02.mcp-offline-vxlan.local:
+  kvm02.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: infra_kvm_node02
     roles:
     - infra_kvm
@@ -45,7 +45,7 @@ nodes:
         # single_address: 10.11.0.242
         # tenant_address: 10.12.0.242
 
-  kvm03.mcp-offline-vxlan.local:
+  kvm03.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: infra_kvm_node03
     roles:
     - infra_kvm
@@ -68,7 +68,7 @@ nodes:
         # single_address: 10.11.0.243
         # tenant_address: 10.12.0.243
 
-  kvm04.mcp-offline-vxlan.local:
+  kvm04.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: infra_kvm_node04
     roles:
     - infra_kvm_wo_gluster
@@ -92,7 +92,7 @@ nodes:
         # single_address: 10.11.0.244
         # tenant_address: 10.12.0.244
 
-  kvm05.mcp-offline-vxlan.local:
+  kvm05.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: infra_kvm_node05
     roles:
     - infra_kvm_wo_gluster
@@ -116,7 +116,7 @@ nodes:
         # single_address: 10.11.0.245
         # tenant_address: 10.12.0.245
 
-  kvm06.mcp-offline-vxlan.local:
+  kvm06.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: infra_kvm_node06
     roles:
     - infra_kvm_wo_gluster
@@ -140,7 +140,7 @@ nodes:
         # single_address: 10.11.0.246
         # tenant_address: 10.12.0.246
 
-  cmp<<count>>.mcp-offline-vxlan.local:
+  cmp<<count>>.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: openstack_compute_rack01
     roles:
     - openstack_compute
@@ -161,7 +161,7 @@ nodes:
         # role: bond0_ab_dvr_vxlan_ctl_mesh_external_vlan
         # external_vlan: 1112
 
-  osd<<count>>.mcp-offline-vxlan.local:
+  osd<<count>>.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: ceph_osd_rack01
     roles:
     - ceph_osd
@@ -176,7 +176,7 @@ nodes:
       ten2:
         role: bond0_ab_vlan_ceph_public_backend
 
-  gtw01.mcp-offline-vxlan.local:
+  gtw01.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: openstack_gateway_node01
     roles:
     - openstack_gateway_octavia
@@ -208,7 +208,7 @@ nodes:
         external_network_netmask: 255.255.0.0
         external_vlan: 2439
 
-  gtw02.mcp-offline-vxlan.local:
+  gtw02.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: openstack_gateway_node02
     roles:
     - openstack_gateway
@@ -240,7 +240,7 @@ nodes:
         external_network_netmask: 255.255.0.0
         external_vlan: 2439
 
-  gtw03.mcp-offline-vxlan.local:
+  gtw03.cookied-cicd-golden-vxlan.local:
     reclass_storage_name: openstack_gateway_node03
     roles:
     - openstack_gateway
