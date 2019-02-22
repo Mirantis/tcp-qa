@@ -70,8 +70,8 @@ default_context:
   cluster_domain: cookied-cicd-ovs-maas.local
   cluster_name: cookied-cicd-ovs-maas
   compute_bond_mode: active-backup
-  compute_primary_first_nic: eth1
-  compute_primary_second_nic: eth2
+  compute_primary_first_nic: ten1
+  compute_primary_second_nic: ten2
   context_seed: zEFbUBMME6LFdiL0rJWFgHMdQGgywnDSE9vFYvHgEBeYHb4QJsDl3HqpdaTgqYlF
   control_network_netmask: 255.255.255.0
   control_network_subnet: 10.167.11.0/24
@@ -79,286 +79,1066 @@ default_context:
   cookiecutter_template_branch: proposed
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates.git
-  deploy_network_gateway: 172.16.164.1
+  deploy_network_gateway: 172.17.42.193
   deploy_network_netmask: 255.255.255.192
-  deploy_network_subnet: 172.16.164.0/26
+  deploy_network_subnet: 172.17.42.192/26
   deployment_type: physical
   dns_server01: 172.18.176.6
   dns_server02: 172.18.208.44
   email_address: test@mirantis.com
-  gateway_primary_first_nic: eth1
-  gateway_primary_second_nic: eth2
+  gateway_primary_first_nic: ten1
+  gateway_primary_second_nic: ten2
   infra_bond_mode: active-backup
-  infra_deploy_nic: eth0
+  infra_deploy_nic: ten1
   infra_kvm01_control_address: 10.167.11.241
-  infra_kvm01_deploy_address: 172.16.164.11
+  infra_kvm01_deploy_address: 172.17.42.196
   infra_kvm01_hostname: kvm01
   infra_kvm02_control_address: 10.167.11.242
-  infra_kvm02_deploy_address: 172.16.164.12
+  infra_kvm02_deploy_address: 172.17.42.197
   infra_kvm02_hostname: kvm02
   infra_kvm03_control_address: 10.167.11.243
-  infra_kvm03_deploy_address: 172.16.164.13
+  infra_kvm03_deploy_address: 172.17.42.198
   infra_kvm03_hostname: kvm03
+  infra_kvm04_control_address: 10.11.0.244
+  infra_kvm04_deploy_address: 172.17.42.199
+  infra_kvm04_hostname: kvm04
+  infra_kvm05_control_address: 10.11.0.245
+  infra_kvm05_deploy_address: 172.17.42.200
+  infra_kvm05_hostname: kvm05
+  infra_kvm06_control_address: 10.11.0.246
+  infra_kvm06_deploy_address: 172.17.42.201
+  infra_kvm06_hostname: kvm06
   infra_kvm_vip_address: 10.167.11.240
-  infra_primary_first_nic: eth1
-  infra_primary_second_nic: eth2
+  infra_primary_first_nic: ten1
+  infra_primary_second_nic: ten2
   kubernetes_enabled: 'False'
   local_repositories: 'False'
   maas_enabled: 'True'
-  maas_deploy_address: 172.16.164.2
-  maas_deploy_cidr: 172.16.164.0/26
-  maas_deploy_gateway: 172.16.164.1
-  maas_deploy_range_end: 172.16.164.55
-  maas_deploy_range_start: 172.16.164.15
+  maas_deploy_address: 1172.17.42.195
+  maas_deploy_cidr: 172.17.42.193/26
+  maas_deploy_gateway: 172.17.42.193
+  maas_deploy_range_end: 172.17.42.251
+  maas_deploy_range_start: 172.17.42.211
   maas_deploy_vlan: '0'
   maas_dhcp_enabled: 'True'
   maas_fabric_name: fabric-0
   maas_hostname: cfg01
   maas_manage_deploy_network: 'True'
   maas_machines: |
-        kvm01: # #cz7050-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          # pxe_interface_mac:
-          pxe_interface_mac: "00:25:90:e3:37:2c"
-          interfaces:
-            enp3s0f0:
-              mac: "00:25:90:e3:37:2c"
-              mode: "static"
-              ip: "172.16.164.11"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "176.74.222.96"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-          disk_layout:
-            type: custom
-            bootable_device: sda
-            disk:
-              vgroot:
-                devices:
-                  - sda
-                type: lvm
-                volume:
-                  root:
-                    mount: /
-                    size: 80G
-                    type: ext4
-              vgvar:
-                devices:
-                  - sdb
-                type: lvm
-                volume:
-                  var:
-                    mount: /var/
-                    size: 1T
-                    type: ext4
-        kvm02: # #cz7049-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "00:25:90:e3:3b:86"
-          interfaces:
-            enp3s0f0:
-              mac: "00:25:90:e3:3b:86"
-              mode: "static"
-              ip: "172.16.164.12"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "176.74.222.94"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-          disk_layout:
-            type: custom
-            bootable_device: sda
-            disk:
-              vgroot:
-                devices:
-                  - sda
-                type: lvm
-                volume:
-                  root:
-                    mount: /
-                    size: 80G
-                    type: ext4
-              vgvar:
-                devices:
-                  - sdb
-                type: lvm
-                volume:
-                  var:
-                    mount: /var/
-                    size: 1T
-                    type: ext4
-        kvm03: # #cz7048-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "00:25:90:e3:37:34"
-          interfaces:
-            enp3s0f0:
-              mac: "00:25:90:e3:37:34"
-              mode: "static"
-              ip: "172.16.164.13"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "176.74.222.92"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-          disk_layout:
-            type: custom
-            bootable_device: sda
-            disk:
-              vgroot:
-                devices:
-                  - sda
-                type: lvm
-                volume:
-                  root:
-                    mount: /
-                    size: 80G
-                    type: ext4
-              vgvar:
-                devices:
-                  - sdb
-                type: lvm
-                volume:
-                  var:
-                    mount: /var/
-                    size: 1T
-                    type: ext4
-        gtw01: # #cz7052-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "00:25:90:e3:37:12"
-          interfaces:
-            enp3s0f0:
-              mac: "00:25:90:e3:37:12"
-              mode: "static"
-              ip: "172.16.164.5"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "176.74.222.100"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-        gtw02: # #cz7051-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "00:25:90:e3:3b:a4"
-          interfaces:
-            enp3s0f0:
-              mac: "00:25:90:e3:3b:a4"
-              mode: "static"
-              ip: "172.16.164.6"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "176.74.222.98"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-        gtw03: # #cz7636-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:55:6a:28"
-          interfaces:
-            enp2s0f0:
-              mac: "0c:c4:7a:55:6a:28"
-              mode: "static"
-              ip: "172.16.164.7"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "185.8.59.241"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-        osd001: # #cz7922-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:6c:9b:16"
-          interfaces:
-            enp9s0f0:
-              mac: "0c:c4:7a:6c:9b:16"
-              mode: "static"
-              ip: "172.16.164.8"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "5.43.227.32"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-        osd002: # #cz7915-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:6d:3e:06"
-          interfaces:
-            enp9s0f0:
-              mac: "0c:c4:7a:6d:3e:06"
-              mode: "static"
-              ip: "172.16.164.9"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "5.43.227.25"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-        osd003: # #cz7921-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:6c:9b:94"
-          interfaces:
-            enp9s0f0:
-              mac: "0c:c4:7a:6c:9b:94"
-              mode: "static"
-              ip: "172.16.164.10"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "5.43.227.31"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-        cmp001: # #cz7913-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:6c:9a:1a"
-          interfaces:
-            enp9s0f0:
-              mac: "0c:c4:7a:6c:9a:1a"
-              mode: "static"
-              ip: "172.16.164.3"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "5.43.227.23"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
-        cmp002: # #cz7916-kvm.host-telecom.com
-          distro_series: "xenial"
-          # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:6c:89:4a"
-          interfaces:
-            enp9s0f9:
-              mac: "0c:c4:7a:6c:89:4a"
-              mode: "static"
-              ip: "172.16.164.4"
-              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
-              gateway: ${_param:deploy_network_gateway}
-          power_parameters:
-            power_address: "5.43.227.26"
-            power_pass: ==IPMI_PASS==
-            power_type: ipmi
-            power_user: ==IPMI_USER==
+    kvm04:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      # pxe_interface_mac:
+      pxe_interface_mac: "0c:c4:7a:33:1f:e4"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:33:1f:e4"
+          mode: "static"
+          ip: ${_param:infra_kvm_node04_deploy_address}
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:33:1f:e5"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:ea"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:eb"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.161
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    kvm05:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:33:20:fc"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:33:20:fc"
+          mode: "static"
+          ip: ${_param:infra_kvm_node05_deploy_address}
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:33:20:fd"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:e6"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:e7"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.162
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    kvm06:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:31:fb:b6"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:31:fb:b6"
+          mode: "static"
+          ip: ${_param:infra_kvm_node06_deploy_address}
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:31:fb:b7"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:fa"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1e:3e:fb"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.163
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    kvm01:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:31:f0:12"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:31:f0:12"
+          mode: "static"
+          ip: ${_param:infra_kvm_node01_deploy_address}
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:31:f0:13"
+          name: one2
+        fourty1:
+          mode: UNCONFIGURED
+          mac: "00:02:c9:44:82:70"
+          name: ten1
+        fourty2:
+          mode: UNCONFIGURED
+          mac: "00:02:c9:44:82:71"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.17
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 120G
+                type: ext4
+
+    kvm02:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:31:ef:bc"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:31:ef:bc"
+          mode: "static"
+          ip: ${_param:infra_kvm_node02_deploy_address}
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:31:ef:bd"
+          name: one2
+        fourty1:
+          mode: UNCONFIGURED
+          mac: "00:02:c9:44:81:40"
+          name: ten1
+        fourty2:
+          mode: UNCONFIGURED
+          mac: "00:02:c9:44:81:41"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.18
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 120G
+                type: ext4
+
+    kvm03:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:31:ef:aa"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:31:ef:aa"
+          mode: "static"
+          ip: ${_param:infra_kvm_node03_deploy_address}
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:31:ef:ab"
+          name: one2
+        fourty1:
+          mode: UNCONFIGURED
+          mac: "e4:1d:2d:72:23:b1"
+          name: ten1
+        fourty2:
+          mode: UNCONFIGURED
+          mac: "e4:1d:2d:72:23:b2"
+          name: ten2
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 185.8.59.19
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 120G
+                type: ext4
+
+    cmp001:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:6d:33:12"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:6d:33:12"
+          mode: "static"
+          ip: 172.17.42.202
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:6d:33:13"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:92:8b:bc"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:92:8b:bd"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:65:bc"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:65:bd"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.81
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    cmp002:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:cb:6a"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:cb:6a"
+          mode: "static"
+          ip: 172.17.42.203
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:cb:6b"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:58:41:d0"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:58:41:d1"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1f:00:18"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:1f:00:19"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.82
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    cmp003:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:91:5a"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:91:5a"
+          mode: "static"
+          ip: 172.17.42.204
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:91:5b"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:97:e5:9c"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:97:e5:9d"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:a4:70:7c"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:a4:70:7d"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.83
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    cmp004:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:cb:5a"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:cb:5a"
+          mode: "static"
+          ip: 172.17.42.205
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:cb:5b"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:87:17:90"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:87:17:91"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:45:74"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:45:75"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.84
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    # OSD Nodes
+    osd001:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:cb:7a"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:cb:7a"
+          mode: "static"
+          ip: 172.17.42.206
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:cb:7b"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "90:e2:ba:1a:6c:98"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "90:e2:ba:1a:6c:99"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:97:df:84"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:97:df:85"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.85
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    osd002:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:6d:2e:1e"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:6d:2e:1e"
+          mode: "static"
+          ip: 172.17.42.207
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:6d:2e:1f"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:6d:20"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:6d:21"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:70:e8"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:70:e9"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.86
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    osd003:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:d1:10"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:d1:10"
+          mode: "static"
+          ip: 172.17.42.208
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:d1:11"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8a:c1:90"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8a:c1:91"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:92:a3:10"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:92:a3:11"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.87
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 240G
+                type: ext4
+
+    # GTW Nodes
+    gtw01:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:d6:76"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:d6:76"
+          mode: "static"
+          ip: 172.17.42.209
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:d6:77"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:7c:5d:90"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:7c:5d:91"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:3e:e8"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:3e:e9"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.88
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sda
+        disk:
+          vgroot:
+            devices:
+              - sda
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    gtw02:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:c9:64"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:c9:64"
+          mode: "static"
+          ip: 172.17.42.210
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:c9:65"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:7c:a8:4c"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:7c:a8:4d"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:13:b8"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8d:13:b9"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.89
+        power_type: ipmi
+      disk_layout:
+        type: custom
+        bootable_device: sdc
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+    gtw03:
+      distro_series: "xenial"
+      # hwe_kernel: "hwe-16.04"
+      pxe_interface_mac: "0c:c4:7a:aa:cb:78"
+      interfaces:
+        one1:
+          mac: "0c:c4:7a:aa:cb:78"
+          mode: "static"
+          ip: 172.17.42.211
+          subnet: "172.17.42.192/26"
+          gateway: ${_param:deploy_network_gateway}
+          name: one1
+        one2:
+          mode: UNCONFIGURED
+          mac: "0c:c4:7a:aa:cb:79"
+          name: one2
+        ten1:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8a:80:48"
+          name: ten1
+        ten2:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:8a:80:49"
+          name: ten2
+        ten3:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:6e:40"
+          name: ten3
+        ten4:
+          mode: UNCONFIGURED
+          mac: "00:1b:21:89:6e:41"
+          name: ten4
+      power_parameters:
+        power_user: ==IPMI_USER==
+        power_pass: ==IPMI_PASS==
+        power_address: 5.43.227.90
+        power_type: ipmi
+      disk_layout:
+        bootable_device: sdc
+        type: custom
+        disk:
+          vgroot:
+            devices:
+              - sdc
+            type: lvm
+            volume:
+              root:
+                mount: /
+                size: 1T
+                type: ext4
+
+        # kvm01: # #cz7050-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   # pxe_interface_mac:
+        #   pxe_interface_mac: "00:25:90:e3:37:2c"
+        #   interfaces:
+        #     enp3s0f0:
+        #       mac: "00:25:90:e3:37:2c"
+        #       mode: "static"
+        #       ip: "172.16.164.11"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "176.74.222.96"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        #   disk_layout:
+        #     type: custom
+        #     bootable_device: sda
+        #     disk:
+        #       vgroot:
+        #         devices:
+        #           - sda
+        #         type: lvm
+        #         volume:
+        #           root:
+        #             mount: /
+        #             size: 80G
+        #             type: ext4
+        #       vgvar:
+        #         devices:
+        #           - sdb
+        #         type: lvm
+        #         volume:
+        #           var:
+        #             mount: /var/
+        #             size: 1T
+        #             type: ext4
+        # kvm02: # #cz7049-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "00:25:90:e3:3b:86"
+        #   interfaces:
+        #     enp3s0f0:
+        #       mac: "00:25:90:e3:3b:86"
+        #       mode: "static"
+        #       ip: "172.16.164.12"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "176.74.222.94"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        #   disk_layout:
+        #     type: custom
+        #     bootable_device: sda
+        #     disk:
+        #       vgroot:
+        #         devices:
+        #           - sda
+        #         type: lvm
+        #         volume:
+        #           root:
+        #             mount: /
+        #             size: 80G
+        #             type: ext4
+        #       vgvar:
+        #         devices:
+        #           - sdb
+        #         type: lvm
+        #         volume:
+        #           var:
+        #             mount: /var/
+        #             size: 1T
+        #             type: ext4
+        # kvm03: # #cz7048-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "00:25:90:e3:37:34"
+        #   interfaces:
+        #     enp3s0f0:
+        #       mac: "00:25:90:e3:37:34"
+        #       mode: "static"
+        #       ip: "172.16.164.13"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "176.74.222.92"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        #   disk_layout:
+        #     type: custom
+        #     bootable_device: sda
+        #     disk:
+        #       vgroot:
+        #         devices:
+        #           - sda
+        #         type: lvm
+        #         volume:
+        #           root:
+        #             mount: /
+        #             size: 80G
+        #             type: ext4
+        #       vgvar:
+        #         devices:
+        #           - sdb
+        #         type: lvm
+        #         volume:
+        #           var:
+        #             mount: /var/
+        #             size: 1T
+        #             type: ext4
+        # gtw01: # #cz7052-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "00:25:90:e3:37:12"
+        #   interfaces:
+        #     enp3s0f0:
+        #       mac: "00:25:90:e3:37:12"
+        #       mode: "static"
+        #       ip: "172.16.164.5"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "176.74.222.100"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        # gtw02: # #cz7051-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "00:25:90:e3:3b:a4"
+        #   interfaces:
+        #     enp3s0f0:
+        #       mac: "00:25:90:e3:3b:a4"
+        #       mode: "static"
+        #       ip: "172.16.164.6"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "176.74.222.98"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        # gtw03: # #cz7636-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "0c:c4:7a:55:6a:28"
+        #   interfaces:
+        #     enp2s0f0:
+        #       mac: "0c:c4:7a:55:6a:28"
+        #       mode: "static"
+        #       ip: "172.16.164.7"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "185.8.59.241"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        # osd001: # #cz7922-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "0c:c4:7a:6c:9b:16"
+        #   interfaces:
+        #     enp9s0f0:
+        #       mac: "0c:c4:7a:6c:9b:16"
+        #       mode: "static"
+        #       ip: "172.16.164.8"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "5.43.227.32"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        # osd002: # #cz7915-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "0c:c4:7a:6d:3e:06"
+        #   interfaces:
+        #     enp9s0f0:
+        #       mac: "0c:c4:7a:6d:3e:06"
+        #       mode: "static"
+        #       ip: "172.16.164.9"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "5.43.227.25"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        # osd003: # #cz7921-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "0c:c4:7a:6c:9b:94"
+        #   interfaces:
+        #     enp9s0f0:
+        #       mac: "0c:c4:7a:6c:9b:94"
+        #       mode: "static"
+        #       ip: "172.16.164.10"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "5.43.227.31"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        # cmp001: # #cz7913-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "0c:c4:7a:6c:9a:1a"
+        #   interfaces:
+        #     enp9s0f0:
+        #       mac: "0c:c4:7a:6c:9a:1a"
+        #       mode: "static"
+        #       ip: "172.16.164.3"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "5.43.227.23"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
+        # cmp002: # #cz7916-kvm.host-telecom.com
+        #   distro_series: "xenial"
+        #   # hwe_kernel: "hwe-16.04"
+        #   pxe_interface_mac: "0c:c4:7a:6c:89:4a"
+        #   interfaces:
+        #     enp9s0f9:
+        #       mac: "0c:c4:7a:6c:89:4a"
+        #       mode: "static"
+        #       ip: "172.16.164.4"
+        #       subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+        #       gateway: ${_param:deploy_network_gateway}
+        #   power_parameters:
+        #     power_address: "5.43.227.26"
+        #     power_pass: ==IPMI_PASS==
+        #     power_type: ipmi
+        #     power_user: ==IPMI_USER==
 #        cmp001: # #cz7115-kvm.host-telecom.com
 #          distro_series: "xenial"
 #          # hwe_kernel: "hwe-16.04"
@@ -402,12 +1182,12 @@ default_context:
   openstack_benchmark_node01_address: 10.167.11.95
   openstack_benchmark_node01_hostname: bmk01
   openstack_cluster_size: compact
-  openstack_compute_count: '2'
+  openstack_compute_count: '4'
   openstack_compute_rack01_hostname: cmp
-  openstack_compute_single_address_ranges: 10.167.11.3-10.167.11.4
-  openstack_compute_deploy_address_ranges: 172.16.164.3-172.16.164.4
-  openstack_compute_tenant_address_ranges: 10.167.12.3-10.167.12.4
-  openstack_compute_backend_address_ranges: 10.167.12.3-10.167.12.4
+  openstack_compute_single_address_ranges: 10.167.11.3-10.167.11.6
+  openstack_compute_deploy_address_ranges: 172.17.42.202-172.17.42.205
+  openstack_compute_tenant_address_ranges: 10.167.12.3-10.167.12.6
+  openstack_compute_backend_address_ranges: 10.167.12.3-10.167.12.6
   openstack_control_address: 10.167.11.10
   openstack_control_hostname: ctl
   openstack_control_node01_address: 10.167.11.11
@@ -425,18 +1205,18 @@ default_context:
   openstack_database_node03_address: 10.167.11.53
   openstack_database_node03_hostname: dbs03
   openstack_enabled: 'True'
-  openstack_gateway_node01_deploy_address: 172.16.164.5
-  openstack_gateway_node02_deploy_address: 172.16.164.6
-  openstack_gateway_node03_deploy_address: 172.16.164.7
+  openstack_gateway_node01_deploy_address: 172.17.42.209
+  openstack_gateway_node02_deploy_address: 172.17.42.210
+  openstack_gateway_node03_deploy_address: 172.17.42.211
   openstack_gateway_node01_address: 10.167.11.224
   openstack_gateway_node01_hostname: gtw01
-  openstack_gateway_node01_tenant_address: 10.167.12.5
+  openstack_gateway_node01_tenant_address: 10.167.12.7
   openstack_gateway_node02_address: 10.167.11.225
   openstack_gateway_node02_hostname: gtw02
-  openstack_gateway_node02_tenant_address: 10.167.12.6
+  openstack_gateway_node02_tenant_address: 10.167.12.8
   openstack_gateway_node03_address: 10.167.11.226
   openstack_gateway_node03_hostname: gtw03
-  openstack_gateway_node03_tenant_address: 10.167.12.7
+  openstack_gateway_node03_tenant_address: 10.167.12.9
   openstack_message_queue_address: 10.167.11.40
   openstack_message_queue_hostname: msg
   openstack_message_queue_node01_address: 10.167.11.41
@@ -531,15 +1311,15 @@ default_context:
   ceph_public_network: "10.167.11.0/24"
   ceph_cluster_network: "10.167.11.0/24"
   ceph_osd_single_address_ranges: "10.167.11.200-10.167.11.202"
-  ceph_osd_deploy_address_ranges: "172.16.164.8-172.16.164.10"
+  ceph_osd_deploy_address_ranges: "172.17.42.206-172.17.42.208"
   ceph_osd_storage_address_ranges: "10.167.11.200-10.167.11.202"
   ceph_osd_backend_address_ranges: "10.167.12.200-10.167.12.202"
   ceph_osd_data_disks: "/dev/sdb"
   ceph_osd_journal_or_block_db_disks: "/dev/sdb"
   ceph_osd_mode: "separated"
-  ceph_osd_deploy_nic: "eth0"
-  ceph_osd_primary_first_nic: "eth1"
-  ceph_osd_primary_second_nic: "eth2"
+  ceph_osd_deploy_nic: "one1"
+  ceph_osd_primary_first_nic: "ten1"
+  ceph_osd_primary_second_nic: "ten2"
   ceph_mon_node01_address: "10.167.11.66"
   ceph_mon_node01_hostname: "cmn01"
   ceph_mon_node02_address: "10.167.11.67"
@@ -587,10 +1367,10 @@ default_context:
   openstack_barbican_node03_address: 10.167.11.47
   openstack_barbican_node03_hostname: kmn03
   openstack_create_public_network: 'True'
-  openstack_public_neutron_subnet_gateway: 172.17.42.1
-  openstack_public_neutron_subnet_cidr: 172.17.42.0/26
-  openstack_public_neutron_subnet_allocation_start: 172.17.42.15
-  openstack_public_neutron_subnet_allocation_end: 172.17.42.55
+  openstack_public_neutron_subnet_gateway: 172.17.35.129
+  openstack_public_neutron_subnet_cidr: 172.17.35.128/26
+  openstack_public_neutron_subnet_allocation_start: 172.17.35.140
+  openstack_public_neutron_subnet_allocation_end: 172.17.42.180
   backend_vlan: '2402'
   storage_vlan: '2405'  # not implemented yet, placeholder
   kqueen_custom_mail_enabled: 'False'
@@ -634,4 +1414,4 @@ default_context:
     hBP6Fk8iNWuOWQD+ohM/vMMnvIhk5jwlcwn+kF0ra04gi5KBFWSh/ddWMJxUtPC1
     2htvlEc6zQAR6QfqXHmwhg1hP81JcpqpicQzCMhkzLoR1DC6stXdLg==
     -----END RSA PRIVATE KEY-----
-  octavia_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2Oc8MmxBOgcG2ioijXmZ1Jil+LzPoMUyLwZujQoI3fc5Sfm45y1t22NR966G8jqnHVIKe/JaLT0W3x5bCr4rAsIYptTEu+oqW24nsrcsisZeS36apk3g71cp5Up9kf6ZBaSTFFaBfavxEo1XcaR0213vhWOE/5HpdIolDVnxvt4czXS/oiNNj+M9zOMr57IJ4SPiptKdXx4qWouGGq65JBGZQ7YNFKMtV2l1/YEHj8F1YWwNg6ZfuZvySkSv29D5zUkoxcPAPp6HPJTyQT7WRWbnM54TLgd1ggym9R83j0/VqdFXYhJDVkT6vbYgAwqXS16SsYfR7/U0/UMXmsg0z  
+  octavia_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2Oc8MmxBOgcG2ioijXmZ1Jil+LzPoMUyLwZujQoI3fc5Sfm45y1t22NR966G8jqnHVIKe/JaLT0W3x5bCr4rAsIYptTEu+oqW24nsrcsisZeS36apk3g71cp5Up9kf6ZBaSTFFaBfavxEo1XcaR0213vhWOE/5HpdIolDVnxvt4czXS/oiNNj+M9zOMr57IJ4SPiptKdXx4qWouGGq65JBGZQ7YNFKMtV2l1/YEHj8F1YWwNg6ZfuZvySkSv29D5zUkoxcPAPp6HPJTyQT7WRWbnM54TLgd1ggym9R83j0/VqdFXYhJDVkT6vbYgAwqXS16SsYfR7/U0/UMXmsg0z

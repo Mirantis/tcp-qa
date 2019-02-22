@@ -8,9 +8,10 @@
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-environment.yaml','salt-context-cookiecutter-openstack_ovs.yaml'] %}
-{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2404') %}
-{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2406') %}
-
+{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '1111') %}
+{#
+# {%- set TENANT_VLAN = os_env('TENANT_VLAN', '1112') %}
+#}
 {%- set IPMI_USER = os_env('IPMI_USER', 'mcp-qa') %}
 {%- set IPMI_PASS = os_env('IPMI_PASS', 'password') %}
 
@@ -21,7 +22,7 @@
 
 {{ SHARED.MACRO_INSTALL_FORMULAS('\*') }}
 
-{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN) }}
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
@@ -32,6 +33,23 @@
     sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
     sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/gateway.yml;
     salt '*' saltutil.refresh_pillar;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Allow unsupported sfp
+  cmd: |
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key 'parameters.maas.region.maas_config.kernel_opts' 'ixgbe.allow_unsupported_sfp=1' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/overrides.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: Support 2439 vlan in public network
+  cmd: |
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key 'parameters._param.external_vlan_range' '2439:2439' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/overrides.yml
+    reclass-tools add-key 'parameters._param.external_vlan' '2439' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/overrides.yml
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false

@@ -4,7 +4,7 @@
 {% set DOMAIN_NAME = os_env('DOMAIN_NAME', LAB_CONFIG_NAME + '.local') %}
 {% set HOSTNAME_CFG01 = os_env('HOSTNAME_CFG01', 'cfg01.' + DOMAIN_NAME) %}
 
-{% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.16.164.2') %}
+{% set ETH1_IP_ADDRESS_CFG01 = os_env('ETH1_IP_ADDRESS_CFG01', '172.17.42.195') %}
 
 ---
 aliases:
@@ -18,7 +18,7 @@ template:
 
     address_pools:
       admin-pool01:
-        net: {{ os_env('ADMIN_ADDRESS_POOL01', '172.16.164.0/26:26') }}
+        net: {{ os_env('ADMIN_ADDRESS_POOL01', '172.17.42.192/26:26') }}
         params:
           ip_reserved:
             gateway: +1
@@ -45,12 +45,12 @@ template:
               dhcp: [+2, -4]
 
       external-pool01:
-        net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '172.17.42.0/26:26') }}
+        net: {{ os_env('EXTERNAL_ADDRESS_POOL01', '172.17.35.128/26:26') }}
         params:
           ip_reserved:
-            gateway: '172.17.42.1'
+            gateway: '172.17.35.129'
           ip_ranges:
-              dhcp: ['172.17.42.10', '172.17.42.20']
+              dhcp: ['172.17.35.140', '172.17.35.160']
 
 
     groups:
