@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "47b150b2_2183d4b3",
+        "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-cookiecutter-openstack_ovs.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1263,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-02-22T22:59:14Z",
+      "side": 1,
+      "message": "why proposed?",
+      "revId": "cca154a20e778fcc8dabe5f974a64d90dde711f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a794c41_ee601220",
+        "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-cookiecutter-openstack_ovs.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1347,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-02-22T22:59:14Z",
+      "side": 1,
+      "message": "set http",
+      "revId": "cca154a20e778fcc8dabe5f974a64d90dde711f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0b676ae5_27850172",
+        "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-environment.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-02-22T22:59:14Z",
+      "side": 1,
+      "message": "this role not present in environment-template/blob/2018.11.0",
+      "revId": "cca154a20e778fcc8dabe5f974a64d90dde711f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
