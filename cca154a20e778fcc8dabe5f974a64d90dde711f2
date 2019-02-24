@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "2f929597_a7503f2b",
+        "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-cookiecutter-openstack_ovs.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1263,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-02-24T20:17:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "47b150b2_2183d4b3",
+      "revId": "cca154a20e778fcc8dabe5f974a64d90dde711f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a794c41_ee601220",
         "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-cookiecutter-openstack_ovs.yaml",
         "patchSetId": 1
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "888f275d_3065d1e2",
+        "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-cookiecutter-openstack_ovs.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 1347,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-02-24T20:17:53Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "5a794c41_ee601220",
+      "revId": "cca154a20e778fcc8dabe5f974a64d90dde711f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "0b676ae5_27850172",
         "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-environment.yaml",
         "patchSetId": 1
@@ -47,6 +83,24 @@
       "writtenOn": "2019-02-22T22:59:14Z",
       "side": 1,
       "message": "this role not present in environment-template/blob/2018.11.0",
+      "revId": "cca154a20e778fcc8dabe5f974a64d90dde711f2",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "530fdd86_8a8268c9",
+        "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-environment.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 177,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-02-24T20:17:53Z",
+      "side": 1,
+      "message": "create https://review.gerrithub.io/c/Mirantis/environment-template/+/446035",
+      "parentUuid": "0b676ae5_27850172",
       "revId": "cca154a20e778fcc8dabe5f974a64d90dde711f2",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
