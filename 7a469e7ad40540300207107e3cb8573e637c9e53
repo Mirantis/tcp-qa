@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8b91e538_3734fc9c",
+        "filename": "tcp_tests/templates/cookied-cicd-ovs-maas/salt-context-environment.yaml",
+        "patchSetId": 10
+      },
+      "lineNbr": 24,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-02-25T11:15:46Z",
+      "side": 1,
+      "message": "please resolve comment in https://review.gerrithub.io/#/c/Mirantis/environment-template/+/445904/",
+      "range": {
+        "startLine": 24,
+        "startChar": 16,
+        "endLine": 24,
+        "endChar": 29
+      },
+      "revId": "7a469e7ad40540300207107e3cb8573e637c9e53",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
