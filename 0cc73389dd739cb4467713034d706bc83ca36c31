@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bd3764c3_75d1a770",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_cookied-cicd-ovs-maas.yaml",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-02-25T11:08:07Z",
+      "side": 1,
+      "message": "missing TENANT_VLAN\u003dTENANT_VLAN ?\nor it is not required here?",
+      "range": {
+        "startLine": 25,
+        "startChar": 69,
+        "endLine": 25,
+        "endChar": 73
+      },
+      "revId": "0cc73389dd739cb4467713034d706bc83ca36c31",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
