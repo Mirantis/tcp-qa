@@ -192,7 +192,10 @@ class RuntestManager(object):
             inspect_res = self.salt_api.local(tgt,
                                               'dockerng.inspect',
                                               self.container_name)
-            if 'return' in inspect_res:
+            LOG.info("Target {}".format(tgt))
+            LOG.info("Container_name {}".format(self.container_name))
+            LOG.info("inspect_res {}".format(inspect_res))
+            if inspect_res.get('return', [{}]) != [{}]:
                 inspect = inspect_res['return']
                 inspect = inspect[0]
                 inspect = next(inspect.iteritems())[1]
