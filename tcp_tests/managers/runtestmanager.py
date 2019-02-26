@@ -53,6 +53,7 @@ class RuntestManager(object):
         self.master_minion = self.underlay.get_target_minion_ids(
             self.master_host)[0]
         self.__target_name = None
+        self.__target_minion = None
 
     @property
     def salt_api(self):
@@ -69,6 +70,18 @@ class RuntestManager(object):
             self.__target_name = self.underlay.get_target_node_names(
                 target_host)[0]
         return self.__target_name
+
+    @property
+    def target_minion(self):
+        if not self.__target_minion:
+            target_host = self.__salt_api.get_single_pillar(
+                tgt=self.master_minion,
+                pillar="runtest:tempest:test_target")
+            if target_host[-1] == "*":
+                target_host = target_host[:-1]
+            self.__target_minion = self.underlay.get_target_minion_ids(
+                target_host)[0]
+        return self.__target_minion
 
     def fetch_arficats(self, username=None, file_format='xml'):
         with self.underlay.remote(node_name=self.target_name,
@@ -149,7 +162,7 @@ class RuntestManager(object):
                                          label="Prepare for Tempest")
 
     def run_tempest(self, timeout=600):
-        tgt = self.target_name
+        tgt = self.target_minion
         image_nameversion = "{}:{}".format(self.image_name, self.image_version)
 
         docker_args = (
@@ -188,39 +201,68 @@ class RuntestManager(object):
         self.__salt_api.execute_commands(commands=commands,
                                          label="Run Tempest tests")
 
+
+        def simplify_salt_api_return(api_return):
+            if api_return.get('return', [{}]) != [{}]:
+                api_return = api_return['return'][0]
+                api_return = next(api_return.iteritems())[1]
+                if not api_return:
+                    LOG.info("Minion was not reachable. Got False respond from target_minion")
+                return api_return
+            else:
+                return False
+
         def wait_status(s):
             inspect_res = self.salt_api.local(tgt,
                                               'dockerng.inspect',
                                               self.container_name)
-            if 'return' in inspect_res:
-                inspect = inspect_res['return']
-                inspect = inspect[0]
-                inspect = next(inspect.iteritems())[1]
+            inspect = simplify_salt_api_return(inspect_res)
+            if inspect:
                 status = inspect['State']['Status']
-
                 return status.lower() == s.lower()
-
             return False
 
-        helpers.wait(lambda: wait_status('exited'),
-                     timeout=timeout,
-                     timeout_msg=('Tempest run didnt finished '
-                                  'in {}'.format(timeout)))
+        if wait_status('running'):
+            helpers.wait(lambda: wait_status('exited'),
+                         timeout=timeout,
+                         timeout_msg=('Tempest run didnt finished '
+                                      'in {}'.format(timeout)))
+        else:
+            inspect_res = self.salt_api.local(tgt,
+                                              'dockerng.inspect',
+                                              self.container_name)
+            inspect = simplify_salt_api_return(inspect_res)
+            if inspect:
+                status = inspect['State']['Status']
+                LOG.info("Container is not in RUNNING state. "
+                          "Current container status is {}".format(status))
+            else:
+                LOG.info("Got empty result from salt api.")
 
         inspect_res = self.salt_api.local(tgt,
                                           'dockerng.inspect',
                                           self.container_name)
-        inspect = inspect_res['return'][0]
-        inspect = next(inspect.iteritems())[1]
+        inspect = simplify_salt_api_return(inspect_res)
+        if not inspect:
+            LOG.info("Got empty result for dockerng.inspect from salt api.")
+            inspect = None
+
         logs_res = self.salt_api.local(tgt,
                                        'dockerng.logs',
                                        self.container_name)
-        logs = logs_res['return'][0]
-        logs = next(logs.iteritems())[1]
+        logs = simplify_salt_api_return(logs_res)
+        if not logs:
+            LOG.info("Got empty result for dockerng.logs from salt api.")
+            logs = None
 
-        res = self.salt_api.local(tgt, 'dockerng.rm', self.container_name)
-        LOG.info("Tempest container was removed".format(
-            json.dumps(res, indent=4)))
+        rm_res = self.salt_api.local(tgt, 'dockerng.rm', self.container_name)
+        rm = simplify_salt_api_return(rm_res)
+        if 'ERROR' in rm:
+            LOG.info("Something went wrong with removing container")
+            LOG.info("dockerng.rm stdout {}".format(rm))
+        else:
+            LOG.info("Tempest container was removed: {}".format(
+                json.dumps(rm_res, indent=4)))
 
         return {'inspect': inspect,
                 'logs': logs}
