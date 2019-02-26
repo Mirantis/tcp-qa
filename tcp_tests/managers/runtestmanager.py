@@ -53,6 +53,7 @@ class RuntestManager(object):
         self.master_minion = self.underlay.get_target_minion_ids(
             self.master_host)[0]
         self.__target_name = None
+        self.__target_minion = None
 
     @property
     def salt_api(self):
@@ -69,6 +70,18 @@ class RuntestManager(object):
             self.__target_name = self.underlay.get_target_node_names(
                 target_host)[0]
         return self.__target_name
+
+    @property
+    def target_minion(self):
+        if not self.__target_minion:
+            target_host = self.__salt_api.get_single_pillar(
+                tgt=self.master_minion,
+                pillar="runtest:tempest:test_target")
+            if target_host[-1] == "*":
+                target_host = target_host[:-1]
+            self.__target_minion = self.underlay.get_target_minion_ids(
+                target_host)[0]
+        return self.__target_minion
 
     def fetch_arficats(self, username=None, file_format='xml'):
         with self.underlay.remote(node_name=self.target_name,
@@ -149,7 +162,7 @@ class RuntestManager(object):
                                          label="Prepare for Tempest")
 
     def run_tempest(self, timeout=600):
-        tgt = self.target_name
+        tgt = self.target_minion
         image_nameversion = "{}:{}".format(self.image_name, self.image_version)
 
         docker_args = (
@@ -192,7 +205,10 @@ class RuntestManager(object):
             inspect_res = self.salt_api.local(tgt,
                                               'dockerng.inspect',
                                               self.container_name)
-            if 'return' in inspect_res:
+            LOG.info("Target {}".format(tgt))
+            LOG.info("Container_name {}".format(self.container_name))
+            LOG.info("inspect_res {}".format(inspect_res))
+            if inspect_res.get('return', [{}]) != [{}]:
                 inspect = inspect_res['return']
                 inspect = inspect[0]
                 inspect = next(inspect.iteritems())[1]
