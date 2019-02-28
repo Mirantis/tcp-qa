@@ -335,3 +335,5 @@ default_context:
   designate_enabled: 'True'
   openstack_dns_node01_address: 10.167.4.113
   openstack_dns_node02_address: 10.167.4.114
+
+  secrets_encryption_enabled: 'True'
