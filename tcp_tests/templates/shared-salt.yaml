@@ -380,18 +380,39 @@
     remote_path: /tmp/
   node_name: {{ HOSTNAME_CFG01 }}
 
+- description: Create nesccesaraly virtual environments
+  cmd: |
+    set -e;
+    set -x;
+    sudo apt-get install virtualenv -y
+    sudo apt-get install python-setuptools -y
+    sudo apt-get install python3-venv -y
+    sudo apt-get install python3-setuptools -y
+
+    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    . /root/venv-reclass-tools/bin/activate;
+    pip install -U pip
+    deactivate
+
+    [[ -d /root/venv-cookiecutter ]] || python3 -m venv /root/venv-cookiecutter;
+    . /root/venv-cookiecutter/bin/activate
+    pip install -U pip
+
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
 - description: Create cluster model from cookiecutter templates
   cmd: |
     set -e;
     set -x;
     sudo apt-get install virtualenv -y
     sudo apt-get install python-setuptools -y
+    sudo apt-get install python3-venv -y
+    sudo apt-get install python3-setuptools -y
 
-    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
-    . /root/venv-reclass-tools/bin/activate;
-    pip install -U pip
+    . /root/venv-cookiecutter/bin/activate
 
-    pip install cookiecutter
 
     chmod 0600 /tmp/{{ COOKIECUTTER_TEMPLATES_REPOSITORY_KEY_PATH | basename }}
     eval $(ssh-agent)
@@ -452,7 +473,7 @@
 
     {% set items = CLUSTER_PRODUCT_MODELS or '$(ls /root/cookiecutter-templates/cluster_product/)' %}
     for item in {{ items }}; do
-      python /root/cookiecutter-templates/generate.py \
+      python3 /root/cookiecutter-templates/generate.py \
         --template /root/cookiecutter-templates/cluster_product/$item \
         --config-file {{ CLUSTER_CONTEXT_PATH }} \
         --output-dir /srv/salt/reclass/classes/cluster/;
