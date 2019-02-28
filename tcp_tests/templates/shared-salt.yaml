@@ -384,10 +384,10 @@
   cmd: |
     set -e;
     set -x;
-    sudo apt-get install virtualenv -y
-    sudo apt-get install python-setuptools -y
+    sudo apt-get install python3-venv -y
+    sudo apt-get install python3-setuptools -y
 
-    [[ -d /root/venv-reclass-tools ]] || virtualenv /root/venv-reclass-tools;
+    [[ -d /root/venv-reclass-tools ]] || python3 -m venv /root/venv-reclass-tools;
     . /root/venv-reclass-tools/bin/activate;
     pip install -U pip
 
