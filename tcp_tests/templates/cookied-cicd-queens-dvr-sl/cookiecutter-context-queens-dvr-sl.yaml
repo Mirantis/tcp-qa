@@ -2,13 +2,13 @@ default_context:
   auditd_enabled: 'False'
   bmk_enabled: 'False'
   cicd_control_node01_address: 10.167.4.91
-  cicd_control_node01_hostname: cid01
+  cicd_control_node01_hostname: "cid01"
   cicd_control_node02_address: 10.167.4.92
-  cicd_control_node02_hostname: cid02
+  cicd_control_node02_hostname: "cid02"
   cicd_control_node03_address: 10.167.4.93
-  cicd_control_node03_hostname: cid03
+  cicd_control_node03_hostname: "cid03"
   cicd_control_vip_address: 10.167.4.90
-  cicd_control_vip_hostname: cid
+  cicd_control_vip_hostname: "cid"
   cicd_enabled: 'True'
   cicd_private_key: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -39,135 +39,135 @@ default_context:
     9fG8FTiigLvMHka9ihYXtPbyGvusCaqyHp3D9VyOT+WsyM5eJe40lA==
     -----END RSA PRIVATE KEY-----
   cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/rgCcVsS645AcuWYySZpn4eH/yEn5V8Wkn8zNbXBbNjKGKzvcDyvE0VYn8jX8slKwUjypTQOnGMWNL0sxNMVeEM8+m7OBEvB9W6wSa5B1eM6JPfgAizTtDjDWeW8nb7+XvzyJ7UAR+d7B316tQc6zxa389Pc44z/SKRjsSJu9gXgvUtvEZEpidSRjsbd5qX1dxCmxPMAVFegrdZp9sIUEWx/MRY6HHVP62fVLBrE9gkO3U4EHWzvt6cW0HBuZt3SbUXW59JeZ1Z5rbEXf7lxpLq2mz+HCEKg5IlRBvv50riuLyiCrZgiF8Sm2sw/VH6dWoRjvo/fVpr9hLDjM69xD
-  cluster_domain: cookied-cicd-queens-dvr-sl.local
-  cluster_name: cookied-cicd-queens-dvr-sl
-  ceph_cluster_network: 10.167.4.0/24
+  cluster_domain: "cookied-cicd-queens-dvr-sl.local"
+  cluster_name: "cookied-cicd-queens-dvr-sl"
+  ceph_cluster_network: "10.167.4.0/24"
   ceph_enabled: 'True'
   ceph_hyper_converged: 'False'
   ceph_mon_node01_address: 10.167.4.96
-  ceph_mon_node01_hostname: cmn01
+  ceph_mon_node01_hostname: "cmn01"
   ceph_mon_node02_address: 10.167.4.97
-  ceph_mon_node02_hostname: cmn02
+  ceph_mon_node02_hostname: "cmn02"
   ceph_mon_node03_address: 10.167.4.98
-  ceph_mon_node03_hostname: cmn03
-  ceph_osd_backend: bluestore
+  ceph_mon_node03_hostname: "cmn03"
+  ceph_osd_backend: "bluestore"
   ceph_osd_block_db_size: '10'
-  ceph_osd_bond_mode: active-backup
+  ceph_osd_bond_mode: "active-backup"
   ceph_osd_count: '3'
-  ceph_osd_data_disks: /dev/vdb
-  ceph_osd_journal_or_block_db_disks: /dev/vdc
+  ceph_osd_data_disks: "/dev/vdb"
+  ceph_osd_journal_or_block_db_disks: "/dev/vdc"
   ceph_osd_node_count: '3'
   ceph_osd_journal_size: '10'
-  ceph_osd_primary_first_nic: eth1
-  ceph_osd_primary_second_nic: eth2
-  ceph_osd_rack01_backend_subnet: 10.167.4
-  ceph_osd_rack01_hostname: osd
-  ceph_osd_rack01_single_subnet: 10.167.4
-  ceph_osd_single_address_ranges: 10.167.4.37-10.167.4.39
-  ceph_osd_deploy_address_ranges: 10.167.5.37-10.167.5.39
-  ceph_osd_backend_address_ranges: 10.167.4.37-10.167.4.39
-  ceph_public_network: 10.167.4.0/24
-  ceph_rgw_address: 10.167.4.75
-  ceph_rgw_hostname: rgw
-  ceph_rgw_node01_address: 10.167.4.76
-  ceph_rgw_node01_hostname: rgw01
-  ceph_rgw_node02_address: 10.167.4.77
-  ceph_rgw_node02_hostname: rgw02
-  ceph_rgw_node03_address: 10.167.4.78
-  ceph_rgw_node03_hostname: rgw03
-  ceph_version: luminous
-  compute_bond_mode: active-backup
-  compute_primary_first_nic: eth1
-  compute_primary_second_nic: eth2
-  context_seed: wUqrwKeBTCpRpVrhK1KwZQv4cjM9VhG7L2vQ0iQsTuMrXASklEBDmJEf6bnPEqcK
-  control_network_netmask: 255.255.255.0
-  control_network_subnet: 10.167.4.0/24
+  ceph_osd_primary_first_nic: "eth1"
+  ceph_osd_primary_second_nic: "eth2"
+  ceph_osd_rack01_backend_subnet: "10.167.4"
+  ceph_osd_rack01_hostname: "osd"
+  ceph_osd_rack01_single_subnet: "10.167.4"
+  ceph_osd_single_address_ranges: "10.167.4.37-10.167.4.39"
+  ceph_osd_deploy_address_ranges: "10.167.5.37-10.167.5.39"
+  ceph_osd_backend_address_ranges: "10.167.4.37-10.167.4.39"
+  ceph_public_network: "10.167.4.0/24"
+  ceph_rgw_address: "10.167.4.75"
+  ceph_rgw_hostname: "rgw"
+  ceph_rgw_node01_address: "10.167.4.76"
+  ceph_rgw_node01_hostname: "rgw01"
+  ceph_rgw_node02_address: "10.167.4.77"
+  ceph_rgw_node02_hostname: "rgw02"
+  ceph_rgw_node03_address: "10.167.4.78"
+  ceph_rgw_node03_hostname: "rgw03"
+  ceph_version: "luminous"
+  compute_bond_mode: "active-backup"
+  compute_primary_first_nic: "eth1"
+  compute_primary_second_nic: "eth2"
+  context_seed: "wUqrwKeBTCpRpVrhK1KwZQv4cjM9VhG7L2vQ0iQsTuMrXASklEBDmJEf6bnPEqcK"
+  control_network_netmask: "255.255.255.0"
+  control_network_subnet: "10.167.4.0/24"
   control_vlan: '10'
-  cookiecutter_template_branch: master
-  cookiecutter_template_credentials: gerrit
-  cookiecutter_template_url: https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates.git
-  deploy_network_gateway: 10.167.5.1
-  deploy_network_netmask: 255.255.255.0
-  deploy_network_subnet: 10.167.5.0/24
-  deployment_type: physical
-  dns_server01: 172.18.176.6
-  dns_server02: 172.18.208.44
-  email_address: ddmitriev@mirantis.com
-  gateway_primary_first_nic: eth1
-  gateway_primary_second_nic: eth2
-  infra_bond_mode: active-backup
-  infra_deploy_nic: eth0
-  infra_kvm01_control_address: 10.167.4.101
-  infra_kvm01_deploy_address: 10.167.5.101
-  infra_kvm01_hostname: kvm01
-  infra_kvm02_control_address: 10.167.4.102
-  infra_kvm02_deploy_address: 10.167.5.102
-  infra_kvm02_hostname: kvm02
-  infra_kvm03_control_address: 10.167.4.103
-  infra_kvm03_deploy_address: 10.167.5.103
-  infra_kvm03_hostname: kvm03
-  infra_kvm_vip_address: 10.167.4.100
-  infra_primary_first_nic: eth1
-  infra_primary_second_nic: eth2
+  cookiecutter_template_branch: "master"
+  cookiecutter_template_credentials: "gerrit"
+  cookiecutter_template_url: "https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates.git"
+  deploy_network_gateway: "10.167.5.1"
+  deploy_network_netmask: "255.255.255.0"
+  deploy_network_subnet: "10.167.5.0/24"
+  deployment_type: "physical"
+  dns_server01: "172.18.176.6"
+  dns_server02: "172.18.208.44"
+  email_address: "ddmitriev@mirantis.com"
+  gateway_primary_first_nic: "eth1"
+  gateway_primary_second_nic: "eth2"
+  infra_bond_mode: "active-backup"
+  infra_deploy_nic: "eth0"
+  infra_kvm01_control_address: "10.167.4.101"
+  infra_kvm01_deploy_address: "10.167.5.101"
+  infra_kvm01_hostname: "kvm01"
+  infra_kvm02_control_address: "10.167.4.102"
+  infra_kvm02_deploy_address: "10.167.5.102"
+  infra_kvm02_hostname: "kvm02"
+  infra_kvm03_control_address: "10.167.4.103"
+  infra_kvm03_deploy_address: "10.167.5.103"
+  infra_kvm03_hostname: "kvm03"
+  infra_kvm_vip_address: "10.167.4.100"
+  infra_primary_first_nic: "eth1"
+  infra_primary_second_nic: "eth2"
   kubernetes_enabled: 'False'
   local_repositories: 'False'
-  maas_deploy_address: 10.167.5.15
-  maas_deploy_range_end: 10.167.5.199
-  maas_deploy_range_start: 10.167.5.180
+  maas_deploy_address: "10.167.5.15"
+  maas_deploy_range_end: "10.167.5.199"
+  maas_deploy_range_start: "10.167.5.180"
   maas_deploy_vlan: '0'
-  maas_fabric_name: deploy-fabric0
-  maas_hostname: cfg01
-  mcp_version: proposed
+  maas_fabric_name: "deploy-fabric0"
+  maas_hostname: "cfg01"
+  mcp_version: "proposed"
   offline_deployment: 'False'
   opencontrail_enabled: 'False'
   openldap_domain: ${_param:cluster_name}.local
   openldap_enabled: 'True'
-  openldap_organisation: ${_param:cluster_name}
-  openssh_groups: cicd
-  openstack_benchmark_node01_address: 10.167.4.95
-  openstack_benchmark_node01_hostname: bmk01
-  openstack_cluster_size: compact
+  openldap_organisation: "${_param:cluster_name}"
+  openssh_groups: "cicd"
+  openstack_benchmark_node01_address: "10.167.4.95"
+  openstack_benchmark_node01_hostname: "bmk01"
+  openstack_cluster_size: "compact"
   openstack_compute_count: '2'
-  openstack_compute_rack01_hostname: cmp
-  openstack_compute_rack01_single_subnet: 10.167.4
-  openstack_compute_rack01_tenant_subnet: 10.167.6
-  openstack_compute_single_address_ranges: 10.167.4.105-10.167.4.106
-  openstack_compute_deploy_address_ranges: 10.167.5.105-10.167.5.106
-  openstack_compute_tenant_address_ranges: 10.167.6.105-10.167.6.106
-  openstack_control_address: 10.167.4.100
-  openstack_control_hostname: ctl
-  openstack_control_node01_address: 10.167.4.101
-  openstack_control_node01_hostname: ctl01
-  openstack_control_node02_address: 10.167.4.102
-  openstack_control_node02_hostname: ctl02
-  openstack_control_node03_address: 10.167.4.103
-  openstack_control_node03_hostname: ctl03
-  openstack_database_address: 10.167.4.100
-  openstack_database_hostname: ctl
-  openstack_database_node01_address: 10.167.4.101
-  openstack_database_node01_hostname: ctl01
-  openstack_database_node02_address: 10.167.4.102
-  openstack_database_node02_hostname: ctl02
-  openstack_database_node03_address: 10.167.4.103
-  openstack_database_node03_hostname: ctl03
+  openstack_compute_rack01_hostname: "cmp"
+  openstack_compute_rack01_single_subnet: "10.167.4"
+  openstack_compute_rack01_tenant_subnet: "10.167.6"
+  openstack_compute_single_address_ranges: "10.167.4.105-10.167.4.106"
+  openstack_compute_deploy_address_ranges: "10.167.5.105-10.167.5.106"
+  openstack_compute_tenant_address_ranges: "10.167.6.105-10.167.6.106"
+  openstack_control_address: "10.167.4.100"
+  openstack_control_hostname: "ctl"
+  openstack_control_node01_address: "10.167.4.101"
+  openstack_control_node01_hostname: "ctl01"
+  openstack_control_node02_address: "10.167.4.102"
+  openstack_control_node02_hostname: "ctl02"
+  openstack_control_node03_address: "10.167.4.103"
+  openstack_control_node03_hostname: "ctl03"
+  openstack_database_address: "10.167.4.100"
+  openstack_database_hostname: "ctl"
+  openstack_database_node01_address: "10.167.4.101"
+  openstack_database_node01_hostname: "ctl01"
+  openstack_database_node02_address: "10.167.4.102"
+  openstack_database_node02_hostname: "ctl02"
+  openstack_database_node03_address: "10.167.4.103"
+  openstack_database_node03_hostname: "ctl03"
   openstack_enabled: 'True'
-  openstack_gateway_node01_address: 10.167.4.110
-  openstack_gateway_node01_hostname: gtw01
-  openstack_gateway_node01_tenant_address: 10.167.6.6
-  openstack_gateway_node02_address: 10.167.4.111
-  openstack_gateway_node02_hostname: gtw02
-  openstack_gateway_node02_tenant_address: 10.167.6.7
-  openstack_gateway_node03_address: 10.167.4.112
-  openstack_gateway_node03_hostname: gtw03
-  openstack_gateway_node03_tenant_address: 10.167.6.8
-  openstack_message_queue_address: 10.167.4.100
-  openstack_message_queue_hostname: ctl
-  openstack_message_queue_node01_address: 10.167.4.101
-  openstack_message_queue_node01_hostname: ctl01
-  openstack_message_queue_node02_address: 10.167.4.102
-  openstack_message_queue_node02_hostname: ctl02
-  openstack_message_queue_node03_address: 10.167.4.103
-  openstack_message_queue_node03_hostname: ctl03
+  openstack_gateway_node01_address: "10.167.4.110"
+  openstack_gateway_node01_hostname: "gtw01"
+  openstack_gateway_node01_tenant_address: "10.167.6.6"
+  openstack_gateway_node02_address: "10.167.4.111"
+  openstack_gateway_node02_hostname: "gtw02"
+  openstack_gateway_node02_tenant_address: "10.167.6.7"
+  openstack_gateway_node03_address: "10.167.4.112"
+  openstack_gateway_node03_hostname: "gtw03"
+  openstack_gateway_node03_tenant_address: "10.167.6.8"
+  openstack_message_queue_address: "10.167.4.100"
+  openstack_message_queue_hostname: "ctl"
+  openstack_message_queue_node01_address: "10.167.4.101"
+  openstack_message_queue_node01_hostname: "ctl01"
+  openstack_message_queue_node02_address: "10.167.4.102"
+  openstack_message_queue_node02_hostname: "ctl02"
+  openstack_message_queue_node03_address: "10.167.4.103"
+  openstack_message_queue_node03_hostname: "ctl03"
   openstack_network_engine: ovs
   openstack_neutron_qos: 'False'
   openstack_neutron_vlan_aware_vms: 'False'
@@ -175,26 +175,26 @@ default_context:
   openstack_nfv_sriov_enabled: 'False'
   openstack_nova_compute_nfv_req_enabled: 'False'
   openstack_ovs_dvr_enabled: 'True'
-  openstack_ovs_encapsulation_type: vxlan
-  openstack_proxy_address: 172.17.16.80  # external network endpoint
-  openstack_proxy_vip_interface: ens5
-  openstack_proxy_hostname: prx
-  openstack_proxy_node01_address: 10.167.4.121
-  openstack_proxy_node01_hostname: prx01
-  openstack_proxy_node02_address: 10.167.4.122
-  openstack_proxy_node02_hostname: prx02
-  openstack_upgrade_node01_address: 10.167.4.19
-  openstack_version: queens
+  openstack_ovs_encapsulation_type: "vxlan"
+  openstack_proxy_address: "172.17.16.80"  # external network endpoint
+  openstack_proxy_vip_interface: "ens5"
+  openstack_proxy_hostname: "prx"
+  openstack_proxy_node01_address: "10.167.4.121"
+  openstack_proxy_node01_hostname: "prx01"
+  openstack_proxy_node02_address: "10.167.4.122"
+  openstack_proxy_node02_hostname: "prx02"
+  openstack_upgrade_node01_address: "10.167.4.19"
+  openstack_version: "queens"
   oss_enabled: 'False'
-  oss_node03_address: ${_param:stacklight_monitor_node03_address}
+  oss_node03_address: "${_param:stacklight_monitor_node03_address}"
   oss_webhook_app_id: '24'
-  oss_pushkin_email_sender_password: password
+  oss_pushkin_email_sender_password: "password"
   oss_pushkin_smtp_port: '587'
   oss_webhook_login_id: '13'
-  platform: openstack_enabled
+  platform: "openstack_enabled"
   public_host: ${_param:openstack_proxy_address}
-  publication_method: email
-  reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
+  publication_method: "email"
+  reclass_repository: "https://github.com/Mirantis/mk-lab-salt-model.git"
   backup_private_key: |
       -----BEGIN RSA PRIVATE KEY-----
       MIIEowIBAAKCAQEAxL6/rVgCetsETpZaUmXmkj8cZ1WN0eubH1FvMDOi/La9ZJyT
@@ -223,46 +223,46 @@ default_context:
       aIIQoDNIlWv1ftCRZ5AlBvVXgvQ/QNrwy48JiQTzWZlb9Ezg8w+olQmSbG6fq7Y+
       7r3i+QUZ7RBdOb24QcQ618q54ozNTCB7OywY78ptFzeoBeptiNr1
       -----END RSA PRIVATE KEY-----
-  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvr+tWAJ62wROllpSZeaSPxxnVY3R65sfUW8wM6L8tr1knJOTQLoBikmcjISb3ekyPlwubTypGoxb7al06FiNwfr3KDkytflKRGTyMKYgchighuFCfBuePd13cjf1l19TYU7u7a+VuCVWi7pmhDGUkMi24s23OroQb7D14XX17v46wLrqJQi2nrXzN/DWXcn/ycq8IZ7ZFgN/uYlbpfAKX8PCvImbDDO8+BgndAy4MPz8cWOWsnfGMVNePhvhazVcijLvx8Vu2Iuvg7CoJiSGjTe7YTms44/WpnFkHreyK8cwsw4wzls4BApu6UU2jIAsAMZh9zux/Rtni71dcNfF
-  salt_api_password: H0rTPdmktZ8RI7T7y6fjqY0uEbbs7Kwi
-  salt_api_password_hash: $6$lfbIFtMZ$.nTbTDMzs1iYv0WqkZHia8H8Fma963Nv3qyyz1x68jQh0YXK9i907B/hvoG4QHMvfolE7V7vQnFClJ1mVA3Yb.
-  salt_master_address: 10.167.4.15
-  salt_master_hostname: cfg01
-  salt_master_management_address: 10.167.5.15
+  backup_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEvr+tWAJ62wROllpSZeaSPxxnVY3R65sfUW8wM6L8tr1knJOTQLoBikmcjISb3ekyPlwubTypGoxb7al06FiNwfr3KDkytflKRGTyMKYgchighuFCfBuePd13cjf1l19TYU7u7a+VuCVWi7pmhDGUkMi24s23OroQb7D14XX17v46wLrqJQi2nrXzN/DWXcn/ycq8IZ7ZFgN/uYlbpfAKX8PCvImbDDO8+BgndAy4MPz8cWOWsnfGMVNePhvhazVcijLvx8Vu2Iuvg7CoJiSGjTe7YTms44/WpnFkHreyK8cwsw4wzls4BApu6UU2jIAsAMZh9zux/Rtni71dcNfF"
+  salt_api_password: "H0rTPdmktZ8RI7T7y6fjqY0uEbbs7Kwi"
+  salt_api_password_hash: "$6$lfbIFtMZ$.nTbTDMzs1iYv0WqkZHia8H8Fma963Nv3qyyz1x68jQh0YXK9i907B/hvoG4QHMvfolE7V7vQnFClJ1mVA3Yb."
+  salt_master_address: "10.167.4.15"
+  salt_master_hostname: "cfg01"
+  salt_master_management_address: "10.167.5.15"
   shared_reclass_branch: 'proposed'
-  shared_reclass_url: https://gerrit.mcp.mirantis.com/salt-models/reclass-system.git
+  shared_reclass_url: "https://gerrit.mcp.mirantis.com/salt-models/reclass-system.git"
   fluentd_enabled: 'True'
   stacklight_enabled: 'True'
-  stacklight_log_address: 10.167.4.60
-  stacklight_log_hostname: log
-  stacklight_log_node01_address: 10.167.4.61
-  stacklight_log_node01_hostname: log01
-  stacklight_log_node02_address: 10.167.4.62
-  stacklight_log_node02_hostname: log02
-  stacklight_log_node03_address: 10.167.4.63
-  stacklight_log_node03_hostname: log03
-  stacklight_monitor_address: 10.167.4.70
-  stacklight_monitor_hostname: mon
-  stacklight_monitor_node01_address: 10.167.4.71
-  stacklight_monitor_node01_hostname: mon01
-  stacklight_monitor_node02_address: 10.167.4.72
-  stacklight_monitor_node02_hostname: mon02
-  stacklight_monitor_node03_address: 10.167.4.73
-  stacklight_monitor_node03_hostname: mon03
-  stacklight_telemetry_address: 10.167.4.85
-  stacklight_telemetry_hostname: mtr
-  stacklight_telemetry_node01_address: 10.167.4.86
-  stacklight_telemetry_node01_hostname: mtr01
-  stacklight_telemetry_node02_address: 10.167.4.87
-  stacklight_telemetry_node02_hostname: mtr02
-  stacklight_telemetry_node03_address: 10.167.4.88
-  stacklight_telemetry_node03_hostname: mtr03
+  stacklight_log_address: "10.167.4.60"
+  stacklight_log_hostname: "log"
+  stacklight_log_node01_address: "10.167.4.61"
+  stacklight_log_node01_hostname: "log01"
+  stacklight_log_node02_address: "10.167.4.62"
+  stacklight_log_node02_hostname: "log02"
+  stacklight_log_node03_address: "10.167.4.63"
+  stacklight_log_node03_hostname: "log03"
+  stacklight_monitor_address: "10.167.4.70"
+  stacklight_monitor_hostname: "mon"
+  stacklight_monitor_node01_address: "10.167.4.71"
+  stacklight_monitor_node01_hostname: "mon01"
+  stacklight_monitor_node02_address: "10.167.4.72"
+  stacklight_monitor_node02_hostname: "mon02"
+  stacklight_monitor_node03_address: "10.167.4.73"
+  stacklight_monitor_node03_hostname: "mon03"
+  stacklight_telemetry_address: "10.167.4.85"
+  stacklight_telemetry_hostname: "mtr"
+  stacklight_telemetry_node01_address: "10.167.4.86"
+  stacklight_telemetry_node01_hostname: "mtr01"
+  stacklight_telemetry_node02_address: "10.167.4.87"
+  stacklight_telemetry_node02_hostname: "mtr02"
+  stacklight_telemetry_node03_address: "10.167.4.88"
+  stacklight_telemetry_node03_hostname: "mtr03"
   stacklight_version: '2'
-  stacklight_long_term_storage_type: prometheus
+  stacklight_long_term_storage_type: "prometheus"
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: 10.167.6.1
-  tenant_network_netmask: 255.255.255.0
-  tenant_network_subnet: 10.167.6.0/24
+  tenant_network_gateway: "10.167.6.1"
+  tenant_network_netmask: "255.255.255.0"
+  tenant_network_subnet: "10.167.6.0/24"
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
@@ -294,35 +294,35 @@ default_context:
     hBP6Fk8iNWuOWQD+ohM/vMMnvIhk5jwlcwn+kF0ra04gi5KBFWSh/ddWMJxUtPC1
     2htvlEc6zQAR6QfqXHmwhg1hP81JcpqpicQzCMhkzLoR1DC6stXdLg==
     -----END RSA PRIVATE KEY-----
-  octavia_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2Oc8MmxBOgcG2ioijXmZ1Jil+LzPoMUyLwZujQoI3fc5Sfm45y1t22NR966G8jqnHVIKe/JaLT0W3x5bCr4rAsIYptTEu+oqW24nsrcsisZeS36apk3g71cp5Up9kf6ZBaSTFFaBfavxEo1XcaR0213vhWOE/5HpdIolDVnxvt4czXS/oiNNj+M9zOMr57IJ4SPiptKdXx4qWouGGq65JBGZQ7YNFKMtV2l1/YEHj8F1YWwNg6ZfuZvySkSv29D5zUkoxcPAPp6HPJTyQT7WRWbnM54TLgd1ggym9R83j0/VqdFXYhJDVkT6vbYgAwqXS16SsYfR7/U0/UMXmsg0z
+  octavia_public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2Oc8MmxBOgcG2ioijXmZ1Jil+LzPoMUyLwZujQoI3fc5Sfm45y1t22NR966G8jqnHVIKe/JaLT0W3x5bCr4rAsIYptTEu+oqW24nsrcsisZeS36apk3g71cp5Up9kf6ZBaSTFFaBfavxEo1XcaR0213vhWOE/5HpdIolDVnxvt4czXS/oiNNj+M9zOMr57IJ4SPiptKdXx4qWouGGq65JBGZQ7YNFKMtV2l1/YEHj8F1YWwNg6ZfuZvySkSv29D5zUkoxcPAPp6HPJTyQT7WRWbnM54TLgd1ggym9R83j0/VqdFXYhJDVkT6vbYgAwqXS16SsYfR7/U0/UMXmsg0z"
   openstack_octavia_enabled: 'True'
-  octavia_health_manager_node01_address: 192.168.1.10
-  octavia_health_manager_node02_address: 192.168.1.11
-  octavia_health_manager_node03_address: 192.168.1.12
+  octavia_health_manager_node01_address: "192.168.1.10"
+  octavia_health_manager_node02_address: "192.168.1.11"
+  octavia_health_manager_node03_address: "192.168.1.12"
   octavia_manager_cluster: 'True'
-  octavia_hm_bind_ip: 192.168.1.12
-  octavia_lb_mgmt_cidr: 192.168.1.0/24
-  octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
-  octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
+  octavia_hm_bind_ip: "192.168.1.12"
+  octavia_lb_mgmt_cidr: "192.168.1.0/24"
+  octavia_lb_mgmt_allocation_pool_start: "192.168.1.2"
+  octavia_lb_mgmt_allocation_pool_end: "192.168.1.200"
   openstack_create_public_network: 'True'
-  openstack_public_neutron_subnet_gateway: 172.17.16.1
-  openstack_public_neutron_subnet_cidr: 172.17.16.0/24
-  openstack_public_neutron_subnet_allocation_start: 172.17.16.201
-  openstack_public_neutron_subnet_allocation_end: 172.17.16.245
+  openstack_public_neutron_subnet_gateway: "172.17.16.1"
+  openstack_public_neutron_subnet_cidr: "172.17.16.0/24"
+  openstack_public_neutron_subnet_allocation_start: "172.17.16.201"
+  openstack_public_neutron_subnet_allocation_end: "172.17.16.245"
 
   manila_enabled: 'False'
   barbican_enabled: 'True'
-  barbican_backend: dogtag
+  barbican_backend: "dogtag"
   barbican_integration_enabled: 'False'
 
-  openstack_barbican_address: 10.167.4.44
-  openstack_barbican_hostname: kmn
-  openstack_barbican_node01_address: 10.167.4.45
-  openstack_barbican_node01_hostname: kmn01
-  openstack_barbican_node02_address: 10.167.4.46
-  openstack_barbican_node02_hostname: kmn02
-  openstack_barbican_node03_address: 10.167.4.47
-  openstack_barbican_node03_hostname: kmn03
+  openstack_barbican_address: "10.167.4.44"
+  openstack_barbican_hostname: "kmn"
+  openstack_barbican_node01_address: "10.167.4.45"
+  openstack_barbican_node01_hostname: "kmn01"
+  openstack_barbican_node02_address: "10.167.4.46"
+  openstack_barbican_node02_hostname: "kmn02"
+  openstack_barbican_node03_address: "10.167.4.47"
+  openstack_barbican_node03_hostname: "kmn03"
 
   nova_vnc_tls_enabled: 'True'
   galera_ssl_enabled: 'True'
@@ -331,7 +331,9 @@ default_context:
   openstack_rabbitmq_x509_enabled: 'True'
   openstack_internal_protocol: 'https'
 
-  designate_backend: powerdns
+  designate_backend: "powerdns"
   designate_enabled: 'True'
-  openstack_dns_node01_address: 10.167.4.113
-  openstack_dns_node02_address: 10.167.4.114
+  openstack_dns_node01_address: "10.167.4.113"
+  openstack_dns_node02_address: "10.167.4.114"
+
+  secrets_encryption_enabled: 'True'
