@@ -225,10 +225,6 @@ class RuntestManager(object):
                 api_return = api_return['return'][0]
                 if only_first_match:
                     api_return = next(api_return.iteritems())[1]
-                    if 'ERROR' or 'not available' in api_return:
-                        LOG.info("Next error ocured during processing"
-                                 " API request: {}".format(api_return))
-                        return False
                 return api_return
             else:
                 LOG.info('''Salt api returns empty result: [{}]''')
@@ -256,6 +252,10 @@ class RuntestManager(object):
             logs_res = self.salt_api.local(tgt, 'dockerng.logs',
                                            self.container_name)
             logs = simplify_salt_api_return(logs_res)
+            rm_res = self.salt_api.local(tgt, 'dockerng.rm',
+                                         self.container_name)
+            LOG.info("Tempest container was removed: {}".format(
+                json.dumps(rm_res, indent=4)))
         else:
             inspect_res = self.salt_api.local(tgt, 'dockerng.inspect',
                                               self.container_name)
@@ -274,15 +274,6 @@ class RuntestManager(object):
                 logs = None
                 inspect = None
 
-        rm_res = self.salt_api.local(tgt, 'dockerng.rm',
-                                     self.container_name)
-        rm = simplify_salt_api_return(rm_res)
-        if 'ERROR' in rm:
-            LOG.info("Something went wrong with removing container")
-            LOG.info("dockerng.rm stdout {}".format(rm))
-        else:
-            LOG.info("Tempest container was removed: {}".format(
-                json.dumps(rm_res, indent=4)))
         return {'inspect': inspect,
                 'logs': logs}
 
