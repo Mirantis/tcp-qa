@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "aa1afb40_86d62811",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-03-01T06:46:12Z",
+      "side": 1,
+      "message": "can you please add an example of the expected api_return content in the docstring?",
+      "range": {
+        "startLine": 204,
+        "startChar": 37,
+        "endLine": 204,
+        "endChar": 47
+      },
+      "revId": "d2c3105b59d6b73f67f9d086a4426969883d1508",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
