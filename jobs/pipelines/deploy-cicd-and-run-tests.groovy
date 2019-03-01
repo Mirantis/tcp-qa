@@ -8,6 +8,7 @@ currentBuild.description = "${NODE_NAME}:${ENV_NAME}"
 
 def deploy(shared, common, steps) {
     def report_text = ''
+    def is_drivetrain = env.IS_DRIVETRAIN ?: 'true'
     try {
 
         stage("Clean the environment and clone tcp-qa") {
@@ -18,11 +19,12 @@ def deploy(shared, common, steps) {
             // steps: "hardware,create_model,salt"
             shared.swarm_bootstrap_salt_cluster_devops()
         }
-
+        if (is_drivetrain == 'true') {
         stage("Install core infrastructure and deploy CICD nodes") {
             // steps: env.DRIVETRAIN_STACK_INSTALL
             shared.swarm_deploy_cicd(env.DRIVETRAIN_STACK_INSTALL, env.DRIVETRAIN_STACK_INSTALL_TIMEOUT)
         }
+                           }
 
         stage("Deploy platform components") {
             // steps: env.PLATFORM_STACK_INSTALL
