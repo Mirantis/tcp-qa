@@ -223,6 +223,7 @@ def swarm_deploy_platform(String stack_to_install, String install_timeout) {
                 string(name: 'STACK_INSTALL_TIMEOUT', value: install_timeout),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
+                booleanParam(name: 'IS_DRIVETRAIN', value: true),
             ]
         build_pipeline_job('swarm-deploy-platform', parameters)
 }

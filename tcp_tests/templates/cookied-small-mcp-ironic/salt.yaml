@@ -1,0 +1,26 @@
+{% from 'cookied-small-mcp-ironic/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-small-mcp-ironic/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'cookied-small-mcp-ironic/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set SALT_MODELS_REPOSITORY = os_env('SALT_MODELS_REPOSITORY','https://gerrit.mcp.mirantis.com/salt-models/mcp-virtual-lab') %}
+# Other salt model repository parameters see in shared-salt.yaml
+
+#- description: "Workaround for using glusterfs on single node"
+#  cmd: |
+#    set -e;
+#    find /srv/salt/reclass/classes/system/glusterfs/ -type f -exec sed -i 's/replica: .*//g' {} +
+#    find /srv/salt/reclass/classes/system/glusterfs/ -type f -exec sed -i 's/.*cluster_node02_address.*//g' {} +
+#    find /srv/salt/reclass/classes/system/glusterfs/ -type f -exec sed -i 's/.*cluster_node03_address.*//g' {} +
+#    find /srv/salt/reclass/classes/system/glusterfs/ -type f -exec sed -i 's/opts: .*/opts: \"defaults,backup-volfile-servers=${_param:glusterfs_node01_address}\"/g' {} +
+#
+#  node_name: {{ HOSTNAME_CFG01 }}
+#  retry: {count: 1, delay: 5}
+#  skip_fail: false
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}

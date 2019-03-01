@@ -44,11 +44,18 @@ timeout(time: install_timeout + 600, unit: 'SECONDS') {
                     shared.update_working_dir()
                 }
             }
-
             try {
+                if (env.IS_DRIVETRAIN == 'true') {
                 // Install the cluster
                 stage("Run Jenkins job on CICD [deploy_openstack:${env.STACK_INSTALL}]") {
                     shared.run_job_on_cicd_nodes(env.STACK_INSTALL, install_timeout)
+                }
+                                             }
+                else {
+                stage("Run Jenkins job on day01 [deploy_openstack:${env.STACK_INSTALL}]") {
+                    shared.run_job_on_day01_node(env.STACK_INSTALL, install_timeout)
+                }
+                     }
                 }
 
                 for (stack in "${env.STACK_INSTALL}".split(",")) {
