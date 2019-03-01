@@ -227,6 +227,22 @@ def swarm_deploy_platform(String stack_to_install, String install_timeout) {
         build_pipeline_job('swarm-deploy-platform', parameters)
 }
 
+def swarm_deploy_platform_non_cicd(String stack_to_install, String install_timeout) {
+        // Run openstack_deploy job on day01 Jenkins for specified stacks
+        def common = new com.mirantis.mk.Common()
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
+        def parameters = [
+                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
+                string(name: 'PARENT_WORKSPACE', value: pwd()),
+                string(name: 'ENV_NAME', value: "${ENV_NAME}"),
+                string(name: 'STACK_INSTALL', value: stack_to_install),
+                string(name: 'STACK_INSTALL_TIMEOUT', value: install_timeout),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
+                booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
+            ]
+        build_pipeline_job('swarm-deploy-platform-without-cicd', parameters)
+}
+
 def swarm_run_pytest(String passed_steps) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
