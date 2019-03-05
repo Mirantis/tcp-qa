@@ -279,3 +279,4 @@ default_context:
   barbican_enabled: 'False'
   barbican_integration_enabled: 'False'
 
+  secrets_encryption_enabled: 'True'
