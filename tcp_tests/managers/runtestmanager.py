@@ -312,6 +312,7 @@ class RuntestManager(object):
                     "'s/max_microversion = 2.42/max_microversion = 2.25/' "
                     " /tmp/test/tempest.conf")},
             )
+            self.image_version = 'newton'
 
         if self.image_version == 'newton':
             commands.append({
