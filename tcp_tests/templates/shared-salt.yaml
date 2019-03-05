@@ -331,6 +331,37 @@
   skip_fail: false
 {%- endmacro %}
 
+{%- macro MACRO_UPLOAD_AND_IMPORT_GPG_ENCRYPTION_KEY() %}
+{%- set KEY_FILE_NAME = 'encryption-key.asc' %}
+- description: "Upload gpg encruption key"
+  upload:
+    local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
+    local_filename: {{ KEY_FILE_NAME }}
+    remote_path: /root/
+  node_name: {{ HOSTNAME_CFG01 }}
+
+- description: Import encryption key
+  cmd: |
+    set -e;
+    set -x;
+    gpg --import-key {{ KEY_FILE_NAME }}
+    gpg --list-keys
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+- description: Put encryption key to reclass folder
+  cmd: |
+    set -e;
+    set -x;
+    mkdir -p /srv/salt/reclass
+    cp /root/{{ KEY_FILE_NAME }} /srv/salt/reclass/
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{%- endmacro %}
+
 
 {%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None, CLUSTER_PRODUCT_MODELS='') %}
 {###################################################################}
