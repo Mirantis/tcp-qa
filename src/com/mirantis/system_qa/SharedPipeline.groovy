@@ -152,8 +152,8 @@ def update_working_dir() {
 
 def swarm_bootstrap_salt_cluster_devops() {
         def common = new com.mirantis.mk.Common()
-        def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: env.MCP_VERSION
-        def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: env.MCP_VERSION
+        def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: "release/${env.MCP_VERSION}"
+        def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
@@ -286,8 +286,8 @@ def generate_cookied_model() {
         println("IPV4_NET_TENANT=" + IPV4_NET_TENANT)
         println("IPV4_NET_EXTERNAL=" + IPV4_NET_EXTERNAL)
 
-        def cookiecuttertemplate_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: env.MCP_VERSION
-        def saltmodels_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: env.MCP_VERSION
+        def cookiecuttertemplate_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: "release/${env.MCP_VERSION}"
+        def saltmodels_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
@@ -344,7 +344,7 @@ def generate_configdrive_iso() {
                 string(name: 'MODEL_URL_OBJECT_TYPE', value: "git"),
                 booleanParam(name: 'DOWNLOAD_CONFIG_DRIVE', value: true),
                 string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
-                string(name: 'COMMON_SCRIPTS_COMMIT', value: "${MCP_VERSION}"),
+                string(name: 'COMMON_SCRIPTS_COMMIT', value: "release/${env.MCP_VERSION}"),
                 string(name: 'NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'CONFIG_DRIVE_ISO_NAME', value: "${CFG01_CONFIG_IMAGE_NAME}"),
                 string(name: 'SALT_MASTER_DEPLOY_IP', value: SALT_MASTER_IP),

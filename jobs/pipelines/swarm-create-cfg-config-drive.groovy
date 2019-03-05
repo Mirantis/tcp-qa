@@ -40,29 +40,34 @@ node (node_name) {
                           usernameVariable: "GERRIT_USERNAME",
                           passwordVariable: "GERRIT_PASSWORD"]]) {
 
-            dir("mcp-common-scripts-git") {
-                cloned = gerrit.gerritPatchsetCheckout([
-                    credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
-                    gerritBranch: "${MCP_VERSION}",
-                    gerritRefSpec: "${MCP_COMMON_SCRIPTS_REFS}",
-                    gerritScheme: "ssh",
-                    gerritName: "${GERRIT_USERNAME}",
-                    gerritHost: "gerrit.mcp.mirantis.net",
-                    gerritPort: "29418",
-                    gerritProject: "mcp/mcp-common-scripts"
-                ])
-            }
-            if (!cloned) {
-                error("Failed to clone the repository mcp/mcp-common-scripts")
-            }
-
             sh ("""\
                 set -ex
                 eval \$(ssh-agent)
                 ssh-add ${GERRIT_KEY}
+                git clone ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mcp/mcp-common-scripts mcp-common-scripts-git
                 git clone --mirror ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mk/mk-pipelines mk-pipelines
                 git clone --mirror ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mcp-ci/pipeline-library pipeline-library
             """)
+
+            if (COMMON_SCRIPTS_COMMIT != '') {
+                sh ("""\
+                    set -ex
+                    cd mcp-common-scripts-git
+                    git checkout ${COMMON_SCRIPTS_COMMIT}
+                    git log -1
+                """)
+            }
+
+            if (MCP_COMMON_SCRIPTS_REFS != '') {
+                sh ("""\
+                    set -ex
+                    eval \$(ssh-agent)
+                    ssh-add ${GERRIT_KEY}
+                    cd mcp-common-scripts-git
+                    git fetch ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.com:29418/mcp/mcp-common-scripts ${MCP_COMMON_SCRIPTS_REFS} && git checkout FETCH_HEAD
+                    git log -1
+                """)
+            }
 
             if (PIPELINE_LIBRARY_REF != '') {
                 sh ("""\
@@ -72,6 +77,8 @@ node (node_name) {
                     cd pipeline-library
                     git fetch https://gerrit.mcp.mirantis.net/mcp-ci/pipeline-library ${PIPELINE_LIBRARY_REF}
                     git tag ${MCP_VERSION} FETCH_HEAD -f
+                    git branch -f release/${MCP_VERSION} FETCH_HEAD
+                    git log -1
                 """)
             }
             if (MK_PIPELINES_REF != '') {
@@ -82,49 +89,12 @@ node (node_name) {
                     cd mk-pipelines
                     git fetch https://gerrit.mcp.mirantis.net/mcp-ci/mk-pipelines ${MK_PIPELINES_REF}
                     git tag ${MCP_VERSION} FETCH_HEAD -f
+                    git branch -f release/${MCP_VERSION} FETCH_HEAD
+                    git log -1
                 """)
             }
 
-            // dir("mk-pipelines-git") {
-            //     cloned = gerrit.gerritPatchsetCheckout([
-            //         credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
-            //         gerritRefSpec: "${MK_PIPELINES_REF}",
-            //         gerritScheme: "ssh",
-            //         gerritName: "${GERRIT_USERNAME}",
-            //         gerritHost: "gerrit.mcp.mirantis.net",
-            //         gerritPort: "29418",
-            //         gerritProject: "mk/mk-pipelines"
-            //     ])
-            // }
-            // if (!cloned) {
-            //     error("Failed to clone the repository mk/mk-pipelines")
-            // }
-
-            // dir("pipeline-library-git") {
-            //     cloned = gerrit.gerritPatchsetCheckout([
-            //         credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
-            //         gerritRefSpec: "${PIPELINE_LIBRARY_REF}",
-            //         gerritScheme: "ssh",
-            //         gerritName: "${GERRIT_USERNAME}",
-            //         gerritHost: "gerrit.mcp.mirantis.net",
-            //         gerritPort: "29418",
-            //         gerritProject: "mcp-ci/pipeline-library"
-            //     ])
-            // }
-            // if (!cloned) {
-            //     error("Failed to clone the repository mcp-ci/pipeline-library")
-            // }
         }
-        //if (PIPELINE_LIBRARY_REF != '') {
-        //   sh "cd pipeline-library; git tag ${MCP_VERSION} FETCH_HEAD -f ; cd .."
-        //}
-        //if (MK_PIPELINES_REF != '') {
-        //   sh "cd mk-pipelines; git tag ${MCP_VERSION} FETCH_HEAD -f; cd .."
-        //}
-
-        // gerrit.gerritPatchsetCheckout() doesn't support clonning bare repository
-        // sh "git clone --mirror mk-pipelines-git mk-pipelines"
-        // sh "git clone --mirror pipeline-library-git pipeline-library"
     }
 
     stage("Prepare arguments for generation config drive") {
@@ -247,6 +217,11 @@ merge_how: "dict(recurse_array)+list(append)"
 
     stage("Download config drive to slave") {
         if (DOWNLOAD_CONFIG_DRIVE == 'true') {
+            println "Remove previous config drive ISO"
+            sh("""\
+                rm /home/jenkins/images/${iso_name} || true
+            """)
+
             def b_res = build job: 'download-config-drive',
                 parameters: [
                         string(name: 'IMAGE_URL', value: "${BUILD_URL}/artifact/${iso_name}"),
