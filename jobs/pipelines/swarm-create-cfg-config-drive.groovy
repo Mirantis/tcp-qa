@@ -40,29 +40,32 @@ node (node_name) {
                           usernameVariable: "GERRIT_USERNAME",
                           passwordVariable: "GERRIT_PASSWORD"]]) {
 
-            dir("mcp-common-scripts-git") {
-                cloned = gerrit.gerritPatchsetCheckout([
-                    credentialsId : "${GERRIT_MCP_CREDENTIALS_ID}",
-                    gerritBranch: "${MCP_VERSION}",
-                    gerritRefSpec: "${MCP_COMMON_SCRIPTS_REFS}",
-                    gerritScheme: "ssh",
-                    gerritName: "${GERRIT_USERNAME}",
-                    gerritHost: "gerrit.mcp.mirantis.net",
-                    gerritPort: "29418",
-                    gerritProject: "mcp/mcp-common-scripts"
-                ])
-            }
-            if (!cloned) {
-                error("Failed to clone the repository mcp/mcp-common-scripts")
-            }
-
             sh ("""\
                 set -ex
                 eval \$(ssh-agent)
                 ssh-add ${GERRIT_KEY}
+                git clone ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mcp/mcp-common-scripts mcp-common-scripts-git
                 git clone --mirror ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mk/mk-pipelines mk-pipelines
                 git clone --mirror ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mcp-ci/pipeline-library pipeline-library
             """)
+
+            if (COMMON_SCRIPTS_COMMIT != '') {
+                sh ("""\
+                    set -ex
+                    cd mcp-common-scripts-git
+                    git checkout ${COMMON_SCRIPTS_COMMIT}
+                """)
+            }
+
+            if (MCP_COMMON_SCRIPTS_REFS != '') {
+                sh ("""\
+                    set -ex
+                    eval \$(ssh-agent)
+                    ssh-add ${GERRIT_KEY}
+                    cd mcp-common-scripts-git
+                    git fetch ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.com:29418/mcp/mcp-common-scripts ${MCP_COMMON_SCRIPTS_REFS} && git checkout FETCH_HEAD
+                """)
+            }
 
             if (PIPELINE_LIBRARY_REF != '') {
                 sh ("""\
