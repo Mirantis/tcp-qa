@@ -97,16 +97,6 @@ node (node_name) {
         }
     }
 
-    stage("Prepare arguments for generation config drive") {
-
-        config_drive_script_path = "mcp-common-scripts-git/config-drive/create_config_drive.sh"
-        user_data_script_path = "mcp-common-scripts-git/config-drive/master_config.yaml"
-        sh "chmod +x ${config_drive_script_path}"
-
-        //args = "--user-data user_data --vendor-data user_data2 --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
-        args = "--user-data user_data2 --vendor-data ${user_data_script_path} --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
-    }
-
     stage("Get cluster model") {
         def model_url = "${MODEL_URL}"
         sh "rm -rf model"
@@ -117,6 +107,23 @@ node (node_name) {
             sh "git clone --recursive $model_url -b ${MCP_VERSION} model"
             // remove .git file with hardcoded path
             sh "rm model/classes/system/.git"
+        }
+    }
+
+    stage("Prepare arguments for generation config drive") {
+
+        config_drive_script_path = "mcp-common-scripts-git/config-drive/create_config_drive.sh"
+        user_data_script_path = "mcp-common-scripts-git/config-drive/master_config.yaml"
+        sh "chmod +x ${config_drive_script_path}"
+
+        //args = "--user-data user_data --vendor-data user_data2 --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/ ${iso_name}"
+        args = "--user-data user_data2 --vendor-data ${user_data_script_path} --hostname cfg01 --model model --mk-pipelines mk-pipelines/ --pipeline-library pipeline-library/"
+        try {
+            sh "test -f model/encryption-key.asc"
+            args = "${args} --gpg-key model/encryption-key.asc ${iso_name}"
+
+        } catch (e) {
+            args = "${args} ${iso_name}"
         }
     }
 
