@@ -449,13 +449,10 @@
     find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_TENANT_PREFIX==/{{ IPV4_NET_TENANT_PREFIX }}/g' {} +
     find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}/g' {} +
 
-    {% set items = CLUSTER_PRODUCT_MODELS or '$(ls /root/cookiecutter-templates/cluster_product/)' %}
-    for item in {{ items }}; do
-      python /root/cookiecutter-templates/generate.py \
-        --template /root/cookiecutter-templates/cluster_product/$item \
-        --config-file {{ CLUSTER_CONTEXT_PATH }} \
-        --output-dir /srv/salt/reclass/classes/cluster/;
-    done
+    cd /root/cookiecutter-templates/
+    python /root/cookiecutter-templates/generate.py \
+      --config-file {{ CLUSTER_CONTEXT_PATH }} \
+      --output-dir /srv/salt/;
 
     export GIT_SSL_NO_VERIFY=true; git clone {{ SALT_MODELS_SYSTEM_REPOSITORY }} /srv/salt/reclass/classes/system/
 
