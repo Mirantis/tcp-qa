@@ -263,8 +263,14 @@ class TestOfflineDeployment(object):
         salt_deployed.update_ssh_data_from_minions()
 
         show_step(4)
+        maas_minion_id = salt_deployed.get_single_pillar(
+            tgt='I@maas:cluster or I@maas:region',
+            pillar="__reclass__:nodename")
+
         params = jenkins.make_defults_params('cvp-sanity')
-        params['TESTS_SETTINGS'] = 'drivetrain_version=proposed'
+        params['TESTS_SETTINGS'] = (
+            'drivetrain_version={0};ntp_skipped_nodes={1}'
+            .format(settings.MCP_VERSION, maas_minion_id))
         build = jenkins.run_build('cvp-sanity', params)
         LOG.info("Take a look test progress here - %s. Build #%s",
                  "http://172.16.44.33:8081/job/cvp-sanity/", build[1])

@@ -85,6 +85,10 @@ TEMPEST_THREADS = int(os.environ.get('TEMPEST_THREADS', 2))
 TEMPEST_TARGET = os.environ.get('TEMPEST_TARGET', 'gtw01')
 SALT_VERSION = os.environ.get('SALT_VERSION', '2017.7')
 
+# REPOSITORY_SUITE is always defined in swarm-run-pytest from MCP_VERSION
+REPOSITORY_SUITE = os.environ.get('REPOSITORY_SUITE', 'proposed')
+MCP_VERSION = os.environ.get('MCP_VERSION', REPOSITORY_SUITE)
+
 SL_TEST_REPO = os.environ.get('SL_TEST_REPO',
                               'https://github.com/Mirantis/stacklight-pytest')
 SL_TEST_COMMIT = os.environ.get('SL_TEST_COMMIT', 'master')

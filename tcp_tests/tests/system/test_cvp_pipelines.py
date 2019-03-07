@@ -121,10 +121,16 @@ class TestCvpPipelines(object):
         jenkins_start_timeout = 60
         jenkins_build_timeout = 1800
 
+        maas_minion_id = salt.get_single_pillar(
+            tgt='I@maas:cluster:enabled:True or I@maas:region:enabled:True',
+            pillar="__reclass__:nodename")
+
         job_name = 'cvp-sanity'
         job_parameters = {
             'TEST_SET': '/var/lib/cvp-sanity/cvp_checks/tests/',
-            'TESTS_SETTINGS': 'drivetrain_version=proposed',
+            'TESTS_SETTINGS': (
+                'drivetrain_version={0};ntp_skipped_nodes={1}'
+                .format(settings.MCP_VERSION, maas_minion_id)),
         }
 
         show_step(2)
