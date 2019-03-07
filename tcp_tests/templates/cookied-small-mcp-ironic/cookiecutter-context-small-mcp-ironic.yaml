@@ -124,22 +124,22 @@ default_context:
   compute_primary_second_nic: eth2
   context_seed: 88zA67wwzN74hI8Vzpy7CCEDXPGfKGUv37965C5bKeIZM8436V73PhAT9yaLDUYV0xj8zpidxbmh0FMN83dzNWAA
   control_network_netmask: 255.255.255.0
-  control_network_subnet: 10.60.0.0/24
+  control_network_subnet: ==IPV4_NET_CONTROL_PREFIX==.0/24
   control_vlan: '10'
   cookiecutter_template_branch: ''
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: ssh://gerrit.mcp.mirantis.net:29418/mk/cookiecutter-templates.git
-  deploy_network_gateway: 10.70.0.1
+  deploy_network_gateway: ==IPV4_NET_ADMIN_PREFIX==.1
   deploy_network_netmask: 255.255.255.0
-  deploy_network_subnet: 10.70.0.0/24
+  deploy_network_subnet: ==IPV4_NET_ADMIN_PREFIX==.0/24
   deployment_type: physical
   designate_backend: powerdns
   designate_enabled: 'False'
   openstack_create_public_network: 'True'
-  openstack_public_neutron_subnet_gateway: 172.17.41.129
-  openstack_public_neutron_subnet_cidr: 172.17.41.128/26
-  openstack_public_neutron_subnet_allocation_start: 172.17.41.170
-  openstack_public_neutron_subnet_allocation_end: 172.17.41.190
+  openstack_public_neutron_subnet_gateway: ==IPV4_NET_EXTERNAL_PREFIX==.129
+  openstack_public_neutron_subnet_cidr: ==IPV4_NET_EXTERNAL_PREFIX==.128/26
+  openstack_public_neutron_subnet_allocation_start: ==IPV4_NET_EXTERNAL_PREFIX==.170
+  openstack_public_neutron_subnet_allocation_end: ==IPV4_NET_EXTERNAL_PREFIX==.190
   dns_server01: 172.18.176.6
   dns_server02: 172.18.208.44
   email_address: sgudz@mirantis.com
@@ -150,13 +150,13 @@ default_context:
   gnocchi_aggregation_storage: file
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
-  infra_kvm01_control_address: 10.60.0.11
+  infra_kvm01_control_address: ==IPV4_NET_CONTROL_PREFIX==.11
   infra_kvm01_hostname: kvm01
-  infra_kvm02_control_address: 10.60.0.12
+  infra_kvm02_control_address: ==IPV4_NET_CONTROL_PREFIX==.12
   infra_kvm02_hostname: kvm02
-  infra_kvm03_control_address: 10.60.0.13
+  infra_kvm03_control_address: ==IPV4_NET_CONTROL_PREFIX==.13
   infra_kvm03_hostname: kvm03
-  infra_kvm_vip_address: 10.60.0.10
+  infra_kvm_vip_address: ==IPV4_NET_CONTROL_PREFIX==.10
   infra_primary_first_nic: eth1
   infra_primary_second_nic: eth2
   internal_proxy_enabled: 'False'
@@ -233,48 +233,48 @@ default_context:
   opencontrail_enabled: 'False'
   openscap_enabled: 'False'
   openssh_groups: ''
-  openstack_benchmark_node01_address: 10.60.0.95
+  openstack_benchmark_node01_address: ==IPV4_NET_CONTROL_PREFIX==.95
   openstack_benchmark_node01_hostname: bmk01
   openstack_cluster_size: compact
-  openstack_compute_control_address_ranges: 10.60.0.101-10.60.0.200
+  openstack_compute_control_address_ranges: ==IPV4_NET_CONTROL_PREFIX==.101-==IPV4_NET_CONTROL_PREFIX==.200
   openstack_compute_count: '100'
   openstack_compute_rack01_hostname: cmp
-  openstack_compute_tenant_address_ranges: 10.80.0.101-10.80.0.200
-  openstack_control_address: 10.60.0.10
+  openstack_compute_tenant_address_ranges: ==IPV4_NET_TENANT_PREFIX==.101-==IPV4_NET_TENANT_PREFIX==.200
+  openstack_control_address: ==IPV4_NET_CONTROL_PREFIX==.10
   openstack_control_hostname: ctl
-  openstack_control_node01_address: 10.60.0.11
+  openstack_control_node01_address: ==IPV4_NET_CONTROL_PREFIX==.11
   openstack_control_node01_hostname: ctl01
-  openstack_control_node02_address: 10.60.0.12
+  openstack_control_node02_address: ==IPV4_NET_CONTROL_PREFIX==.12
   openstack_control_node02_hostname: ctl02
-  openstack_control_node03_address: 10.60.0.13
+  openstack_control_node03_address: ==IPV4_NET_CONTROL_PREFIX==.13
   openstack_control_node03_hostname: ctl03
-  openstack_database_address: 10.60.0.10
+  openstack_database_address: ==IPV4_NET_CONTROL_PREFIX==.10
   openstack_database_hostname: ctl
-  openstack_database_node01_address: 10.60.0.11
+  openstack_database_node01_address: ==IPV4_NET_CONTROL_PREFIX==.11
   openstack_database_node01_hostname: ctl01
-  openstack_database_node02_address: 10.60.0.12
+  openstack_database_node02_address: ==IPV4_NET_CONTROL_PREFIX==.12
   openstack_database_node02_hostname: ctl02
-  openstack_database_node03_address: 10.60.0.13
+  openstack_database_node03_address: ==IPV4_NET_CONTROL_PREFIX==.13
   openstack_database_node03_hostname: ctl03
   openstack_enabled: 'True'
-  openstack_gateway_node01_address: 10.60.0.224
+  openstack_gateway_node01_address: ==IPV4_NET_CONTROL_PREFIX==.224
   openstack_gateway_node01_hostname: gtw01
-  openstack_gateway_node01_tenant_address: 10.80.0.6
-  openstack_gateway_node02_address: 10.60.0.225
+  openstack_gateway_node01_tenant_address: ==IPV4_NET_TENANT_PREFIX==.6
+  openstack_gateway_node02_address: ==IPV4_NET_CONTROL_PREFIX==.225
   openstack_gateway_node02_hostname: gtw02
-  openstack_gateway_node02_tenant_address: 10.80.0.7
-  openstack_gateway_node03_address: 10.60.0.226
+  openstack_gateway_node02_tenant_address: ==IPV4_NET_TENANT_PREFIX==.7
+  openstack_gateway_node03_address: ==IPV4_NET_CONTROL_PREFIX==.226
   openstack_gateway_node03_hostname: gtw03
-  openstack_gateway_node03_tenant_address: 10.80.0.8
+  openstack_gateway_node03_tenant_address: ==IPV4_NET_TENANT_PREFIX==.8
   openstack_internal_protocol: http
   openstack_memcache_security_enabled: 'False'
-  openstack_message_queue_address: 10.60.0.10
+  openstack_message_queue_address: ==IPV4_NET_CONTROL_PREFIX==.10
   openstack_message_queue_hostname: ctl
-  openstack_message_queue_node01_address: 10.60.0.11
+  openstack_message_queue_node01_address: ==IPV4_NET_CONTROL_PREFIX==.11
   openstack_message_queue_node01_hostname: ctl01
-  openstack_message_queue_node02_address: 10.60.0.12
+  openstack_message_queue_node02_address: ==IPV4_NET_CONTROL_PREFIX==.12
   openstack_message_queue_node02_hostname: ctl02
-  openstack_message_queue_node03_address: 10.60.0.13
+  openstack_message_queue_node03_address: ==IPV4_NET_CONTROL_PREFIX==.13
   openstack_message_queue_node03_hostname: ctl03
   openstack_network_engine: ovs
   openstack_neutron_bgp_vpn: 'False'
@@ -288,13 +288,13 @@ default_context:
   openstack_octavia_enabled: 'False'
   openstack_ovs_dvr_enabled: 'False'
   openstack_ovs_encapsulation_type: vxlan
-  openstack_proxy_address: 10.60.0.80
+  openstack_proxy_address: ==IPV4_NET_CONTROL_PREFIX==.80
   openstack_proxy_hostname: prx
-  openstack_proxy_node01_address: 10.60.0.81
+  openstack_proxy_node01_address: ==IPV4_NET_CONTROL_PREFIX==.81
   openstack_proxy_node01_hostname: prx01
-  openstack_proxy_node02_address: 10.60.0.82
+  openstack_proxy_node02_address: ==IPV4_NET_CONTROL_PREFIX==.82
   openstack_proxy_node02_hostname: prx02
-  openstack_upgrade_node01_address: 10.60.0.19
+  openstack_upgrade_node01_address: ==IPV4_NET_CONTROL_PREFIX==.19
   openstack_version: queens
   platform: openstack_enabled
   publication_method: email
@@ -302,9 +302,9 @@ default_context:
   reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
   salt_api_password: 8UWALgLbADCp18pAj8hCIzJE2ZWPXgK7E23n8W44ji0A
   salt_api_password_hash: $6$FaHYNcaGIBJF$n4hvLCOhR0/IrbPVgWCfddYilsmXF8T1hj38VJ2auL5Y8DdY2TG2/wc6KNCivYe8uQ68L0keoDfcu1eio.WbS1
-  salt_master_address: 10.60.0.15
+  salt_master_address: ==IPV4_NET_CONTROL_PREFIX==.15
   salt_master_hostname: cfg01
-  salt_master_management_address: 10.70.0.15
+  salt_master_management_address: ==IPV4_NET_ADMIN_PREFIX==.15
   secrets_encryption_enabled: 'False'
   secrets_encryption_private_key: '1'
   sf_notifications_enabled: 'False'
@@ -313,9 +313,9 @@ default_context:
   sriov_network_subnet: 10.55.0.0/16
   stacklight_enabled: 'False'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: 10.80.0.1
+  tenant_network_gateway: ==IPV4_NET_TENANT_PREFIX==.1
   tenant_network_netmask: 255.255.255.0
-  tenant_network_subnet: 10.80.0.0/24
+  tenant_network_subnet: ==IPV4_NET_TENANT_PREFIX==.0/24
   tenant_telemetry_enabled: 'False'
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
