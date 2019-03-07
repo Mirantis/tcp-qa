@@ -136,10 +136,10 @@ default_context:
   designate_backend: powerdns
   designate_enabled: 'False'
   openstack_create_public_network: 'True'
-  openstack_public_neutron_subnet_gateway: ==IPV4_NET_EXTERNAL_PREFIX==.129
-  openstack_public_neutron_subnet_cidr: ==IPV4_NET_EXTERNAL_PREFIX==.128/26
-  openstack_public_neutron_subnet_allocation_start: ==IPV4_NET_EXTERNAL_PREFIX==.170
-  openstack_public_neutron_subnet_allocation_end: ==IPV4_NET_EXTERNAL_PREFIX==.190
+  openstack_public_neutron_subnet_gateway: 172.17.41.129
+  openstack_public_neutron_subnet_cidr: 172.17.41.128/26
+  openstack_public_neutron_subnet_allocation_start: 172.17.41.170
+  openstack_public_neutron_subnet_allocation_end: 172.17.41.190
   dns_server01: 172.18.176.6
   dns_server02: 172.18.208.44
   email_address: sgudz@mirantis.com
@@ -239,7 +239,7 @@ default_context:
   openstack_compute_control_address_ranges: ==IPV4_NET_CONTROL_PREFIX==.101-==IPV4_NET_CONTROL_PREFIX==.200
   openstack_compute_count: '100'
   openstack_compute_rack01_hostname: cmp
-  openstack_compute_tenant_address_ranges: ==IPV4_NET_TENANT_PREFIX==.101-==IPV4_NET_TENANT_PREFIX==.200
+  openstack_compute_tenant_address_ranges: 10.80.0.101-10.80.0.200
   openstack_control_address: ==IPV4_NET_CONTROL_PREFIX==.10
   openstack_control_hostname: ctl
   openstack_control_node01_address: ==IPV4_NET_CONTROL_PREFIX==.11
@@ -259,13 +259,13 @@ default_context:
   openstack_enabled: 'True'
   openstack_gateway_node01_address: ==IPV4_NET_CONTROL_PREFIX==.224
   openstack_gateway_node01_hostname: gtw01
-  openstack_gateway_node01_tenant_address: ==IPV4_NET_TENANT_PREFIX==.6
+  openstack_gateway_node01_tenant_address: 10.80.0.6
   openstack_gateway_node02_address: ==IPV4_NET_CONTROL_PREFIX==.225
   openstack_gateway_node02_hostname: gtw02
-  openstack_gateway_node02_tenant_address: ==IPV4_NET_TENANT_PREFIX==.7
+  openstack_gateway_node02_tenant_address: 10.80.0.7
   openstack_gateway_node03_address: ==IPV4_NET_CONTROL_PREFIX==.226
   openstack_gateway_node03_hostname: gtw03
-  openstack_gateway_node03_tenant_address: ==IPV4_NET_TENANT_PREFIX==.8
+  openstack_gateway_node03_tenant_address: 10.80.0.8
   openstack_internal_protocol: http
   openstack_memcache_security_enabled: 'False'
   openstack_message_queue_address: ==IPV4_NET_CONTROL_PREFIX==.10
@@ -313,9 +313,9 @@ default_context:
   sriov_network_subnet: 10.55.0.0/16
   stacklight_enabled: 'False'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: ==IPV4_NET_TENANT_PREFIX==.1
+  tenant_network_gateway: 10.80.0.1
   tenant_network_netmask: 255.255.255.0
-  tenant_network_subnet: ==IPV4_NET_TENANT_PREFIX==.0/24
+  tenant_network_subnet: 10.80.0.0/24
   tenant_telemetry_enabled: 'False'
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
