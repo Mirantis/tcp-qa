@@ -19,6 +19,14 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+- description: "Workaround for using libvirt ssl on computes"
+  cmd: |
+    set -e;
+    sed -i '/system.nova.compute.libvirt.ssl/d' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/openstack/compute/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}

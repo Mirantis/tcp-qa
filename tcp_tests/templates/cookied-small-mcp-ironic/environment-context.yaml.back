@@ -16,6 +16,7 @@ nodes:
     ctl01:
       reclass_storage_name: openstack_control_node01
       roles:
+      - infra_kvm
       - openstack_control_leader
       - openstack_database_leader
       - openstack_message_queue
@@ -29,6 +30,7 @@ nodes:
     ctl02:
       reclass_storage_name: openstack_control_node02
       roles:
+      - infra_kvm
       - openstack_control
       - openstack_database
       - openstack_message_queue
@@ -42,6 +44,7 @@ nodes:
     ctl03:
       reclass_storage_name: openstack_control_node03
       roles:
+      - infra_kvm
       - openstack_control
       - openstack_database
       - openstack_message_queue
@@ -97,45 +100,6 @@ nodes:
           role: single_ctl
         ens7:
           role: single_baremetal
-
-    kvm01.cookied-cicd-bm-os-contrail40-maas.local:
-      reclass_storage_name: infra_kvm_node01
-      roles:
-      - infra_kvm
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: bond0_ab_ovs_vlan_ctl
-        ens5:
-          role: single_mgm_manual
-
-    kvm02.cookied-cicd-bm-os-contrail40-maas.local:
-      reclass_storage_name: infra_kvm_node02
-      roles:
-      - infra_kvm
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: bond0_ab_ovs_vlan_ctl
-        ens5:
-          role: single_mgm_manual
-
-    kvm03.cookied-cicd-bm-os-contrail40-maas.local:
-      reclass_storage_name: infra_kvm_node03
-      roles:
-      - infra_kvm
-      - linux_system_codename_xenial
-      interfaces:
-        ens3:
-          role: single_dhcp
-        ens4:
-          role: bond0_ab_ovs_vlan_ctl
-        ens5:
-          role: single_mgm_manual
 
     cmp<<count>>:
       reclass_storage_name: openstack_compute_rack01
