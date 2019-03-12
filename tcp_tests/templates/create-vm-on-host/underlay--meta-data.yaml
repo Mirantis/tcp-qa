@@ -1,0 +1,4 @@
+| # All the data below will be stored as a string object
+  instance-id: iid-local1
+  hostname: {hostname}
+  local-hostname: {hostname}
