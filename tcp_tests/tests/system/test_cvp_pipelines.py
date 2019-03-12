@@ -121,16 +121,20 @@ class TestCvpPipelines(object):
         jenkins_start_timeout = 60
         jenkins_build_timeout = 1800
 
-        maas_minion_id = salt.get_single_pillar(
-            tgt='I@maas:cluster:enabled:True or I@maas:region:enabled:True',
-            pillar="__reclass__:nodename")
+        try:
+            maas_minion_id = salt.get_single_pillar(
+                tgt='I@maas:cluster or I@maas:region',
+                pillar="__reclass__:nodename")
+            ntp_skipped_nodes = 'ntp_skipped_nodes={0}'.format(maas_minion_id)
+        except LookupError:
+            ntp_skipped_nodes = ''
 
         job_name = 'cvp-sanity'
         job_parameters = {
             'TEST_SET': '/var/lib/cvp-sanity/cvp_checks/tests/',
             'TESTS_SETTINGS': (
-                'drivetrain_version={0};ntp_skipped_nodes={1}'
-                .format(settings.MCP_VERSION, maas_minion_id)),
+                'drivetrain_version={0};{1}'
+                .format(settings.MCP_VERSION, ntp_skipped_nodes)),
         }
 
         show_step(2)
