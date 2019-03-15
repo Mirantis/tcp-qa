@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e4ecba3a_e4f001e5",
+        "filename": "tcp_tests/templates/cookied-cicd-queens-dvr-sl/cookiecutter-context-queens-dvr-sl.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 318,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-03-15T20:35:09Z",
+      "side": 1,
+      "message": "Seems you need to fix merge conflicts",
+      "range": {
+        "startLine": 318,
+        "startChar": 12,
+        "endLine": 318,
+        "endChar": 15
+      },
+      "revId": "bd0ad8534cf27393cad8e067c7d013cfb283d7e7",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
