@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d4b2247c_33fbe809",
+        "filename": "tcp_tests/templates/create-vm-on-host/underlay--user-data1604-swp.yaml",
+        "patchSetId": 30
+      },
+      "lineNbr": 90,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-03-18T12:16:41Z",
+      "side": 1,
+      "message": "Please move this under \"runcmd\" above",
+      "revId": "254c4ac6d5b333a2a417dc2b8a2468af5dd5204e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
