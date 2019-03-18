@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bf0a483d_028d81f5",
+        "filename": "tcp_tests/templates/shared-salt.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 412,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-03-18T12:32:30Z",
+      "side": 1,
+      "message": "it\u0027s already installed in previous step",
+      "range": {
+        "startLine": 409,
+        "startChar": 0,
+        "endLine": 412,
+        "endChar": 46
+      },
+      "revId": "ffe161532cc9cea5bfd8b54fdc2a18de5e8183a3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
