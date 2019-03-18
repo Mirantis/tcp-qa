@@ -56,10 +56,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
-
-- description: "WR for PROD-27976"
-  cmd: |
-    sed -i 's/physical\_control\_cluster/physical\_control\_small/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/infra/config/init.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
