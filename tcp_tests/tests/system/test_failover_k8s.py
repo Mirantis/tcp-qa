@@ -23,6 +23,7 @@ class TestFailoverK8s(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_system
     def test_k8s_master_vip_migration(self, show_step, k8s_deployed, underlay,
                                       k8s_actions, core_actions,
                                       config, hardware):
