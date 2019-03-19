@@ -29,6 +29,7 @@ class TestMCPCalico(object):
     """
 
     @pytest.mark.fail_snapshot
+    @pytest.mark.k8s_system
     def test_k8s_netchecker_calico(self, show_step, config, k8s_deployed):
         """Test for deploying k8s environment with Calico plugin and check
            network connectivity between different pods by k8s-netchecker
@@ -50,6 +51,7 @@ class TestMCPCalico(object):
     @pytest.mark.calico_ci
     @pytest.mark.cz8116
     @pytest.mark.k8s_calico
+    @pytest.mark.k8s_system
     def test_calico_route_recovery(self, show_step, config, underlay,
                                    k8s_deployed):
         """Test for deploying k8s environment with Calico plugin and check
@@ -146,6 +148,7 @@ class TestMCPCalico(object):
 
     @pytest.mark.fail_snapshot
     @pytest.mark.calico_ci
+    @pytest.mark.k8s_system
     def test_calico_network_policies(self, show_step, config, underlay,
                                      k8s_deployed):
         """Test for deploying k8s environment with Calico and check

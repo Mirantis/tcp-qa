@@ -38,6 +38,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.cz8116
     @pytest.mark.k8s_calico
+    @pytest.mark.k8s_system
     def test_k8s_externaldns_coredns(self, show_step, config, k8s_deployed):
         """Test externaldns integration with coredns
 
@@ -144,6 +145,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.k8s_metallb
+    @pytest.mark.k8s_system
     def test_k8s_metallb(self, show_step, config, k8s_deployed):
         """Enable metallb in cluster and do basic tests
 
@@ -199,6 +201,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.k8s_genie
+    @pytest.mark.k8s_system
     def test_k8s_genie_flannel(self, show_step, config,
                                salt_deployed, k8s_deployed):
         """Test genie-cni+flannel cni setup
@@ -318,6 +321,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.k8s_dashboard
+    @pytest.mark.k8s_system
     def test_k8s_dashboard(self, show_step, config,
                            salt_deployed, k8s_deployed):
         """Test dashboard setup
@@ -394,6 +398,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.k8s_ingress_nginx
+    @pytest.mark.k8s_system
     def test_k8s_ingress_nginx(self, show_step, config,
                                salt_deployed, k8s_deployed):
         """Test ingress-nginx configured and working with metallb
