@@ -296,7 +296,7 @@ template:
             role: salt_master
             params:
               vcpu: {{ os_env('CFG_NODE_CPU', 3) }}
-              memory: {{ os_env('CFG_NODE_MEMORY', 16384) }}
+              memory: {{ os_env('CFG_NODE_MEMORY', 12288) }}
               boot:
                 - hd
               volumes:
@@ -330,7 +330,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 16384
+              memory: !os_env SLAVE_NODE_MEMORY, 12288
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -368,7 +368,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 16384
+              memory: !os_env SLAVE_NODE_MEMORY, 12288
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -394,7 +394,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 16384
+              memory: !os_env SLAVE_NODE_MEMORY, 12288
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -903,7 +903,7 @@ template:
             role: salt_minion
             params:
               vcpu: {{ os_env('CID_NODE_CPU', 2) }}
-              memory: {{ os_env('CID_NODE_MEMORY', 16384) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 6144) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -929,7 +929,7 @@ template:
             role: salt_minion
             params:
               vcpu: {{ os_env('CID_NODE_CPU', 2) }}
-              memory: {{ os_env('CID_NODE_MEMORY', 16384) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 6144) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -955,7 +955,7 @@ template:
             role: salt_minion
             params:
               vcpu: {{ os_env('CID_NODE_CPU', 2) }}
-              memory: {{ os_env('CID_NODE_MEMORY', 16384) }}
+              memory: {{ os_env('CID_NODE_MEMORY', 6144) }}
               boot:
                 - hd
               cloud_init_volume_name: iso
