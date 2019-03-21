@@ -66,7 +66,7 @@ node ("${PARENT_NODE_NAME}") {
             shared.run_cmd("""\
                 export ENV_NAME=${ENV_NAME}
                 export LAB_CONFIG_NAME=${LAB_CONFIG_NAME}
-                export MANAGER=devops
+                export ENV_MANAGER=devops
                 export PYTHONIOENCODING=UTF-8
                 export REPOSITORY_SUITE=${MCP_VERSION}
                 export TEST_GROUP=test_create_environment
@@ -98,7 +98,7 @@ node ("${PARENT_NODE_NAME}") {
                 shared.run_sh("""\
                     export ENV_NAME=${ENV_NAME}
                     export LAB_CONFIG_NAME=${LAB_CONFIG_NAME}
-                    export MANAGER=devops
+                    export ENV_MANAGER=devops
                     export SHUTDOWN_ENV_ON_TEARDOWN=false
                     export BOOTSTRAP_TIMEOUT=1800
                     export PYTHONIOENCODING=UTF-8
