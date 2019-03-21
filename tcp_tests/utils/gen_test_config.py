@@ -31,7 +31,7 @@ SshHost = namedtuple("SshHost",
 
 CONFIG_TMPL = OrderedDict([
     ('hardware', {
-        'manager': 'heat',
+        'env_manager': 'heat',
         'current_snapshot': None
     }),
     ('underlay', {
