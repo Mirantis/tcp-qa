@@ -20,11 +20,10 @@ def run_cmd(String cmd, Boolean returnStdout=false) {
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
     def stderr_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stderr.log"
-    script = """\
-        set +x;
-        echo 'activate python virtualenv ${VENV_PATH}';
-        . ${VENV_PATH}/bin/activate;
-        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}' 2>${stderr_path}
+    script = """set +x; \
+        echo 'activate python virtualenv ${VENV_PATH}'; \
+        . ${VENV_PATH}/bin/activate; \
+        bash -c 'set -ex; ${cmd.stripIndent()}' 2>${stderr_path}
     """
     def result
     try {
