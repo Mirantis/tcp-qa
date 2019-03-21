@@ -26,6 +26,7 @@ class TestVirtletActions(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.k8s_virtlet
+    @pytest.mark.k8s_system
     def test_virtlet_create_delete_vm(self, show_step, config, k8s_deployed):
         """Test for deploying an mcp environment with virtlet
 
@@ -53,6 +54,7 @@ class TestVirtletActions(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     @pytest.mark.k8s_virtlet
+    @pytest.mark.k8s_system
     def test_vm_resource_quotas(self, show_step, config, k8s_deployed):
         """Test for deploying a VM with specific quotas
 
