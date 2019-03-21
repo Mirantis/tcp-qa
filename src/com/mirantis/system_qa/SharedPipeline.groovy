@@ -2,6 +2,10 @@ package com.mirantis.system_qa
 
 import groovy.xml.XmlUtil
 
+def version_to_cookiecutter_branch(version) {
+    return Character.isDigit(version.charAt(0)) ? version : "release/${version}"
+}
+
 def run_sh(String cmd) {
     // run shell script without catching any output
     def common = new com.mirantis.mk.Common()
@@ -152,7 +156,7 @@ def update_working_dir() {
 
 def swarm_bootstrap_salt_cluster_devops() {
         def common = new com.mirantis.mk.Common()
-        def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: "release/${env.MCP_VERSION}"
+        def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: version_to_cookiecutter_branch(env.MCP_VERSION)
         def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
@@ -304,7 +308,7 @@ def generate_cookied_model() {
         println("IPV4_NET_TENANT=" + IPV4_NET_TENANT)
         println("IPV4_NET_EXTERNAL=" + IPV4_NET_EXTERNAL)
 
-        def cookiecuttertemplate_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: "release/${env.MCP_VERSION}"
+        def cookiecuttertemplate_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: version_to_cookiecutter_branch(env.MCP_VERSION)
         def saltmodels_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
