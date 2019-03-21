@@ -7,7 +7,7 @@ def run_sh(String cmd) {
     def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
-    script = """\
+    def script = """\
         set -ex;
         . ${VENV_PATH}/bin/activate;
         bash -c '${cmd.stripIndent()}'
@@ -20,18 +20,24 @@ def run_cmd(String cmd, Boolean returnStdout=false) {
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
     def stderr_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stderr.log"
-    script = """\
-        set +x;
-        echo 'activate python virtualenv ${VENV_PATH}';
-        . ${VENV_PATH}/bin/activate;
-        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}' 2>${stderr_path}
+    def script = """#!/bin/bash
+        set +x
+        echo 'activate python virtualenv ${VENV_PATH}'
+        . ${VENV_PATH}/bin/activate
+        bash -c -e -x '${cmd.stripIndent()}' 2>${stderr_path}
     """
-    def result
     try {
-        return sh(script: script, returnStdout: returnStdout)
+        def stdout = sh(script: script, returnStdout: returnStdout)
+        def stderr = readFile("${stderr_path}")
+        def error_message = "\n<<<<<< STDERR: >>>>>>\n" + stderr
+        common.printMsg(error_message, "yellow")
+        common.printMsg("", "reset")
+        return stdout
     } catch (e) {
         def stderr = readFile("${stderr_path}")
         def error_message = e.message + "\n<<<<<< STDERR: >>>>>>\n" + stderr
+        common.printMsg(error_message, "red")
+        common.printMsg("", "reset")
         throw new Exception(error_message)
     } finally {
         sh(script: "rm ${stderr_path} || true")
