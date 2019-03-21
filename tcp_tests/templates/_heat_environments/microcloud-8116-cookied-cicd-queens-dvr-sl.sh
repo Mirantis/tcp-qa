@@ -18,7 +18,7 @@ export IMAGE_PATH1604=/home/jenkins/images/ubuntu-16-04-x64-mcp2019.2.0.qcow2
 export IMAGE_PATH_CFG01_DAY01=/home/jenkins/images/cfg01-day01.qcow2
 export REPOSITORY_SUITE=2019.2.0
 
-export MANAGER=heat
+export ENV_MANAGER=heat
 
 export ENV_NAME=test_env_queens
 export LAB_CONFIG_NAME=cookied-cicd-queens-dvr-sl

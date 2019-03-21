@@ -39,45 +39,46 @@ def hardware(request, config):
        using EnvironmentManager.
 
        Creates a snapshot 'hardware' with ready-to-use virtual environment
-       (Only for config.hardware.manager='devops'):
+       (Only for config.hardware.env_manager='devops'):
         - just created virtual nodes in power-on state
         - node volumes filled with necessary content
         - node network interfaces connected to necessary devices
 
-       config.hardware.manager: one of ('devops', 'maas', None)
-       config.hardware.config: path to the config file for the manager
+       config.hardware.env_manager: one of ('devops', 'maas', None)
+       config.hardware.config: path to the config file for the env_manager
        config.hardware.current_snapshot = Latest created or reverted snapshot
 
-       :rtype EnvironmentModel: if config.hardware.manager == 'devops'
-       :rtype EnvironmentManagerEmpty: if config.hardware.manager == 'empty'
+       :rtype EnvironmentModel: if config.hardware.env_manager == 'devops'
+       :rtype EnvironmentManagerEmpty:
+              if config.hardware.env_manager == 'empty'
     """
     env = None
 
-    manager = config.hardware.manager
+    env_manager = config.hardware.env_manager
 
-    if manager == 'empty':
+    if env_manager == 'empty':
         # No environment manager is used.
         # 'config' should contain config.underlay.ssh settings
         # 'config' should contain config.underlay.current_snapshot setting
         env = envmanager_empty.EnvironmentManagerEmpty(config=config)
 
-    elif manager == 'devops':
+    elif env_manager == 'devops':
         # fuel-devops environment manager is used.
         # config.underlay.ssh settings can be empty or witn SSH to existing env
         # config.underlay.current_snapshot
         env = envmanager_devops.EnvironmentManager(config=config)
 
-    elif manager == 'heat':
+    elif env_manager == 'heat':
         # heat environment manager is used.
         # config.underlay.ssh settings can be empty or witn SSH to existing env
         # config.underlay.current_snapshot
         env = envmanager_heat.EnvironmentManagerHeat(config=config)
     else:
-        raise Exception("Unknown hardware manager: '{}'".format(manager))
+        raise Exception("Unknown hardware manager: '{}'".format(env_manager))
 
-    # for devops manager: power on nodes and wait for SSH
-    # for empty manager: do nothing
-    # for maas manager: provision nodes and wait for SSH
+    # for devops env_manager: power on nodes and wait for SSH
+    # for empty env_manager: do nothing
+    # for maas env_manager: provision nodes and wait for SSH
     if not env.has_snapshot(ext.SNAPSHOT.hardware):
         env.create_snapshot(ext.SNAPSHOT.hardware)
 
@@ -193,11 +194,11 @@ def underlay(request, revert_snapshot, config, hardware, underlay_actions):
 
     def basic_underlay():
         # If config.underlay.ssh wasn't provided from external config, then
-        # try to get necessary data from hardware manager (fuel-devops)
+        # try to get necessary data from hardware env_manager (fuel-devops)
 
-        # for devops manager: power on nodes and wait for SSH
-        # for empty manager: do nothing
-        # for maas manager: provision nodes and wait for SSH
+        # for devops env_manager: power on nodes and wait for SSH
+        # for empty env_manager: do nothing
+        # for maas env_manager: provision nodes and wait for SSH
         hardware.start(underlay_node_roles=config.underlay.roles,
                        timeout=config.underlay.bootstrap_timeout)
 
