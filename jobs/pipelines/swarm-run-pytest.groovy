@@ -65,7 +65,7 @@ node ("${PARENT_NODE_NAME}") {
 
                 shared.run_sh(sources + installed + """
                     export TESTS_CONFIGS=${ENV_NAME}_salt_deployed.ini
-                    export MANAGER=devops  # use 'hardware' fixture to manage fuel-devops environment
+                    export ENV_MANAGER=devops  # use 'hardware' fixture to manage fuel-devops environment
                     export salt_master_host=\$SALT_MASTER_IP  # skip salt_deployed fixture
                     export salt_master_port=6969
                     export SALT_USER=\$SALTAPI_USER
