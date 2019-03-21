@@ -7,7 +7,7 @@ def run_sh(String cmd) {
     def common = new com.mirantis.mk.Common()
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
-    script = """\
+    def script = """\
         set -ex;
         . ${VENV_PATH}/bin/activate;
         bash -c '${cmd.stripIndent()}'
@@ -20,12 +20,13 @@ def run_cmd(String cmd, Boolean returnStdout=false) {
     common.printMsg("Run shell command:\n" + cmd, "blue")
     def VENV_PATH='/home/jenkins/fuel-devops30'
     def stderr_path = "/tmp/${JOB_NAME}_${BUILD_NUMBER}_stderr.log"
-    script = """\
-        set +x;
-        echo 'activate python virtualenv ${VENV_PATH}';
-        . ${VENV_PATH}/bin/activate;
-        bash -c 'set -ex; set -ex; ${cmd.stripIndent()}' 2>${stderr_path}
+    def script = """#!/bin/bash
+        set +x
+        echo 'activate python virtualenv ${VENV_PATH}'
+        . ${VENV_PATH}/bin/activate
+        bash -c -e -x '${cmd.stripIndent()}' 2>${stderr_path}
     """
+    common.printMsg("DEBUG. Script: ${script}", "yellow")
     def result
     try {
         return sh(script: script, returnStdout: returnStdout)

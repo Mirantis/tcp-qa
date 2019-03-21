@@ -1,4 +1,5 @@
 from __future__ import print_function
+import datetime
 import time
 
 import jenkins
@@ -81,6 +82,24 @@ class JenkinsClient(object):
         num = self.__client.build_job(name, params)
         time.sleep(2)  # wait while job is started
 
+        def is_build_queued():
+            try:
+                item = self.__client.get_queue_item(num)
+                ts = item['inQueueSince'] / 1000
+                since_time = datetime.datetime.fromtimestamp(ts)
+                print("Build in the queue since {}".format(since_time))
+                return True
+            except jenkins.JenkinsException:
+                if verbose:
+                    print("Build have not been queued {} yet".format(num))
+
+        helpers.wait(
+            is_build_queued,
+            timeout=timeout,
+            interval=30,
+            timeout_msg='Timeout waiting to queue the build '
+                        'for {} job'.format(name))
+
         def is_blocked():
             queued = self.__client.get_queue_item(num)
             status = not queued['blocked']
@@ -96,6 +115,26 @@ class JenkinsClient(object):
             interval=30,
             timeout_msg='Timeout waiting to run the job [{}]'.format(name))
         build_id = self.__client.get_queue_item(num)['executable']['number']
+
+        def is_build_started():
+            try:
+                build = self.__client.get_build_info(name, build_id)
+                ts = float(build['timestamp']) / 1000
+                start_time = datetime.datetime.fromtimestamp(ts)
+                print("the build {} in {} have started at {} UTC".format(
+                    build_id, name, start_time))
+                return True
+            except jenkins.JenkinsException:
+                if verbose:
+                    print("the build {} in {} have not strated yet".format(
+                        build_id, name))
+        helpers.wait(
+            is_build_started,
+            timeout=timeout,
+            interval=30,
+            timeout_msg='Timeout waiting to run build of '
+                        'the job [{}]'.format(name))
+
         return name, build_id
 
     def wait_end_of_build(self, name, build_id, timeout=600, interval=5,
