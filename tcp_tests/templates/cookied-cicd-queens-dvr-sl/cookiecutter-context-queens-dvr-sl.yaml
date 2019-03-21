@@ -84,7 +84,7 @@ default_context:
   local_repositories: 'False'
   maas_deploy_address: 10.167.5.15
   maas_deploy_range_end: 10.167.5.199
-  maas_deploy_range_start: 10.167.5.180
+  maas_deploy_range_start: 10.167.5.15
   maas_deploy_vlan: '0'
   maas_fabric_name: deploy-fabric0
   maas_hostname: cfg01
