@@ -86,8 +86,8 @@ _default_configure_steps = pkg_resources.resource_filename(
 _default_cluster_maas_config = 'cluster_infra_maas.yml'
 
 hardware_opts = [
-    ct.Cfg('manager', ct.String(),
-           help="Hardware manager name", default="devops"),
+    ct.Cfg('env_manager', ct.String(),
+           help="Hardware environment manager name", default="devops"),
     ct.Cfg('conf_path', ct.String(),
            help="Hardware config file", default=_default_conf),
     ct.Cfg('current_snapshot', ct.String(),
