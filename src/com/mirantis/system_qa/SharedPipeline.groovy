@@ -285,6 +285,7 @@ def swarm_testrail_report(String passed_steps) {
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 string(name: 'TEMPEST_TEST_SUITE_NAME', value: "${tempest_test_suite_name}"),
+                string(name: 'TEST_PLAN_NAME', value: env.TESTRAIL_TEST_PLAN_NAME ?: ''),
             ]
         common.printMsg("Start building job 'swarm-testrail-report' with parameters:", "purple")
         common.prettyPrint(parameters)
@@ -546,12 +547,14 @@ def create_xml_report(String filename, String classname, String name, String sta
     writeFile(file: filename, text: script, encoding: "UTF-8")
 }
 
-def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[]) {
+def upload_results_to_testrail(report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options=[], testPlanName=null) {
   def venvPath = '/home/jenkins/venv_testrail_reporter'
   def testPlanDesc = env.LAB_CONFIG_NAME
   def testrailURL = "https://mirantis.testrail.com"
   def testrailProject = "Mirantis Cloud Platform"
-  def testPlanName = "[MCP-Q2]System-${MCP_VERSION}-${new Date().format('yyyy-MM-dd')}"
+  if (!testPlanName) {
+    testPlanName = "[MCP-Q2]System-${MCP_VERSION}-${new Date().format('yyyy-MM-dd')}"
+  }
   def testrailMilestone = "MCP1.1"
   def testrailCaseMaxNameLenght = 250
   def jobURL = env.BUILD_URL
