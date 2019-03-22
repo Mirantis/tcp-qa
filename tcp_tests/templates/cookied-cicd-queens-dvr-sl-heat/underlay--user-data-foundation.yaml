@@ -1,0 +1,64 @@
+#cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+ssh_pwauth: True
+users:
+  - name: root
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+  - name: jenkins
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFSxeuXh2sO4VYL8N2dlNFVyNcr2RvoH4MeDD/cV2HThfU4/BcH6IOOWXSDibIU279bWVKCL7QUp3mf0Vf7HPuyFuC12QM+l7MwT0jCYh5um3hmAvM6Ga0nkhJygHexe9/rLEYzZJkIjP9/IS/YXSv8rhHg484wQ6qkEuq15nyMqil8tbDQCq0XQ+AWEpNpIa4pUoKmFMsOP8lq10KZXIXsJyZxizadr6Bh4Lm9LWrk8YCw7qP3rmgWxK/s8qXQh1ISZe6ONfcmk6p03qbh4H3CwKyWzxmnIHQvE6PgN/O+PuAZj3PbR2mkkJjYX4jNPlxvj8uTStaVPhAwfR9Spdx jenkins@cz8133
+
+disable_root: false
+chpasswd:
+  list: |
+    root:r00tme
+  expire: False
+
+packages:
+  - openjdk-8-jre-headless
+  - libyaml-dev
+  - libffi-dev
+  - libvirt-dev
+  - python-dev
+  - python-pip
+  - python-virtualenv
+  - python-psycopg2
+  - pkg-config
+  - vlan
+  - bridge-utils
+  - ebtables
+
+bootcmd:
+  # Enable root access
+  - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+  - service sshd restart
+output:
+  all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+runcmd:
+  # Create swap
+  - fallocate -l 16G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
+  - '[[ -d /home/jenkins/fuel-devops30 ]] || su -l jenkins -c "virtualenv fuel-devops30"'
+
+write_files:
+  - path: /etc/default/grub.d/97-enable-grub-menu.cfg
+    content: |
+      GRUB_RECORDFAIL_TIMEOUT=30
+      GRUB_TIMEOUT=3
+      GRUB_TIMEOUT_STYLE=menu
+
+  - path: /etc/network/interfaces
+    content: |
+      auto ens3
+      iface ens3 inet dhcp
+
+  - path: /etc/bash_completion.d/fuel_devops30_activate
+    content: |
+      source /home/jenkins/fuel-devops30/bin/activate
