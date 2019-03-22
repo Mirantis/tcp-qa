@@ -44,6 +44,12 @@ node ("${PARENT_NODE_NAME}") {
         error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
     }
     dir("${PARENT_WORKSPACE}") {
+        if (env.TCP_QA_REFS) {
+            stage("Update working dir to patch ${TCP_QA_REFS}") {
+                shared.update_working_dir()
+            }
+        }
+
         stage("Cleanup: erase ${ENV_NAME} and remove config drive") {
             println "Remove environment ${ENV_NAME}"
             shared.run_cmd("""\
@@ -53,12 +59,6 @@ node ("${PARENT_NODE_NAME}") {
             shared.run_cmd("""\
                 rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
             """)
-        }
-
-        if (env.TCP_QA_REFS) {
-            stage("Update working dir to patch ${TCP_QA_REFS}") {
-                shared.update_working_dir()
-            }
         }
 
         stage("Create an environment ${ENV_NAME} in disabled state") {
