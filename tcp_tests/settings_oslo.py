@@ -22,15 +22,14 @@ from tcp_tests.helpers import ext
 from tcp_tests.helpers import oslo_cfg_types as ct
 from tcp_tests import settings
 
-print("\n" + "-" * 10 + " Initialize oslo.config variables with defaults"
-      " from environment" + "-" * 10)
 
 _default_conf = pkg_resources.resource_filename(
     __name__, 'templates/{0}/underlay.yaml'.format(settings.LAB_CONFIG_NAME))
 _default_heat_conf = pkg_resources.resource_filename(
     __name__, 'templates/{0}/underlay.hot'.format(settings.LAB_CONFIG_NAME))
 _default_heat_env = pkg_resources.resource_filename(
-    __name__, 'templates/_heat_environments/microcloud-8116.env')
+    __name__, 'templates/_heat_environments/{0}'.format(
+        settings.LAB_PARAM_DEFAULTS))
 
 _default_salt_steps = pkg_resources.resource_filename(
     __name__, 'templates/{0}/salt.yaml'.format(settings.LAB_CONFIG_NAME))
