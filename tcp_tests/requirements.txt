@@ -22,3 +22,4 @@ netaddr
 mock>=1.2
 python-jenkins
 cmd2<0.9
+PyYAML!=5.1
