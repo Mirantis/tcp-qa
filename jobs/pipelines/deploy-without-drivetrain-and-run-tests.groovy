@@ -49,7 +49,7 @@ def deploy(shared, common, steps) {
 def test(shared, common, steps) {
     try {
         stage("Run tests") {
-            shared.swarm_run_pytest(steps)
+            shared.swarm_run_pytest(steps, "${NODE_NAME}")
         }
 
     } catch (e) {
@@ -93,7 +93,7 @@ def test(shared, common, steps) {
             archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
         }
         stage("report results to testrail") {
-            shared.swarm_testrail_report(steps)
+            shared.swarm_testrail_report(steps, "${NODE_NAME}")
         }
         stage("Store TestRail reports to job description") {
             def String description = readFile("description.txt")
