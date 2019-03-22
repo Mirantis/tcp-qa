@@ -32,6 +32,8 @@ def config():
         for test_config in tests_configs.split(','):
             config_files.append(test_config)
 
+    LOG.info("\n" + "-" * 10 + " Initialize oslo.config variables with "
+             "defaults from environment" + "-" * 10)
     config_opts = settings_oslo.load_config(config_files)
 
     if os.path.isfile(config_opts.underlay.ssh_key_file):

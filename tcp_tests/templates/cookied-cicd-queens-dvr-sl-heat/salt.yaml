@@ -1,0 +1,11 @@
+{% set HOSTNAME_CFG01='cfg01' %}
+{% set LAB_CONFIG_NAME='cookied-cicd-queens-dvr-sl-heat' %}
+{% set DOMAIN_NAME='cookied-cicd-queens-dvr-sl-heat.local' %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}

@@ -210,7 +210,8 @@ class EnvironmentManagerHeat(object):
                     pool_net = netaddr.IPNetwork(address_pool['cidr'])
                     if fixed in pool_net:
                         for role in address_pool['roles']:
-                            addresses[role] = floating
+                            # addresses[role] = floating
+                            addresses[role] = fixed  # Use fixed addresses for local access
 
             nodes.append({
                 'name': heat_node.attributes['name'],
@@ -485,6 +486,10 @@ class EnvironmentManagerHeat(object):
             'template': template,
             'files': dict(list(tpl_files.items()) + list(env_files.items())),
             'environment': env,
+            'parameters': {
+                'mcp_version': settings.MCP_VERSION,
+                'env_name': settings.ENV_NAME,
+            }
         }
 
         if env_files_list:
