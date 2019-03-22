@@ -125,15 +125,40 @@ def build_shell_job(job_name, parameters, junit_report_filename=null, junit_repo
     }
 }
 
-def prepare_working_dir() {
+def prepare_working_dir(env_manager) {
         println "Clean the working directory ${env.WORKSPACE}"
         deleteDir()
 
-        // do not fail if environment doesn't exists
-        println "Remove environment ${ENV_NAME}"
-        run_cmd("""\
-            dos.py erase ${ENV_NAME} || true
-        """)
+        if (env_manager == 'devops') {
+            // do not fail if environment doesn't exists
+            println "Remove fuel-devops environment '${ENV_NAME}'"
+            run_cmd("""\
+                dos.py erase ${ENV_NAME} || true
+            """)
+        } else if (env_manager == 'heat') {
+            // delete heat stack
+            println "Remove heat stack '${ENV_NAME}'"
+            withCredentials([
+                       [$class          : 'UsernamePasswordMultiBinding',
+                       credentialsId   : env.OS_CREDENTIALS,
+                       passwordVariable: 'OS_PASSWORD',
+                       usernameVariable: 'OS_USERNAME']
+            ]) {
+                run_cmd("""\
+                    export OS_IDENTITY_API_VERSION=3
+                    export OS_AUTH_URL=${OS_AUTH_URL}
+                    export OS_USERNAME=${OS_USERNAME}
+                    export OS_PASSWORD=${OS_PASSWORD}
+                    export OS_PROJECT_NAME=${OS_PROJECT_NAME}
+                    openstack --insecure stack delete -y ${ENV_NAME} || true
+                    while openstack --insecure stack show ${ENV_NAME} -f value -c stack_status; do sleep 10; done
+                """)
+            }
+
+        } else {
+            throw new Exception("Unknown env_manager: '${env_manager}'")
+        }
+
         println "Remove config drive ISO"
         run_cmd("""\
             rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
@@ -207,12 +232,63 @@ def swarm_bootstrap_salt_cluster_devops() {
         build_pipeline_job('swarm-bootstrap-salt-cluster-devops', parameters)
 }
 
-def swarm_deploy_cicd(String stack_to_install, String install_timeout) {
+def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
+        // jenkins_slave_node_name
+        def common = new com.mirantis.mk.Common()
+        def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: "release/${env.MCP_VERSION}"
+        def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
+        def tcp_qa_refs = env.TCP_QA_REFS ?: ''
+        def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
+        def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
+        def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
+        def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
+        def mcp_salt_repo_url = env.MCP_SALT_REPO_URL ?: ''
+        def mcp_salt_repo_key = env.MCP_SALT_REPO_KEY ?: ''
+        def env_ipmi_user = env.IPMI_USER ?: ''
+        def env_ipmi_pass = env.IPMI_PASS ?: ''
+        def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
+        def env_lab_ctl_iface = env.LAB_CONTROL_IFACE ?: ''
+        def update_repo_custom_tag = env.UPDATE_REPO_CUSTOM_TAG ?: ''
+        def parameters = [
+                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
+                string(name: 'JENKINS_SLAVE_NODE_NAME', value: jenkins_slave_node_name),
+                string(name: 'PARENT_WORKSPACE', value: pwd()),
+                string(name: 'LAB_CONFIG_NAME', value: "${LAB_CONFIG_NAME}"),
+                string(name: 'ENV_NAME', value: "${ENV_NAME}"),
+                string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
+                string(name: 'MCP_IMAGE_PATH1604', value: "${MCP_IMAGE_PATH1604}"),
+                string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
+                string(name: 'CFG01_CONFIG_IMAGE_NAME', value: "${CFG01_CONFIG_IMAGE_NAME}"),
+                string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
+                string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
+                string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
+                string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecutter_template_commit}"),
+                string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
+                string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
+                string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
+                string(name: 'MCP_SALT_REPO_URL', value: "${mcp_salt_repo_url}"),
+                string(name: 'MCP_SALT_REPO_KEY', value: "${mcp_salt_repo_key}"),
+                string(name: 'IPMI_USER', value: env_ipmi_user),
+                string(name: 'IPMI_PASS', value: env_ipmi_pass),
+                string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
+                string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
+                string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
+                string(name: 'OS_AUTH_URL', value: "${OS_AUTH_URL}"),
+                string(name: 'OS_PROJECT_NAME', value: "${OS_PROJECT_NAME}"),
+                string(name: 'OS_CREDENTIALS', value: "${OS_CREDENTIALS}"),
+                string(name: 'LAB_PARAM_DEFAULTS', value: "${LAB_PARAM_DEFAULTS}"),
+                booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
+            ]
+
+        build_pipeline_job('swarm-bootstrap-salt-cluster-heat', parameters)
+}
+
+def swarm_deploy_cicd(String stack_to_install, String install_timeout, String jenkins_slave_node_name) {
         // Run openstack_deploy job on cfg01 Jenkins for specified stacks
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def parameters = [
-                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
+                string(name: 'PARENT_NODE_NAME', value: jenkins_slave_node_name),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'STACK_INSTALL', value: stack_to_install),
@@ -223,12 +299,12 @@ def swarm_deploy_cicd(String stack_to_install, String install_timeout) {
         build_pipeline_job('swarm-deploy-cicd', parameters)
 }
 
-def swarm_deploy_platform(String stack_to_install, String install_timeout) {
+def swarm_deploy_platform(String stack_to_install, String install_timeout, String jenkins_slave_node_name) {
         // Run openstack_deploy job on CICD Jenkins for specified stacks
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def parameters = [
-                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
+                string(name: 'PARENT_NODE_NAME', value: jenkins_slave_node_name),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'STACK_INSTALL', value: stack_to_install),
@@ -255,7 +331,7 @@ def swarm_deploy_platform_non_cicd(String stack_to_install, String install_timeo
         build_pipeline_job('swarm-deploy-platform-without-cicd', parameters)
 }
 
-def swarm_run_pytest(String passed_steps) {
+def swarm_run_pytest(String passed_steps, String jenkins_slave_node_name) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
@@ -265,7 +341,7 @@ def swarm_run_pytest(String passed_steps) {
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
                 string(name: 'RUN_TEST_OPTS', value: "${RUN_TEST_OPTS}"),
-                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
+                string(name: 'PARENT_NODE_NAME', value: jenkins_slave_node_name),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
@@ -283,7 +359,7 @@ def swarm_run_pytest(String passed_steps) {
             parameters: parameters
 }
 
-def swarm_testrail_report(String passed_steps) {
+def swarm_testrail_report(String passed_steps, String jenkins_slave_node_name) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
@@ -293,7 +369,7 @@ def swarm_testrail_report(String passed_steps) {
                 string(name: 'LAB_CONFIG_NAME', value: "${LAB_CONFIG_NAME}"),
                 string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
-                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
+                string(name: 'PARENT_NODE_NAME', value: jenkins_slave_node_name),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 string(name: 'TEMPEST_TEST_SUITE_NAME', value: "${tempest_test_suite_name}"),
@@ -304,13 +380,8 @@ def swarm_testrail_report(String passed_steps) {
             parameters: parameters
 }
 
-def generate_cookied_model() {
+def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IPV4_NET_EXTERNAL) {
         def common = new com.mirantis.mk.Common()
-        // do not fail if environment doesn't exists
-        def IPV4_NET_ADMIN=run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep admin-pool01").trim().split().last()
-        def IPV4_NET_CONTROL=run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep private-pool01").trim().split().last()
-        def IPV4_NET_TENANT=run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep tenant-pool01").trim().split().last()
-        def IPV4_NET_EXTERNAL=run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep external-pool01").trim().split().last()
         println("IPV4_NET_ADMIN=" + IPV4_NET_ADMIN)
         println("IPV4_NET_CONTROL=" + IPV4_NET_CONTROL)
         println("IPV4_NET_TENANT=" + IPV4_NET_TENANT)
@@ -346,22 +417,9 @@ def generate_cookied_model() {
         build_shell_job('swarm-cookied-model-generator', parameters, "deploy_generate_model.xml")
 }
 
-def generate_configdrive_iso() {
+def generate_configdrive_iso(SALT_MASTER_IP, ADMIN_NETWORK_GW) {
         def common = new com.mirantis.mk.Common()
-        def SALT_MASTER_IP=run_cmd_stdout("""\
-            export ENV_NAME=${ENV_NAME}
-            . ./tcp_tests/utils/env_salt
-            echo \$SALT_MASTER_IP
-            """).trim().split().last()
         println("SALT_MASTER_IP=" + SALT_MASTER_IP)
-
-        def dhcp_ranges_json=run_cmd_stdout("""\
-            fgrep dhcp_ranges ${ENV_NAME}_hardware.ini |
-            fgrep "admin-pool01"|
-            cut -d"=" -f2
-            """).trim().split("\n").last()
-        def dhcp_ranges = new groovy.json.JsonSlurperClassic().parseText(dhcp_ranges_json)
-        def ADMIN_NETWORK_GW = dhcp_ranges['admin-pool01']['gateway']
         println("ADMIN_NETWORK_GW=" + ADMIN_NETWORK_GW)
 
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
