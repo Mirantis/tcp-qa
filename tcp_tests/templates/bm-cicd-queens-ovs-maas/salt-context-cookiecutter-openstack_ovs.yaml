@@ -1,0 +1,931 @@
+default_context:
+  backup_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEogIBAAKCAQEAvDqzt/PHWvSSJrBtvD3UWp21CDrAajgOPeXrVm7VU+sDDpw0
+    YqDvVhYfT/N6ha+SWOK00KyTuMMbB8/I4tvsP9vvCXy7v2AJID/ZO2z/t8KfTDEJ
+    C75/6a0UBg6sl3i7+cUOHbeK+lkcfdnSI1H8Jzdhk4Xj7t7q+MIKTs5n+AlScgyz
+    NSiD2nG/U5LmaQ+rjZ1VsF9J0YTds0yLDF3hztVoDTs7j5obl7Xab3ZlwalgH5Gc
+    Id6BI09jkUbppdPzHpzV2oad7cFpVYTt9m3/MMT0amzPuwl/u/dI64rRuWPe60eT
+    qeVMQD0zP6o9F79upbzQStt82lPJcfF4CXvxYwIDAQABAoIBAAHUXDzUfMKQj/8a
+    RebHfxHmaIUM9SPTKahGXNQ5PY+UQDJbKFMxF0Jx8pn3VuCHxVdh1LoWg1UPaGra
+    BSzXUGOKgrdH5BdHGq+aj0T5mT6zAJNgAqN/lYSy7vfkGp9aSBF0bd+yEgK+7Pz4
+    Kge320iSTDt/2KhQuF30nN8JOI97m2uk2YHH8TixfVtmgLPEy+0Mw4VZLsHD4OY1
+    zu8xN6co2aQR0DB0MPKD6IxH62wSOJKBzF4o5xzzy/fl0ysDZbZ8Z/5Rejvp3yNT
+    68B0X5CM27hVdYE+/tcKGl9WKmewIf3fTZUfBcwFIObMIl9fkK/519nwFed4AfOX
+    /a2LCBECgYEA9Lyl/eyzXuU2dgs6Gw/WMobqOVnHF9wbukS1XSKdwMogtpt7Pb23
+    +32r9xHgeRDvvWwSp8lNPZ8mu77dQ6akbOuOk5C6V3Mqt4zam3DBDMtL63nKq8tq
+    LQ0PVjj8cAgu3GSDCz7htqUb44rn5tX9zlM0vrwxzyYqbet7ZbsGoYsCgYEAxORQ
+    JFn1vwag8VBw3bngx3SJ46CpCC8Gz830W7pEaTS6zTTiDC4p5sATGya91JS8l47G
+    ikP2bcWzvT6aP/u+TZSqZiqp5Kn37fx8Et+ltIl47SH+PJHIR9F9r2f9zqla6mlP
+    zcX/mTSuAJCTP4whQA3/f1wNAeBnewhK9fXCOokCgYAz6TPYSXW+giXsIfOAO/q2
+    GvHhmk5lnDVxbBOAHtCRTQ5lTVN1xCEbQgvQy0TuyQ3hAuRuHH+6u2BO4Gw0Zkto
+    IwrJ+B/eXrpH1qOj5uW73f9Lgjjf+bSau7NuGYZKCSJPcy5smzjrMdhZimQoDWnZ
+    csK0VlzGUJUdXZ599I6ygwKBgGTf+LN3J7H0Snb4WKsw9Zoa+h6WjKO1vE6xXVW1
+    rCEes+o5Autsp2ki1WcexTlp7unTa6MhSNta5Ei8Dzli2FBVL6xihWKzNmRG7Kaa
+    0QIbQMp1lRUhN7Sb/0HkDKRaHktlI07w95Bd7hw59kcjm1F/Gnz9A2kHuNzPFeDI
+    RffJAoGAdeCID5sb0oHEHTIxxB+cgfaiyaAe9qrW2INNWLVn5OTDh6cidatnWAor
+    M/SxwNoiYcCpi869q7wzjw5gNOVoNJbmwzDA7s+lgjTPQpq2jmO6RtweKbYoN5Zw
+    ++LiD3r07TD3p2QAyeooT29D/d6/2Hd6oyTJcZWIQTN+MTcXQO4=
+    -----END RSA PRIVATE KEY-----
+  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8OrO388da9JImsG28PdRanbUIOsBqOA495etWbtVT6wMOnDRioO9WFh9P83qFr5JY4rTQrJO4wxsHz8ji2+w/2+8JfLu/YAkgP9k7bP+3wp9MMQkLvn/prRQGDqyXeLv5xQ4dt4r6WRx92dIjUfwnN2GThePu3ur4wgpOzmf4CVJyDLM1KIPacb9TkuZpD6uNnVWwX0nRhN2zTIsMXeHO1WgNOzuPmhuXtdpvdmXBqWAfkZwh3oEjT2ORRuml0/MenNXahp3twWlVhO32bf8wxPRqbM+7CX+790jritG5Y97rR5Op5UxAPTM/qj0Xv26lvNBK23zaU8lx8XgJe/Fj
+  bmk_enabled: 'False'
+  cicd_control_node01_address: 10.167.11.91
+  cicd_control_node01_hostname: cid01
+  cicd_control_node02_address: 10.167.11.92
+  cicd_control_node02_hostname: cid02
+  cicd_control_node03_address: 10.167.11.93
+  cicd_control_node03_hostname: cid03
+  cicd_control_vip_address: 10.167.11.90
+  cicd_control_vip_hostname: cid
+  cicd_enabled: 'True'
+  cicd_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEowIBAAKCAQEAshiE2vK11KH1/PHO9v5IcT1ol3kuAorv6IgW+1paT9w4pFnd
+    H2DHQxTJsZ629cig+ELVAKHQnkND2U++/DM20ai5ZfpOwlvd+dL95/FbGb62Ozxx
+    kxBjyc/Bbbs8LcZtS1SN+agdkjQG1StpckUbFppoJ9nzWgnEcdYdonQ6aThgd+YL
+    rAOX04s3cMlCflClQl3lGFo24Qdhk/Y4M5rodfqfD5NOSKEhYP/dTMunri8zB5bU
+    ifvOvCWUKUOxLjkx95raY82xMHUobMYk87RcLPcq8pyz96/FPoiLqxM1oznTKNiI
+    0bW0xjf7FFjfLCjTapKZPRz8+Wkvzmzj35LLrwIDAQABAoIBADJoGCo0Kdy93nay
+    JgboX66VV+YPaUNU+aQR6JdJsmgKB4oU2S4JYTyORKveJSCZoV3C5LCiG/6/QRPf
+    q0mMYUaj/51qZCJEiCYuXqjoOgWmYcOQTwD10ZiMEc4yAU1fbQ22J9zyhTQdP5XU
+    DKtH/eu+1h35ZRQl0ZD6rjaNuP6QekJM6IVCC7XBaCG5+wSER9R25HbbDhdb7CwH
+    W1GP9IgISqy9Z3f4PQOyCUmn/O99lN8kry6ui7bCywRfITV6C+pn02DpMgzKZ8jn
+    3yts1f2mIbYVxnahtCaI3QTag6wBsnFq+U0uIXrUGMeeRzg9N1Ur01qdJpIR9g0v
+    Nt7QUZkCgYEA4lEavsFitSll/33JY4q82nYpjXAxTON3xraUqNYn5Cde06gNi8n1
+    t9TCLUqDhSpvgEOyJE/uwo5LAj79Ce2EwLkCttNggqRXBlY5ZpljwfWmxZtuGm/z
+    BJaOtkaK/1diR/+Qn/fTMyPH5JIXuQ6/XF60W4MSbzPgY4GO1BDx+G0CgYEAyXRT
+    00GDdiXbxQmzeHTO9Bg5y36Y1FEWDLnc89bpHPTR4sT/XCczerevy/l8jsdzZlnu
+    5ZddfWMF7EGNo51Zbmi0oLQ7nzigoVFcnhFHRFoCP36T9mvJk7O8Ao3ttpl/J2r0
+    mFiaKi0lhmZVbNpmliKjWAMZJyt6I7AfYekcOwsCgYEA0W8MuQptNgkhgtX80ElL
+    iz9eJK12chjuds3vtG66a8CjWGtkXcB/y6bwKsmR/GHQ3XnIGSJ/aTwU3fc8YzuS
+    ZmbPxDDIVx2OCycv52p7jrqtoqC7u2tuEQji+Hs/lhxfrxEp3V+R6vlpunQX0AF9
+    xRU/ApDBNndjZ7I1YrprseECgYA+zx8HgaiMIJeZokGrb7fKkPcMBCeAItveEeDa
+    wYmito3txv/a6nn5a+XKkbmNBpBrO+To/j1ux33kQDf56Cgm7UxLwoXISa6DPUvE
+    GJ0AqZOD2mIldUu+2k3m+ftAcDEdyBIEobNHLRZDBgriSmGrs5b77NNdzAdjsxjF
+    vRlJKwKBgD8DcP/C9pABC2mRQyH//RTk6XZfiDY0L18lwH7acEdHlJiF1PTwvIHD
+    cj1nMyG2MxEiSt1E5O/YQ4Lo3sognFIb8keu7IYxEgLXhvWFR3RwaYCjrF4ZGfD2
+    +83eUFPZQvEwTY/8OCogzJQfs1CT8+pLdO9tZQbrAaxfmF6c48KN
+    -----END RSA PRIVATE KEY-----
+  cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyGITa8rXUofX88c72/khxPWiXeS4Ciu/oiBb7WlpP3DikWd0fYMdDFMmxnrb1yKD4QtUAodCeQ0PZT778MzbRqLll+k7CW9350v3n8VsZvrY7PHGTEGPJz8Ftuzwtxm1LVI35qB2SNAbVK2lyRRsWmmgn2fNaCcRx1h2idDppOGB35gusA5fTizdwyUJ+UKVCXeUYWjbhB2GT9jgzmuh1+p8Pk05IoSFg/91My6euLzMHltSJ+868JZQpQ7EuOTH3mtpjzbEwdShsxiTztFws9yrynLP3r8U+iIurEzWjOdMo2IjRtbTGN/sUWN8sKNNqkpk9HPz5aS/ObOPfksuv
+  cluster_domain: bm-cicd-queens-ovs-maas.local
+  cluster_name: bm-cicd-queens-ovs-maas
+  compute_bond_mode: active-backup
+  compute_primary_first_nic: eth1
+  compute_primary_second_nic: eth2
+  context_seed: zEFbUBMME6LFdiL0rJWFgHMdQGgywnDSE9vFYvHgEBeYHb4QJsDl3HqpdaTgqYlF
+  control_network_netmask: 255.255.255.0
+  control_network_subnet: 10.167.11.0/24
+  control_vlan: '2404'
+  cookiecutter_template_branch: proposed
+  cookiecutter_template_credentials: gerrit
+  cookiecutter_template_url: https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates.git
+  deploy_network_gateway: 172.16.164.1
+  deploy_network_netmask: 255.255.255.192
+  deploy_network_subnet: 172.16.164.0/26
+  deployment_type: physical
+  dns_server01: 172.18.176.6
+  dns_server02: 172.18.208.44
+  email_address: test@mirantis.com
+  gateway_primary_first_nic: eth1
+  gateway_primary_second_nic: eth2
+  infra_bond_mode: active-backup
+  infra_deploy_nic: eth0
+  infra_kvm01_control_address: 10.167.11.241
+  infra_kvm01_deploy_address: 172.16.164.3
+  infra_kvm01_hostname: kvm01
+  infra_kvm02_control_address: 10.167.11.242
+  infra_kvm02_deploy_address: 172.16.164.4
+  infra_kvm02_hostname: kvm02
+  infra_kvm03_control_address: 10.167.11.243
+  infra_kvm03_deploy_address: 172.16.164.5
+  infra_kvm03_hostname: kvm03
+  infra_kvm04_control_address: 10.167.11.244
+  infra_kvm04_deploy_address: 172.16.164.6
+  infra_kvm04_hostname: kvm04
+  infra_kvm05_control_address: 10.167.11.245
+  infra_kvm05_deploy_address: 172.16.164.7
+  infra_kvm05_hostname: kvm05
+  infra_kvm06_control_address: 10.167.11.246
+  infra_kvm06_deploy_address: 172.16.164.8
+  infra_kvm06_hostname: kvm06
+  infra_kvm_vip_address: 10.167.11.240
+  infra_primary_first_nic: eth1
+  infra_primary_second_nic: eth2
+  kubernetes_enabled: 'False'
+  local_repositories: 'False'
+  maas_enabled: 'True'
+  maas_deploy_address: 172.16.164.2
+  maas_deploy_cidr: 172.16.164.0/26
+  maas_deploy_gateway: 172.16.164.1
+  maas_deploy_range_end: 172.16.164.62
+  maas_deploy_range_start: 172.16.164.18
+  maas_deploy_vlan: '0'
+  maas_dhcp_enabled: 'True'
+  maas_fabric_name: fabric-0
+  maas_hostname: cfg01
+  maas_manage_deploy_network: 'True'
+  maas_machines: |
+        kvm01: # #cz7625-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          # pxe_interface_mac:
+          pxe_interface_mac: "0c:c4:7a:33:24:be"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:33:24:be"
+              mode: "static"
+              ip: "172.16.164.3"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:33:24:bf"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:01:3e"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:01:3f"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:58:f3:ce"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:58:f3:cf"
+              name: sten2
+          power_parameters:
+            power_address: "185.8.59.227"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        kvm02: # #cz7627-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:33:2d:6a"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:33:2d:6a"
+              mode: "static"
+              ip: "172.16.164.4"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:33:2d:6b"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:58:43:b8"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:58:43:b9"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1d:96:02"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1d:96:03"
+              name: sten2
+          power_parameters:
+            power_address: "185.8.59.229"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        kvm03: # #cz7756-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:69:a0:4c"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:69:a0:4c"
+              mode: "static"
+              ip: "172.16.164.5"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:69:a0:4d"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "00:25:90:c0:c2:14"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "00:25:90:c0:c2:15"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:09:c2"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:09:c3"
+              name: sten2
+          power_parameters:
+            power_address: "5.43.225.88"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        kvm04: # #cz7792-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          # pxe_interface_mac:
+          pxe_interface_mac: "0c:c4:7a:6c:83:5c"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:6c:83:5c"
+              mode: "static"
+              ip: "172.16.164.6"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:6c:83:5d"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:7d:98"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:7d:99"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:03:de"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:03:df"
+              name: sten2
+          power_parameters:
+            power_address: "5.43.225.112"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        kvm05: # #cz7876-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:6c:88:d6"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:6c:88:d6"
+              mode: "static"
+              ip: "172.16.164.7"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:6c:88:d7"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:03:74"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:03:75"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:89:be"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:89:bf"
+              name: sten2
+          power_parameters:
+            power_address: "5.43.225.208"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        kvm06: # #cz8073-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:df:ac"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:df:ac"
+              mode: "static"
+              ip: "172.16.164.8"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:df:ad"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:3a:f2"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:3a:f3"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:a6:4c"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:a6:4d"
+              name: sten2
+          power_parameters:
+            power_address: "5.43.227.118"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        gtw01: # #cz9039-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:d5:84"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:d5:84"
+              mode: "static"
+              ip: "172.16.164.9"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:d5:85"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:58:41:b0"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:58:41:b1"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1d:90:d2"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1d:90:d3"
+              name: sten2
+          power_parameters:
+            power_address: "5.43.229.28"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        gtw02: # #cz9048-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:d5:82"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:d5:82"
+              mode: "static"
+              ip: "172.16.164.10"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:d5:83"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:00:7c"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:00:7d"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:bc:88:8a"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:bc:88:8b"
+              name: sten2
+          power_parameters:
+            power_address: "5.43.225.23"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        gtw03: # #cz8159-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:6c:bc:f6"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:6c:bc:f6"
+              mode: "static"
+              ip: "172.16.164.11"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:6c:bc:f7"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "00:25:90:9b:cc:32"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "00:25:90:9b:cc:33"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "00:25:90:c1:a5:04"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "00:25:90:c1:a5:05"
+              name: sten2
+          power_parameters:
+            power_address: "185.8.58.9"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        osd001: # #cz9040-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:c9:02"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:c9:02"
+              mode: "static"
+              ip: "172.16.164.12"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:c9:03"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:aa:90"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:aa:91"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:0a:a4"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:0a:a5"
+              name: sten2
+          power_parameters:
+            power_address: "185.8.58.246"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        osd002: # #cz9041-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:d5:60"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:d5:60"
+              mode: "static"
+              ip: "172.16.164.13"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:d5:61"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:04:2c"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:04:2d"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:01:f2"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:01:f3"
+              name: sten2
+          power_parameters:
+            power_address: "185.8.58.243"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        osd003: # #cz9042-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:c9:3a"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:c9:3a"
+              mode: "static"
+              ip: "172.16.164.14"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:c9:3b"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "00:25:90:33:d7:10"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "00:25:90:33:d7:11"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "00:25:90:0b:5f:50"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "00:25:90:0b:5f:51"
+              name: sten2
+          power_parameters:
+            power_address: "185.8.58.244"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        cmp001: # #cz9039-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:d6:aa"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:d6:aa"
+              mode: "static"
+              ip: "172.16.164.15"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:d6:ab"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:86:76"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:86:77"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:39:3c"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1e:39:3d"
+              name: sten2
+          power_parameters:
+            power_address: "185.8.58.248"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        cmp002: # #cz9046-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:ce:30"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:ce:30"
+              mode: "static"
+              ip: "172.16.164.16"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:ce:31"
+              name: one2
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:ce:31"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "00:25:90:e0:7d:e0"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "00:25:90:e0:7d:e1"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:0c:0e"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:0c:0f"
+              name: sten2
+          power_parameters:
+            power_address: "185.8.59.222"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+        cmp003: # #cz8061-kvm.host-telecom.com
+          distro_series: "xenial"
+          # hwe_kernel: "hwe-16.04"
+          pxe_interface_mac: "0c:c4:7a:aa:e0:ce"
+          interfaces:
+            one1:
+              mac: "0c:c4:7a:aa:e0:ce"
+              mode: "static"
+              ip: "172.16.164.17"
+              subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
+              gateway: ${_param:deploy_network_gateway}
+              name: one1
+            one2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:aa:e0:cf"
+              name: one2
+            ten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1d:94:5e"
+              name: ten1
+            ten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1d:94:5f"
+              name: ten2
+            sten1:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:87:e4"
+              name: sten1
+            sten2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:1f:87:e5"
+              name: sten2
+          power_parameters:
+            power_address: "5.43.225.228"
+            power_pass: ==IPMI_PASS==
+            power_type: ipmi
+            power_user: ==IPMI_USER==
+  mcp_version: proposed
+  mcp_common_scripts_branch: ''
+  offline_deployment: 'False'
+  opencontrail_enabled: 'False'
+  openldap_domain: bm-cicd-queens-ovs-maas.local
+  openldap_enabled: 'True'
+  openldap_organisation: ${_param:cluster_name}
+  openstack_benchmark_node01_address: 10.167.11.95
+  openstack_benchmark_node01_hostname: bmk01
+  openstack_cluster_size: golden
+  openstack_compute_count: '3'
+  openstack_compute_rack01_hostname: cmp
+  openstack_compute_single_address_ranges: 10.167.11.15-10.167.11.17
+  openstack_compute_deploy_address_ranges: 172.16.164.15-172.16.164.17
+  openstack_compute_tenant_address_ranges: 10.167.12.15-10.167.12.17
+  openstack_compute_backend_address_ranges: 10.167.12.15-10.167.12.17
+  openstack_control_address: 10.167.11.10
+  openstack_control_hostname: ctl
+  openstack_control_node01_address: 10.167.11.11
+  openstack_control_node01_hostname: ctl01
+  openstack_control_node02_address: 10.167.11.12
+  openstack_control_node02_hostname: ctl02
+  openstack_control_node03_address: 10.167.11.13
+  openstack_control_node03_hostname: ctl03
+  openstack_database_address: 10.167.11.50
+  openstack_database_hostname: dbs
+  openstack_database_node01_address: 10.167.11.51
+  openstack_database_node01_hostname: dbs01
+  openstack_database_node02_address: 10.167.11.52
+  openstack_database_node02_hostname: dbs02
+  openstack_database_node03_address: 10.167.11.53
+  openstack_database_node03_hostname: dbs03
+  openstack_enabled: 'True'
+  openstack_gateway_node01_deploy_address: 172.16.164.9
+  openstack_gateway_node02_deploy_address: 172.16.164.10
+  openstack_gateway_node03_deploy_address: 172.16.164.11
+  openstack_gateway_node01_address: 10.167.11.224
+  openstack_gateway_node01_hostname: gtw01
+  openstack_gateway_node02_hostname: gtw02
+  openstack_gateway_node03_hostname: gtw03
+  openstack_gateway_node01_tenant_address: 10.167.12.9
+  openstack_gateway_node02_address: 10.167.11.225
+  openstack_gateway_node02_tenant_address: 10.167.12.10
+  openstack_gateway_node03_address: 10.167.11.226
+  openstack_gateway_node03_tenant_address: 10.167.12.11
+  openstack_message_queue_address: 10.167.11.40
+  openstack_message_queue_hostname: msg
+  openstack_message_queue_node01_address: 10.167.11.41
+  openstack_message_queue_node01_hostname: msg01
+  openstack_message_queue_node02_address: 10.167.11.42
+  openstack_message_queue_node02_hostname: msg02
+  openstack_message_queue_node03_address: 10.167.11.43
+  openstack_message_queue_node03_hostname: msg03
+  openstack_network_engine: ovs
+  openstack_neutron_qos: 'True'
+  openstack_neutron_vlan_aware_vms: 'True'
+  openstack_nfv_dpdk_enabled: 'False'
+  openstack_nfv_sriov_enabled: 'False'
+  openstack_nova_compute_hugepages_count: '16'
+  openstack_nova_compute_nfv_req_enabled: 'False'
+  openstack_nfv_sriov_network: physnet2
+  openstack_nfv_sriov_numvfs: '7'
+  openstack_nfv_sriov_pf_nic: enp5s0f1
+  openstack_nova_cpu_pinning: 6,7,8,9,10,11
+  openstack_nova_compute_reserved_host_memory_mb: '900'
+  openstack_ovs_dvr_enabled: 'True'
+  openstack_ovs_encapsulation_type: vxlan
+  openstack_ovs_encapsulation_vlan_range: 2402:2406
+  openstack_proxy_address: 10.167.11.80
+  openstack_proxy_hostname: prx
+  openstack_proxy_node01_address: 10.167.11.81
+  openstack_proxy_node01_hostname: prx01
+  openstack_proxy_node02_address: 10.167.11.82
+  openstack_proxy_node02_hostname: prx02
+  openstack_upgrade_node01_address: 10.167.11.19
+  openstack_version: queens
+  cinder_version: ${_param:openstack_version}
+  oss_enabled: 'False'
+  oss_node03_address: ${_param:stacklight_monitor_node03_address}
+  platform: openstack_enabled
+  public_host: ${_param:openstack_proxy_address}
+  publication_method: email
+  reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
+  salt_api_password: HlcaUHzUnsWsg62uhF8ua5KEbqRbzijz
+  salt_api_password_hash: $6$qdIFillN$XnzP7oIXRcbroVch7nlthyrSekjKlWND8q2MtoMF3Wz2ymepjAOjyqpyR55nmbH9OQzS8EcQJ6sfr5hWKDesV1
+  salt_master_address: 10.167.11.2
+  salt_master_hostname: cfg01
+  salt_master_management_address: 172.16.164.2
+  shared_reclass_branch: proposed
+  shared_reclass_url: https://gerrit.mcp.mirantis.com/salt-models/reclass-system.git
+  stacklight_enabled: 'True'
+  stacklight_log_address: 10.167.11.60
+  stacklight_log_hostname: log
+  stacklight_log_node01_address: 10.167.11.61
+  stacklight_log_node01_hostname: log01
+  stacklight_log_node02_address: 10.167.11.62
+  stacklight_log_node02_hostname: log02
+  stacklight_log_node03_address: 10.167.11.63
+  stacklight_log_node03_hostname: log03
+  stacklight_long_term_storage_type: prometheus
+  stacklight_monitor_address: 10.167.11.70
+  stacklight_monitor_hostname: mon
+  stacklight_monitor_node01_address: 10.167.11.71
+  stacklight_monitor_node01_hostname: mon01
+  stacklight_monitor_node02_address: 10.167.11.72
+  stacklight_monitor_node02_hostname: mon02
+  stacklight_monitor_node03_address: 10.167.11.73
+  stacklight_monitor_node03_hostname: mon03
+  stacklight_telemetry_address: 10.167.11.96
+  stacklight_telemetry_hostname: mtr
+  stacklight_telemetry_node01_address: 10.167.11.97
+  stacklight_telemetry_node01_hostname: mtr01
+  stacklight_telemetry_node02_address: 10.167.11.98
+  stacklight_telemetry_node02_hostname: mtr02
+  stacklight_telemetry_node03_address: 10.167.11.99
+  stacklight_telemetry_node03_hostname: mtr03
+  stacklight_version: '2'
+  static_ips_on_deploy_network_enabled: 'False'
+  tenant_network_gateway: 10.167.12.1
+  tenant_network_netmask: 255.255.255.0
+  tenant_network_subnet: 10.167.12.0/24
+  tenant_vlan: '2406'
+  upstream_proxy_enabled: 'False'
+  use_default_network_scheme: 'True'
+  sriov_network_subnet: 192.168.10.0/24
+  ceph_enabled: 'True'
+  ceph_version: "luminous"
+  ceph_hyper_converged: "False"
+  ceph_osd_backend: "bluestore"
+  ceph_osd_count: "3"
+  ceph_osd_node_count: 3
+  ceph_osd_block_db_size: 20
+  ceph_osd_journal_size: 20
+  ceph_osd_bond_mode: "active-backup"
+  ceph_osd_data_partition_prefix: ""
+  ceph_public_network_allocation: storage
+  ceph_public_network: "10.167.11.0/24"
+  ceph_cluster_network: "10.167.11.0/24"
+  ceph_osd_single_address_ranges: "10.167.11.200-10.167.11.202"
+  ceph_osd_deploy_address_ranges: "172.16.164.8-172.16.164.10"
+  ceph_osd_storage_address_ranges: "10.167.11.200-10.167.11.202"
+  ceph_osd_backend_address_ranges: "10.167.12.200-10.167.12.202"
+  ceph_osd_data_disks: "/dev/sdb"
+  ceph_osd_journal_or_block_db_disks: "/dev/sdb"
+  ceph_osd_mode: "separated"
+  ceph_osd_deploy_nic: "eth0"
+  ceph_osd_primary_first_nic: "eth1"
+  ceph_osd_primary_second_nic: "eth2"
+  ceph_mon_node01_address: "10.167.11.66"
+  ceph_mon_node01_hostname: "cmn01"
+  ceph_mon_node02_address: "10.167.11.67"
+  ceph_mon_node02_hostname: "cmn02"
+  ceph_mon_node03_address: "10.167.11.68"
+  ceph_mon_node03_hostname: "cmn03"
+  ceph_rgw_address: "10.167.11.75"
+  ceph_rgw_node01_address: "10.167.11.76"
+  ceph_rgw_node01_hostname: "rgw01"
+  ceph_rgw_node02_address: "10.167.11.77"
+  ceph_rgw_node02_hostname: "rgw02"
+  ceph_rgw_node03_address: "10.167.11.78"
+  ceph_rgw_node03_hostname: "rgw03"
+  rsync_fernet_rotation: 'True'
+  compute_padding_with_zeros: True
+  designate_backend: powerdns
+  designate_enabled: 'True'
+  openstack_dns_node01_address: 10.167.11.113
+  openstack_dns_node02_address: 10.167.11.114
+  nova_vnc_tls_enabled: 'True'
+  galera_ssl_enabled: 'True'
+  openstack_mysql_x509_enabled: 'True'
+  rabbitmq_ssl_enabled: 'True'
+  openstack_rabbitmq_x509_enabled: 'True'
+  openstack_internal_protocol: 'https'
+  tenant_telemetry_enabled: 'True'
+  gnocchi_aggregation_storage: ceph
+  openstack_telemetry_address: 10.167.11.83
+  openstack_telemetry_hostname: mdb
+  openstack_telemetry_node01_address: 10.167.11.84
+  openstack_telemetry_node01_hostname: mdb01
+  openstack_telemetry_node02_address: 10.167.11.85
+  openstack_telemetry_node02_hostname: mdb02
+  openstack_telemetry_node03_address: 10.167.11.86
+  openstack_telemetry_node03_hostname: mdb03
+  barbican_backend: dogtag
+  barbican_enabled: 'True'
+  barbican_integration_enabled: 'False'
+  openstack_barbican_address: 10.167.11.44
+  openstack_barbican_hostname: kmn
+  openstack_barbican_node01_address: 10.167.11.45
+  openstack_barbican_node01_hostname: kmn01
+  openstack_barbican_node02_address: 10.167.11.46
+  openstack_barbican_node02_hostname: kmn02
+  openstack_barbican_node03_address: 10.167.11.47
+  openstack_barbican_node03_hostname: kmn03
+  openstack_create_public_network: 'True'
+  openstack_public_neutron_subnet_gateway: 172.17.42.1
+  openstack_public_neutron_subnet_cidr: 172.17.42.0/26
+  openstack_public_neutron_subnet_allocation_start: 172.17.42.15
+  openstack_public_neutron_subnet_allocation_end: 172.17.42.55
+  backend_vlan: '2402'
+  storage_vlan: '2405'  # not implemented yet, placeholder
+  kqueen_custom_mail_enabled: 'False'
+  kqueen_enabled: 'False'
+  manila_enabled: 'False'
+  openscap_enabled: 'True'
+  octavia_health_manager_node01_address: 192.168.1.10
+  octavia_health_manager_node02_address: 192.168.1.11
+  octavia_health_manager_node03_address: 192.168.1.12
+  octavia_manager_cluster: 'False'
+  octavia_hm_bind_ip: 192.168.1.12
+  octavia_lb_mgmt_cidr: 192.168.1.0/24
+  octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
+  octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
+  openstack_octavia_enabled: 'True'
+  octavia_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEAtjnPDJsQToHBtoqIo15mdSYpfi8z6DFMi8Gbo0KCN33OUn5u
+    OctbdtjUfeuhvI6px1SCnvyWi09Ft8eWwq+KwLCGKbUxLvqKltuJ7K3LIrGXkt+m
+    qZN4O9XKeVKfZH+mQWkkxRWgX2r8RKNV3GkdNtd74VjhP+R6XSKJQ1Z8b7eHM10v
+    6IjTY/jPczjK+eyCeEj4qbSnV8eKlqLhhquuSQRmUO2DRSjLVdpdf2BB4/BdWFsD
+    YOmX7mb8kpEr9vQ+c1JKMXDwD6ehzyU8kE+1kVm5zOeEy4HdYIMpvUfN49P1anRV
+    2ISQ1ZE+r22IAMKl0tekrGH0e/1NP1DF5rINMwIDAQABAoIBAQCkP/cgpaRNHyg8
+    ISKIHs67SWqdEm73G3ijgB+JSKmW2w7dzJgN//6xYUAnP/zIuM7PnJ0gMQyBBTMS
+    NBTv5spqZLKJZYivj6Tb1Ya8jupKm0jEWlMfBo2ZYVrfgFmrfGOfEebSvmuPlh9M
+    vuzlftmWVSSUOkjODmM9D6QpzgrbpktBuA/WpX+6esMTwJpOcQ5xZWEnHXnVzuTc
+    SncodVweE4gz6F1qorbqIJz8UAUQ5T0OZTdHzIS1IbamACHWaxQfixAO2s4+BoUK
+    ANGGZWkfneCxx7lthvY8DiKn7M5cSRnqFyDToGqaLezdkMNlGC7v3U11FF5blSEW
+    fL1o/HwBAoGBAOavhTr8eqezTchqZvarorFIq7HFWk/l0vguIotu6/wlh1V/KdF+
+    aLLHgPgJ5j+RrCMvTBoKqMeeHfVGrS2udEy8L1mK6b3meG+tMxU05OA55abmhYn7
+    7vF0q8XJmYIHIXmuCgF90R8Piscb0eaMlmHW9unKTKo8EOs5j+D8+AMJAoGBAMo4
+    8WW+D3XiD7fsymsfXalf7VpAt/H834QTbNZJweUWhg11eLutyahyyfjjHV200nNZ
+    cnU09DWKpBbLg7d1pyT69CNLXpNnxuWCt8oiUjhWCUpNqVm2nDJbUdlRFTzYb2fS
+    ZC4r0oQaPD5kMLSipjcwzMWe0PniySxNvKXKInFbAoGBAKxW2qD7uKKKuQSOQUft
+    aAksMmEIAHWKTDdvOA2VG6XvX5DHBLXmy08s7rPfqW06ZjCPCDq4Velzvgvc9koX
+    d/lP6cvqlL9za+x6p5wjPQ4rEt/CfmdcmOE4eY+1EgLrUt314LHGjjG3ScWAiirE
+    QyDrGOIGaYoQf89L3KqIMr0JAoGARYAklw8nSSCUvmXHe+Gf0yKA9M/haG28dCwo
+    780RsqZ3FBEXmYk1EYvCFqQX56jJ25MWX2n/tJcdpifz8Q2ikHcfiTHSI187YI34
+    lKQPFgWb08m1NnwoWrY//yx63BqWz1vjymqNQ5GwutC8XJi5/6Xp+tGGiRuEgJGH
+    EIPUKpkCgYAjBIVMkpNiLCREZ6b+qjrPV96ed3iTUt7TqP7yGlFI/OkORFS38xqC
+    hBP6Fk8iNWuOWQD+ohM/vMMnvIhk5jwlcwn+kF0ra04gi5KBFWSh/ddWMJxUtPC1
+    2htvlEc6zQAR6QfqXHmwhg1hP81JcpqpicQzCMhkzLoR1DC6stXdLg==
+    -----END RSA PRIVATE KEY-----
+  octavia_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2Oc8MmxBOgcG2ioijXmZ1Jil+LzPoMUyLwZujQoI3fc5Sfm45y1t22NR966G8jqnHVIKe/JaLT0W3x5bCr4rAsIYptTEu+oqW24nsrcsisZeS36apk3g71cp5Up9kf6ZBaSTFFaBfavxEo1XcaR0213vhWOE/5HpdIolDVnxvt4czXS/oiNNj+M9zOMr57IJ4SPiptKdXx4qWouGGq65JBGZQ7YNFKMtV2l1/YEHj8F1YWwNg6ZfuZvySkSv29D5zUkoxcPAPp6HPJTyQT7WRWbnM54TLgd1ggym9R83j0/VqdFXYhJDVkT6vbYgAwqXS16SsYfR7/U0/UMXmsg0z  
