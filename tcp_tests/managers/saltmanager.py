@@ -13,6 +13,7 @@
 #    under the License.
 
 import netaddr
+import pkg_resources
 
 from collections import defaultdict
 
@@ -60,6 +61,7 @@ class SaltManager(ExecuteCommandsMixin):
 
         self.execute_commands(commands=commands,
                               label="Install and configure salt")
+        self.create_env_salt()
 
     def change_creds(self, username, password):
         self.__user = username
@@ -271,7 +273,7 @@ class SaltManager(ExecuteCommandsMixin):
         return result['return']
 
     @utils.retry(3, exception=libpepper.PepperException)
-    def sync_time(self, tgt='*'):
+    def sync_time(self, tgt='* and not cfg01*'):
         LOG.info("NTP time sync on the salt minions '{0}'".format(tgt))
         # Force authentication update on the next API access
         # because previous authentication most probably is not valid
@@ -285,3 +287,22 @@ class SaltManager(ExecuteCommandsMixin):
         for node_name, time in sorted(new_time_res[0]['return'][0].items()):
             LOG.info("{0}: {1}".format(node_name, time))
         self.__api = None
+
+    def create_env_salt(self):
+        """Creates utils/env_salt file to source it in pipelines or CLI"""
+
+        env_salt_filename = pkg_resources.resource_filename(
+            settings.__name__, 'utils/env_salt')
+        with open(env_salt_filename, 'w') as f:
+            f.write(
+                'export SALTAPI_URL=http://{host}:{port}/\n'
+                'export SALTAPI_USER="{user}"\n'
+                'export SALTAPI_PASS="{pass}"\n'
+                'export SALTAPI_EAUTH="pam"\n'
+                'echo "export SALTAPI_URL=${SALTAPI_URL}"\n'
+                'echo "export SALTAPI_USER=${SALTAPI_USER}"\n'
+                'echo "export SALTAPI_PASS=${SALTAPI_PASS}"\n'
+                'echo "export SALTAPI_EAUTH=${SALTAPI_EAUTH}"\n'
+                .format(host=self.__host, port=self.__port,
+                        user=self.__user, password=self.__password)
+            )
