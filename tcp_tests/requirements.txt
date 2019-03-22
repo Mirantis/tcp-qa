@@ -15,7 +15,7 @@ jinja2>=2.9
 jira
 testrail<=0.3.8
 functools32
-kubernetes
+kubernetes<9.0.0
 salt-pepper<=0.5.3
 setuptools<=36.2.0
 netaddr
