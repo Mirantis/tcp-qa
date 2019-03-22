@@ -1,0 +1,353 @@
+---
+
+heat_template_version: queens
+
+description: MCP environment for cookied-cicd-queens-dvr-sl
+
+#parameter_groups:
+#- label: Instance parameters
+#  parameters:
+#  - hostname
+#  - dns_domain
+#  - keypair
+#- label: Salt & ReClass parameters
+#  parameters:
+#  - salt_stack_version
+#  - salt_formulas_version
+
+parameters:
+  mcp_version:
+    type: string
+  env_name:
+    type: string
+
+  dns_domain:
+    type: string
+    label: DNS domain name
+    default: cookied-cicd-queens-dvr-sl.local
+    constraints:
+    - allowed_pattern: "[-_a-zA-Z0-9.]{3,250}"
+  keypair:
+    type: string
+    label: SSH keypair
+    constraints:
+    - custom_constraint: nova.keypair
+
+  # Params to be overriden by environment
+  flavor_medium:
+    type: string
+    constraints:
+    - custom_constraint: nova.flavor
+  flavor_ctl:
+    type: string
+    constraints:
+    - custom_constraint: nova.flavor
+#  image_ubuntu_cloud_xenial:
+#    type: string
+#    constraints:
+#    - custom_constraint: glance.image
+
+#  cfg01_configdrive_image:
+#    type: string
+#    constraints:
+#    - custom_constraint: glance.image
+
+  net_public:
+    type: string
+    constraints:
+    - custom_constraint: neutron.network
+  dns_nameservers:
+    type: comma_delimited_list
+    default: "172.18.224.6"
+
+  # Ironic network parameters
+  management_physical_network:
+    type: string
+    label: Physical network name
+    description: Physical network name used in bridge_mapping on gtw nodes
+  management_subnet_cidr:
+    type: string
+    constraints:
+    - custom_constraint: net_cidr
+  management_subnet_pool_start:
+    type: string
+    constraints:
+    - custom_constraint: ip_addr
+  management_subnet_pool_end:
+    type: string
+    constraints:
+    - custom_constraint: ip_addr
+  management_subnet_gateway_ip:
+    type: string
+    constraints:
+    - custom_constraint: ip_addr
+  management_subnet_cfg01_ip:
+    type: string
+    constraints:
+    - custom_constraint: ip_addr
+
+  control_subnet_cidr:
+    type: string
+    constraints:
+    - custom_constraint: net_cidr
+
+  tenant_subnet_cidr:
+    type: string
+    constraints:
+    - custom_constraint: net_cidr
+
+  external_subnet_cidr:
+    type: string
+    constraints:
+    - custom_constraint: net_cidr
+
+resources:
+
+#  admin_net:
+#    type: OS::Neutron::ProviderNet
+#    description: admin
+#  admin_subnet:
+#    type: OS::Neutron::Subnet
+#    description: admin-pool01
+#    properties:
+#      network: { get_resource: admin_net }
+#      cidr: { get_param: admin_subnet_cidr }
+#      gateway_ip: { get_param: admin_subnet_gateway_ip }
+
+  control_net:
+    type: OS::Neutron::Net
+  control_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network: { get_resource: control_net }
+      cidr: { get_param: control_subnet_cidr }
+      tags:
+      - private-pool01
+
+  tenant_net:
+    type: OS::Neutron::Net
+  tenant_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network: { get_resource: tenant_net }
+      cidr: { get_param: tenant_subnet_cidr }
+      tags:
+      - tenant-pool01
+
+  external_net:
+    type: OS::Neutron::Net
+  external_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      network: { get_resource: external_net }
+      cidr: { get_param: external_subnet_cidr }
+      tags:
+      - external-pool01
+
+
+  management_net:
+    type: OS::Neutron::Net
+
+  management_subnet:
+    type: OS::Neutron::Subnet
+    #description: admin-pool01
+    properties:
+      network: { get_resource: management_net }
+      cidr: { get_param: management_subnet_cidr }
+      gateway_ip: { get_param: management_subnet_gateway_ip }
+      allocation_pools:
+        - start: { get_param: management_subnet_pool_start }
+          end: { get_param: management_subnet_pool_end }
+      dns_nameservers: { get_param: dns_nameservers }
+      tags:
+      - admin-pool01
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      name: publicbarerouter
+      external_gateway_info:
+        network: { get_param: net_public }
+        enable_snat: True
+
+  cfg01_port:
+    type: OS::Neutron::Port
+    depends_on: management_subnet
+    properties:
+      port_security_enabled: false
+      network: { get_resource: management_net }
+      #security_groups: [{ get_resource: cfg01_secgroup }]
+      fixed_ips:
+#      - subnet_id: { get_resource: management_subnet }
+      - ip_address: { get_param: management_subnet_cfg01_ip }
+
+  cfg01_node:
+    type: OS::Nova::Server
+    depends_on: [cfg01_port, router]
+    properties:
+      name: cfg01
+      flavor: { get_param: flavor_medium }
+#      image: { get_param: image_ubuntu_cloud_xenial }
+      image: { list_join: ['', [ 'cfg01-day01-', { get_param: mcp_version } ]] }
+      key_name: { get_param: keypair }
+      networks:
+      - port: { get_resource: cfg01_port }
+#      user_data_format: RAW
+#      user_data:
+#        str_replace:
+#          #template: { get_file: underlay--user-data-cfg01--heat.yaml }
+#          template: { get_file: underlay--user-data1604-swp.yaml }
+#          params:
+#            hostname: { list_join: ['.', [ 'cfg01', { get_param: dns_domain } ]] }
+#      user_data_update_policy: IGNORE
+      metadata:
+        roles:
+        - salt_master
+##      config_drive: True
+#      block_device_mapping:
+#      - device_name: /dev/cdrom
+#        volume_id: { get_resource: volume01 }
+##        delete_on_termination: False
+
+      block_device_mapping_v2:
+      - device_name: /dev/cdrom
+        device_type: cdrom
+        boot_index: -1
+        volume_id: { get_resource: volume01 }
+#        image: { get_param: cfg01_configdrive_image }
+#        volume_size: 1
+#        delete_on_termination: True
+
+  volume01:
+    type: OS::Cinder::Volume
+    properties:
+      size: 1
+#      name:
+#        list_join:
+#        - '-'
+#        - [ "volume-bootstrap", { get_param: instance_domain } ]
+#      image: { get_param: cfg01_configdrive_image }
+      image: { list_join: ['', [ 'cfg01.', { get_param: env_name }, '-config-drive.iso' ]] }
+
+
+#  private_net:
+#    type: OS::Neutron::Net
+#    properties:
+#      name: internal_net
+#  private_subnet:
+#    type: OS::Neutron::Subnet
+#    properties:
+#      network: { get_resource: private_net }
+#      cidr: { get_param: private_subnet_cidr }
+#      #gateway_ip: { get_param: private_net_gateway_ip }
+#      #dns_nameservers:
+#      #- 172.18.208.44
+#      allocation_pools:
+#        - start: { get_param: private_net_pool_start }
+#          end: { get_param: private_net_pool_end }
+
+
+  router_subnet:
+    type: OS::Neutron::RouterInterface
+    depends_on: management_subnet
+    properties:
+      router: { get_resource: router }
+      subnet: { get_resource: management_subnet }
+
+#  cfg01_secgroup:
+#    type: OS::Neutron::SecurityGroup
+#    properties:
+#      #name: salt-master
+#      rules:
+#        - ethertype: IPv4
+#          direction: ingress
+#          remote_ip_prefix: 0.0.0.0/0
+#        - ethertype: IPv4
+#          direction: egress
+#          remote_ip_prefix: 0.0.0.0/0
+
+  cfg01_floating_ip:
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: net_public }
+
+  association:
+    depends_on: [router_subnet, cfg01_port, cfg01_node]
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id: { get_resource: cfg01_floating_ip }
+      port_id: { get_resource: cfg01_port }
+      fixed_ip_address: { get_param: management_subnet_cfg01_ip }
+
+########
+
+  ctl01_port:
+    type: OS::Neutron::Port
+    depends_on: management_subnet
+    properties:
+      port_security_enabled: false
+      network: { get_resource: management_net }
+      #security_groups: [{ get_resource: cfg01_secgroup }]
+#      fixed_ips:
+#      - subnet_id: { get_resource: management_subnet }
+#      - ip_address: { get_param: management_subnet_cfg01_ip }
+
+  ctl01_node:
+    type: OS::Nova::Server
+    depends_on: [ctl01_port, router]
+    properties:
+      name: ctl01
+      flavor: { get_param: flavor_ctl }
+      image: { list_join: ['', [ 'ubuntu-vcp-', { get_param: mcp_version } ]] }
+      key_name: { get_param: keypair }
+      networks:
+      - port: { get_resource: ctl01_port }
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          template: { get_file: underlay--user-data1604-swp.yaml }
+          params:
+            hostname: { list_join: ['.', [ 'ctl01', { get_param: dns_domain } ]] }
+      user_data_update_policy: IGNORE
+      metadata:
+        roles:
+        - salt_minion
+
+
+outputs:
+#  cfg01_private_ip:
+#    description: cfg01 IP address from control network
+#    value: { get_attr: [ cfg01_node, first_address ] }
+#  cfg01_public_ip:
+#    description: cfg01 IP address (floating) from external network
+#    value: { get_attr: [ cfg01_floating_ip, floating_ip_address] }
+
+  dns_nameserver:
+    description: DNS address
+    value: { get_param: dns_nameservers }
+
+  management_subnet_cidr:
+    description: Management network CIDR
+    value: { get_attr: [ management_subnet, cidr ] }
+
+  control_subnet_cidr:
+    description: Control network CIDR
+    value: { get_param: control_subnet_cidr }
+
+  tenant_subnet_cidr:
+    description: Tenant network CIDR
+    value: { get_param: tenant_subnet_cidr }
+
+  external_subnet_cidr:
+    description: External network CIDR
+    value: { get_param: external_subnet_cidr }
+
+#  cfg01_networks:
+#    description: cfg01 networks
+#    value: { get_attr: [cfg01_node, networks] }
+
+#  external_network_cidr:
+#    description: External CIDR
+#    value: { get_attr: [ cfg01_floating_ip, floating_network_id, cidr ] }
+
+...
