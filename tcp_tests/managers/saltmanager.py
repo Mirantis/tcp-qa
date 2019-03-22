@@ -271,7 +271,7 @@ class SaltManager(ExecuteCommandsMixin):
         return result['return']
 
     @utils.retry(3, exception=libpepper.PepperException)
-    def sync_time(self, tgt='*'):
+    def sync_time(self, tgt='* and not cfg01*'):
         LOG.info("NTP time sync on the salt minions '{0}'".format(tgt))
         # Force authentication update on the next API access
         # because previous authentication most probably is not valid
