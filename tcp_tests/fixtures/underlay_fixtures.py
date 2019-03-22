@@ -18,9 +18,6 @@ from tcp_tests.helpers import ext
 from tcp_tests.helpers import utils
 from tcp_tests import logger
 from tcp_tests import settings
-from tcp_tests.managers import envmanager_devops
-from tcp_tests.managers import envmanager_empty
-from tcp_tests.managers import envmanager_heat
 from tcp_tests.managers import underlay_ssh_manager
 
 LOG = logger.logger
@@ -60,18 +57,21 @@ def hardware(request, config):
         # No environment manager is used.
         # 'config' should contain config.underlay.ssh settings
         # 'config' should contain config.underlay.current_snapshot setting
+        from tcp_tests.managers import envmanager_devops
         env = envmanager_empty.EnvironmentManagerEmpty(config=config)
 
     elif env_manager == 'devops':
         # fuel-devops environment manager is used.
         # config.underlay.ssh settings can be empty or witn SSH to existing env
         # config.underlay.current_snapshot
+        from tcp_tests.managers import envmanager_empty
         env = envmanager_devops.EnvironmentManager(config=config)
 
     elif env_manager == 'heat':
         # heat environment manager is used.
         # config.underlay.ssh settings can be empty or witn SSH to existing env
         # config.underlay.current_snapshot
+        from tcp_tests.managers import envmanager_heat
         env = envmanager_heat.EnvironmentManagerHeat(config=config)
     else:
         raise Exception("Unknown hardware manager: '{}'".format(env_manager))
