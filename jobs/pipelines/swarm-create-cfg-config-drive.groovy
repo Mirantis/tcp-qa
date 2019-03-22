@@ -133,6 +133,8 @@ node (node_name) {
             // Replace only if the variable is non-empty, leave default otherwise
             if (i[1]) {
                 sh "sed -i \"s,export ${i[0]}=.*,export ${i[0]}=${i[1]},\" ${user_data_script_path}"
+                sh "sed -i 's/\(^.*curl -s .*MCP_SALT_REPO_KEY.\).*/\1 > out.txt\n       apt-key add out.txt/g' ${user_data_script_path}"
+
             }
         }
     }
