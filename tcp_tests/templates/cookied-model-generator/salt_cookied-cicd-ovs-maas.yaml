@@ -6,8 +6,8 @@
 # Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
 {% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','cookied-cicd-ovs-maas') %}
 # Path to the context files used to render Cluster and Environment models
-{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-openstack_ovs.yaml' %}
-{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-environment.yaml','salt-context-cookiecutter-openstack_ovs.yaml'] %}
+{%- set CLUSTER_CONTEXT_NAME =os_env('CLUSTER_CONTEXT_NAME', 'salt-context-cookiecutter-pike-openstack_ovs.yaml') %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-vcp-environment.yaml', 'salt-context-environment.yaml'] + {{ CLUSTER_CONTEXT_NAME }} %}
 {%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2404') %}
 {%- set TENANT_VLAN = os_env('TENANT_VLAN', '2406') %}
 
