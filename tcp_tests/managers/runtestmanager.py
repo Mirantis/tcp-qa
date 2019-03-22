@@ -39,6 +39,7 @@ class RuntestManager(object):
     def __init__(self, config, underlay, salt_api, cluster_name,
                  domain_name, tempest_threads,
                  tempest_pattern=settings.TEMPEST_PATTERN,
+                 tempest_extra_args=settings.TEMPEST_EXTRA_ARGS,
                  run_cmd=None):
         self.__config = config
         self.underlay = underlay
@@ -47,6 +48,7 @@ class RuntestManager(object):
         self.domain_name = domain_name
         self.tempest_threads = tempest_threads
         self.tempest_pattern = tempest_pattern
+        self.tempest_extra_args = tempest_extra_args
         self.run_cmd = run_cmd or self.run_cmd
         self.master_name = self.underlay.get_target_node_names(
             self.master_host)[0]
@@ -169,7 +171,7 @@ class RuntestManager(object):
             " -t "
             " --net host "
             " --name {container_name} "
-            " -e ARGS=\"-r {tempest_pattern} -w {tempest_threads}\""
+            " -e ARGS=\"-r {tempest_pattern} -w {tempest_threads} {tempest_extra_args}\""
             " -v {cfg_dir}/tempest.conf:/etc/tempest/tempest.conf"
             " -v /tmp/:/tmp/"
             " -v {cfg_dir}:/root/tempest"
