@@ -1,0 +1,14 @@
+{% from 'genric_os_oc_heat/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'genric_os_oc_heat/underlay.yaml' import LAB_CONFIG_NAME with context %}
+{% from 'genric_os_oc_heat/underlay.yaml' import DOMAIN_NAME with context %}
+
+# Other salt model repository parameters see in shared-salt.yaml
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
+
