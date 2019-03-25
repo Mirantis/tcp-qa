@@ -343,8 +343,10 @@
 
 - description: Import encryption key
   cmd: |
-    set -e;
-    set -x;
+    set -ex;
+    mkdir -p /etc/salt/gpgkeys
+    chmod 0700 /etc/salt/gpgkeys
+    export GNUPGHOME=/etc/salt/gpgkeys
     gpg --import {{ KEY_FILE_NAME }}
     gpg --list-keys
   node_name: {{ HOSTNAME_CFG01 }}
@@ -483,6 +485,8 @@
 
     {% set items = CLUSTER_PRODUCT_MODELS or '$(ls /root/cookiecutter-templates/cluster_product/)' %}
     mkdir -p /tmp/output /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/
+    # Allow to use encryption keys
+    export GNUPGHOME=/etc/salt/gpgkeys
     for item in {{ items }}; do
       [ "$item" = "stacklight2" ] && continue;
       python /root/cookiecutter-templates/generate.py \

@@ -207,3 +207,7 @@ default_context:
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'False'
   vnf_onboarding_enabled: 'False'
+  secrets_encryption_enabled: 'True'
+  secrets_encryption_key_id: 'F5CB2ADC36159B03'
+  # Used on CI only.
+  secrets_encryption_private_key: ''
