@@ -343,8 +343,10 @@
 
 - description: Import encryption key
   cmd: |
-    set -e;
-    set -x;
+    set -ex;
+    mkdir -p /etc/salt/gpgkeys
+    chmod 0700 /etc/salt/gpgkeys
+    export GNUPGHOME=/etc/salt/gpgkeys
     gpg --import {{ KEY_FILE_NAME }}
     gpg --list-keys
   node_name: {{ HOSTNAME_CFG01 }}
