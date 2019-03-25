@@ -24,6 +24,7 @@ def tempest_actions(config, underlay_actions, salt_actions):
     """
     tempest_threads = settings.TEMPEST_THREADS
     tempest_pattern = settings.TEMPEST_PATTERN
+    tempest_extra_args = settings.TEMPEST_EXTRA_ARGS
     cluster_name = settings.LAB_CONFIG_NAME
     domain_name = settings.DOMAIN_NAME
     runtest = RuntestManager(
@@ -31,6 +32,7 @@ def tempest_actions(config, underlay_actions, salt_actions):
         underlay_actions, salt_actions,
         cluster_name=cluster_name,
         domain_name=domain_name,
+        tempest_extra_args=tempest_extra_args,
         tempest_threads=tempest_threads,
         tempest_pattern=tempest_pattern)
     return runtest
