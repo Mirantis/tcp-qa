@@ -332,37 +332,6 @@
   skip_fail: false
 {%- endmacro %}
 
-{%- macro MACRO_UPLOAD_AND_IMPORT_GPG_ENCRYPTION_KEY() %}
-{%- set KEY_FILE_NAME = 'encryption-key.asc' %}
-- description: "Upload gpg encruption key"
-  upload:
-    local_path:  {{ config.salt_deploy.templates_dir }}{{ LAB_CONFIG_NAME }}/
-    local_filename: {{ KEY_FILE_NAME }}
-    remote_path: /root/
-  node_name: {{ HOSTNAME_CFG01 }}
-
-- description: Import encryption key
-  cmd: |
-    set -e;
-    set -x;
-    gpg --import {{ KEY_FILE_NAME }}
-    gpg --list-keys
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
-- description: Put encryption key to reclass folder
-  cmd: |
-    set -e;
-    set -x;
-    mkdir -p /srv/salt/reclass
-    cp /root/{{ KEY_FILE_NAME }} /srv/salt/reclass/
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 1}
-  skip_fail: false
-
-{%- endmacro %}
-
 
 {%- macro MACRO_GENERATE_COOKIECUTTER_MODEL(IS_CONTRAIL_LAB=false, CONTROL_VLAN=None, TENANT_VLAN=None, CLUSTER_PRODUCT_MODELS='') %}
 {###################################################################}
@@ -482,14 +451,11 @@
     find ${REPLACE_DIRS} -type f -exec sed -i 's/==IPV4_NET_EXTERNAL_PREFIX==/{{ IPV4_NET_EXTERNAL_PREFIX }}/g' {} +
 
     {% set items = CLUSTER_PRODUCT_MODELS or '$(ls /root/cookiecutter-templates/cluster_product/)' %}
-    mkdir -p /tmp/output /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/
     for item in {{ items }}; do
-      [ "$item" = "stacklight2" ] && continue;
       python /root/cookiecutter-templates/generate.py \
         --template /root/cookiecutter-templates/cluster_product/$item \
         --config-file {{ CLUSTER_CONTEXT_PATH }} \
-        --output-dir /tmp/output/$item/;
-      mv -v /tmp/output/$item/{{ CLUSTER_NAME }}/$item /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/;
+        --output-dir /srv/salt/reclass/classes/cluster/;
     done
 
     export GIT_SSL_NO_VERIFY=true; git clone {{ SALT_MODELS_SYSTEM_REPOSITORY }} /srv/salt/reclass/classes/system/
