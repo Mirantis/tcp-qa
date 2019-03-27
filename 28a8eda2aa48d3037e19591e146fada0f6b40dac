@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "8c086df2_d8fc1bfd",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 19
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-03-27T10:39:06Z",
+      "side": 1,
+      "message": "s/2016/2019/",
+      "range": {
+        "startLine": 1,
+        "startChar": 15,
+        "endLine": 1,
+        "endChar": 19
+      },
+      "revId": "28a8eda2aa48d3037e19591e146fada0f6b40dac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dae3701e_fbbfc75c",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 19
+      },
+      "lineNbr": 23,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-03-27T10:39:06Z",
+      "side": 1,
+      "message": "let\u0027s use smaller package something like https://pypi.org/project/cached-property/",
+      "revId": "28a8eda2aa48d3037e19591e146fada0f6b40dac",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
