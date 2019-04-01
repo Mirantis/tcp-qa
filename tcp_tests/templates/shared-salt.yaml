@@ -1137,16 +1137,6 @@
   retry: {count: 1, delay: 10}
   skip_fail: false
 
-- description: "Share custom key from cfg to give each node acces with key from cfg01"
-  cmd: |
-    set -e;
-    set -x;
-    key=$(ssh-keygen -y -f /root/.ssh/id_rsa);
-    salt '*' cmd.run "echo $key >> /root/.ssh/authorized_keys";
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
-
 {%- endmacro %}
 
 
