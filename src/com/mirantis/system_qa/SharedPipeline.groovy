@@ -367,6 +367,7 @@ def generate_configdrive_iso() {
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mcp_salt_repo_url = env.MCP_SALT_REPO_URL ?: ''
         def mcp_salt_repo_key = env.MCP_SALT_REPO_KEY ?: ''
+        def deploy_network_mask = env.DEPLOY_NETWORK_NETMASK ?: ''
 
         def parameters = [
                 string(name: 'CLUSTER_NAME', value: "${LAB_CONFIG_NAME}"),
@@ -383,6 +384,7 @@ def generate_configdrive_iso() {
                 booleanParam(name: 'PIPELINES_FROM_ISO', value: true),
                 string(name: 'MCP_SALT_REPO_URL', value: "${mcp_salt_repo_url}"),
                 string(name: 'MCP_SALT_REPO_KEY', value: "${mcp_salt_repo_key}"),
+                string(name: 'DEPLOY_NETWORK_NETMASK', value: "${deploy_network_mask}"),
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
