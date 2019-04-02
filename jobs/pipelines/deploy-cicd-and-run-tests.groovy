@@ -97,14 +97,15 @@ def test(shared, common, steps) {
         stage("Archive all xml reports") {
             archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
         }
-        stage("report results to testrail") {
-            shared.swarm_testrail_report(steps)
+        if (env.REPORT_TO_TESTRAIL ?: true) {
+            stage("report results to testrail") {
+                shared.swarm_testrail_report(steps)
+            }
+            stage("Store TestRail reports to job description") {
+                def String description = readFile("description.txt")
+                currentBuild.description += "\n${description}"
+            }
         }
-        stage("Store TestRail reports to job description") {
-            def String description = readFile("description.txt")
-            currentBuild.description += "\n${description}"
-        }
-
     }
   }
 //}
