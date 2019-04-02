@@ -124,3 +124,4 @@ default_context:
   kubernetes_network_genie_enabled: 'True'
   kubernetes_genie_default_plugin: 'calico'
   kubernetes_virtlet_enabled: 'True'
+  kubernetes_helm_enabled: 'True'
