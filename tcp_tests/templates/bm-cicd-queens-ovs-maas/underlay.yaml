@@ -95,8 +95,8 @@ template:
           - name: {{ HOSTNAME_CFG01 }}
             role: salt_master
             params:
-              vcpu: !os_env SLAVE_NODE_CPU, 4
-              memory: !os_env SLAVE_NODE_MEMORY, 12288
+              vcpu: !os_env SLAVE_NODE_CPU, 8
+              memory: !os_env SLAVE_NODE_MEMORY, 20480
               boot:
                 - hd
               volumes:
