@@ -98,9 +98,7 @@ def test(shared, common, steps) {
             archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
         }
         stage("report results to testrail") {
-            if (env.REPORT_TO_TESTRAIL ?: true) {
-                shared.swarm_testrail_report(steps)
-            }
+            shared.swarm_testrail_report(steps)
         }
         stage("Store TestRail reports to job description") {
             def String description = readFile("description.txt")

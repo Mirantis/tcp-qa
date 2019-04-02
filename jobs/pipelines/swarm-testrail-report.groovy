@@ -12,7 +12,6 @@
  *   PARENT_WORKSPACE              Path to the workspace of the parent job to use tcp-qa repo
  *   TEMPEST_TEST_SUITE_NAME       Name of tempest suite
  *   TCP_QA_REFS                   Reference to the tcp-qa change on review.gerrithub.io, like refs/changes/46/418546/41
- *   TEST_PLAN_NAME_PREFIX         Prefix of test plan name
  */
 
 @Library('tcp-qa')_
@@ -42,7 +41,6 @@ node ("${PARENT_NODE_NAME}") {
             }
 
             def report_name = ''
-            def testPlanNamePrefix = env.TEST_PLAN_NAME_PREFIX ?: ''
             def testSuiteName = ''
             def methodname = ''
             def testrail_name_template = ''
@@ -84,9 +82,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(
-                        deployment_report_name, testSuiteName, methodname, testrail_name_template,
-                        reporter_extra_options, testPlanNamePrefix=testPlanNamePrefix)
+                    report_result = shared.upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(report_result, "blue")
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
@@ -107,9 +103,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(
-                        tcpqa_report_name, testSuiteName, methodname, testrail_name_template,
-                        reporter_extra_options, testPlanNamePrefix=testPlanNamePrefix)
+                    report_result = shared.upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(report_result, "blue")
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
@@ -125,9 +119,7 @@ node ("${PARENT_NODE_NAME}") {
                     testSuiteName = env.TEMPEST_TEST_SUITE_NAME
                     methodname = "{classname}.{methodname}"
                     testrail_name_template = "{title}"
-                    report_result = shared.upload_results_to_testrail(
-                        tempest_report_name, testSuiteName, methodname, testrail_name_template,
-                        testPlanNamePrefix=testPlanNamePrefix)
+                    report_result = shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
                     common.printMsg(report_result, "blue")
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
@@ -153,9 +145,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'Conformance\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(
-                        k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template,
-                        reporter_extra_options, testPlanNamePrefix=testPlanNamePrefix)
+                    report_result = shared.upload_results_to_testrail(k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(report_result, "blue")
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
@@ -177,9 +167,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'Conformance\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(
-                        k8s_conformance_virtlet_report_name, testSuiteName, methodname, testrail_name_template,
-                        reporter_extra_options, testPlanNamePrefix=testPlanNamePrefix)
+                    report_result = shared.upload_results_to_testrail(k8s_conformance_virtlet_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(report_result, "blue")
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
@@ -195,9 +183,7 @@ node ("${PARENT_NODE_NAME}") {
                     testSuiteName = "LMA2.0_Automated"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
-                    report_result = shared.upload_results_to_testrail(
-                        stacklight_report_name, testSuiteName, methodname, testrail_name_template,
-                        testPlanNamePrefix=testPlanNamePrefix)
+                    report_result = shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template)
                     common.printMsg(report_result, "blue")
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
@@ -219,9 +205,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(
-                        cvp_sanity_report_name, testSuiteName, methodname, testrail_name_template,
-                        reporter_extra_options, testPlanNamePrefix=testPlanNamePrefix)
+                    report_result = shared.upload_results_to_testrail(cvp_sanity_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(report_result, "blue")
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
