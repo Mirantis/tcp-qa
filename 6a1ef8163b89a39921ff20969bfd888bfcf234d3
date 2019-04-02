@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "e1a65ef2_b68da87b",
+        "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
+        "patchSetId": 3
+      },
+      "lineNbr": 165,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-02T09:17:39Z",
+      "side": 1,
+      "message": "This will switch any commit or tag, started from a character, to \u0027master\u0027",
+      "range": {
+        "startLine": 165,
+        "startChar": 43,
+        "endLine": 165,
+        "endChar": 116
+      },
+      "revId": "6a1ef8163b89a39921ff20969bfd888bfcf234d3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
