@@ -133,7 +133,10 @@ class TestCvpPipelines(object):
         job_parameters = {
             'TEST_SET': '/var/lib/cvp-sanity/cvp_checks/tests/',
             'TESTS_SETTINGS': (
-                'drivetrain_version={0};{1}'
+                "skipped_packages='python-setuptools,"
+                "python-pkg-resources,xunitmerge', "
+                "skipped_services='docker, "
+                "containerd'; drivetrain_version={0};{1}"
                 .format(settings.MCP_VERSION, ntp_skipped_nodes)),
         }
 
