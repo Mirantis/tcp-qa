@@ -97,7 +97,7 @@ def test(shared, common, steps) {
         stage("Archive all xml reports") {
             archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
         }
-        if (env.REPORT_TO_TESTRAIL ?: true) {
+        if ("${env.REPORT_TO_TESTRAIL}" == "true") {
             stage("report results to testrail") {
                 shared.swarm_testrail_report(steps)
             }
