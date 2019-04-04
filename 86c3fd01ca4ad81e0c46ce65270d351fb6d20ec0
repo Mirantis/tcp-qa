@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ca3bc299_5baddf75",
+        "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
+        "patchSetId": 1
+      },
+      "lineNbr": 300,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-04-04T14:29:55Z",
+      "side": 1,
+      "message": "let\u0027s use common way to set default value in the beginning of the function, like in line 289",
+      "range": {
+        "startLine": 300,
+        "startChar": 0,
+        "endLine": 300,
+        "endChar": 94
+      },
+      "revId": "86c3fd01ca4ad81e0c46ce65270d351fb6d20ec0",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
