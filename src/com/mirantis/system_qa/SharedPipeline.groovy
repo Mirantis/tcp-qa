@@ -297,7 +297,6 @@ def swarm_testrail_report(String passed_steps) {
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 string(name: 'TEMPEST_TEST_SUITE_NAME', value: "${tempest_test_suite_name}"),
-                string(name: 'TEST_PLAN_NAME_PREFIX', value: env.TEST_PLAN_NAME_PREFIX ?: ""),
             ]
         common.printMsg("Start building job 'swarm-testrail-report' with parameters:", "purple")
         common.prettyPrint(parameters)
