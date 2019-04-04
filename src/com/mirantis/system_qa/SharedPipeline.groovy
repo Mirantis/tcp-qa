@@ -275,6 +275,8 @@ def swarm_run_pytest(String passed_steps) {
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
                 string(name: 'TEMPEST_IMAGE_VERSION', value: "${tempest_image_version}"),
                 string(name: 'TEMPEST_TARGET', value: "${tempest_target}"),
+                string(name: 'TEMPEST_EXTRA_ARGS', value: "${TEMPEST_EXTRA_ARGS}"),
+
 
             ]
         common.printMsg("Start building job 'swarm-run-pytest' with parameters:", "purple")
