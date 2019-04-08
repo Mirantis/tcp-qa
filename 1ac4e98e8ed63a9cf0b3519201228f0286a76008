@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9f6c99fa_1e1b291c",
+        "filename": "tcp_tests/templates/cookied-cicd-golden-vxlan/salt.yaml",
+        "patchSetId": 10
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-08T08:34:02Z",
+      "side": 1,
+      "message": "wrong includes, should be cookied-cicd-golden-vxlan",
+      "range": {
+        "startLine": 2,
+        "startChar": 9,
+        "endLine": 2,
+        "endChar": 30
+      },
+      "revId": "1ac4e98e8ed63a9cf0b3519201228f0286a76008",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
