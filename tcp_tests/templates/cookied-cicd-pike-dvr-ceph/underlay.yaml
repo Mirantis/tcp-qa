@@ -317,7 +317,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 12288
+              memory: !os_env SLAVE_NODE_MEMORY, 32768
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -355,7 +355,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 12288
+              memory: !os_env SLAVE_NODE_MEMORY, 32768
               boot:
                 - hd
               cloud_init_volume_name: iso
@@ -381,7 +381,7 @@ template:
             role: salt_minion
             params:
               vcpu: !os_env SLAVE_NODE_CPU, 2
-              memory: !os_env SLAVE_NODE_MEMORY, 12288
+              memory: !os_env SLAVE_NODE_MEMORY, 32768
               boot:
                 - hd
               cloud_init_volume_name: iso
