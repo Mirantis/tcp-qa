@@ -1,0 +1,99 @@
+heat_template_version: queens
+
+description: Single server instance fragment
+
+parameters:
+  cfg_day01_image:
+    type: string
+  cfg01_configdrive_image:
+    type: string
+  management_subnet_cfg01_ip:
+    type: string
+  salt_master_control_ip:
+    type: string
+  network:
+    type: string
+  cfg01_flavor:
+    type: string
+  instance_name:
+    type: string
+  key_pair:
+    type: string
+  instance_domain:
+    type: string
+  net_public:
+    type: string
+  mcp_version:
+    type: string
+  env_name:
+    type: string
+
+resources:
+  instance_port01:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: 'management_net'
+      fixed_ips:
+        - subnet_id: 'management_subnet'
+          ip_address: { get_param: management_subnet_cfg01_ip }
+  instance_port02:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: 'control_net'
+      fixed_ips:
+        - subnet_id: 'control_subnet'
+          ip_address: { get_param: salt_master_control_ip }
+
+  instance_instance:
+    type: OS::Nova::Server
+    properties:
+      image_update_policy: REBUILD
+      flavor: { get_param: cfg01_flavor }
+      image: { list_join: ['', [ 'cfg01-day01-', { get_param: mcp_version } ]] }
+      key_name: { get_param: key_pair }
+      name:
+        list_join:
+        - '.'
+        - [ { get_param: instance_name }, { get_param: instance_domain } ]
+      networks:
+      - port: { get_resource: instance_port01 }
+      - port: { get_resource: instance_port02 }
+      block_device_mapping_v2:
+      - device_name: /dev/cdrom
+        device_type: cdrom
+        boot_index: -1
+        delete_on_termination: true
+        image: { list_join: ['', [ 'cfg01.', { get_param: env_name }, '-config-drive.iso' ]] }
+        volume_size: 1
+      metadata:
+        roles:
+        - salt_master
+
+  floating_ip:
+    depends_on: [instance_instance]
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: net_public }
+      port_id: { get_resource: instance_port01 }
+  floating_ip_association:
+    depends_on: [floating_ip]
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id:  { get_resource: floating_ip }
+      port_id: { get_resource: instance_port01 }
+
+outputs:
+  instance_address:
+    value:
+      get_attr:
+      - instance_instance
+      - addresses
+      - 'management_net'
+      - 0
+      - addr
+    description: "Instance's private IP address"
+  instance:
+    value: { get_resource: instance_instance }
+    description: "Instance"
