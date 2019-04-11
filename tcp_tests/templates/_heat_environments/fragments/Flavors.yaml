@@ -1,0 +1,114 @@
+---
+
+heat_template_version: queens
+
+resources:
+  cfg01_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 100
+      extra_specs: {"capabilities:hypervisor_type": "QEMU", "hw:numa_nodes": "2", "hw:numa_cpus.0": "0,4,1,5", "hw:numa_cpus.1": "2,6,3,7", "hw:numa_mem.0": "8192", "hw:numa_mem.1": "8192"}
+      name: cfg01_virtual
+      ram: 16384
+      vcpus: 8
+
+  kvm_fake_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 120
+      extra_specs: {"capabilities:hypervisor_type": "QEMU"}
+      name: kvm_fake_virtual
+      ram: 2048
+      vcpus: 1
+
+  ctl_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 120
+      extra_specs: {"capabilities:hypervisor_type": "QEMU", "hw:numa_nodes": "2", "hw:numa_cpus.0": "0,4,1,5", "hw:numa_cpus.1": "2,6,3,7", "hw:numa_mem.0": "8192", "hw:numa_mem.1": "8192"}
+      name: ctl_virtual
+      ram: 16384
+      vcpus: 8
+
+  cid_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 120
+      extra_specs: {"capabilities:hypervisor_type": "QEMU"}
+      name: cid_virtual
+      ram: 6144
+      vcpus: 2
+
+  ntw_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 120
+      extra_specs: {"capabilities:hypervisor_type": "QEMU", "hw:numa_nodes": "2", "hw:numa_cpus.0": "0,1", "hw:numa_cpus.1": "2,3", "hw:numa_mem.0": "8192", "hw:numa_mem.1": "8192"}
+      name: ntw_virtual
+      ram: 16384
+      vcpus: 4
+
+  nal_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 120
+      extra_specs: {"capabilities:hypervisor_type": "QEMU"}
+      name: nal_virtual
+      ram: 4096
+      vcpus: 4
+
+  dbs_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 150
+      extra_specs: {"capabilities:hypervisor_type": "QEMU", "hw:numa_nodes": "2", "hw:numa_cpus.0": "0,1", "hw:numa_cpus.1": "2,3", "hw:numa_mem.0": "4096", "hw:numa_mem.1": "4096"}
+      name: dbs_virtual
+      ram: 8192
+      vcpus: 4
+
+  msg_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 120
+      extra_specs: {"capabilities:hypervisor_type": "QEMU"}
+      name: msg_virtual
+      ram: 16384
+      vcpus: 4
+
+  mon_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 120
+      extra_specs: {"capabilities:hypervisor_type": "QEMU"}
+      name: mon_virtual
+      ram: 4096
+      vcpus: 2
+
+  log_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 100
+      extra_specs: {"capabilities:hypervisor_type": "QEMU"}
+      name: log_virtual
+      ram: 4096
+      vcpus: 2
+
+  mtr_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 100
+      extra_specs: {"capabilities:hypervisor_type": "QEMU"}
+      name: mtr_virtual
+      ram: 4096
+      vcpus: 2
+
+  cmp_virtual:
+    type: OS::Nova::Flavor
+    properties:
+      disk: 150
+      extra_specs: {"capabilities:hypervisor_type": "QEMU", "hw:numa_nodes": "2", "hw:numa_cpus.0": "0,1", "hw:numa_cpus.1": "2,3", "hw:numa_mem.0": "4096", "hw:numa_mem.1": "4096"}
+      name: cmp_virtual
+      ephemeral: 10
+      ram: 8192
+      vcpus: 4
+...
