@@ -1,0 +1,125 @@
+---
+heat_template_version: queens
+  
+description: Network fragment
+
+parameters:
+  net_public:
+    type: string
+  stack_name:
+    type: string
+  control_subnet_cidr:
+    type: string
+  tenant_subnet_cidr:
+    type: string
+  admin_subnet_cidr:
+    type: string
+
+  control_net_dhcp:
+    type: boolean
+    default: false
+  tenant_net_dhcp:
+    type: boolean
+    default: false
+  admin_net_dhcp:
+    type: boolean
+    default: true
+
+  nameservers:
+    type: comma_delimited_list
+
+resources:
+  control_net:
+    type: OS::Neutron::Net
+    properties:
+      port_security_enabled: false
+      name: control_net
+  tenant_net:
+    type: OS::Neutron::Net
+    properties:
+      port_security_enabled: false
+      name: tenant_net
+  admin_net:
+    type: OS::Neutron::Net
+    properties:
+      port_security_enabled: false
+      name: admin_net
+
+  control_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: control_subnet
+      network: { get_resource: control_net }
+      cidr: { get_param: control_subnet_cidr }
+      enable_dhcp: { get_param: control_net_dhcp }
+      dns_nameservers: { get_param: nameservers }
+      gateway_ip: null
+      tags:
+      - private_pool01
+
+  tenant_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: tenant_subnet
+      network: { get_resource: tenant_net }
+      cidr: { get_param: tenant_subnet_cidr }
+      enable_dhcp: { get_param: tenant_net_dhcp }
+      dns_nameservers: { get_param: nameservers }
+      gateway_ip: null
+      tags:
+      - tenant_pool01
+
+  admin_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: admin_subnet
+      network: { get_resource: admin_net }
+      cidr: { get_param: admin_subnet_cidr }
+      enable_dhcp: { get_param: admin_net_dhcp }
+      dns_nameservers: { get_param: nameservers }
+      tags:
+      - admin_pool01
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      name: publicbarerouter
+      external_gateway_info:
+        network: { get_param: net_public }
+        enable_snat: True
+
+  router_subnet:
+    type: OS::Neutron::RouterInterface
+    depends_on: admin_subnet
+    properties:
+      router: { get_resource: router }
+      subnet: { get_resource: admin_subnet }
+
+outputs:
+  network:
+    value: { get_param: stack_name }
+  admin_net_prefix:
+    value:
+      list_join:
+        - '.'
+        - - str_split: ['.', { get_param: admin_subnet_cidr }, 0]
+          - str_split: ['.', { get_param: admin_subnet_cidr }, 1]
+          - str_split: ['.', { get_param: admin_subnet_cidr }, 2]
+
+  control_net_prefix:
+    value:
+      list_join:
+        - '.'
+        - - str_split: ['.', { get_param: control_subnet_cidr }, 0]
+          - str_split: ['.', { get_param: control_subnet_cidr }, 1]
+          - str_split: ['.', { get_param: control_subnet_cidr }, 2]
+
+  tenant_net_prefix:
+    value:
+      list_join:
+        - '.'
+        - - str_split: ['.', { get_param: tenant_subnet_cidr }, 0]
+          - str_split: ['.', { get_param: tenant_subnet_cidr }, 1]
+          - str_split: ['.', { get_param: tenant_subnet_cidr }, 2]
+
+...
