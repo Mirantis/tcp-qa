@@ -1,0 +1,169 @@
+---
+heat_template_version: queens
+
+description: Network fragment
+
+parameters:
+  env_name:
+    type: string
+  net_public:
+    type: string
+  stack_name:
+    type: string
+  control_subnet_cidr:
+    type: string
+  tenant_subnet_cidr:
+    type: string
+  management_subnet_cidr:
+    type: string
+  external_subnet_cidr:
+    type: string
+  management_subnet_gateway_ip:
+    type: string
+#  control_net_dhcp:
+#    type: boolean
+#    default: false
+#  tenant_net_dhcp:
+#    type: boolean
+#    default: false
+  management_net_dhcp:
+    type: boolean
+    default: true
+  management_subnet_pool_start:
+    type: string
+  management_subnet_pool_end:
+    type: string
+#  external_net_dhcp:
+#    type: boolean
+#    default: false
+
+  nameservers:
+    type: comma_delimited_list
+
+resources:
+  control_net:
+    type: OS::Neutron::Net
+    properties:
+      port_security_enabled: false
+      name: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+  tenant_net:
+    type: OS::Neutron::Net
+    properties:
+      port_security_enabled: false
+      name: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+  management_net:
+    type: OS::Neutron::Net
+    properties:
+      port_security_enabled: false
+      name: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+  external_net:
+    type: OS::Neutron::Net
+    properties:
+      port_security_enabled: false
+      name: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+
+  control_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: { list_join: ['-', [ 'control_subnet', { get_param: env_name } ]] }
+      #name: control_subnet
+      network: { get_resource: control_net }
+      cidr: { get_param: control_subnet_cidr }
+      #enable_dhcp: { get_param: control_net_dhcp }
+      #dns_nameservers: { get_param: nameservers }
+      #gateway_ip: null
+      tags:
+      - private-pool01
+
+  tenant_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: { list_join: ['-', [ 'tenant_subnet', { get_param: env_name } ]] }
+      #name: tenant_subnet
+      network: { get_resource: tenant_net }
+      cidr: { get_param: tenant_subnet_cidr }
+      #enable_dhcp: { get_param: tenant_net_dhcp }
+      #dns_nameservers: { get_param: nameservers }
+      #gateway_ip: null
+      tags:
+      - tenant-pool01
+
+  management_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      gateway_ip: { get_param: management_subnet_gateway_ip }
+      name: { list_join: ['-', [ 'management_subnet', { get_param: env_name } ]] }
+      #name: management_subnet
+      network: { get_resource: management_net }
+      cidr: { get_param: management_subnet_cidr }
+      enable_dhcp: { get_param: management_net_dhcp }
+      allocation_pools:
+        - start: { get_param: management_subnet_pool_start }
+          end: { get_param: management_subnet_pool_end }
+      dns_nameservers: { get_param: nameservers }
+      tags:
+      - admin-pool01
+
+  external_subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name: { list_join: ['-', [ 'external_subnet', { get_param: env_name } ]] }
+      #name: external_subnet
+      network: { get_resource: external_net }
+      cidr: { get_param: external_subnet_cidr }
+      #enable_dhcp: { get_param: external_net_dhcp }
+      #dns_nameservers: { get_param: nameservers }
+      tags:
+      - external-pool01
+
+  router:
+    type: OS::Neutron::Router
+    properties:
+      #name: publicbarerouter
+      external_gateway_info:
+        network: { get_param: net_public }
+        #enable_snat: True
+
+  router_subnet:
+    type: OS::Neutron::RouterInterface
+    depends_on: management_subnet
+    properties:
+      router: { get_resource: router }
+      subnet: { get_resource: management_subnet }
+
+outputs:
+  network:
+    value: { get_param: stack_name }
+  management_net_prefix:
+    value:
+      list_join:
+        - '.'
+        - - str_split: ['.', { get_param: management_subnet_cidr }, 0]
+          - str_split: ['.', { get_param: management_subnet_cidr }, 1]
+          - str_split: ['.', { get_param: management_subnet_cidr }, 2]
+
+  control_net_prefix:
+    value:
+      list_join:
+        - '.'
+        - - str_split: ['.', { get_param: control_subnet_cidr }, 0]
+          - str_split: ['.', { get_param: control_subnet_cidr }, 1]
+          - str_split: ['.', { get_param: control_subnet_cidr }, 2]
+
+  tenant_net_prefix:
+    value:
+      list_join:
+        - '.'
+        - - str_split: ['.', { get_param: tenant_subnet_cidr }, 0]
+          - str_split: ['.', { get_param: tenant_subnet_cidr }, 1]
+          - str_split: ['.', { get_param: tenant_subnet_cidr }, 2]
+
+  external_net_prefix:
+    value:
+      list_join:
+        - '.'
+        - - str_split: ['.', { get_param: external_subnet_cidr }, 0]
+          - str_split: ['.', { get_param: external_subnet_cidr }, 1]
+          - str_split: ['.', { get_param: external_subnet_cidr }, 2]
+
+...
