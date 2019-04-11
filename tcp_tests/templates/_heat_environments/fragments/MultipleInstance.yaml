@@ -1,0 +1,76 @@
+heat_template_version: queens
+
+description: 3 single nodes fragment
+
+parameters:
+  key_pair:
+    type: string
+  network:
+    type: string
+  instance01_name:
+    type: string
+  instance02_name:
+    type: string
+  instance03_name:
+    type: string
+  instance_domain:
+    type: string
+  instance_flavor:
+    type: string
+  instance_config_host:
+    type: string
+  instance01_control_net_static_ip:
+    type: string
+  instance02_control_net_static_ip:
+    type: string
+  instance03_control_net_static_ip:
+    type: string
+  underlay_userdata:
+    type: string
+  mcp_version:
+    type: string
+  env_name:
+    type: string
+
+resources:
+  instance01:
+    type: MCP::SingleInstance
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      key_pair: { get_param: key_pair }
+      network: { get_param: network }
+      control_net_static_ip: {get_param: instance01_control_net_static_ip }
+      instance_name: { get_param: instance01_name }
+      instance_domain: { get_param: instance_domain }
+      instance_flavor: { get_param: instance_flavor }
+      instance_config_host: { get_param: instance_config_host }
+      underlay_userdata: { get_param: underlay_userdata }
+
+  instance02:
+    type: MCP::SingleInstance
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      key_pair: { get_param: key_pair }
+      network: { get_param: network }
+      control_net_static_ip: {get_param: instance02_control_net_static_ip }
+      instance_name: { get_param: instance02_name }
+      instance_domain: { get_param: instance_domain }
+      instance_flavor: { get_param: instance_flavor }
+      instance_config_host: { get_param: instance_config_host }
+      underlay_userdata: { get_param: underlay_userdata }
+
+  instance03:
+    type: MCP::SingleInstance
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      key_pair: { get_param: key_pair }
+      network: { get_param: network }
+      control_net_static_ip: {get_param: instance03_control_net_static_ip }
+      instance_name: { get_param: instance03_name }
+      instance_domain: { get_param: instance_domain }
+      instance_flavor: { get_param: instance_flavor }
+      instance_config_host: { get_param: instance_config_host }
+      underlay_userdata: { get_param: underlay_userdata }
