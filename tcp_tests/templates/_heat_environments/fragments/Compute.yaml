@@ -1,0 +1,110 @@
+heat_template_version: queens
+
+description: Single server instance fragment
+
+parameters:
+  network:
+    type: string
+  instance_flavor:
+    type: string
+  instance_name:
+    type: string
+  instance_config_host:
+    type: string
+  key_pair:
+    type: string
+  instance_domain:
+    type: string
+  net_public:
+    type: string
+  control_net_static_ip:
+    type: string
+  underlay_userdata:
+    type: string
+  mcp_version:
+    type: string
+  env_name:
+    type: string
+
+resources:
+  instance_port01:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+  instance_port02:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+      fixed_ips:
+        - ip_address: { get_param: control_net_static_ip }
+  instance_port03:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+
+  instance_instance:
+    type: OS::Nova::Server
+    properties:
+      image_update_policy: REBUILD
+      flavor: { get_param: instance_flavor }
+      image: { list_join: ['', [ 'ubuntu-vcp-', { get_param: mcp_version } ]] }
+      key_name: { get_param: key_pair }
+      name:
+        list_join:
+        - '.'
+        - [ { get_param: instance_name }, { get_param: instance_domain } ]
+      networks:
+      - port: { get_resource: instance_port01 }
+      - port: { get_resource: instance_port02 }
+      - port: { get_resource: instance_port03 }
+      block_device_mapping_v2:
+      - device_name: /dev/vdb
+        device_type: disk
+        boot_index: -1
+        delete_on_termination: true
+        ephemeral_size: 10
+
+      user_data_format: RAW
+      user_data:
+        str_replace:
+          #template: { get_file: underlay--user-data-cfg01--heat.yaml }
+          #template: { get_file: ../underlay-userdata.yaml }
+          template: { get_param: underlay_userdata }
+          params:
+            hostname: { list_join: ['.', [ { get_param: instance_name }, { get_param: instance_domain } ]] }
+            $node_hostname: { get_param: instance_name }
+            $node_domain: { get_param: instance_domain }
+            $config_host: { get_param: instance_config_host }
+      metadata:
+        roles:
+        - salt_minion
+
+  floating_ip:
+    depends_on: [instance_instance]
+    type: OS::Neutron::FloatingIP
+    properties:
+      floating_network: { get_param: net_public }
+      port_id: { get_resource: instance_port01 }
+  floating_ip_association:
+    depends_on: [floating_ip]
+    type: OS::Neutron::FloatingIPAssociation
+    properties:
+      floatingip_id:  { get_resource: floating_ip }
+      port_id: { get_resource: instance_port01 }
+
+outputs:
+  instance_address:
+    value:
+      get_attr:
+      - instance_instance
+      - addresses
+      - 'management_net'
+      - 0
+      - addr
+    description: "Instance's private IP address"
+  instance:
+    value: { get_resource: instance_instance }
+    description: "Instance"
