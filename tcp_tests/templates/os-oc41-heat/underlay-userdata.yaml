@@ -1,0 +1,83 @@
+#cloud-config, see http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+
+ssh_pwauth: True
+users:
+   - name: root
+     sudo: ALL=(ALL) NOPASSWD:ALL
+     shell: /bin/bash
+
+disable_root: false
+chpasswd:
+   list: |
+    root:r00tme
+   expire: False
+
+bootcmd:
+   # Enable root access
+   - sed -i -e '/^PermitRootLogin/s/^.*$/PermitRootLogin yes/' /etc/ssh/sshd_config
+   - service sshd restart
+output:
+    all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
+
+runcmd:
+   - if lvs vg0; then pvresize /dev/vda3; fi
+   - if lvs vg0; then /usr/bin/growlvm.py --image-layout-file /usr/share/growlvm/image-layout.yml; fi
+
+   - export TERM=linux
+   - export LANG=C
+   # Configure dhclient
+   - sudo resolvconf -u
+   #- sudo echo "nameserver {gateway}" >> /etc/resolvconf/resolv.conf.d/base
+   # Enable grub menu using updated config below
+   - update-grub
+
+   # Prepare network connection
+   - sudo ifup ens3
+   #- sudo route add default gw {gateway} {interface_name}
+
+   # Create swap
+   - fallocate -l 16G /swapfile
+   - chmod 600 /swapfile
+   - mkswap /swapfile
+   - swapon /swapfile
+   - echo "/swapfile   none    swap    defaults   0   0" >> /etc/fstab
+
+write_files:
+   - path: /etc/default/grub.d/97-enable-grub-menu.cfg
+     content: |
+         GRUB_RECORDFAIL_TIMEOUT=30
+         GRUB_TIMEOUT=3
+         GRUB_TIMEOUT_STYLE=menu
+
+   - path: /etc/salt/minion.d/minion.conf
+     content: |
+          id: $node_hostname.$node_domain
+          master: $config_host
+
+   - path: /etc/network/interfaces
+     content: |
+          auto ens3
+          iface ens3 inet dhcp
+
+   - path: /usr/share/growlvm/image-layout.yml
+     content: |
+       root:
+         size: '65%VG'
+       home:
+         size: '1%VG'
+       var_log:
+         size: '10%VG'
+       var_log_audit:
+         size: '5%VG'
+       var_tmp:
+         size: '10%VG'
+       tmp:
+         size: '5%VG'
+     owner: root:root
+
+growpart:
+    mode: auto
+    devices:
+      - '/'
+      - '/dev/vda3'
+    ignore_growroot_disabled: false
