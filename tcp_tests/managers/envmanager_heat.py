@@ -102,7 +102,7 @@ class EnvironmentManagerHeat(object):
             username=settings.OS_USERNAME,
             password=settings.OS_PASSWORD,
             project_name=settings.OS_PROJECT_NAME,
-            user_domain_name='Default',
+            user_domain_name=settings.OS_USER_DOMAIN_NAME,
             project_domain_name='Default')
         return keystone_session.Session(auth=keystone_auth, verify=False)
 
@@ -210,7 +210,8 @@ class EnvironmentManagerHeat(object):
                     pool_net = netaddr.IPNetwork(address_pool['cidr'])
                     if fixed in pool_net:
                         for role in address_pool['roles']:
-                            addresses[role] = floating
+                            # addresses[role] = floating
+                            addresses[role] = fixed  # Use fixed addresses for local access
 
             nodes.append({
                 'name': heat_node.attributes['name'],
@@ -485,6 +486,10 @@ class EnvironmentManagerHeat(object):
             'template': template,
             'files': dict(list(tpl_files.items()) + list(env_files.items())),
             'environment': env,
+            'parameters': {
+                'mcp_version': settings.MCP_VERSION,
+                'env_name': settings.ENV_NAME,
+            }
         }
 
         if env_files_list:
