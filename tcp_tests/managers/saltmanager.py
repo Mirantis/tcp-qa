@@ -13,6 +13,7 @@
 #    under the License.
 
 import netaddr
+import pkg_resources
 
 from collections import defaultdict
 
@@ -60,6 +61,10 @@ class SaltManager(ExecuteCommandsMixin):
 
         self.execute_commands(commands=commands,
                               label="Install and configure salt")
+        self.create_env_salt()
+        self.create_env_jenkins_day01()
+        self.create_env_jenkins_cicd()
+        self.create_env_k8s()
 
     def change_creds(self, username, password):
         self.__user = username
@@ -271,7 +276,7 @@ class SaltManager(ExecuteCommandsMixin):
         return result['return']
 
     @utils.retry(3, exception=libpepper.PepperException)
-    def sync_time(self, tgt='*'):
+    def sync_time(self, tgt='* and not cfg01*'):
         LOG.info("NTP time sync on the salt minions '{0}'".format(tgt))
         # Force authentication update on the next API access
         # because previous authentication most probably is not valid
@@ -285,3 +290,141 @@ class SaltManager(ExecuteCommandsMixin):
         for node_name, time in sorted(new_time_res[0]['return'][0].items()):
             LOG.info("{0}: {1}".format(node_name, time))
         self.__api = None
+
+    def create_env_salt(self):
+        """Creates static utils/env_salt file"""
+
+        env_salt_filename = pkg_resources.resource_filename(
+            settings.__name__, 'utils/env_salt')
+        with open(env_salt_filename, 'w') as f:
+            f.write(
+                'export SALTAPI_URL=http://{host}:{port}/\n'
+                'export SALTAPI_USER="{user}"\n'
+                'export SALTAPI_PASS="{password}"\n'
+                'export SALTAPI_EAUTH="pam"\n'
+                'echo "export SALTAPI_URL=${{SALTAPI_URL}}"\n'
+                'echo "export SALTAPI_USER=${{SALTAPI_USER}}"\n'
+                'echo "export SALTAPI_PASS=${{SALTAPI_PASS}}"\n'
+                'echo "export SALTAPI_EAUTH=${{SALTAPI_EAUTH}}"\n'
+                .format(host=self.host, port=self.port,
+                        user=self.__user, password=self.__password)
+            )
+
+    def create_env_jenkins_day01(self):
+        """Creates static utils/env_jenkins_day01 file"""
+
+        env_jenkins_day01_filename = pkg_resources.resource_filename(
+            settings.__name__, 'utils/env_jenkins_day01')
+
+        tgt = 'I@docker:client:stack:jenkins and cfg01*'
+        jenkins_params = self.get_single_pillar(
+            tgt=tgt, pillar="jenkins:client:master")
+        #jenkins_host = jenkins_params['host']
+        jenkins_port = jenkins_params['port']
+        jenkins_user = jenkins_params['username']
+        jenkins_pass = jenkins_params['password']
+
+        with open(env_jenkins_day01_filename, 'w') as f:
+            f.write(
+                'export JENKINS_URL=http://{host}:{port}\n'
+                'export JENKINS_USER={user}\n'
+                'export JENKINS_PASS={password}\n'
+                'export JENKINS_START_TIMEOUT=60\n'
+                'export JENKINS_BUILD_TIMEOUT=1800\n'
+                'echo "export JENKINS_URL=${{JENKINS_URL}}'
+                '  # Jenkins API URL"\n'
+                'echo "export JENKINS_USER=${{JENKINS_USER}}'
+                '  # Jenkins API username"\n'
+                'echo "export JENKINS_PASS=${{JENKINS_PASS}}'
+                '  # Jenkins API password or token"n\n'
+                'echo "export JENKINS_START_TIMEOUT=${{JENKINS_START_TIMEOUT}}'
+                '  # Timeout waiting for job in queue to start building"\n'
+                'echo "export JENKINS_BUILD_TIMEOUT=${{JENKINS_BUILD_TIMEOUT}}'
+                '  # Timeout waiting for building job to complete"\n'
+                .format(host=self.host, port=jenkins_port,
+                        user=jenkins_user, password=jenkins_pass)
+            )
+
+    def create_env_jenkins_cicd(self):
+        """Creates static utils/env_jenkins_cicd file"""
+
+        env_jenkins_cicd_filename = pkg_resources.resource_filename(
+            settings.__name__, 'utils/env_jenkins_cicd')
+
+        tgt = 'I@docker:client:stack:jenkins and cid01*'
+        try:
+            jenkins_params = self.get_single_pillar(
+                tgt=tgt, pillar="jenkins:client:master")
+        except LookupError as e:
+            LOG.error("Skipping creation {0} because cannot get Jenkins CICD "
+                      "parameters from '{1}': {2}"
+                      .format(env_jenkins_cicd_filename, tgt, e.message))
+            return
+
+        jenkins_host = jenkins_params['host']
+        jenkins_port = jenkins_params['port']
+        jenkins_user = jenkins_params['username']
+        jenkins_pass = jenkins_params['password']
+
+        with open(env_jenkins_cicd_filename, 'w') as f:
+            f.write(
+                'export JENKINS_URL=http://{host}:{port}\n'
+                'export JENKINS_USER={user}\n'
+                'export JENKINS_PASS={password}\n'
+                'export JENKINS_START_TIMEOUT=60\n'
+                'export JENKINS_BUILD_TIMEOUT=1800\n'
+                'echo "export JENKINS_URL=${{JENKINS_URL}}'
+                '  # Jenkins API URL"\n'
+                'echo "export JENKINS_USER=${{JENKINS_USER}}'
+                '  # Jenkins API username"\n'
+                'echo "export JENKINS_PASS=${{JENKINS_PASS}}'
+                '  # Jenkins API password or token"n\n'
+                'echo "export JENKINS_START_TIMEOUT=${{JENKINS_START_TIMEOUT}}'
+                '  # Timeout waiting for job in queue to start building"\n'
+                'echo "export JENKINS_BUILD_TIMEOUT=${{JENKINS_BUILD_TIMEOUT}}'
+                '  # Timeout waiting for building job to complete"\n'
+                .format(host=jenkins_host, port=jenkins_port,
+                        user=jenkins_user, password=jenkins_pass)
+            )
+
+    def create_env_k8s(self):
+        """Creates static utils/env_k8s file"""
+
+        env_k8s_filename = pkg_resources.resource_filename(
+            settings.__name__, 'utils/env_k8s')
+
+        tgt = 'I@haproxy:proxy:enabled:true and I@kubernetes:master and *01*'
+        try:
+            haproxy_params = self.get_single_pillar(
+                tgt=tgt, pillar="haproxy:proxy:listen:k8s_secure:binds")
+            k8s_params = self.get_single_pillar(
+                tgt=tgt, pillar="kubernetes:master:admin")
+        except LookupError as e:
+            LOG.error("Skipping creation {0} because cannot get Kubernetes "
+                      "parameters from '{1}': {2}"
+                      .format(env_k8s_filename, tgt, e.message))
+            return
+
+        kube_host = haproxy_params['address']
+        kube_apiserver_port = haproxy_params['port']
+        kubernetes_admin_user = k8s_params['username']
+        kubernetes_admin_password = k8s_params['password']
+
+        with open(env_k8s_filename, 'w') as f:
+            f.write(
+                'export kube_host={host}\n'
+                'export kube_apiserver_port={port}\n'
+                'export kubernetes_admin_user={user}\n'
+                'export kubernetes_admin_password={password}\n'
+                'echo "export kube_host=${{kube_host}}'
+                '  # Kube API host"\n'
+                'echo "export kube_apiserver_port=${{kube_apiserver_port}}'
+                '  # Kube API port"\n'
+                'echo "export kubernetes_admin_user=${{kubernetes_admin_user}}'
+                '  # Kube API username"\n'
+                'echo "export kubernetes_admin_password='
+                '${{kubernetes_admin_password}}  # Kube API password"n\n'
+                .format(host=kube_host, port=kube_apiserver_port,
+                        user=kubernetes_admin_user,
+                        password=kubernetes_admin_password)
+            )
