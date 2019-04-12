@@ -44,6 +44,12 @@ node ("${PARENT_NODE_NAME}") {
         error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
     }
     dir("${PARENT_WORKSPACE}") {
+        if (env.TCP_QA_REFS) {
+            stage("Update working dir to patch ${TCP_QA_REFS}") {
+                shared.update_working_dir()
+            }
+        }
+
         stage("Cleanup: erase ${ENV_NAME} and remove config drive") {
             println "Remove environment ${ENV_NAME}"
             shared.run_cmd("""\
@@ -53,12 +59,6 @@ node ("${PARENT_NODE_NAME}") {
             shared.run_cmd("""\
                 rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
             """)
-        }
-
-        if (env.TCP_QA_REFS) {
-            stage("Update working dir to patch ${TCP_QA_REFS}") {
-                shared.update_working_dir()
-            }
         }
 
         stage("Create an environment ${ENV_NAME} in disabled state") {
@@ -75,11 +75,26 @@ node ("${PARENT_NODE_NAME}") {
         }
 
         stage("Generate the model") {
-            shared.generate_cookied_model()
+            def IPV4_NET_ADMIN=shared.run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep admin-pool01").trim().split().last()
+            def IPV4_NET_CONTROL=shared.run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep private-pool01").trim().split().last()
+            def IPV4_NET_TENANT=shared.run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep tenant-pool01").trim().split().last()
+            def IPV4_NET_EXTERNAL=shared.run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep external-pool01").trim().split().last()
+            shared.generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IPV4_NET_EXTERNAL)
         }
 
         stage("Generate config drive ISO") {
-            shared.generate_configdrive_iso()
+            def SALT_MASTER_IP=shared.run_cmd_stdout("""\
+                SALT_MASTER_INFO=\$(for node in \$(dos.py slave-ip-list --address-pool-name admin-pool01 ${ENV_NAME}); do echo \$node|grep cfg01; done)
+                echo \$(echo \$SALT_MASTER_INFO|cut -d',' -f2)
+                """).trim().split().last()
+            def dhcp_ranges_json=shared.run_cmd_stdout("""\
+                fgrep dhcp_ranges ${ENV_NAME}_hardware.ini |
+                fgrep "admin-pool01"|
+                cut -d"=" -f2
+                """).trim().split("\n").last()
+            def dhcp_ranges = new groovy.json.JsonSlurperClassic().parseText(dhcp_ranges_json)
+            def ADMIN_NETWORK_GW = dhcp_ranges['admin-pool01']['gateway']
+            shared.generate_configdrive_iso(SALT_MASTER_IP, ADMIN_NETWORK_GW)
         }
 
         stage("Upload generated config drive ISO into volume on cfg01 node") {
