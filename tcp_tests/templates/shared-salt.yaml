@@ -783,6 +783,7 @@
     sync
     # Restart salt-minion if it was already installed
     service salt-minion restart
+    timeout 120 salt-call test.ping
   node_name: {{ ssh['node_name'] }}
   retry: {count: 1, delay: 1}
   skip_fail: false
