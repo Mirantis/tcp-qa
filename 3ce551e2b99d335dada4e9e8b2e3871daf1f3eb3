@@ -1,0 +1,291 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "65cc5e8a_0b86d83d",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Instance.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 52,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "{ list_join: [\u0027\u0027, [ \u0027ubuntu-vcp-\u0027, { get_param: mcp_version } ]] }",
+      "range": {
+        "startLine": 52,
+        "startChar": 13,
+        "endLine": 52,
+        "endChar": 42
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "10245d35_5eb601a8",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Instance.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "env_name",
+      "range": {
+        "startLine": 57,
+        "startChar": 55,
+        "endLine": 57,
+        "endChar": 70
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4dcb40e0_a4a54a31",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/MasterNode.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "management_subnet_cfg01_ip",
+      "range": {
+        "startLine": 35,
+        "startChar": 35,
+        "endLine": 35,
+        "endChar": 49
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "110c0408_67e28db8",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/MasterNode.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 50,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "{ list_join: [\u0027\u0027, [ \u0027cfg01-day01-\u0027, { get_param: mcp_version } ]] }",
+      "range": {
+        "startLine": 50,
+        "startChar": 13,
+        "endLine": 50,
+        "endChar": 43
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "815618fe_9effa0f4",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/MasterNode.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "{ list_join: [\u0027\u0027, [ \u0027cfg01.\u0027, { get_param: env_name }, \u0027-config-drive.iso\u0027 ]] }",
+      "range": {
+        "startLine": 64,
+        "startChar": 15,
+        "endLine": 64,
+        "endChar": 53
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fa391fb6_0ae5bcc8",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Networks.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 82,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "please rename to management",
+      "range": {
+        "startLine": 82,
+        "startChar": 2,
+        "endLine": 82,
+        "endChar": 8
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "2397801c_67cfba9a",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Networks.yaml",
+        "patchSetId": 9
+      },
+      "lineNbr": 84,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "please add \n      gateway_ip: { get_param: management_subnet_gateway_ip }\n      allocation_pools:\n        - start: { get_param: management_subnet_pool_start }\n          end: { get_param: management_subnet_pool_end }",
+      "range": {
+        "startLine": 84,
+        "startChar": 0,
+        "endLine": 84,
+        "endChar": 15
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "44e53b9a_79695295",
+        "filename": "tcp_tests/templates/_heat_environments/os-oc41-heat.env",
+        "patchSetId": 9
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "please remove this parameter",
+      "range": {
+        "startLine": 25,
+        "startChar": 0,
+        "endLine": 25,
+        "endChar": 34
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c6630559_dab5d0b5",
+        "filename": "tcp_tests/templates/_heat_environments/os-oc41-heat.env",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "management_subnet_cidr",
+      "range": {
+        "startLine": 39,
+        "startChar": 2,
+        "endLine": 39,
+        "endChar": 19
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "be336289_3656fa98",
+        "filename": "tcp_tests/templates/_heat_environments/os-oc41-heat.env",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "please replace 10.70.0.0/24 to another network cidr to not intersect to other envs",
+      "range": {
+        "startLine": 39,
+        "startChar": 22,
+        "endLine": 39,
+        "endChar": 29
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "32d91e86_42f10ffd",
+        "filename": "tcp_tests/templates/_heat_environments/os-oc41-heat.env",
+        "patchSetId": 9
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "management_subnet_cfg01_ip",
+      "range": {
+        "startLine": 40,
+        "startChar": 2,
+        "endLine": 40,
+        "endChar": 16
+      },
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "8cb9aeb3_375c68cf",
+        "filename": "tcp_tests/templates/_heat_environments/os-oc41-heat.env",
+        "patchSetId": 9
+      },
+      "lineNbr": 42,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "please add management_subnet_gateway_ip: 10.70.0.1",
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a62f3e1_90a6fe97",
+        "filename": "tcp_tests/templates/os-oc41-heat/underlay.hot",
+        "patchSetId": 9
+      },
+      "lineNbr": 375,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-12T12:55:05Z",
+      "side": 1,
+      "message": "Please add foundation node with role \n      metadata:\n        roles:\n        - foundation_jenkins_slave\n\n      image: { list_join: [\u0027\u0027, [ \u0027ubuntu-16.04-foundation-\u0027, { get_param: mcp_version } ]] }\n\n\nhttps://review.gerrithub.io/#/c/Mirantis/tcp-qa/+/448824/48/tcp_tests/templates/cookied-cicd-queens-dvr-sl-heat/underlay--user-data-foundation.yaml",
+      "revId": "3ce551e2b99d335dada4e9e8b2e3871daf1f3eb3",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
