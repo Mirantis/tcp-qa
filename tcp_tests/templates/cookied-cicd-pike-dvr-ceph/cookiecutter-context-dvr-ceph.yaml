@@ -355,3 +355,5 @@ default_context:
   octavia_lb_mgmt_cidr: 192.168.1.0/24
   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
   octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
+  cinder_backup_engine: 'ceph'
+  cinder_ceph_backup_pool_name: 'backups'
