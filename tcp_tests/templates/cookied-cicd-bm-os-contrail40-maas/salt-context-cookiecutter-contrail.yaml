@@ -123,132 +123,164 @@ default_context:
   maas_hostname: cfg01
   maas_manage_deploy_network: 'True'
   maas_machines: |
-        kvm01: # cz7341-kvm.host-telecom.com
+        kvm01: # cz792-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
           # pxe_interface_mac:
-          pxe_interface_mac: "0c:c4:7a:6c:83:56"
+          pxe_interface_mac: "0c:c4:7a:c7:1c:b8"
           interfaces:
-            enp9s0f0:
-              mac: "0c:c4:7a:6c:83:56"
+            eno1:
+              mac: "0c:c4:7a:c7:1c:b8"
               mode: "static"
               ip: "172.16.49.67"
               subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
+            eno2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:c7:1c:b9"
+              name: eno2
           power_parameters:
-            power_address: "5.43.225.117"
+            power_address: "176.74.219.176"
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
-        kvm02: # #cz7342-kvm.host-telecom.com
+        kvm02: # cz793-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:6c:84:2c"
+          pxe_interface_mac: "0c:c4:7a:c7:1c:98"
           interfaces:
-            enp9s0f0:
-              mac: "0c:c4:7a:6c:84:2c"
+            eno1:
+              mac: "0c:c4:7a:c7:1c:98"
               mode: "static"
               ip: "172.16.49.68"
               subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
+            eno2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:c7:1c:99"
+              name: eno2
           power_parameters:
-            power_address: "5.43.225.118"
+            power_address: "176.74.219.177"
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
-        kvm03: # #cz7343-kvm.host-telecom.com
+        kvm03: # cz794-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:6c:83:54"
+          pxe_interface_mac: "0c:c4:7a:c7:1c:b0"
           interfaces:
-            enp9s0f0:
-              mac: "0c:c4:7a:6c:83:54"
+            eno1:
+              mac: "0c:c4:7a:c7:1c:b0"
               mode: "static"
               ip: "172.16.49.69"
               subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
+            eno2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:c7:1c:b1"
+              name: eno2
           power_parameters:
-            power_address: "5.43.225.119"
+            power_address: "176.74.219.178"
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
-        osd001: # #cz7343-kvm.host-telecom.com
+        osd001: # cz795-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:55:6a:d4"
+          pxe_interface_mac: "0c:c4:7a:c7:1c:ac"
           interfaces:
-            enp2s0f0:
-              mac: "0c:c4:7a:55:6a:d4"
+            eno1:
+              mac: "0c:c4:7a:c7:1c:ac"
               mode: "static"
               ip: "172.16.49.70"
               subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
+            eno2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:c7:1c:ad"
+              name: eno2
           power_parameters:
-            power_address: "185.8.59.243"
+            power_address: "176.74.219.181"
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
-        osd002: # #cz7343-kvm.host-telecom.com
+        osd002: # cz804-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:55:6a:56"
+          pxe_interface_mac: "0c:c4:7a:c7:1b:3c"
           interfaces:
-            enp2s0f0:
-              mac: "0c:c4:7a:55:6a:56"
+            eno1:
+              mac: "0c:c4:7a:c7:1b:3c"
               mode: "static"
               ip: "172.16.49.71"
               subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
+            eno2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:c7:1b:3d"
+              name: eno2
           power_parameters:
-            power_address: "185.8.59.244"
+            power_address: "176.74.219.118"
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
-        osd003: # #cz7343-kvm.host-telecom.com
+        osd003: # cz805-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:55:6a:2a"
+          pxe_interface_mac: "0c:c4:7a:c7:1d:50"
           interfaces:
-            enp2s0f0:
-              mac: "0c:c4:7a:55:6a:2a"
+            eno1:
+              mac: "0c:c4:7a:c7:1d:50"
               mode: "static"
               ip: "172.16.49.72"
               subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
+            eno2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:c7:1d:51"
+              name: eno2
           power_parameters:
-            power_address: "185.8.59.245"
+            power_address: "176.74.219.125"
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
-        cmp001: # #cz7345-kvm.host-telecom.com
+        cmp001: # cz806-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:54:a2:5f"
+          pxe_interface_mac: "0c:c4:7a:c7:1b:44"
           interfaces:
-            enp2s0f1:
-              mac: "0c:c4:7a:54:a2:5f"
+            eno1:
+              mac: "0c:c4:7a:c7:1b:44"
               mode: "static"
               ip: "172.16.49.73"
               subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
+            eno2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:c7:1b:45"
+              name: eno2
           power_parameters:
-            power_address: "185.8.59.233"
+            power_address: "176.74.219.126"
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
-        cmp002: # cz7346-kvm.host-telecom.com
+        cmp002: # cz807-kvm.host-telecom.com
           distro_series: "xenial"
           # hwe_kernel: "hwe-16.04"
-          pxe_interface_mac: "0c:c4:7a:54:a0:51"
+          pxe_interface_mac: "0c:c4:7a:c7:1b:50"
           interfaces:
-            enp2s0f1:
-              mac: "0c:c4:7a:54:a0:51"
+            eno1:
+              mac: "0c:c4:7a:c7:1b:50"
               mode: "static"
               ip: "172.16.49.74"
               subnet: ${maas:region:subnets:deploy_network:cidr} # create it manually... in UI
               gateway: ${_param:deploy_network_gateway}
+            eno2:
+              mode: UNCONFIGURED
+              mac: "0c:c4:7a:c7:1b:51"
+              name: eno2
           power_parameters:
-            power_address: "185.8.59.232"
+            power_address: "176.74.219.127"
             power_pass: ==IPMI_PASS==
             power_type: ipmi
             power_user: ==IPMI_USER==
