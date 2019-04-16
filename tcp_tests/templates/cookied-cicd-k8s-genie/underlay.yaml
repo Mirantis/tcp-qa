@@ -183,7 +183,7 @@ template:
             role: salt_master
             params:
               vcpu: {{ os_env('CFG_NODE_CPU', 3) }}
-              memory: {{ os_env('CFG_NODE_MEMORY', 12288) }}
+              memory: {{ os_env('CFG_NODE_MEMORY', 16384) }}
               boot:
                 - hd
               volumes:
