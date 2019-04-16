@@ -88,7 +88,7 @@ node (node_name) {
                     eval \$(ssh-agent)
                     ssh-add ${GERRIT_KEY}
                     cd mk-pipelines
-                    git fetch https://gerrit.mcp.mirantis.net/mcp-ci/mk-pipelines ${MK_PIPELINES_REF}
+                    git fetch https://gerrit.mcp.mirantis.net/mk/mk-pipelines ${MK_PIPELINES_REF}
                     git tag ${MCP_VERSION} FETCH_HEAD -f
                     git branch -f release/${MCP_VERSION} FETCH_HEAD
                     git log -1
