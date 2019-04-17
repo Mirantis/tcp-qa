@@ -11,6 +11,7 @@
  *   STACK_INSTALL_TIMEOUT         Stacks installation timeout
  *   TCP_QA_REFS                   Reference to the tcp-qa change on review.gerrithub.io, like refs/changes/46/418546/41
  *   SHUTDOWN_ENV_ON_TEARDOWN      optional, shutdown fuel-devops environment at the end of the job
+ *   MAKE_SNAPSHOT_STAGES          optional, use "dos.py snapshot" to snapshot stages
  *
  */
 
@@ -18,6 +19,7 @@
 
 common = new com.mirantis.mk.Common()
 shared = new com.mirantis.system_qa.SharedPipeline()
+make_snapshot_stages = env.MAKE_SNAPSHOT_STAGES ?: true
 
 if (! env.PARENT_NODE_NAME) {
     error "'PARENT_NODE_NAME' must be set from the parent deployment job!"
@@ -55,8 +57,10 @@ timeout(time: install_timeout + 600, unit: 'SECONDS') {
                     stage("Sanity check the deployed component [${stack}]") {
                         shared.sanity_check_component(stack)
                     }
-                    stage("Make environment snapshot [${stack}_deployed]") {
-                        shared.devops_snapshot(stack)
+                    if (make_snapshot_stages) {
+                        stage("Make environment snapshot [${stack}_deployed]") {
+                            shared.devops_snapshot(stack)
+                        }
                     }
                 } // for
 
@@ -68,10 +72,12 @@ timeout(time: install_timeout + 600, unit: 'SECONDS') {
                 // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
                 // and report appropriate data to TestRail
                 // TODO(ddmitriev): add checks for the installed stacks
-                if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
-                    shared.run_cmd("""\
-                        dos.py destroy ${ENV_NAME}
-                    """)
+                if (make_snapshot_stages) {
+                    if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
+                        shared.run_cmd("""\
+                            dos.py destroy ${ENV_NAME}
+                        """)
+                    }
                 }
             }
 
