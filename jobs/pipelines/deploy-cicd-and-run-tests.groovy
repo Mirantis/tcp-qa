@@ -4,11 +4,18 @@ def common = new com.mirantis.mk.Common()
 def shared = new com.mirantis.system_qa.SharedPipeline()
 def steps = "hardware,create_model,salt," + env.DRIVETRAIN_STACK_INSTALL + "," + env.PLATFORM_STACK_INSTALL
 def env_manager = env.ENV_MANAGER ?: 'devops'
-def jenkins_slave_node_name = "${NODE_NAME}"
+
+if (env_manager == 'devops') {
+    jenkins_slave_node_name = "${NODE_NAME}"
+    make_snapshot_stages = "${env.MAKE_SNAPSHOT_STAGES}" != "false" ? true : false
+} else if (env_manager == 'heat') {
+    jenkins_slave_node_name = "openstack_slave_${JOB_NAME}"
+    make_snapshot_stages = false
+}
 
 currentBuild.description = "${NODE_NAME}:${ENV_NAME}"
 
-def deploy(shared, common, steps, env_manager, jenkins_slave_node_name) {
+def deploy(shared, common, steps, env_manager) {
     def report_text = ''
     try {
 
@@ -19,15 +26,13 @@ def deploy(shared, common, steps, env_manager, jenkins_slave_node_name) {
         stage("Create environment, generate model, bootstrap the salt-cluster") {
             // steps: "hardware,create_model,salt"
             if (env_manager == 'devops') {
-                jenkins_slave_node_name = "${NODE_NAME}"
                 shared.swarm_bootstrap_salt_cluster_devops()
             } else if (env_manager == 'heat') {
-                def new_jenkins_slave_node_name = "openstack_slave_${JOB_NAME}"
                 // If shared.swarm_bootstrap_salt_cluster_heat() failed,
                 // do not schedule shared.swarm_testrail_report() on the non existing Jenkins slave
-                shared.swarm_bootstrap_salt_cluster_heat(new_jenkins_slave_node_name)
+                shared.swarm_bootstrap_salt_cluster_heat(jenkins_slave_node_name)
                 // When the Heat stack created, set jenkins_slave_node_name to the new Jenkins slave
-                jenkins_slave_node_name = new_jenkins_slave_node_name
+                // disable dos.py snapshots for 'heat' manager
             } else {
                 throw new Exception("Unknow env_manager: '${env_manager}'")
             }
@@ -36,7 +41,7 @@ def deploy(shared, common, steps, env_manager, jenkins_slave_node_name) {
         stage("Install core infrastructure and deploy CICD nodes") {
         if (env.DRIVETRAIN_STACK_INSTALL) {
                 // steps: env.DRIVETRAIN_STACK_INSTALL
-                shared.swarm_deploy_cicd(env.DRIVETRAIN_STACK_INSTALL, env.DRIVETRAIN_STACK_INSTALL_TIMEOUT, jenkins_slave_node_name)
+                shared.swarm_deploy_cicd(env.DRIVETRAIN_STACK_INSTALL, env.DRIVETRAIN_STACK_INSTALL_TIMEOUT, jenkins_slave_node_name, make_snapshot_stages)
             } else {
                 common.printMsg("DRIVETRAIN_STACK_INSTALL is empty, skipping 'swarm-deploy-cicd' job", "green")
             }
@@ -45,7 +50,7 @@ def deploy(shared, common, steps, env_manager, jenkins_slave_node_name) {
         stage("Deploy platform components") {
             if (env.PLATFORM_STACK_INSTALL) {
                 // steps: env.PLATFORM_STACK_INSTALL
-                shared.swarm_deploy_platform(env.PLATFORM_STACK_INSTALL, env.PLATFORM_STACK_INSTALL_TIMEOUT, jenkins_slave_node_name)
+                shared.swarm_deploy_platform(env.PLATFORM_STACK_INSTALL, env.PLATFORM_STACK_INSTALL_TIMEOUT, jenkins_slave_node_name, make_snapshot_stages)
             } else {
                 common.printMsg("PLATFORM_STACK_INSTALL is empty, skipping 'swarm-deploy-platform' job", "green")
             }
@@ -56,7 +61,7 @@ def deploy(shared, common, steps, env_manager, jenkins_slave_node_name) {
     } catch (e) {
         common.printMsg("Deploy is failed: " + e.message , "purple")
         report_text = e.message
-        if (env_manager == 'devops') {
+        if (make_snapshot_stages) {
             def snapshot_name = "deploy_failed"
             shared.run_cmd("""\
                 dos.py suspend ${ENV_NAME} || true
@@ -75,11 +80,11 @@ def deploy(shared, common, steps, env_manager, jenkins_slave_node_name) {
     }
 }
 
-def test(shared, common, steps, env_manager, jenkins_slave_node_name) {
+def test(shared, common, steps, env_manager) {
     try {
         stage("Run tests") {
             if (env.RUN_TEST_OPTS) {
-                shared.swarm_run_pytest(steps, jenkins_slave_node_name)
+                shared.swarm_run_pytest(steps, jenkins_slave_node_name, make_snapshot_stages)
             } else {
                 common.printMsg("RUN_TEST_OPTS is empty, skipping 'swarm-run-pytest' job", "green")
             }
@@ -87,7 +92,7 @@ def test(shared, common, steps, env_manager, jenkins_slave_node_name) {
 
     } catch (e) {
         common.printMsg("Tests are failed: " + e.message, "purple")
-        if (env_manager == 'devops') {
+        if (make_snapshot_stages) {
             def snapshot_name = "tests_failed"
             shared.run_cmd("""\
                 dos.py suspend ${ENV_NAME} || true
@@ -110,14 +115,14 @@ def test(shared, common, steps, env_manager, jenkins_slave_node_name) {
   node ("${NODE_NAME}") {
     try {
         // run deploy stages
-        deploy(shared, common, steps, env_manager, jenkins_slave_node_name)
+        deploy(shared, common, steps, env_manager)
         // run test stages
-        test(shared, common, steps, env_manager, jenkins_slave_node_name)
+        test(shared, common, steps, env_manager)
     } catch (e) {
         common.printMsg("Job is failed: " + e.message, "purple")
         throw e
     } finally {
-        if (env_manager == 'devops') {
+        if (make_snapshot_stages) {
             // shutdown the environment if required
             if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
                 shared.run_cmd("""\
@@ -131,7 +136,7 @@ def test(shared, common, steps, env_manager, jenkins_slave_node_name) {
         }
         if ("${env.REPORT_TO_TESTRAIL}" != "false") {
             stage("report results to testrail") {
-                shared.swarm_testrail_report(steps, jenkins_slave_node_name)
+                shared.swarm_testrail_report(steps)
             }
             stage("Store TestRail reports to job description") {
                 def String description = readFile("description.txt")

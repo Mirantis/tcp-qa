@@ -295,7 +295,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
         build_pipeline_job('swarm-bootstrap-salt-cluster-heat', parameters)
 }
 
-def swarm_deploy_cicd(String stack_to_install, String install_timeout, String jenkins_slave_node_name) {
+def swarm_deploy_cicd(String stack_to_install, String install_timeout, String jenkins_slave_node_name, Boolean make_snapshot_stages) {
         // Run openstack_deploy job on cfg01 Jenkins for specified stacks
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
@@ -306,12 +306,13 @@ def swarm_deploy_cicd(String stack_to_install, String install_timeout, String je
                 string(name: 'STACK_INSTALL', value: stack_to_install),
                 string(name: 'STACK_INSTALL_TIMEOUT', value: install_timeout),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
+                booleanParam(name: 'MAKE_SNAPSHOT_STAGES', value: make_snapshot_stages),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
         build_pipeline_job('swarm-deploy-cicd', parameters)
 }
 
-def swarm_deploy_platform(String stack_to_install, String install_timeout, String jenkins_slave_node_name) {
+def swarm_deploy_platform(String stack_to_install, String install_timeout, String jenkins_slave_node_name, Boolean make_snapshot_stages) {
         // Run openstack_deploy job on CICD Jenkins for specified stacks
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
@@ -322,6 +323,7 @@ def swarm_deploy_platform(String stack_to_install, String install_timeout, Strin
                 string(name: 'STACK_INSTALL', value: stack_to_install),
                 string(name: 'STACK_INSTALL_TIMEOUT', value: install_timeout),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
+                booleanParam(name: 'MAKE_SNAPSHOT_STAGES', value: make_snapshot_stages),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
         build_pipeline_job('swarm-deploy-platform', parameters)
@@ -343,7 +345,7 @@ def swarm_deploy_platform_non_cicd(String stack_to_install, String install_timeo
         build_pipeline_job('swarm-deploy-platform-without-cicd', parameters)
 }
 
-def swarm_run_pytest(String passed_steps, String jenkins_slave_node_name) {
+def swarm_run_pytest(String passed_steps, String jenkins_slave_node_name, Boolean make_snapshot_stages) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
@@ -365,8 +367,7 @@ def swarm_run_pytest(String passed_steps, String jenkins_slave_node_name) {
                 string(name: 'TEMPEST_IMAGE_VERSION', value: "${tempest_image_version}"),
                 string(name: 'TEMPEST_TARGET', value: "${tempest_target}"),
                 string(name: 'TEMPEST_EXTRA_ARGS', value: "${tempest_extra_args}"),
-
-
+                booleanParam(name: 'MAKE_SNAPSHOT_STAGES', value: make_snapshot_stages),
             ]
         common.printMsg("Start building job 'swarm-run-pytest' with parameters:", "purple")
         common.prettyPrint(parameters)
@@ -374,7 +375,7 @@ def swarm_run_pytest(String passed_steps, String jenkins_slave_node_name) {
             parameters: parameters
 }
 
-def swarm_testrail_report(String passed_steps, String jenkins_slave_node_name) {
+def swarm_testrail_report(String passed_steps) {
         // Run pytest tests
         def common = new com.mirantis.mk.Common()
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
@@ -385,7 +386,7 @@ def swarm_testrail_report(String passed_steps, String jenkins_slave_node_name) {
                 string(name: 'LAB_CONFIG_NAME', value: "${LAB_CONFIG_NAME}"),
                 string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
-                string(name: 'PARENT_NODE_NAME', value: jenkins_slave_node_name),
+                string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 string(name: 'TEMPEST_TEST_SUITE_NAME', value: "${tempest_test_suite_name}"),

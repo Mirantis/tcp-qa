@@ -18,12 +18,14 @@
  *   IMAGE_PATH_CFG01_DAY01        Not used (backward compatibility, for manual deployment steps only)
  *   TEMPEST_IMAGE_VERSION         Tempest image version: pike by default, can be queens.
  *   TEMPEST_TARGET                Node where tempest will be run
+ *   MAKE_SNAPSHOT_STAGES          optional, use "dos.py snapshot" to snapshot stages
  */
 
 @Library('tcp-qa')_
 
 common = new com.mirantis.mk.Common()
 shared = new com.mirantis.system_qa.SharedPipeline()
+make_snapshot_stages = "${env.MAKE_SNAPSHOT_STAGES}" != "false" ? true : false
 
 if (! env.PARENT_NODE_NAME) {
     error "'PARENT_NODE_NAME' must be set from the parent deployment job!"
@@ -77,16 +79,19 @@ node ("${PARENT_NODE_NAME}") {
 
                 def snapshot_name = "test_completed"
                 shared.download_logs("test_completed_${ENV_NAME}")
-                shared.run_cmd("""\
-                    dos.py suspend ${ENV_NAME}
-                    dos.py snapshot ${ENV_NAME} ${snapshot_name}
-                """)
-                if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
+
+                if (make_snapshot_stages) {
                     shared.run_cmd("""\
-                        dos.py resume ${ENV_NAME}
+                        dos.py suspend ${ENV_NAME}
+                        dos.py snapshot ${ENV_NAME} ${snapshot_name}
                     """)
+                    if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "false") {
+                        shared.run_cmd("""\
+                            dos.py resume ${ENV_NAME}
+                        """)
+                    }
+                    shared.devops_snapshot_info(snapshot_name)
                 }
-                shared.devops_snapshot_info(snapshot_name)
             }
 
         } catch (e) {
@@ -98,10 +103,12 @@ node ("${PARENT_NODE_NAME}") {
         } finally {
             // TODO(ddmitriev): analyze the "def currentResult = currentBuild.result ?: 'SUCCESS'"
             // and report appropriate data to TestRail
-            if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
-                shared.run_cmd("""\
-                    dos.py destroy ${ENV_NAME}
-                """)
+            if (make_snapshot_stages) {
+                if ("${env.SHUTDOWN_ENV_ON_TEARDOWN}" == "true") {
+                    shared.run_cmd("""\
+                        dos.py destroy ${ENV_NAME}
+                    """)
+                }
             }
         }
     }
