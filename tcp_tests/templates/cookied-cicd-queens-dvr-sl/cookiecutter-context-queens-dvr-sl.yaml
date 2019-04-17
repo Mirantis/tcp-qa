@@ -1,6 +1,35 @@
 default_context:
   auditd_enabled: 'False'
   bmk_enabled: 'False'
+  backup_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpQIBAAKCAQEAuY7v++mza4e75f80GYE2iIdZ30d7yvT6Xym00iD/OxRWNtXe
+    rIh7M0X30Q0F2D3hVvPz57axTheOK3xFRVvPoIZjm3fVgwNzQmTyfAZz4TOdTtWx
+    9cye8Bo20qlRpq8wFQMSDhgRv0J1iX6LjJsr8pM1A8q3e4GYnv0DrLBZ1Iq7+T/k
+    qzzsT7PuvGvEK63J/DaE6BI73QG+0W0MvblddznwXvXLo/VlBXajWOv37YHiMFMT
+    Zap7lTvGVEyxByVEM04Bo7ABF2PEPwGrGL9nOpJ1LSxBCcryNVyZbveFF/e8A1Cj
+    178rD+W4H5p2Agr5A/y3LZpTkyhnTtWXzwT3YwIDAQABAoIBACiUNa8lgHM3j8PQ
+    d5hMRZy93M2TWGMeB9Lf0AdT5/0HiYMcakHY5vhjiLpS2sBbZ/gYCXLW5Rdq11Bz
+    MMLmPRWhzg6lui+YhZAze0PcNWM+YlxnJy/Vu7xOP0b6eDy3exBdR4mFgfwNkJ6s
+    6d+p34aA4ssdfdqokLPUKQWO21Y7UVYbht6Tv55nd3YMGXHxJ0phitf7/dFsEX9Z
+    sPSdWqkYMP2UWQBrFSjxV9Q+kE8OQ1VYDFCRa/9a5QHMrFo/0dOxLkZosTcCHM8A
+    H2RHPcKrxFWn7A3eAiA4VCvtM8RX239Bi7Gdvfl1HflSkQwBDUV8F2RZLHM2NU2T
+    EGBQcuECgYEA4ZBwZAtJIQ0R35prGLFj+drb/IKr+x2WD9WOZ83cheGSwdCRk/he
+    zZ5cCKgmSqg9cDJ4/vraoqmAlwQ4uj4e1TudgHPwdDUPuwoveIbUfUyzdIZMt0s4
+    fe61AUhEniIOi09H+E2yHz6OWSw3uA4SKkNsMT4RZc4Nag3Fo86Rrj8CgYEA0piY
+    HMYPHposfjVNM0PMU9F1lwQJMdx3a55JYgUc8cMvrsZPzvwJqrGCMNjP4lPwl/AS
+    x73yaxcxEYGiG6wDkvx+hujjyAx+sal62EB9ofJGDI7u8L2/0voW53RWvTUBsy8e
+    +xOQTewCAAYGLIJnGfEyVqEAu9IPwz3pep8xtd0CgYEAruTusDOr9SuMI0M5LQFG
+    UpHnJogvT1smYoqki0osZcZ8ozjT19aps2bJV5EBd7uxP5BzDsl0wtEIuo90aLwH
+    7i/2NIYw9/m4g78nBZ4NnkXdk0karLhvSf3PbPoa8j3X5x6G4DlmFiHL/8pwPY7z
+    eL+kYR4OIVC+R+/7wcJGZMMCgYEAqOLg0epvw53mYoxCTgNoACvw/lupOAhS6MY2
+    mVn6XVOnkKTO6fIrmmziOGQXSq0APAi2NuL4XrNpkV2BcGmhMCY3Hd/0k8CZdcax
+    km0dk1skm/ugWQYCqKIQ7irZSMESjO0UDkwhJKxI6lXqa5VkM2S/dsOFQBp0s6GZ
+    9NFn3y0CgYEAogzKchxouu4BgqHn76W0IB/XeTuiCDSGRv+IwMoghxbPoT6lO920
+    OHWoo+bX3VuxpCFkN2fFH6V8WncUrv4ItAgxGftL8h9BhMRKiatwOBAw0vG/CO2G
+    CIyvmjhIvpIdAl8i1jIJw1sn/ZVYm8+ZKy4VAqPevc3Ze7WGoMUkFyg=
+    -----END RSA PRIVATE KEY-----
+  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5ju/76bNrh7vl/zQZgTaIh1nfR3vK9PpfKbTSIP87FFY21d6siHszRffRDQXYPeFW8/PntrFOF44rfEVFW8+ghmObd9WDA3NCZPJ8BnPhM51O1bH1zJ7wGjbSqVGmrzAVAxIOGBG/QnWJfouMmyvykzUDyrd7gZie/QOssFnUirv5P+SrPOxPs+68a8Qrrcn8NoToEjvdAb7RbQy9uV13OfBe9cuj9WUFdqNY6/ftgeIwUxNlqnuVO8ZUTLEHJUQzTgGjsAEXY8Q/AasYv2c6knUtLEEJyvI1XJlu94UX97wDUKPXvysP5bgfmnYCCvkD/LctmlOTKGdO1ZfPBPdj
   cicd_control_node01_address: 10.167.4.91
   cicd_control_node01_hostname: cid01
   cicd_control_node02_address: 10.167.4.92
@@ -10,6 +39,35 @@ default_context:
   cicd_control_vip_address: 10.167.4.90
   cicd_control_vip_hostname: cid
   cicd_enabled: 'True'
+  cicd_private_key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEAv64AnFbEuuOQHLlmMkmaZ+Hh/8hJ+VfFpJ/MzW1wWzYyhis7
+    3A8rxNFWJ/I1/LJSsFI8qU0DpxjFjS9LMTTFXhDPPpuzgRLwfVusEmuQdXjOiT34
+    AIs07Q4w1nlvJ2+/l788ie1AEfnewd9erUHOs8Wt/PT3OOM/0ikY7EibvYF4L1Lb
+    xGRKYnUkY7G3eal9XcQpsTzAFRXoK3WafbCFBFsfzEWOhx1T+tn1SwaxPYJDt1OB
+    B1s77enFtBwbmbd0m1F1ufSXmdWea2xF3+5caS6tps/hwhCoOSJUQb7+dK4ri8og
+    q2YIhfEptrMP1R+nVqEY76P31aa/YSw4zOvcQwIDAQABAoIBAQCLKOzQlD4n4ObT
+    s9Z6U+2B1gCaDvOFzy9yoYGy8u1Li0GLHwBKd8kzDzgZsEN5vo1B7bKUx5ELU3S5
+    V8ijZMiVzmZn8eqUnwdyO4flp6otXxOzmAXhfy9hm5fhXjBQ1VSn+vMcv95wLpSG
+    9IBsEQbchXwX1lFWP8Yp8iRiByTqoz6A7qSxRzIOtq1/coYS9Vcy7VZDMiUjqvuc
+    pYvwYHvrgeYqxLXyDRzbZX1BbkSoNI/5VwxLb9IMG901IXph0r4V3uVgnnq+Xzkk
+    MoOfmB3cyOrvtWblZAjkyA+jzTs/QNALRUeI7wUeh4FvlwEGHE6v5G4G28zOS0vL
+    7IEhCqThAoGBAOeyDO07b060l+NOO+Jkv+NV31VD0w3S4TMyLPVSxXsrRPoHM9RM
+    udi6lewmALE4wk2Lc1Il6n0UrUGVbXxf55NJp2BQoSic+ZK2nTki0cZ/CkUDVNwY
+    R0WtWE0i3J+eF3e8j9VYm1mIlv0aDoYeH4qCp5is/JanvLy4MUl6tM7/AoGBANPJ
+    XheDO5lmqq1ejDTo3GAzYuAs44dQLDs0znEuuaUKZ4MKgQ4ax0L9n0MxvsuUGVcN
+    Nm7fZS4uMY3zLCOLcAXyD1jXY210gmOgFdXeYrH+2kSmqfflV8KHOLCatxLzRtbe
+    KBflcrEnrpUVNGKlpZaYr+4AyapXeMuXIxwveva9AoGAYtoDS9/UwHaqau+A+zlS
+    6TJFA8LZNAepz0b0CYLUAJXYavhRs508mWwZ9NPN7c6yj5UUkZLdtZnxxY50VOEy
+    ExQUljIwX/yBOogxEiR57b9b6U/fj7vIBMFNcDOUf4Far9pCX5rbRNrS2I+abLxD
+    ZrwRt0Duz3QnQTkwxhHVPI8CgYAaIjQJJLl7AW84O32DneRrvouJ7CAbd2ot2CNN
+    Vh20XudNBUPNkMJb4t3/Nak8h8bktg2sesaKf0rAIGym6jLlmOwJ43IydHkOgBeR
+    r4JwQml+pS4+F7/Pkk4NhNnobbqlEv7RjA+uCp6BaP9w2M3pGmhDLzezXF3ciYbc
+    mINM5QKBgQCyM9ZWwSiA0D3oitnhs7C4eC0IHBfnSoa7f40osKm4VvmqKBFgRu8L
+    qYK9qX++pUm4sk0q7poGUscc1udMlejAkfc/HLIlUi6MM+S7ZQ2NHtnZ7COZa5O4
+    9fG8FTiigLvMHka9ihYXtPbyGvusCaqyHp3D9VyOT+WsyM5eJe40lA==
+    -----END RSA PRIVATE KEY-----
+  cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/rgCcVsS645AcuWYySZpn4eH/yEn5V8Wkn8zNbXBbNjKGKzvcDyvE0VYn8jX8slKwUjypTQOnGMWNL0sxNMVeEM8+m7OBEvB9W6wSa5B1eM6JPfgAizTtDjDWeW8nb7+XvzyJ7UAR+d7B316tQc6zxa389Pc44z/SKRjsSJu9gXgvUtvEZEpidSRjsbd5qX1dxCmxPMAVFegrdZp9sIUEWx/MRY6HHVP62fVLBrE9gkO3U4EHWzvt6cW0HBuZt3SbUXW59JeZ1Z5rbEXf7lxpLq2mz+HCEKg5IlRBvv50riuLyiCrZgiF8Sm2sw/VH6dWoRjvo/fVpr9hLDjM69xD
   cluster_domain: cookied-cicd-queens-dvr-sl.local
   cluster_name: cookied-cicd-queens-dvr-sl
   ceph_cluster_network: 10.167.4.0/24
