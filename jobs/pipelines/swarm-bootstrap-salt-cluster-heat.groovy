@@ -29,6 +29,7 @@
  *   OS_CREDENTIALS                OpenStack username and password credentials ID in Jenkins
  *   LAB_PARAM_DEFAULTS            Filename placed in tcp_tests/templates/_heat_environments, with default parameters for the heat template
  *
+ *   CREATE_JENKINS_NODE_CREDENTIALS   Jenkins username and password with rights to add/delete Jenkins agents
  */
 
 @Library('tcp-qa')_
@@ -246,6 +247,9 @@ node ("${JENKINS_SLAVE_NODE_NAME}") {
 
         stage("Clean the environment and clone tcp-qa") {
             deleteDir()
+            shared.verbose_sh("""\
+                [ -d /home/jenkins/fuel-devops30 ] || virtualenv /home/jenkins/fuel-devops30
+            """, true, false, true)
             shared.run_cmd("""\
                 git clone https://github.com/Mirantis/tcp-qa.git ${PARENT_WORKSPACE}
             """)
