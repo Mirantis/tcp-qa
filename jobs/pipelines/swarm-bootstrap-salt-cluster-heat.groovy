@@ -29,6 +29,7 @@
  *   OS_CREDENTIALS                OpenStack username and password credentials ID in Jenkins
  *   LAB_PARAM_DEFAULTS            Filename placed in tcp_tests/templates/_heat_environments, with default parameters for the heat template
  *
+ *   CREATE_JENKINS_NODE_CREDENTIALS   Jenkins username and password with rights to add/delete Jenkins agents
  */
 
 @Library('tcp-qa')_
