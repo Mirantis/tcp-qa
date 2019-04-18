@@ -373,35 +373,35 @@ nodes:
         ens3:
           role: single_ctl
 
-    kmn01.cookied-cicd-ovs-maas.local:
-      reclass_storage_name: openstack_barbican_node01
-      roles:
-      - openstack_barbican
-      - linux_system_codename_xenial
-      interfaces:
-        ens2:
-          role: single_dhcp
-        ens3:
-          role: single_ctl
-
-    kmn02.cookied-cicd-ovs-maas.local:
-      reclass_storage_name: openstack_barbican_node02
-      roles:
-      - openstack_barbican
-      - linux_system_codename_xenial
-      interfaces:
-        ens2:
-          role: single_dhcp
-        ens3:
-          role: single_ctl
-
-    kmn03.cookied-cicd-ovs-maas.local:
-      reclass_storage_name: openstack_barbican_node03
-      roles:
-      - openstack_barbican
-      - linux_system_codename_xenial
-      interfaces:
-        ens2:
-          role: single_dhcp
-        ens3:
-          role: single_ctl
+#    kmn01.cookied-cicd-ovs-maas.local:
+#      reclass_storage_name: openstack_barbican_node01
+#      roles:
+#      - openstack_barbican
+#      - linux_system_codename_xenial
+#      interfaces:
+#        ens2:
+#          role: single_dhcp
+#        ens3:
+#          role: single_ctl
+#
+#    kmn02.cookied-cicd-ovs-maas.local:
+#      reclass_storage_name: openstack_barbican_node02
+#      roles:
+#      - openstack_barbican
+#      - linux_system_codename_xenial
+#      interfaces:
+#        ens2:
+#          role: single_dhcp
+#        ens3:
+#          role: single_ctl
+#
+#    kmn03.cookied-cicd-ovs-maas.local:
+#      reclass_storage_name: openstack_barbican_node03
+#      roles:
+#      - openstack_barbican
+#      - linux_system_codename_xenial
+#      interfaces:
+#        ens2:
+#          role: single_dhcp
+#        ens3:
+#          role: single_ctl
