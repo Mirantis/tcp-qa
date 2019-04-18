@@ -870,7 +870,7 @@ default_context:
   openstack_telemetry_node03_address: 10.167.11.86
   openstack_telemetry_node03_hostname: mdb03
   barbican_backend: dogtag
-  barbican_enabled: 'True'
+  barbican_enabled: 'False'
   barbican_integration_enabled: 'False'
   openstack_barbican_address: 10.167.11.44
   openstack_barbican_hostname: kmn
