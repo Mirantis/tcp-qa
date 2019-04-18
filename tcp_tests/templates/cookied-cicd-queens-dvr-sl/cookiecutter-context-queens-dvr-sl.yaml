@@ -250,3 +250,5 @@ default_context:
   openstack_dns_node02_address: 10.167.4.114
 
   secrets_encryption_enabled: 'False'
+  cinder_backup_engine: 'ceph'
+  cinder_ceph_backup_pool_name: 'backups'

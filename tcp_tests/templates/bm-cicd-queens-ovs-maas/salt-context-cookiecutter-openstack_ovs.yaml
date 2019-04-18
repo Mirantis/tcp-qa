@@ -846,3 +846,5 @@ default_context:
   secrets_encryption_key_id: 'F5CB2ADC36159B03'
   # Used on CI only.
   secrets_encryption_private_key: ''
+  cinder_backup_engine: 'ceph'
+  cinder_ceph_backup_pool_name: 'backups'
