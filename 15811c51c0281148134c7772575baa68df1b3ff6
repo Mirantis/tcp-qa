@@ -1,0 +1,142 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "36e1aacd_5fe177a6",
+        "filename": "jobs/pipelines/deploy-cicd-and-run-tests.groovy",
+        "patchSetId": 9
+      },
+      "lineNbr": 30,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-04-18T21:43:40Z",
+      "side": 1,
+      "message": "is this code still need?",
+      "range": {
+        "startLine": 30,
+        "startChar": 0,
+        "endLine": 30,
+        "endChar": 58
+      },
+      "revId": "15811c51c0281148134c7772575baa68df1b3ff6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b6c86a11_215cdb6f",
+        "filename": "jobs/pipelines/deploy-cicd-and-run-tests.groovy",
+        "patchSetId": 9
+      },
+      "lineNbr": 33,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-04-18T21:43:40Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 33,
+        "startChar": 0,
+        "endLine": 33,
+        "endChar": 81
+      },
+      "revId": "15811c51c0281148134c7772575baa68df1b3ff6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "4b545a19_fbf5b7ff",
+        "filename": "jobs/pipelines/deploy-cicd-and-run-tests.groovy",
+        "patchSetId": 9
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-04-18T21:43:40Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 36,
+        "startChar": 0,
+        "endLine": 36,
+        "endChar": 87
+      },
+      "revId": "15811c51c0281148134c7772575baa68df1b3ff6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ed1888c4_73b732a5",
+        "filename": "jobs/pipelines/deploy-cicd-and-run-tests.groovy",
+        "patchSetId": 9
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-04-18T21:43:40Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 39,
+        "startChar": 0,
+        "endLine": 39,
+        "endChar": 71
+      },
+      "revId": "15811c51c0281148134c7772575baa68df1b3ff6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3b0eca5a_970d1624",
+        "filename": "jobs/pipelines/deploy-cicd-and-run-tests.groovy",
+        "patchSetId": 9
+      },
+      "lineNbr": 125,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-04-18T21:43:40Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 125,
+        "startChar": 0,
+        "endLine": 125,
+        "endChar": 77
+      },
+      "revId": "15811c51c0281148134c7772575baa68df1b3ff6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "85564cad_b329b647",
+        "filename": "jobs/pipelines/deploy-cicd-and-run-tests.groovy",
+        "patchSetId": 9
+      },
+      "lineNbr": 128,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-04-18T21:43:40Z",
+      "side": 1,
+      "message": "ditto",
+      "range": {
+        "startLine": 128,
+        "startChar": 0,
+        "endLine": 128,
+        "endChar": 75
+      },
+      "revId": "15811c51c0281148134c7772575baa68df1b3ff6",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
