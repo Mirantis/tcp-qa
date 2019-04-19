@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c3a53f32_c348678e",
+        "filename": "jobs/pipelines/swarm-bootstrap-salt-cluster-devops.groovy",
+        "patchSetId": 10
+      },
+      "lineNbr": 88,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-04-19T13:17:17Z",
+      "side": 1,
+      "message": "h",
+      "revId": "f55fd1ac863d027d3033f704e10ae7671fd1cd52",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
