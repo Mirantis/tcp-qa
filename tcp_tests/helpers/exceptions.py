@@ -188,3 +188,12 @@ class EnvironmentNodeAccessError(BaseException):
     def __str__(self):
         return ("Unable to reach the node {0}: \n{1}"
                 .format(self.node_name, self.message))
+
+
+class DriveTrainError(BaseException):
+    def __init__(self, message=''):
+        super(DriveTrainError, self).__init__()
+        self.message = message
+
+    def __str__(self):
+        return (self.message)

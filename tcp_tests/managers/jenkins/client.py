@@ -50,6 +50,9 @@ class JenkinsClient(object):
     def jobs(self):
         return self.__client.get_jobs()
 
+    def get_nodes(self):
+        return self.__client.get_nodes()
+
     def find_jobs(self, name):
         return filter(lambda x: name in x['fullname'], self.jobs())
 
