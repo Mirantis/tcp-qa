@@ -541,6 +541,7 @@ def sanity_check_component(stack) {
     // Result will be stored in JUnit XML file deploy_${stack}.xml
     try {
         run_cmd("""\
+            export TESTS_CONFIGS=${ENV_NAME}_salt_deployed.ini
             py.test --junit-xml=deploy_${stack}.xml -m check_${stack}
         """)
     } catch (e) {
