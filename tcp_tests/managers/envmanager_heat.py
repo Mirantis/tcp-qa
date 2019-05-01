@@ -102,7 +102,7 @@ class EnvironmentManagerHeat(object):
             username=settings.OS_USERNAME,
             password=settings.OS_PASSWORD,
             project_name=settings.OS_PROJECT_NAME,
-            user_domain_name='Default',
+            user_domain_name=settings.OS_USER_DOMAIN_NAME,
             project_domain_name='Default')
         return keystone_session.Session(auth=keystone_auth, verify=False)
 
@@ -137,13 +137,39 @@ class EnvironmentManagerHeat(object):
             self.__init_heatclient()
             return self.__heatclient.resources
 
+    def __get_stack_parent(self, stack_id, stacks):
+        """Find the parent ID of the specified stack_id in the 'stacks' list"""
+        for stack in stacks:
+            if stack_id == stack.id:
+                if stack.parent:
+                    return self.__get_stack_parent(stack.parent, stacks)
+                else:
+                    return stack.id
+        raise Exception("stack with ID {} not found!".format(stack_id))
+
+    @property
+    def __nested_resources(self):
+        resources = []
+        stacks = [s for s in self.__stacks.list(show_nested=True)]
+        current_stack_id = self._current_stack.id
+        for stack in stacks:
+            parent_stack_id = self.__get_stack_parent(stack.id, stacks)
+            if parent_stack_id == current_stack_id:
+                # Add resources to list
+                LOG.info("Get resources from stack {0}"
+                         .format(stack.stack_name))
+                resources.extend([
+                    res for res in self.__resources.list(stack.id)
+                ])
+        LOG.info("Found {0} resources".format(len(resources)))
+        return resources
+
     def _get_resources_by_type(self, resource_type):
         res = []
-        for item in self.__resources.list(
-                self.__config.hardware.heat_stack_name):
+        for item in self.__nested_resources:
             if item.resource_type == resource_type:
                 resource = self.__resources.get(
-                    self.__config.hardware.heat_stack_name,
+                    item.stack_name,
                     item.resource_name)
                 res.append(resource)
         return res
@@ -199,7 +225,7 @@ class EnvironmentManagerHeat(object):
                                   .format(addr_type,
                                           heat_node.attributes['name'],
                                           network))
-                if fixed is None or floating is None:
+                if fixed is None and floating is None:
                     LOG.error("Unable to determine the correct IP address "
                               "in node '{0}' for network '{1}'"
                               .format(heat_node.attributes['name'], network))
@@ -210,7 +236,13 @@ class EnvironmentManagerHeat(object):
                     pool_net = netaddr.IPNetwork(address_pool['cidr'])
                     if fixed in pool_net:
                         for role in address_pool['roles']:
-                            addresses[role] = floating
+                            # addresses[role] = floating
+                            # Use fixed addresses for SSH access
+                            addresses[role] = fixed
+            if 'metadata' not in heat_node.attributes or \
+                    'roles' not in heat_node.attributes['metadata']:
+                raise Exception("Node {} doesn't have metadata:roles:[...,...]"
+                                .format(heat_node.attributes['name']))
 
             nodes.append({
                 'name': heat_node.attributes['name'],
@@ -281,8 +313,7 @@ class EnvironmentManagerHeat(object):
 
     def _get_resources_with_wrong_status(self):
         res = []
-        for item in self.__resources.list(
-                self.__config.hardware.heat_stack_name):
+        for item in self.__nested_resources:
             if item.resource_status in BAD_STACK_STATUSES:
                 res.append({
                     'resource_name': item.resource_name,
@@ -485,6 +516,10 @@ class EnvironmentManagerHeat(object):
             'template': template,
             'files': dict(list(tpl_files.items()) + list(env_files.items())),
             'environment': env,
+            'parameters': {
+                'mcp_version': settings.MCP_VERSION,
+                'env_name': settings.ENV_NAME,
+            }
         }
 
         if env_files_list:
