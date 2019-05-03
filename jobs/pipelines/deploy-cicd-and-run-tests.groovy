@@ -13,7 +13,7 @@ if (env_manager == 'devops') {
     make_snapshot_stages = false
 }
 
-currentBuild.description = "${NODE_NAME}:${ENV_NAME}"
+currentBuild.description = "${NODE_NAME}:${ENV_NAME}<br>"
 
 def deploy(shared, common, steps, env_manager) {
     def report_text = ''
@@ -131,6 +131,21 @@ def test(shared, common, steps, env_manager) {
             }
         }
 
+        if (fileExists("jenkins_agent_description.txt")) {
+            def String jenkins_agent_description = readFile("jenkins_agent_description.txt")
+            currentBuild.description += "${jenkins_agent_description}"
+
+            // if there is a separated foundation node on $jenkins_slave_node_name,
+            // then archive artifacts also on that node
+            if (jenkins_slave_node_name != env.NODE_NAME) {
+                node ("${jenkins_slave_node_name}") {
+                    stage("Archive all xml reports from node ${}") {
+                        archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
+                    }
+                }
+            }
+        }
+
         stage("Archive all xml reports") {
             archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
         }
@@ -140,9 +155,11 @@ def test(shared, common, steps, env_manager) {
             }
             stage("Store TestRail reports to job description") {
                 def String description = readFile("description.txt")
-                currentBuild.description += "\n${description}"
+                currentBuild.description += "${description}"
             }
         }
-    }
-  }
+    } // try
+  } // node
+
+
 //}

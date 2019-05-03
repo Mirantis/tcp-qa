@@ -24,6 +24,7 @@ def get_var_as_bool(name, default):
 
 
 LOGS_DIR = os.environ.get('LOGS_DIR', os.getcwd())
+LOG_NAME = os.environ.get('LOG_NAME', 'tests.log')
 TIMESTAT_PATH_YAML = os.environ.get(
     'TIMESTAT_PATH_YAML', os.path.join(
         LOGS_DIR, 'timestat_{}.yaml'.format(time.strftime("%Y%m%d"))))

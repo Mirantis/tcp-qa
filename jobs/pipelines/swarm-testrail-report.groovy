@@ -87,7 +87,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
                 }
@@ -108,7 +108,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
                 }
@@ -124,7 +124,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
                 }
@@ -150,7 +150,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
                 }
@@ -172,7 +172,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
                 }
@@ -188,7 +188,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
                 }
@@ -210,7 +210,7 @@ node ("${PARENT_NODE_NAME}") {
                     report_url = report_result.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
-                            description += "\n<a href=" + it.trim().split().last() + ">${testSuiteName}</a>"
+                            description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
                 }
