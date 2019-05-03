@@ -73,6 +73,7 @@ node ("${PARENT_NODE_NAME}") {
                     export SALT_USER=\$SALTAPI_USER
                     export SALT_PASSWORD=\$SALTAPI_PASS
 
+                    export LOG_NAME=swarm_run_pytest.log
                     py.test --junit-xml=nosetests.xml ${RUN_TEST_OPTS}
 
                     """)

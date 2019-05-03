@@ -70,6 +70,7 @@ node ("${PARENT_NODE_NAME}") {
                 export PYTHONIOENCODING=UTF-8
                 export REPOSITORY_SUITE=${MCP_VERSION}
                 export TEST_GROUP=test_create_environment
+                export LOG_NAME=swarm_test_create_environment.log
                 py.test -vvv -s -p no:django -p no:ipdb --junit-xml=deploy_hardware.xml -k \${TEST_GROUP}
             """)
         }
@@ -122,6 +123,7 @@ node ("${PARENT_NODE_NAME}") {
                     export PYTHONIOENCODING=UTF-8
                     export REPOSITORY_SUITE=${MCP_VERSION}
                     export TEST_GROUP=test_bootstrap_salt
+                    export LOG_NAME=swarm_test_bootstrap_salt.log
                     py.test -vvv -s -p no:django -p no:ipdb --junit-xml=${xml_report_name} -k \${TEST_GROUP}
                 """)
                 // Wait for jenkins to start and IO calm down

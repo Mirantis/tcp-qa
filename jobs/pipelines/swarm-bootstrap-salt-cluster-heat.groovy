@@ -97,7 +97,7 @@ node ("${PARENT_NODE_NAME}") {
             }
 
             stage("Generate config drive ISO") {
-                def SALT_MASTER_IP=shared.run_cmd_stdout("./tcp_tests/utils/get_param_heat_template.py management_subnet_cfg01_ip").trim().split().last()
+                SALT_MASTER_IP=shared.run_cmd_stdout("./tcp_tests/utils/get_param_heat_template.py management_subnet_cfg01_ip").trim().split().last()
                 def ADMIN_NETWORK_GW=shared.run_cmd_stdout("./tcp_tests/utils/get_param_heat_template.py management_subnet_gateway_ip").trim().split().last()
                 shared.generate_configdrive_iso(SALT_MASTER_IP, ADMIN_NETWORK_GW)
             }
@@ -157,6 +157,7 @@ node ("${PARENT_NODE_NAME}") {
                     export ENV_NAME=${ENV_NAME}
                     export LAB_CONFIG_NAME=${LAB_CONFIG_NAME}
                     export LAB_PARAM_DEFAULTS=${LAB_PARAM_DEFAULTS}
+                    export LOG_NAME=swarm_test_create_environment.log
                     py.test --cache-clear -vvv -s -p no:django -p no:ipdb --junit-xml=deploy_hardware.xml -k \${TEST_GROUP}
                 """)
             }
@@ -233,11 +234,16 @@ node ("${PARENT_NODE_NAME}") {
                 shared.verbose_sh(script_delete_agent, true, false, true)
                 shared.verbose_sh(script_create_agent, true, false, true)
 
+                // Store jenkins agent IP address
+                jenkins_agent_description = "ssh jenkins@${jenkins_slave_ip}  # foundation node with Jenkins agent <a href=${JENKINS_URL}/computer/${JENKINS_SLAVE_NODE_NAME}>${JENKINS_SLAVE_NODE_NAME}</a><br>ssh root@${SALT_MASTER_IP}  # cfg01 node<br>"
+                writeFile(file: "jenkins_agent_description.txt", text: jenkins_agent_description, encoding: "UTF-8")
+
         } // withCredentials
 
             }// stage
 
         } // withCredentials
+
     } // dir
 } // node
 
@@ -278,6 +284,7 @@ node ("${JENKINS_SLAVE_NODE_NAME}") {
                         export PYTHONIOENCODING=UTF-8
                         export REPOSITORY_SUITE=${MCP_VERSION}
                         export TEST_GROUP=test_bootstrap_salt
+                        export LOG_NAME=swarm_test_bootstrap_salt.log
                         py.test -vvv -s -p no:django -p no:ipdb --junit-xml=${xml_report_name} -k \${TEST_GROUP}
                     """)
                     // Wait for jenkins to start and IO calm down

@@ -24,7 +24,8 @@ if not os.path.exists(settings.LOGS_DIR):
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(levelname)s %(filename)s:'
                     '%(lineno)d -- %(message)s',
-                    filename=os.path.join(settings.LOGS_DIR, 'tests.log'),
+                    filename=os.path.join(settings.LOGS_DIR,
+                                          settings.LOG_NAME),
                     filemode='w')
 
 console = logging.StreamHandler()
