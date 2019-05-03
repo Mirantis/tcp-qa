@@ -587,27 +587,28 @@ ssh -i ${key_file} ${login}@${SALT_MASTER_IP} # Optional password: ${password}
 """, "cyan")
 }
 
-def devops_snapshot(stack) {
-    // Make the snapshot with name "${stack}_deployed"
+def devops_snapshot(stacks) {
+    // Make snapshots with names "${stack}_deployed" for each stack
     // for all VMs in the environment.
-    // If oslo_config INI file ${ENV_NAME}_salt_deployed.ini exists,
-    // then make a copy for the created snapshot to allow the system
-    // tests to revert this snapshot along with the metadata from the INI file.
+
     run_cmd("""\
-        set -ex
         dos.py suspend ${ENV_NAME}
-        dos.py snapshot ${ENV_NAME} ${stack}_deployed
+    """)
+
+    for (stack in "${stacks}".split(",")) {
+        run_cmd("""\
+            dos.py snapshot ${ENV_NAME} ${stack}_deployed
+        """)
+        devops_snapshot_info("${stack}_deployed")
+    }
+
+    run_cmd("""\
         dos.py resume ${ENV_NAME}
         sleep 20    # Wait for I/O on the host calms down
 
         CFG01_NAME=\$(dos.py show-resources ${ENV_NAME} | grep ^cfg01 | cut -d" " -f1)
         dos.py time-sync ${ENV_NAME} --skip-sync \${CFG01_NAME}
-
-        if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
-            cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
-        fi
     """)
-    devops_snapshot_info("${stack}_deployed")
 }
 
 def get_steps_list(steps) {
