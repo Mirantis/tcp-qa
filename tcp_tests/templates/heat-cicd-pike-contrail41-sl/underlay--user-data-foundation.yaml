@@ -15,6 +15,7 @@ disable_root: false
 chpasswd:
   list: |
     root:r00tme
+    jenkins:qalab
   expire: False
 
 packages:
