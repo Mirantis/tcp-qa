@@ -239,14 +239,14 @@ default_context:
   openldap_domain: heat-cicd-pike-contrail41-sl.local
   openldap_enabled: 'True'
   openldap_organisation: ${_param:cluster_name}
-  ceph_enabled: 'False'
+  ceph_enabled: 'True'
   ceph_version: "luminous"
   ceph_hyper_converged: "False"
   ceph_osd_backend: "bluestore"
   ceph_osd_count: "3"
   ceph_osd_node_count: 3
-  ceph_osd_block_db_size: 20
-  ceph_osd_journal_size: 20
+  ceph_osd_block_db_size: 3
+  ceph_osd_journal_size: 3
   ceph_osd_bond_mode: "active-backup"
   ceph_osd_data_partition_prefix: ""
 
@@ -255,13 +255,13 @@ default_context:
   ceph_cluster_network: "==IPV4_NET_CONTROL_PREFIX==.0/24"
 
 # for 2018.11.0+
-  ceph_osd_single_address_ranges: "==IPV4_NET_CONTROL_PREFIX==.200-==IPV4_NET_CONTROL_PREFIX==.202"
+  ceph_osd_single_address_ranges: "==IPV4_NET_CONTROL_PREFIX==.201-==IPV4_NET_CONTROL_PREFIX==.203"
   ceph_osd_deploy_address_ranges: "==IPV4_NET_ADMIN_PREFIX==.70-==IPV4_NET_ADMIN_PREFIX==.72"
-  ceph_osd_storage_address_ranges: "==IPV4_NET_CONTROL_PREFIX==.200-==IPV4_NET_CONTROL_PREFIX==.202"
-  ceph_osd_backend_address_ranges: "==IPV4_NET_TENANT_PREFIX==.200-==IPV4_NET_TENANT_PREFIX==.202"
+  ceph_osd_storage_address_ranges: "==IPV4_NET_CONTROL_PREFIX==.201-==IPV4_NET_CONTROL_PREFIX==.203"
+  ceph_osd_backend_address_ranges: "==IPV4_NET_TENANT_PREFIX==.201-==IPV4_NET_TENANT_PREFIX==.203"
 
-  ceph_osd_data_disks: "/dev/sdb"
-  ceph_osd_journal_or_block_db_disks: "/dev/sdb"
+  ceph_osd_data_disks: "/dev/vdb"
+  ceph_osd_journal_or_block_db_disks: "/dev/vdb"
   ceph_osd_mode: "separated"
   ceph_osd_deploy_nic: "eth0"
   ceph_osd_primary_first_nic: "eth1"
@@ -301,4 +301,4 @@ default_context:
   openstack_mysql_x509_enabled: 'True'
   rabbitmq_ssl_enabled: 'True'
   openstack_rabbitmq_x509_enabled: 'True'
-  openstack_internal_protocol: 'http'
+  openstack_internal_protocol: 'https'
