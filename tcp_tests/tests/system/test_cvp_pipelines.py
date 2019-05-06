@@ -136,6 +136,7 @@ class TestCvpPipelines(object):
                 "skipped_packages='python-setuptools,"
                 "python-pkg-resources,xunitmerge,python-gnocchiclient,"
                 "python-ujson,python-octaviaclient', "
+                "skipped_modules='xunitmerge,setuptools', "
                 "skipped_services='docker, "
                 "containerd'; drivetrain_version={0};{1}"
                 .format(settings.MCP_VERSION, ntp_skipped_nodes)),
