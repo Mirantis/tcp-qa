@@ -56,14 +56,23 @@ timeout(time: install_timeout + 600, unit: 'SECONDS') {
                 for (stack in "${env.STACK_INSTALL}".split(",")) {
                     stage("Sanity check the deployed component [${stack}]") {
                         shared.sanity_check_component(stack)
-                    }
 
-                    if (make_snapshot_stages) {
-                        stage("Make environment snapshot [${stack}_deployed]") {
-                            shared.devops_snapshot(stack)
-                        }
+                        // If oslo_config INI file ${ENV_NAME}_salt_deployed.ini exists,
+                        // then make a copy for the created snapshot to allow the system
+                        // tests to revert this snapshot along with the metadata from the INI file.
+                        shared.run_cmd("""\
+                            if [ -f \$(pwd)/${ENV_NAME}_salt_deployed.ini ]; then
+                                cp \$(pwd)/${ENV_NAME}_salt_deployed.ini \$(pwd)/${ENV_NAME}_${stack}_deployed.ini
+                            fi
+                        """)
                     }
                 } // for
+
+                if (make_snapshot_stages) {
+                    stage("Make environment snapshots for [${env.STACK_INSTALL}]") {
+                        shared.devops_snapshot(env.STACK_INSTALL)
+                    }
+                }
 
             } catch (e) {
                 common.printMsg("Job is failed", "purple")
