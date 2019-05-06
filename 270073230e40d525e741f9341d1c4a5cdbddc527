@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7e1e361f_fc49b996",
+        "filename": "jobs/pipelines/swarm-bootstrap-salt-cluster-heat.groovy",
+        "patchSetId": 5
+      },
+      "lineNbr": 100,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-05-06T10:09:05Z",
+      "side": 1,
+      "message": "missed def or we want to have it defined locally only ?",
+      "range": {
+        "startLine": 100,
+        "startChar": 16,
+        "endLine": 100,
+        "endChar": 30
+      },
+      "revId": "270073230e40d525e741f9341d1c4a5cdbddc527",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
