@@ -1,0 +1,411 @@
+---
+
+heat_template_version: queens
+
+description: MCP environment for heat-cicd-k8s-contrail41-sl
+
+parameters:
+  instance_domain:
+    type: string
+    default: heat-cicd-k8s-contrail41-sl.local
+  mcp_version:
+    type: string
+  env_name:
+    type: string
+  control_subnet_cidr:
+    type: string
+  management_subnet_cidr:
+    type: string
+  management_subnet_pool_start:
+    type: string
+  management_subnet_pool_end:
+    type: string
+  management_subnet_cfg01_ip:
+    type: string
+  management_subnet_gateway_ip:
+    type: string
+
+  key_pair:
+    type: string
+
+  ctl_flavor:
+    type: string
+  cfg_flavor:
+    type: string
+  cid_flavor:
+    type: string
+  kvm_fake_flavor:
+    type: string
+  mon_flavor:
+    type: string
+  log_flavor:
+    type: string
+  mtr_flavor:
+    type: string
+  cmp_flavor:
+    type: string
+  cmn_flavor:
+    type: string
+  rgw_flavor:
+    type: string
+  osd_flavor:
+    type: string
+  foundation_flavor:
+    type: string
+
+  net_public:
+    type: string
+
+resources:
+  networks:
+    type: MCP::Networks
+    properties:
+      stack_name: { get_param: "OS::stack_name" }
+      env_name: { get_param: env_name }
+
+  #flavors:
+  #  type: MCP::Flavors
+
+  cfg01_node:
+    type: MCP::MasterNode
+    depends_on: [networks]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      cfg01_flavor: { get_param: cfg_flavor }
+      instance_name: cfg01
+      instance_domain: {get_param: instance_domain}
+      network: { get_attr: [networks, network] }
+
+  control_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [cfg01_node]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: ctl01
+      instance02_name: ctl02
+      instance03_name: ctl03
+      instance_flavor: {get_param: ctl_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '11' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '12' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '13' ]
+
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  fake_kvm_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [cfg01_node]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: kvm01
+      instance02_name: kvm02
+      instance03_name: kvm03
+      instance_flavor: {get_param: kvm_fake_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '241' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '242' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '243' ]
+
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  cicd_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [cfg01_node]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: cid01
+      instance02_name: cid02
+      instance03_name: cid03
+      instance_flavor: {get_param: cid_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '91' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '92' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '93' ]
+
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  stacklight_monitor_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [openstack_message_queue_cluster]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: mon01
+      instance02_name: mon02
+      instance03_name: mon03
+      instance_flavor: {get_param: mon_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '71' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '72' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '73' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  stacklight_log_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [stacklight_monitor_cluster]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: log01
+      instance02_name: log02
+      instance03_name: log03
+      instance_flavor: {get_param: log_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '61' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '62' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '63' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  stacklight_mtr_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [stacklight_log_cluster]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: mtr01
+      instance02_name: mtr02
+      instance03_name: mtr03
+      instance_flavor: {get_param: mtr_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '86' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '87' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '88' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  ceph_cmn_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [cfg01_node]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: cmn01
+      instance02_name: cmn02
+      instance03_name: cmn03
+      instance_flavor: {get_param: cmn_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '66' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '67' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '68' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  ceph_rgw_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [cfg01_node]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: rgw01
+      instance02_name: rgw02
+      instance03_name: rgw03
+      instance_flavor: {get_param: rgw_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '76' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '77' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '78' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  ceph_osd_cluster:
+    type: MCP::MultipleInstance
+    depends_on: [cfg01_node]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance01_name: osd001
+      instance02_name: osd002
+      instance03_name: osd003
+      instance_flavor: {get_param: osd_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      instance01_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '201' ]
+      instance02_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '202' ]
+      instance03_control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '203' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  prx01_virtual:
+    type: MCP::SingleInstance
+    depends_on: [control_cluster]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance_name: prx01
+      instance_flavor: {get_param: cid_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '81' ]
+
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  cmp001_virtual:
+    type: MCP::Compute
+    depends_on: [cfg01_node]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance_name: cmp001
+      instance_flavor: {get_param: cmp_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '101' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  cmp002_virtual:
+    type: MCP::Compute
+    depends_on: [cfg01_node]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance_name: cmp002
+      instance_flavor: {get_param: cmp_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay-userdata.yaml }
+      control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '102' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+  foundation_node:
+    type: MCP::FoundationNode
+    depends_on: [networks]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance_name: foundation
+      instance_flavor: {get_param: foundation_flavor}
+      network: { get_attr: [networks, network] }
+      underlay_userdata: { get_file: ./underlay--user-data-foundation.yaml }
+      control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, control_net_prefix] }, '5' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+
+outputs:
+
+  control_subnet_cidr:
+    description: Control network CIDR
+    value: { get_param: control_subnet_cidr }
+
+  management_subnet_cidr:
+    description: Admin network CIDR
+    value: { get_param: management_subnet_cidr }
+
+  foundation_floating:
+    description: foundation node IP address (floating) from external network
+    value:
+      get_attr:
+      - foundation_node
+      - instance_floating_address
+...
