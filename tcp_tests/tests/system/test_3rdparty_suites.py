@@ -32,13 +32,16 @@ class Test3rdpartySuites(object):
     @pytest.mark.grab_versions
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_tempest
-    def test_run_tempest(self, tempest_actions, show_step, _):
+    def test_run_tempest(self, tempest_actions, show_step, salt_actions, _):
         """Runner for Openstack tempest tests
 
         Scenario:
-            1. Run tempest
+            1. Sync time on the environment nodes
+            2. Run tempest
         """
         show_step(1)
+        salt_actions.sync_time()
+        show_step(2)
         tempest_actions.prepare_and_run_tempest()
 
     @pytest.mark.grab_versions
