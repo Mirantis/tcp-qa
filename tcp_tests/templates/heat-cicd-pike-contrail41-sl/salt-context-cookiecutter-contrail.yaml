@@ -249,7 +249,6 @@ default_context:
   ceph_osd_journal_size: 3
   ceph_osd_bond_mode: "active-backup"
   ceph_osd_data_partition_prefix: ""
-
   ceph_public_network_allocation: storage
   ceph_public_network: "==IPV4_NET_CONTROL_PREFIX==.0/24"
   ceph_cluster_network: "==IPV4_NET_CONTROL_PREFIX==.0/24"
