@@ -43,7 +43,7 @@ class Test3rdpartySuites(object):
 
     @pytest.mark.grab_versions
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
-    @pytest.mark.run_stacklight
+    @pytest.mark.run_stacklight_old
     def test_run_stacklight(self, sl_actions, show_step, _):
         """Runner for Stacklight tests
 
