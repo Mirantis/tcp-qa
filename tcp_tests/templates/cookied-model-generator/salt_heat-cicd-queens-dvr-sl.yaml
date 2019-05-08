@@ -1,0 +1,30 @@
+{% from 'cookied-model-generator/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-model-generator/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set LAB_CONFIG_NAME = 'heat-cicd-queens-dvr-sl' %}
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','heat-cicd-queens-dvr-sl') %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml', 'salt-context-cookiecutter.yaml'] %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
+
+{{ SHARED.MACRO_INSTALL_FORMULAS('\*') }}
+
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+
+- description: Temporary workaround !! Fix or debug
+  cmd: |
+    sed -i 's/pg_num: 128/pg_num: 4/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/ceph/setup.yml;
+    sed -i 's/pgp_num: 128/pgp_num: 4/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/ceph/setup.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: true
+
+{{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
