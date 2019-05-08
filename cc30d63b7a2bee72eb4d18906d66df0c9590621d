@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "58241a35_537db46f",
+        "filename": "tcp_tests/templates/_heat_environments/eu-cloud-queens-dvr.env",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-08T13:58:40Z",
+      "side": 1,
+      "message": "Acrtually, no need to clone .env files per deployment\n\n.env file is assumed to describe defaults for an OpenStack cloud - one for microcloud on 8133; one for EU cloud.\n\nAll the resources or flavors required for our labs - should be described in each .env file according to the particular cloud properties.\n\nDifferent env files may be suitable for different lab sizes (another set of flavors or CIDRs for example). I think this is not that case.",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 43,
+        "endChar": 35
+      },
+      "revId": "cc30d63b7a2bee72eb4d18906d66df0c9590621d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
