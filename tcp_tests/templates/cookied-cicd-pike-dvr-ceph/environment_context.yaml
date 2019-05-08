@@ -5,8 +5,8 @@ nodes:
       - infra_config
       - linux_system_codename_xenial
       - features_runtest_cfg
-      classes:
-      - environment.cookied-cicd-pike-dvr-ceph.override_ntp_virtual
+      #classes:
+      #- environment.cookied-cicd-pike-dvr-ceph.override_ntp_virtual
       interfaces:
         ens3:
           role: single_dhcp
