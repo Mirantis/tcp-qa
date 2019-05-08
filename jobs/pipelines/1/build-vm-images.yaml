@@ -1,0 +1,35 @@
+- job-template:
+    name: build-vm-{distro}-images
+    description: |
+      Build Ubuntu VM qcow2 image
+    project-type: pipeline
+    dsl:
+      !include-raw-escape: build-vm-images.groovy
+    concurrent: false
+    parameters:
+      - string:
+          name: DISTRO
+          default: 'ubuntu-16.04.2-server-amd64'
+    properties:
+    - build-discarder:
+        days-to-keep: 7
+        num-to-keep: 50
+    triggers:
+      - gerrit:
+          trigger-on:
+            - change-merged-event
+          projects:
+            - project-compare-type: PLAIN
+              project-pattern: mcp-ci/project-config
+              branches:
+                - branch-compare-type: ANT
+                  branch-pattern: '**'
+              file-paths:
+                - compare-type: ANT
+                  pattern: utils/packer/**
+          custom-url: '* $JOB_NAME $BUILD_URL'
+          skip-vote:
+            successful: true
+            failed: true
+            unstable: true
+            notbuilt: true
