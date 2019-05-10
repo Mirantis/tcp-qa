@@ -23,13 +23,6 @@
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
-- description: Temporary WR for cinder backend defined by default in reclass.system
-  cmd: |
-    sed -i 's/backend\:\ {}//g' /srv/salt/reclass/classes/system/cinder/control/cluster.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: false
-
 - description: Temporary WR for correct bridge name according to envoronment templates
   cmd: |
     sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
@@ -58,11 +51,3 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
-
-- description: Temporary workaround !! Fix or debug
-  cmd: |
-    sed -i 's/pg_num: 128/pg_num: 4/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/ceph/setup.yml;
-    sed -i 's/pgp_num: 128/pgp_num: 4/g' /srv/salt/reclass/classes/cluster/{{ SHARED.CLUSTER_NAME }}/ceph/setup.yml;
-  node_name: {{ HOSTNAME_CFG01 }}
-  retry: {count: 1, delay: 5}
-  skip_fail: true
