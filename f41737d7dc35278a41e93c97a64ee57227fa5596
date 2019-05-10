@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d64a4083_5a360bef",
+        "filename": "tcp_tests/templates/cookied-cicd-bm-os-contrail40-maas/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 468,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-10T15:25:08Z",
+      "side": 1,
+      "message": "remove?",
+      "range": {
+        "startLine": 467,
+        "startChar": 0,
+        "endLine": 468,
+        "endChar": 49
+      },
+      "revId": "f41737d7dc35278a41e93c97a64ee57227fa5596",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
