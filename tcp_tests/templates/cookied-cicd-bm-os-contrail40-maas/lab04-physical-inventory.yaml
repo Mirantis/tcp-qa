@@ -18,12 +18,12 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp9s0f0:
-          role: single_dhcp
-        enp9s0f1:
-          role: bond0_ab_ovs_vlan_ctl
-        ens11f0:
-          role: single_mgm_manual
+        eno1:
+          role: single_mgm_dhcp
+        ens4f1:
+          role: bond_ctl_lacp
+        ens11f1:
+          role: bond_ctl_lacp
 
     kvm02.cookied-cicd-bm-os-contrail40-maas.local:
       reclass_storage_name: infra_kvm_node02
@@ -31,12 +31,12 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp9s0f0:
-          role: single_dhcp
-        enp9s0f1:
-          role: bond0_ab_ovs_vlan_ctl
-        ens11f0:
-          role: single_mgm_manual
+        eno1:
+          role: single_mgm_dhcp
+        ens4f1:
+          role: bond_ctl_lacp
+        ens11f1:
+          role: bond_ctl_lacp
 
     kvm03.cookied-cicd-bm-os-contrail40-maas.local:
       reclass_storage_name: infra_kvm_node03
@@ -44,12 +44,54 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp9s0f0:
-          role: single_dhcp
-        enp9s0f1:
-          role: bond0_ab_ovs_vlan_ctl
-        ens11f0:
-          role: single_mgm_manual
+        eno1:
+          role: single_mgm_dhcp
+        ens4f1:
+          role: bond_ctl_lacp
+        ens11f1:
+          role: bond_ctl_lacp
+
+    kvm04.cookied-cicd-bm-os-contrail40-maas.local:
+      reclass_storage_name: infra_kvm_node04
+      roles:
+      - infra_kvm_wo_gluster
+      - linux_system_codename_xenial
+      - salt_master_host
+      interfaces:
+        eno1:
+          role: single_mgm_dhcp
+        ens4f1:
+          role: bond_ctl_lacp
+        ens11f1:
+          role: bond_ctl_lacp
+
+    kvm05.cookied-cicd-bm-os-contrail40-maas.local:
+      reclass_storage_name: infra_kvm_node05
+      roles:
+      - infra_kvm_wo_gluster
+      - linux_system_codename_xenial
+      - salt_master_host
+      interfaces:
+        eno1:
+          role: single_mgm_dhcp
+        ens4f1:
+          role: bond_ctl_lacp
+        ens11f1:
+          role: bond_ctl_lacp
+
+    kvm06.cookied-cicd-bm-os-contrail40-maas.local:
+      reclass_storage_name: infra_kvm_node06
+      roles:
+      - infra_kvm_wo_gluster
+      - linux_system_codename_xenial
+      - salt_master_host
+      interfaces:
+        eno1:
+          role: single_mgm_dhcp
+        ens4f1:
+          role: bond_ctl_lacp
+        ens11f1:
+          role: bond_ctl_lacp
 
     osd<<count>>:
       reclass_storage_name: ceph_osd_rack01
@@ -57,11 +99,14 @@ nodes:
       - ceph_osd
       - linux_system_codename_xenial
       interfaces:
-        enp2s0f0:
-          role: single_dhcp
-        enp2s0f1:
-          role: single_vlan_ctl
+        eno1:
+          role: single_mgm_dhcp
+        ens1f1:
+          role: bond_ctl_lacp
+        ens2f1:
+          role: bond_ctl_lacp
 #          role: bond0_ab_vlan_ceph_storage_backend
+# todo: add storage net for ceph to second lacp bond
 
     cmp<<count>>:
       reclass_storage_name: openstack_compute_rack01
@@ -69,9 +114,13 @@ nodes:
       - openstack_compute
       - linux_system_codename_xenial
       interfaces:
-        enp2s0f1:
-          role: single_dhcp
-        enp5s0f0:
-          role: bond0_ab_contrail
-        enp5s0f1:
-          role: single_vlan_ctl
+        one1:
+          role: single_mgm_dhcp
+        ens1f0:
+          role: bond_ctl_lacp
+        ens1f1:
+          role: bond_contrail_lacp
+        ens2f0:
+          role: bond_ctl_lacp
+        ens2f1:
+          role: bond_contrail_lacp
