@@ -62,6 +62,30 @@
       "revId": "ea7928df6c534e7a828a067cdec177c0a056e42c",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7840b74a_491c5c4a",
+        "filename": "tcp_tests/tests/system/test_cvp_pipelines.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-11T05:09:51Z",
+      "side": 1,
+      "message": "Here is an example how to download the artifact and assume if the job is completed or not:\nhttps://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/tests/system/test_cvp_pipelines.py#L168-L185",
+      "parentUuid": "53f52767_1dae8932",
+      "range": {
+        "startLine": 275,
+        "startChar": 0,
+        "endLine": 276,
+        "endChar": 43
+      },
+      "revId": "ea7928df6c534e7a828a067cdec177c0a056e42c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
