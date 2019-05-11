@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "426f48f8_31b3ad66",
+        "filename": "tcp_tests/tests/system/test_cvp_pipelines.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-11T04:42:19Z",
+      "side": 1,
+      "message": "Do we need to specify any \u0027EXTRA_PARAMS\u0027 here? Or defaults will be enough?",
+      "range": {
+        "startLine": 260,
+        "startChar": 12,
+        "endLine": 260,
+        "endChar": 29
+      },
+      "revId": "ea7928df6c534e7a828a067cdec177c0a056e42c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
