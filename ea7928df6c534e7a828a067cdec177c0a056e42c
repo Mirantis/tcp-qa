@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "8556a7bf_c8881b3b",
+        "filename": "tcp_tests/tests/system/test_3rdparty_suites.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 65,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-11T04:49:34Z",
+      "side": 1,
+      "message": "\u003c\u003c this is missing in the new test",
+      "revId": "ea7928df6c534e7a828a067cdec177c0a056e42c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "426f48f8_31b3ad66",
         "filename": "tcp_tests/tests/system/test_cvp_pipelines.py",
         "patchSetId": 4
@@ -18,6 +35,29 @@
         "startChar": 12,
         "endLine": 260,
         "endChar": 29
+      },
+      "revId": "ea7928df6c534e7a828a067cdec177c0a056e42c",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "53f52767_1dae8932",
+        "filename": "tcp_tests/tests/system/test_cvp_pipelines.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 276,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-11T04:49:34Z",
+      "side": 1,
+      "message": "1. What conditions are for \"SUCCESS\" and for \"FAILED\" in the job?\nAll stacklight results are analyzed for \"SUCCESS\" from the JUnit XML report.\nThe job (or the current test) must be failed *only* if the job or this test are failed itself (job cannot clone image; error in pipeline; error in pytest test here; etc).\n\nIf the job is completed - there is nothing to analyze except the JUnit report. Please do not fail *this* method if the job is completed without errors.\n\n2. Please download the JUnit results from stacklight tests and put it in the local directory with the name \"stacklight_report.xml\"",
+      "range": {
+        "startLine": 275,
+        "startChar": 0,
+        "endLine": 276,
+        "endChar": 43
       },
       "revId": "ea7928df6c534e7a828a067cdec177c0a056e42c",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
