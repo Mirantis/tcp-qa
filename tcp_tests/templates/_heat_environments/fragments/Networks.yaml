@@ -23,9 +23,9 @@ parameters:
 #  control_net_dhcp:
 #    type: boolean
 #    default: false
-#  tenant_net_dhcp:
-#    type: boolean
-#    default: false
+# tenant_net_dhcp:
+#   type: boolean
+#   default: false
   management_net_dhcp:
     type: boolean
     default: true
@@ -83,7 +83,7 @@ resources:
       #name: tenant_subnet
       network: { get_resource: tenant_net }
       cidr: { get_param: tenant_subnet_cidr }
-      #enable_dhcp: { get_param: tenant_net_dhcp }
+      enable_dhcp: { get_param: tenant_net_dhcp }
       #dns_nameservers: { get_param: nameservers }
       dns_nameservers: [0.0.0.0]
       gateway_ip: null
@@ -98,7 +98,7 @@ resources:
       #name: management_subnet
       network: { get_resource: management_net }
       cidr: { get_param: management_subnet_cidr }
-      enable_dhcp: { get_param: management_net_dhcp }
+      #enable_dhcp: { get_param: management_net_dhcp }
       allocation_pools:
         - start: { get_param: management_subnet_pool_start }
           end: { get_param: management_subnet_pool_end }
