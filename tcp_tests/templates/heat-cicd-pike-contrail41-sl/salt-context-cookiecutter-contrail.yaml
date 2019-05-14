@@ -232,7 +232,7 @@ default_context:
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
-  tenant_network_gateway: ==IPV4_NET_TENANT_PREFIX==.1
+  tenant_network_gateway: ==IPV4_NET_TENANT_PREFIX==.220
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: ==IPV4_NET_TENANT_PREFIX==.0/24
   upstream_proxy_enabled: 'False'
