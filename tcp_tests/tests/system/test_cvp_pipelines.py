@@ -132,12 +132,12 @@ class TestCvpPipelines(object):
         job_name = 'cvp-sanity'
         job_parameters = {
             'TESTS_SETTINGS': (
-                "skipped_packages='python-setuptools,"
+                "skipped_packages=python-setuptools,"
                 "python-pkg-resources,xunitmerge,python-gnocchiclient,"
-                "python-ujson,python-octaviaclient'; "
-                "skipped_modules='xunitmerge,setuptools'; "
-                "skipped_services='docker,"
-                "containerd'; drivetrain_version={0};{1}"
+                "python-ujson,python-octaviaclient;"
+                "skipped_modules=xunitmerge,setuptools;"
+                "skipped_services=docker,"
+                "containerd;drivetrain_version={0};{1}"
                 .format(settings.MCP_VERSION, ntp_skipped_nodes)),
         }
 
