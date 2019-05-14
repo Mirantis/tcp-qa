@@ -1,0 +1,94 @@
+heat_template_version: queens
+
+description: Single server instance fragment
+
+parameters:
+  network:
+    type: string
+  instance_flavor:
+    type: string
+  instance_name:
+    type: string
+  instance_config_host:
+    type: string
+  key_pair:
+    type: string
+  instance_domain:
+    type: string
+  net_public:
+    type: string
+  control_net_static_ip:
+    type: string
+  tenant_net_static_ip:
+    type: string
+  external_net_static_ip:
+    type: string
+  # underlay_userdata:
+  #   type: string
+  env_name:
+    type: string
+  mcp_version:
+    type: string
+
+resources:
+  instance_port01:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+      fixed_ips:
+        - ip_address: { get_param: control_net_static_ip }
+  instance_port02:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+      fixed_ips:
+        - ip_address: { get_param: tenant_net_static_ip }
+  instance_port03:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+      fixed_ips:
+        - ip_address: { get_param: external_net_static_ip }
+  instance_port04:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+
+  instance_instance:
+    type: OS::Nova::Server
+    properties:
+      image_update_policy: REBUILD
+      flavor: { get_param: instance_flavor }
+      image: system_vsrx-12.1X46-D20.5
+      key_name: { get_param: key_pair }
+      name:
+        list_join:
+        - '.'
+        - [ { get_param: instance_name }, { get_param: env_name } ]
+      networks:
+      - port: { get_resource: instance_port01 }
+      - port: { get_resource: instance_port02 }
+      - port: { get_resource: instance_port03 }
+      - port: { get_resource: instance_port04 }
+      metadata:
+        roles:
+        - vsrx_node
+
+outputs:
+
+  instance_address:
+    value:
+      get_attr:
+      - instance_instance
+      - addresses
+      - 'management_net'
+      - 0
+      - addr
+    description: "Instance's private IP address"
+  instance:
+    value: { get_resource: instance_instance }
+    description: "Instance"
