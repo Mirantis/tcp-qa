@@ -81,6 +81,7 @@ default_context:
   control_vlan: '10'
   tenant_vlan: '20'
   cookiecutter_template_branch: ''
+  jenkins_pipelines_branch: 'release/2019.2.0'
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates.git
   deploy_network_gateway: ==IPV4_NET_ADMIN_PREFIX==.1
