@@ -21,6 +21,7 @@
  *   SHUTDOWN_ENV_ON_TEARDOWN      optional, shutdown fuel-devops environment at the end of the job
  *   MCP_SALT_REPO_URL             Base URL for MCP repositories required to bootstrap cfg01 node. Leave blank to use default
  *                                 (http://mirror.mirantis.com/ from mcp-common-scripts)
+ *   JENKINS_PIPELINE_BRANCH       Should be set in release/proposed/2019.2.0 when we test non-released version
  *   MCP_SALT_REPO_KEY             URL of the key file. Leave blank to use default
  *                                 (${MCP_SALT_REPO_URL}/${MCP_VERSION}/salt-formulas/xenial/archive-salt-formulas.key from mcp-common-scripts)
  *
