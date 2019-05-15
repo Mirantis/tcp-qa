@@ -161,6 +161,7 @@ default_context:
   control_network_subnet: ==IPV4_NET_CONTROL_PREFIX==.0/24
   control_vlan: '10'
   cookiecutter_template_branch: ''
+  jenkins_pipelines_branch: 'release/2019.2.0'
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: ssh://gerrit.mcp.mirantis.net:29418/mk/cookiecutter-templates.git
   deploy_network_gateway: ==IPV4_NET_ADMIN_PREFIX==.1
