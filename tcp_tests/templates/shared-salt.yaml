@@ -1,6 +1,7 @@
 {# Collection of common macroses shared across different deployments #}
 
 {% set SALT_MODELS_BRANCH = os_env('SALT_MODELS_BRANCH','master') %}
+{% set JENKINS_PIPELINE_BRANCH = os_env('JENKINS_PIPELINE_BRANCH','') %}
 {% set SALT_MODELS_COMMIT = os_env('SALT_MODELS_COMMIT','master') %}
 {# Reference to a patch that should be applied to the model if required, for example: export SALT_MODELS_REF_CHANGE=refs/changes/19/7219/12 #}
 {% set SALT_MODELS_REF_CHANGE = os_env('SALT_MODELS_REF_CHANGE', '') %}
@@ -401,6 +402,10 @@
       {%- elif SALT_MODELS_SYSTEM_TAG != '' %}
         echo "SALT_MODELS_SYSTEM_TAG={{ SALT_MODELS_SYSTEM_TAG }}"
       {%- endif %}
+      echo "JENKINS_PIPELINE_BRANCH={{ JENKINS_PIPELINE_BRANCH }}"
+      {%- if JENKINS_PIPELINE_BRANCH != '' %}
+        echo "JENKINS_PIPELINE_BRANCH={{ JENKINS_PIPELINE_BRANCH }}"
+      {%- endif %}
       echo "======================================="
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 1}
@@ -459,6 +464,9 @@
     sed -i 's/cluster_name: .*/cluster_name: {{ CLUSTER_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/cluster_domain: .*/cluster_domain: {{ DOMAIN_NAME }}/g' {{ CLUSTER_CONTEXT_PATH }}
     sed -i 's/mcp_version:.*/mcp_version: {{ REPOSITORY_SUITE }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    {%- if JENKINS_PIPELINE_BRANCH != '' %}
+    sed -i 's/jenkins_pipelines_branch: .*/jenkins_pipelines_branch: release\/proposed\/{{ REPOSITORY_SUITE }}/g' {{ CLUSTER_CONTEXT_PATH }}
+    {%- endif %}
     {%- if CONTROL_VLAN  %}
     sed -i 's/control_vlan: .*/control_vlan: {{ CONTROL_VLAN }}/g' {{ CLUSTER_CONTEXT_PATH }}
     {%- endif %}
