@@ -77,6 +77,7 @@ default_context:
   control_network_subnet: 10.167.11.0/24
   control_vlan: '2404'
   cookiecutter_template_branch: proposed
+  jenkins_pipelines_branch: 'proposed'
   cookiecutter_template_credentials: gerrit
   cookiecutter_template_url: https://gerrit.mcp.mirantis.com/mk/cookiecutter-templates.git
   deploy_network_gateway: 172.16.164.1
