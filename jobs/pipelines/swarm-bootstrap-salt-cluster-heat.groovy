@@ -27,6 +27,7 @@
  *   OS_PROJECT_NAME               OpenStack project (tenant) name
  *   OS_USER_DOMAIN_NAME           OpenStack user domain name
  *   OS_CREDENTIALS                OpenStack username and password credentials ID in Jenkins
+ *   JENKINS_PIPELINE_BRANCH       Should be set in release/proposed/2019.2.0 when we test non-released version
  *   LAB_PARAM_DEFAULTS            Filename placed in tcp_tests/templates/_heat_environments, with default parameters for the heat template
  *
  *   CREATE_JENKINS_NODE_CREDENTIALS   Jenkins username and password with rights to add/delete Jenkins agents
@@ -38,6 +39,7 @@ import groovy.xml.XmlUtil
 
 common = new com.mirantis.mk.Common()
 shared = new com.mirantis.system_qa.SharedPipeline()
+jenkins_pipeline_branch= "${JENKINS_PIPELINE_BRANCH}"
 
 if (! env.PARENT_NODE_NAME) {
     error "'PARENT_NODE_NAME' must be set from the parent deployment job!"
@@ -93,7 +95,7 @@ node ("${PARENT_NODE_NAME}") {
                 def IPV4_NET_CONTROL=shared.run_cmd_stdout("./tcp_tests/utils/get_param_heat_template.py control_subnet_cidr").trim().split().last()
                 def IPV4_NET_TENANT=shared.run_cmd_stdout("./tcp_tests/utils/get_param_heat_template.py tenant_subnet_cidr").trim().split().last()
                 def IPV4_NET_EXTERNAL=shared.run_cmd_stdout("./tcp_tests/utils/get_param_heat_template.py external_subnet_cidr").trim().split().last()
-                shared.generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IPV4_NET_EXTERNAL)
+                shared.generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IPV4_NET_EXTERNAL, jenkins_pipeline_branch)
             }
 
             stage("Generate config drive ISO") {

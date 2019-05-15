@@ -200,6 +200,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         def common = new com.mirantis.mk.Common()
         def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: is_released_version(env.MCP_VERSION) ? "release/${env.MCP_VERSION}" : 'master'
         def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
+        def jenkins_pipelines_branch = env.JENKINS_PIPELINE_BRANCH ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
@@ -237,6 +238,7 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
                 string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
                 string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
+                string(name: 'JENKINS_PIPELINE_BRANCH', value: "${jenkins_pipelines_branch}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
@@ -250,6 +252,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
         def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
+        def jenkins_pipelines_branch = env.JENKINS_PIPELINE_BRANCH ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
@@ -289,6 +292,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
                 string(name: 'OS_USER_DOMAIN_NAME', value: "${OS_USER_DOMAIN_NAME}"),
                 string(name: 'OS_CREDENTIALS', value: "${OS_CREDENTIALS}"),
                 string(name: 'LAB_PARAM_DEFAULTS', value: "${LAB_PARAM_DEFAULTS}"),
+                string(name: 'JENKINS_PIPELINE_BRANCH', value: "${jenkins_pipelines_branch}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
@@ -398,12 +402,13 @@ def swarm_testrail_report(String passed_steps, String node_with_reports) {
             parameters: parameters
 }
 
-def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IPV4_NET_EXTERNAL) {
+def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IPV4_NET_EXTERNAL, jenkins_pipeline_branch) {
         def common = new com.mirantis.mk.Common()
         println("IPV4_NET_ADMIN=" + IPV4_NET_ADMIN)
         println("IPV4_NET_CONTROL=" + IPV4_NET_CONTROL)
         println("IPV4_NET_TENANT=" + IPV4_NET_TENANT)
         println("IPV4_NET_EXTERNAL=" + IPV4_NET_EXTERNAL)
+        println("jenkins_pipeline_branch=" + jenkins_pipeline_branch)
 
         def cookiecuttertemplate_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: is_released_version(env.MCP_VERSION) ? "release/${env.MCP_VERSION}" : 'master'
         def saltmodels_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
@@ -429,6 +434,7 @@ def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IP
                 string(name: 'IPMI_USER', value: env.IPMI_USER),
                 string(name: 'IPMI_PASS', value: env.IPMI_PASS),
                 string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
+                string(name: 'JENKINS_PIPELINE_BRANCH', value: jenkins_pipelines_branch),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: env.IMAGE_PATH_CFG01_DAY01),
             ]
 
