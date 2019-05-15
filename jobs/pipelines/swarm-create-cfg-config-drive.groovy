@@ -17,6 +17,7 @@ smc['DNS_SERVERS'] = "${DNS_SERVERS}"
 smc['PIPELINES_FROM_ISO'] = '${PIPELINES_FROM_ISO}'
 smc['PIPELINE_REPO_URL'] = '${PIPELINE_REPO_URL}'
 smc['MCP_VERSION'] = "${MCP_VERSION}"
+smc['JENKINS_PIPELINE_BRANCH'] = "${JENKINS_PIPELINE_BRANCH}"
 // smc['LOCAL_REPOS'] = 'true'
 smc['MCP_SALT_REPO_KEY'] = "${MCP_SALT_REPO_KEY}"
 smc['MCP_SALT_REPO_URL'] = "${MCP_SALT_REPO_URL}"
@@ -78,7 +79,7 @@ node (node_name) {
                     cd pipeline-library
                     git fetch https://gerrit.mcp.mirantis.net/mcp-ci/pipeline-library ${PIPELINE_LIBRARY_REF}
                     git tag ${MCP_VERSION} FETCH_HEAD -f
-                    git branch -f release/${MCP_VERSION} FETCH_HEAD
+                    git branch -f ${JENKINS_PIPELINE_BRANCH} FETCH_HEAD
                     git log -1
                 """)
             }
@@ -90,10 +91,11 @@ node (node_name) {
                     cd mk-pipelines
                     git fetch https://gerrit.mcp.mirantis.net/mk/mk-pipelines ${MK_PIPELINES_REF}
                     git tag ${MCP_VERSION} FETCH_HEAD -f
-                    git branch -f release/${MCP_VERSION} FETCH_HEAD
+                    git branch -f ${JENKINS_PIPELINE_BRANCH} FETCH_HEAD
                     git log -1
                 """)
             }
+
 
         }
     }
