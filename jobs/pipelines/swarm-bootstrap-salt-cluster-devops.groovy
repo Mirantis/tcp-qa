@@ -21,6 +21,7 @@
  *   SHUTDOWN_ENV_ON_TEARDOWN      optional, shutdown fuel-devops environment at the end of the job
  *   MCP_SALT_REPO_URL             Base URL for MCP repositories required to bootstrap cfg01 node. Leave blank to use default
  *                                 (http://mirror.mirantis.com/ from mcp-common-scripts)
+ *   JENKINS_PIPELINE_BRANCH       Should be set in release/proposed/2019.2.0 when we test non-released version
  *   MCP_SALT_REPO_KEY             URL of the key file. Leave blank to use default
  *                                 (${MCP_SALT_REPO_URL}/${MCP_VERSION}/salt-formulas/xenial/archive-salt-formulas.key from mcp-common-scripts)
  *
@@ -38,6 +39,7 @@ if (! env.PARENT_NODE_NAME) {
 }
 
 currentBuild.description = "${PARENT_NODE_NAME}:${ENV_NAME}"
+jenkins_pipeline_branch= "${JENKINS_PIPELINE_BRANCH}""
 
 node ("${PARENT_NODE_NAME}") {
     if (! fileExists("${PARENT_WORKSPACE}")) {
@@ -80,7 +82,7 @@ node ("${PARENT_NODE_NAME}") {
             def IPV4_NET_CONTROL=shared.run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep private-pool01").trim().split().last()
             def IPV4_NET_TENANT=shared.run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep tenant-pool01").trim().split().last()
             def IPV4_NET_EXTERNAL=shared.run_cmd_stdout("dos.py net-list ${ENV_NAME} | grep external-pool01").trim().split().last()
-            shared.generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IPV4_NET_EXTERNAL)
+            shared.generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IPV4_NET_EXTERNAL, jenkins_pipeline_branch)
         }
 
         stage("Generate config drive ISO") {
