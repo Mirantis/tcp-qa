@@ -139,8 +139,17 @@ def test(shared, common, steps, env_manager) {
             // then archive artifacts also on that node
             if (jenkins_slave_node_name != env.NODE_NAME) {
                 node ("${jenkins_slave_node_name}") {
-                    stage("Archive all xml reports from node ${}") {
+                    stage("Archive all xml reports from node ${jenkins_slave_node_name}") {
                         archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
+                    }
+                    if ("${env.REPORT_TO_TESTRAIL}" != "false") {
+                      stage("report results to testrail") {
+                      shared.swarm_testrail_report(steps)
+                    }
+                    stage("Store TestRail reports to job description from node ${jenkins_slave_node_name}") {
+                    def String description = readFile("description.txt")
+                    currentBuild.description += "${description}"
+                    }
                     }
                 }
             }
