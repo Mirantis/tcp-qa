@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d3a1744a_b35c0af0",
+        "filename": "jobs/pipelines/deploy-cicd-and-run-tests.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-16T15:28:33Z",
+      "side": 1,
+      "message": "It\u0027s a call of a separated job. Please extend this method to pass the node name in the argument, and use the argument here, instead of ${NODE_NAME}:\nhttps://github.com/Mirantis/tcp-qa/blob/master/src/com/mirantis/system_qa/SharedPipeline.groovy#L389",
+      "range": {
+        "startLine": 147,
+        "startChar": 29,
+        "endLine": 147,
+        "endChar": 50
+      },
+      "revId": "174bbe808ee133f04db6367b57683da4cc2f3879",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1f24f3e7_5aa13ded",
+        "filename": "jobs/pipelines/swarm-bootstrap-salt-cluster-heat.groovy",
+        "patchSetId": 2
+      },
+      "lineNbr": 260,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-16T15:28:33Z",
+      "side": 1,
+      "message": "Please add here \". /home/jenkins/venv_testrail_reporter\" before pip install.",
+      "range": {
+        "startLine": 260,
+        "startChar": 16,
+        "endLine": 260,
+        "endChar": 101
+      },
+      "revId": "174bbe808ee133f04db6367b57683da4cc2f3879",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
