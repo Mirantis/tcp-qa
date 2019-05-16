@@ -45,6 +45,12 @@ resources:
       port_security_enabled: false
       network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
 
+  instance_port04:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+
   instance_instance:
     type: OS::Nova::Server
     properties:
@@ -60,6 +66,7 @@ resources:
       - port: { get_resource: instance_port01 }
       - port: { get_resource: instance_port02 }
       - port: { get_resource: instance_port03 }
+      - port: { get_resource: instance_port04 }
       user_data_format: RAW
       user_data:
         str_replace:

@@ -41,6 +41,18 @@ resources:
       fixed_ips:
         - ip_address: { get_param: salt_master_control_ip }
 
+  instance_port03:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+
+  instance_port04:
+    type: OS::Neutron::Port
+    properties:
+      port_security_enabled: false
+      network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+
   instance_instance:
     type: OS::Nova::Server
     properties:
@@ -55,6 +67,8 @@ resources:
       networks:
       - port: { get_resource: instance_port01 }
       - port: { get_resource: instance_port02 }
+      - port: { get_resource: instance_port03 }
+      - port: { get_resource: instance_port04 }
       block_device_mapping_v2:
       - device_name: /dev/cdrom
         device_type: cdrom
