@@ -254,6 +254,12 @@ node ("${JENKINS_SLAVE_NODE_NAME}") {
         stage("Clean the environment and clone tcp-qa") {
             deleteDir()
             shared.verbose_sh("""\
+                [ -d /home/jenkins/venv_testrail_reporter ] || virtualenv /home/jenkins/venv_testrail_reporter
+            """, true, false, true)
+            shared.run_cmd("""\
+                . /home/jenkins/venv_testrail_reporter/bin/activate; pip install git+https://github.com/dis-xcom/testrail_reporter -U  ${PARENT_WORKSPACE}
+            """)
+            shared.verbose_sh("""\
                 [ -d /home/jenkins/fuel-devops30 ] || virtualenv /home/jenkins/fuel-devops30
             """, true, false, true)
             shared.run_cmd("""\
