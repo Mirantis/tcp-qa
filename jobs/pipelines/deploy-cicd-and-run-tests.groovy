@@ -7,10 +7,12 @@ def env_manager = env.ENV_MANAGER ?: 'devops'
 
 if (env_manager == 'devops') {
     jenkins_slave_node_name = "${NODE_NAME}"
+    node_with_reports = "${NODE_NAME}"
     make_snapshot_stages = "${env.MAKE_SNAPSHOT_STAGES}" != "false" ? true : false
 } else if (env_manager == 'heat') {
     jenkins_slave_node_name = "openstack_slave_${JOB_NAME}"
     make_snapshot_stages = false
+    node_with_reports = jenkins_slave_node_name
 }
 
 currentBuild.description = "${NODE_NAME}:${ENV_NAME}<br>"
@@ -139,8 +141,13 @@ def test(shared, common, steps, env_manager) {
             // then archive artifacts also on that node
             if (jenkins_slave_node_name != env.NODE_NAME) {
                 node ("${jenkins_slave_node_name}") {
-                    stage("Archive all xml reports from node ${}") {
+                    stage("Archive all xml reports from node ${jenkins_slave_node_name}") {
                         archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
+                    }
+                    if ("${env.REPORT_TO_TESTRAIL}" != "false") {
+                      stage("report results to testrail") {
+                      shared.swarm_testrail_report(steps, node_with_reports)
+                    }
                     }
                 }
             }
@@ -151,7 +158,7 @@ def test(shared, common, steps, env_manager) {
         }
         if ("${env.REPORT_TO_TESTRAIL}" != "false") {
             stage("report results to testrail") {
-                shared.swarm_testrail_report(steps)
+                shared.swarm_testrail_report(steps, node_with_reports)
             }
             stage("Store TestRail reports to job description") {
                 def String description = readFile("description.txt")
