@@ -19,3 +19,14 @@
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
 
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
+
+- description: "Add cpu_mode"
+  cmd: |
+    set -e;
+    set -x;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters.nova.compute.cpu_mode custom /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute/init.yml;
+    reclass-tools add-key parameters.nova.compute.libvirt.cpu_model kvm64 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
