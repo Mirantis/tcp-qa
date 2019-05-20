@@ -27,6 +27,7 @@
  *   OS_PROJECT_NAME               OpenStack project (tenant) name
  *   OS_USER_DOMAIN_NAME           OpenStack user domain name
  *   OS_CREDENTIALS                OpenStack username and password credentials ID in Jenkins
+ *   JENKINS_PIPELINE_BRANCH       Should be set in release/proposed/2019.2.0 when we test non-released version
  *   LAB_PARAM_DEFAULTS            Filename placed in tcp_tests/templates/_heat_environments, with default parameters for the heat template
  *
  *   CREATE_JENKINS_NODE_CREDENTIALS   Jenkins username and password with rights to add/delete Jenkins agents
