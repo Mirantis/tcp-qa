@@ -14,6 +14,7 @@
 
 import netaddr
 import pkg_resources
+import yaml
 
 from collections import defaultdict
 
@@ -371,20 +372,33 @@ class SaltManager(ExecuteCommandsMixin):
         env_jenkins_cicd_filename = pkg_resources.resource_filename(
             settings.__name__, 'utils/env_jenkins_cicd')
 
-        tgt = 'I@docker:client:stack:jenkins and cid01*'
-        try:
-            jenkins_params = self.get_single_pillar(
-                tgt=tgt, pillar="jenkins:client:master")
-        except LookupError as e:
-            LOG.error("Skipping creation {0} because cannot get Jenkins CICD "
-                      "parameters from '{1}': {2}"
-                      .format(env_jenkins_cicd_filename, tgt, e.message))
+        tgt = 'cfg01*'
+        domain_name = self.get_single_pillar(
+            tgt=tgt, pillar="_param:cluster_domain")
+        LOG.info("Domain: {}".format(domain_name))
+        cid01 = 'cid01.' + domain_name
+        LOG.info("{}".format(cid01))
+        command = "reclass -n {}".format(tgt)
+        LOG.info("{}".format(command))
+        output = self.__underlay.check_call(
+            node_name=self.__host,
+            cmd=command)
+        result = yaml.load(output)
+        jenkins_params = result.get(
+            'parameters', {}).get(
+            'jenkins', {}).get(
+            'client', {}).get(
+            'master', {})
+        if not jenkins_params:
             return
-
         jenkins_host = jenkins_params['host']
+        LOG.info("jenkins_host: {}".format(jenkins_host))
         jenkins_port = jenkins_params['port']
+        LOG.info("jenkins_port: {}".format(result))
         jenkins_user = jenkins_params['username']
+        LOG.info("jenkins_user: {}".format(result))
         jenkins_pass = jenkins_params['password']
+        LOG.info("jenkins_pass: {}".format(result))
 
         with open(env_jenkins_cicd_filename, 'w') as f:
             f.write(
