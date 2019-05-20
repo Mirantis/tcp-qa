@@ -14,6 +14,7 @@
 
 import netaddr
 import pkg_resources
+import yaml
 
 from collections import defaultdict
 
@@ -370,21 +371,35 @@ class SaltManager(ExecuteCommandsMixin):
 
         env_jenkins_cicd_filename = pkg_resources.resource_filename(
             settings.__name__, 'utils/env_jenkins_cicd')
-
-        tgt = 'I@docker:client:stack:jenkins and cid01*'
-        try:
-            jenkins_params = self.get_single_pillar(
-                tgt=tgt, pillar="jenkins:client:master")
-        except LookupError as e:
-            LOG.error("Skipping creation {0} because cannot get Jenkins CICD "
-                      "parameters from '{1}': {2}"
-                      .format(env_jenkins_cicd_filename, tgt, e.message))
+        master_host = "cfg01"
+        master_name = self.underlay.get_target_node_names(
+            master_host)[0]
+        domain_name = self.get_single_pillar(
+            tgt=master_name, pillar="_param:cluster_domain")
+        LOG.info("Domain: {}".format(domain_name))
+        cid01 = 'cid01.' + domain_name
+        LOG.info("{}".format(cid01))
+        command = "reclass -n {}".format(cid01)
+        LOG.info("{}".format(command))
+        output = self.__underlay.check_call(
+            node_name=self.host,
+            cmd=command)
+        result = yaml.load(output)
+        jenkins_params = result.get(
+            'parameters', {}).get(
+            'jenkins', {}).get(
+            'client', {}).get(
+            'master', {})
+        if not jenkins_params:
             return
-
         jenkins_host = jenkins_params['host']
+        LOG.info("jenkins_host: {}".format(jenkins_host))
         jenkins_port = jenkins_params['port']
+        LOG.info("jenkins_port: {}".format(result))
         jenkins_user = jenkins_params['username']
+        LOG.info("jenkins_user: {}".format(result))
         jenkins_pass = jenkins_params['password']
+        LOG.info("jenkins_pass: {}".format(result))
 
         with open(env_jenkins_cicd_filename, 'w') as f:
             f.write(
@@ -413,22 +428,47 @@ class SaltManager(ExecuteCommandsMixin):
         env_k8s_filename = pkg_resources.resource_filename(
             settings.__name__, 'utils/env_k8s')
 
-        tgt = 'I@haproxy:proxy:enabled:true and I@kubernetes:master and *01*'
-        try:
-            haproxy_params = self.get_single_pillar(
-                tgt=tgt, pillar="haproxy:proxy:listen:k8s_secure:binds")[0]
-            k8s_params = self.get_single_pillar(
-                tgt=tgt, pillar="kubernetes:master:admin")
-        except LookupError as e:
-            LOG.error("Skipping creation {0} because cannot get Kubernetes "
-                      "parameters from '{1}': {2}"
-                      .format(env_k8s_filename, tgt, e.message))
+        master_host = "cfg01"
+        master_name = self.underlay.get_target_node_names(
+            master_host)[0]
+        domain_name = self.get_single_pillar(
+            tgt=master_name, pillar="_param:cluster_domain")
+        LOG.info("Domain: {}".format(domain_name))
+        ctl01 = 'ctl01.' + domain_name
+        LOG.info("{}".format(ctl01))
+        command = "reclass -n {}".format(ctl01)
+        LOG.info("{}".format(command))
+        output = self.__underlay.check_call(
+            node_name=self.host,
+            cmd=command)
+        result = yaml.load(output)
+        haproxy_params = result.get(
+            'parameters', {}).get(
+            'haproxy', {}).get(
+            'proxy', {}).get(
+            'listen', {}).get(
+            'k8s_secure', {}).get(
+            'binds', {})
+        if not haproxy_params:
             return
-
+        k8s_params = result.get(
+            'kubernetes', {}).get(
+            'master', {}).get(
+            'admin', {})
+        if not k8s_params:
+            return
         kube_host = haproxy_params['address']
+        LOG.info("kube_host: {}".
+                 format(kube_host))
         kube_apiserver_port = haproxy_params['port']
+        LOG.info("kube_apiserver_port: {}".
+                 format(kube_apiserver_port))
         kubernetes_admin_user = k8s_params['username']
+        LOG.info("kubernetes_admin_user: {}".
+                 format(kubernetes_admin_user))
         kubernetes_admin_password = k8s_params['password']
+        LOG.info("kubernetes_admin_password: {}".
+                 format(kubernetes_admin_password))
 
         with open(env_k8s_filename, 'w') as f:
             f.write(
