@@ -88,19 +88,6 @@ resources:
         roles:
         - salt_minion
 
-  floating_ip:
-    depends_on: [instance_instance]
-    type: OS::Neutron::FloatingIP
-    properties:
-      floating_network: { get_param: net_public }
-      port_id: { get_resource: instance_port01 }
-  floating_ip_association:
-    depends_on: [floating_ip]
-    type: OS::Neutron::FloatingIPAssociation
-    properties:
-      floatingip_id:  { get_resource: floating_ip }
-      port_id: { get_resource: instance_port01 }
-
 outputs:
   instance_address:
     value:
