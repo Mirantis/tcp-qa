@@ -1,0 +1,63 @@
+{
+  "variables": {
+    "vm_name": "{{ env `IMAGE_NAME` }}.qcow2",
+    "image_path": "tmp/{{ env `IMAGE_NAME` }}",
+    "base_image_url": "{{ env `BASE_IMAGE_URL` }}",
+    "base_image_md5": "{{ env `BASE_IMAGE_MD5` }}",
+    "base_image_path": "base_image.qcow2",
+    "ssh_username": "root",
+    "ssh_password": "r00tme",
+    "ssh_wait_timeout": "30m",
+    "disk_size": "51200",
+    "boot_wait": "120s"
+  },
+
+  "builders":
+  [
+    {
+      "type": "qemu",
+      "qemuargs": [
+        [ "-m", "1024M" ],
+        [ "-cdrom", "tmp/config-drive.iso" ],
+        ["-device", "virtio-net,netdev=user.0"],
+        ["-object","rng-random,id=objrng0,filename=/dev/urandom"],
+        ["-device", "virtio-rng-pci,rng=objrng0,id=rng0,bus=pci.0,addr=0x10" ]
+      ],
+      "vm_name": "{{ user `vm_name` }}",
+      "output_directory": "{{ user `image_path` }}",
+      "format": "qcow2",
+      "iso_url": "{{ user `base_image_url` }}",
+      "iso_checksum": "{{ user `base_image_md5` }}",
+      "iso_checksum_type": "md5",
+      "iso_target_path": "{{ user `base_image_path`}}",
+      "disk_image": true,
+      "disk_compression": true,
+      "accelerator": "kvm",
+      "disk_size": "{{ user `disk_size`}}",
+      "headless": true,
+      "ssh_username": "{{ user `ssh_username` }}",
+      "ssh_password": "{{ user `ssh_password` }}",
+      "ssh_wait_timeout": "{{ user `ssh_wait_timeout` }}",
+      "ssh_host_port_min": 7000,
+      "ssh_host_port_max": 7050,
+      "shutdown_command": "shutdown -P now",
+      "boot_wait": "{{ user `boot_wait` }}"
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": [
+        "DEBIAN_FRONTEND=noninteractive"
+      ],
+      "execute_command": "echo '{{ user `ssh_password` }}' | {{.Vars}} sudo -S -E bash -x '{{.Path}}'",
+      "scripts": [
+        "tcp_tests/templates/_packer/scripts/ubuntu_packets.sh",
+        "tcp_tests/templates/_packer/scripts/ubuntu_ldap.sh",
+        "tcp_tests/templates/_packer/scripts/jenkins_virtualenvs.sh",
+        "tcp_tests/templates/_packer/scripts/ubuntu_cleanup.sh"
+      ]
+    }
+  ]
+}
