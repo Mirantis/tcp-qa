@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "18fd6dc4_1760478d",
+        "filename": "tcp_tests/managers/saltmanager.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 383,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-20T14:56:10Z",
+      "side": 1,
+      "message": "please check the keys before using. It will crash if some keys not found.",
+      "range": {
+        "startLine": 383,
+        "startChar": 8,
+        "endLine": 383,
+        "endChar": 76
+      },
+      "revId": "94a4a445e526794ec92e9835b8ece9887b0cde64",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
