@@ -14,6 +14,8 @@
 
 import netaddr
 import pkg_resources
+import subprocess
+import yaml
 
 from collections import defaultdict
 
@@ -40,7 +42,7 @@ class SaltManager(ExecuteCommandsMixin):
     }
 
     def __init__(self, config, underlay, host=None, port='6969',
-                 username=None, password=None):
+                 username=None, password=None, domain_name=None):
         self.__config = config
         self.__underlay = underlay
         self.__port = port
@@ -48,6 +50,7 @@ class SaltManager(ExecuteCommandsMixin):
         self.__api = None
         self.__user = username or settings.SALT_USER
         self.__password = password or settings.SALT_PASSWORD
+        self.__domain_name = domain_name
         self._salt = self
 
         super(SaltManager, self).__init__(config=config, underlay=underlay)
@@ -371,15 +374,10 @@ class SaltManager(ExecuteCommandsMixin):
         env_jenkins_cicd_filename = pkg_resources.resource_filename(
             settings.__name__, 'utils/env_jenkins_cicd')
 
-        tgt = 'I@docker:client:stack:jenkins and cid01*'
-        try:
-            jenkins_params = self.get_single_pillar(
-                tgt=tgt, pillar="jenkins:client:master")
-        except LookupError as e:
-            LOG.error("Skipping creation {0} because cannot get Jenkins CICD "
-                      "parameters from '{1}': {2}"
-                      .format(env_jenkins_cicd_filename, tgt, e.message))
-            return
+        tgt = 'cid01.' + settings.DOMAIN_NAME
+        output = subprocess.check_output(["reclass", "-n", tgt])
+        result = yaml.load(output)
+        jenkins_params = result['parameters']['jenkins']['client']['master']
 
         jenkins_host = jenkins_params['host']
         jenkins_port = jenkins_params['port']
