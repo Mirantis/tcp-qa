@@ -16,6 +16,29 @@
       "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d2e202b8_e82d6d91",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/VsrxNode.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-21T12:11:23Z",
+      "side": 1,
+      "message": "I think it would be better to configure the image name from the .env file",
+      "range": {
+        "startLine": 66,
+        "startChar": 13,
+        "endLine": 66,
+        "endChar": 38
+      },
+      "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
