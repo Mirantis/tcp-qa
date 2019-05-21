@@ -455,7 +455,7 @@ def generate_configdrive_iso(SALT_MASTER_IP, ADMIN_NETWORK_GW) {
 
         def parameters = [
                 string(name: 'CLUSTER_NAME', value: "${LAB_CONFIG_NAME}"),
-                string(name: 'MODEL_URL', value: "http://cz8133.bud.mirantis.net:8098/${LAB_CONFIG_NAME}.git"),
+                string(name: 'MODEL_URL', value: "http://172.19.112.216:8098/${LAB_CONFIG_NAME}.git"),
                 string(name: 'MODEL_URL_OBJECT_TYPE', value: "git"),
                 booleanParam(name: 'DOWNLOAD_CONFIG_DRIVE', value: true),
                 string(name: 'MCP_VERSION', value: "${MCP_VERSION}"),
