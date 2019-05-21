@@ -123,8 +123,33 @@ class RuntestManager(object):
         barbican_integration = self.__salt_api.get_single_pillar(
             tgt="ctl01*",
             pillar="_param:barbican_integration_enabled")
-
+        contrail_integration = self.__salt_api.get_single_pillar(
+            tgt="cmp001*",
+            pillar="opencontrail:compute:enabled")
         LOG.info("Barbican integration {0}".format(barbican_integration))
+        LOG.info("Opencontrail integration {0}".format(barbican_integration))
+
+        if contrail_integration:
+            vsrx_router = self.__salt_api.get_single_pillar(
+                tgt=self.master_minion,
+                pillar="_param:tenant_network_gateway")
+            public_network = "192.168.200.0"
+            contrail_commands = [
+                {
+                    'description': "Iproute to vsrx router",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            salt_call_cmd + " ip route add " + public_network + "/24" +
+                            vsrx_router)},
+                {
+                    'description': "Create public network with target",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            "salt -C 'I@opencontrail:control:role:primary' " +
+                            "contrail.virtual_network_create public " +
+                            "'{\"external\":true,\"ip_prefix\":\"" + public_network + "\"," +
+                            "\"ip_prefix_len\":24,\"asn\":64512,\"target\":10000}'")},
+            ]
         commands = [
             {
                 'description': ("Install docker-ce package and "
@@ -160,6 +185,10 @@ class RuntestManager(object):
                         " state.sls runtest.barbican_sign_image")},
             )
 
+        if contrail_integration:
+            self.__salt_api.execute_commands(
+                commands=contrail_commands,
+                label="Prepare for Tempest contrail")
         self.__salt_api.execute_commands(commands=commands,
                                          label="Prepare for Tempest")
 
