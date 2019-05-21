@@ -365,3 +365,4 @@ default_context:
   octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
   cinder_backup_engine: 'ceph'
   cinder_ceph_backup_pool_name: 'backups'
+  jenkins_pipelines_branch: 'release/2019.2.0'
