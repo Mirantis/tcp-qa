@@ -19,6 +19,29 @@
     },
     {
       "key": {
+        "uuid": "ad2dc96a_6f72f9aa",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Networks.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-21T12:13:06Z",
+      "side": 1,
+      "message": "why do we need configurable dhcp for tenant network?",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 18
+      },
+      "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "d2e202b8_e82d6d91",
         "filename": "tcp_tests/templates/_heat_environments/fragments/VsrxNode.yaml",
         "patchSetId": 8
