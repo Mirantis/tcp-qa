@@ -123,8 +123,12 @@ class RuntestManager(object):
         barbican_integration = self.__salt_api.get_single_pillar(
             tgt="ctl01*",
             pillar="_param:barbican_integration_enabled")
-
+        contrail_integration = self.__salt_api.get_single_pillar(
+            tgt="cmp001*",
+            pillar="opencontrail:compute:enabled")
         LOG.info("Barbican integration {0}".format(barbican_integration))
+        LOG.info("Opencontrail integration {0}".format(contrail_integration))
+
         commands = [
             {
                 'description': ("Install docker-ce package and "
@@ -146,6 +150,62 @@ class RuntestManager(object):
                         "salt-run state.orchestrate " +
                         "runtest.orchestrate.tempest")},
         ]
+
+        if contrail_integration:
+            vsrx_router = self.__salt_api.get_single_pillar(
+                tgt="ntw01*",
+                pillar="_param:opencontrail_router01_address")
+            public_network = "192.168.200.0"
+            contrail_commands = [
+                {
+                    'description': "Iproute to vsrx router",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            salt_call_cmd + " ip route add " +
+                            public_network + "/24 " + vsrx_router)},
+                {
+                    'description': "Align security group: remove all rules",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            "salt 'ctl01*' cmd.run '. /root/keystonercv3; " +
+                            "openstack security group rule list --column ID " +
+                            "-f value | xargs " +
+                            "openstack security group rule delete';")},
+                {
+                    'description': "Align security group: remove all default",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            " salt ctl01* cmd.run 'openstack security group" +
+                            "list --column ID --column Name -f value|" +
+                            "grep default|cut -d ' ' -f 1|" +
+                            "xargs openstack security group delete|true")},
+                {
+                    'description': "Align security group: allowed rules",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            "salt 'ctl01*' cmd.run '. /root/keystonercv3; " +
+                            "openstack security group rule create default " +
+                            "--egress --protocol tcp'; " +
+                            "salt 'ctl01*' cmd.run '. /root/keystonercv3; " +
+                            "openstack security group rule create default " +
+                            "--ingress --protocol tcp'; " +
+                            "salt 'ctl01*' cmd.run '. /root/keystonercv3; " +
+                            "openstack security group rule create default " +
+                            "--egress --protocol icmp'; " +
+                            "salt 'ctl01*' cmd.run '. /root/keystonercv3; " +
+                            "openstack security group rule create default " +
+                            "--ingress --protocol icmp'; ")},
+                {
+                    'description': "Create public network with target",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            "salt -C 'I@opencontrail:control:role:primary' " +
+                            "contrail.virtual_network_create public " +
+                            "'{\"external\":true,\"ip_prefix\":\"" +
+                            public_network + "\",\"ip_prefix_len\":24," +
+                            "\"asn\":64512,\"target\":10000}'")},
+            ]
+            commands = contrail_commands + commands
 
         if barbican_integration:
             commands.append({
