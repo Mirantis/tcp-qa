@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "e3def78a_8500726f",
+        "filename": "tcp_tests/templates/_heat_environments/eu-cloud.env",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1014475
+      },
+      "writtenOn": "2019-05-21T12:59:07Z",
+      "side": 1,
+      "message": "This is gerrit bug. have changes before new line",
+      "parentUuid": "038a31e3_a031ae89",
+      "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "ad2dc96a_6f72f9aa",
         "filename": "tcp_tests/templates/_heat_environments/fragments/Networks.yaml",
         "patchSetId": 8
@@ -30,6 +48,30 @@
       "writtenOn": "2019-05-21T12:13:06Z",
       "side": 1,
       "message": "why do we need configurable dhcp for tenant network?",
+      "range": {
+        "startLine": 26,
+        "startChar": 0,
+        "endLine": 28,
+        "endChar": 18
+      },
+      "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "6091975b_8167c627",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Networks.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 28,
+      "author": {
+        "id": 1014475
+      },
+      "writtenOn": "2019-05-21T12:59:07Z",
+      "side": 1,
+      "message": "do not need anymore, will be deleted",
+      "parentUuid": "ad2dc96a_6f72f9aa",
       "range": {
         "startLine": 26,
         "startChar": 0,
@@ -65,6 +107,30 @@
     },
     {
       "key": {
+        "uuid": "610eb0cc_a58a9c5b",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/VsrxNode.yaml",
+        "patchSetId": 8
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1014475
+      },
+      "writtenOn": "2019-05-21T12:59:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "d2e202b8_e82d6d91",
+      "range": {
+        "startLine": 66,
+        "startChar": 13,
+        "endLine": 66,
+        "endChar": 38
+      },
+      "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "7da0f79a_66ed46dc",
         "filename": "tcp_tests/templates/heat-cicd-pike-contrail41-sl/underlay.hot",
         "patchSetId": 8
@@ -76,6 +142,30 @@
       "writtenOn": "2019-05-21T12:12:31Z",
       "side": 1,
       "message": "please remove",
+      "range": {
+        "startLine": 523,
+        "startChar": 0,
+        "endLine": 523,
+        "endChar": 77
+      },
+      "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3c3195e9_f9a9fc7d",
+        "filename": "tcp_tests/templates/heat-cicd-pike-contrail41-sl/underlay.hot",
+        "patchSetId": 8
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1014475
+      },
+      "writtenOn": "2019-05-21T12:59:07Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7da0f79a_66ed46dc",
       "range": {
         "startLine": 523,
         "startChar": 0,
