@@ -25,6 +25,8 @@ parameters:
     type: string
   env_name:
     type: string
+  roles:
+    type: comma_delimited_list
 
 resources:
   instance_port01:
@@ -79,8 +81,7 @@ resources:
             $node_domain: { get_param: instance_domain }
             $config_host: { get_param: instance_config_host }
       metadata:
-        roles:
-        - salt_minion
+        roles: { get_param: roles }
 
 outputs:
   instance_address:

@@ -25,6 +25,9 @@ parameters:
     type: string
   mcp_version:
     type: string
+  role:
+    type: comma_delimited_list
+    default: [foundation_jenkins_slave]
 
 resources:
   instance_port01:
@@ -78,8 +81,7 @@ resources:
             $node_domain: { get_param: instance_domain }
             $config_host: { get_param: instance_config_host }
       metadata:
-        roles:
-        - foundation_jenkins_slave
+        roles: { get_param: role }
 
   floating_ip:
     depends_on: [instance_instance]
