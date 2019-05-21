@@ -39,6 +39,29 @@
       "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "7da0f79a_66ed46dc",
+        "filename": "tcp_tests/templates/heat-cicd-pike-contrail41-sl/underlay.hot",
+        "patchSetId": 8
+      },
+      "lineNbr": 523,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-21T12:12:31Z",
+      "side": 1,
+      "message": "please remove",
+      "range": {
+        "startLine": 523,
+        "startChar": 0,
+        "endLine": 523,
+        "endChar": 77
+      },
+      "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
