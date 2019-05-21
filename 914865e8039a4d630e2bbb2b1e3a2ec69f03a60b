@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "038a31e3_a031ae89",
+        "filename": "tcp_tests/templates/_heat_environments/eu-cloud.env",
+        "patchSetId": 8
+      },
+      "lineNbr": 10,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-21T12:06:50Z",
+      "side": 1,
+      "message": "There is no changes in the file. Please discard the new lines",
+      "revId": "914865e8039a4d630e2bbb2b1e3a2ec69f03a60b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
