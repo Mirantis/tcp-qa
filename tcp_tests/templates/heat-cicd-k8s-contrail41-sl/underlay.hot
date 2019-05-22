@@ -87,6 +87,7 @@ resources:
       instance01_name: ctl01
       instance02_name: ctl02
       instance03_name: ctl03
+      instance01_role: k8s_controller
       instance_flavor: {get_param: ctl_flavor}
       network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }

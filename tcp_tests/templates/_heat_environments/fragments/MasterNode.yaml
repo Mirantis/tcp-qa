@@ -23,6 +23,9 @@ parameters:
     type: string
   env_name:
     type: string
+  role:
+    type: comma_delimited_list
+    default: [salt_master]
 
 resources:
   instance_port01:
@@ -77,8 +80,7 @@ resources:
         image: { list_join: ['', [ 'cfg01.', { get_param: env_name }, '-config-drive.iso' ]] }
         volume_size: 1
       metadata:
-        roles:
-        - salt_master
+        roles: { get_param: role }
 
   floating_ip:
     depends_on: [instance_instance]
