@@ -57,9 +57,9 @@ class TestFailoverK8s(object):
             new_minion_vip =\
                 core_actions.get_keepalived_vip_minion_id(vip)
         except Exception:
-                time.sleep(15)
-                new_minion_vip = \
-                    core_actions.get_keepalived_vip_minion_id(vip)
+            time.sleep(15)
+            new_minion_vip = \
+                core_actions.get_keepalived_vip_minion_id(vip)
         LOG.info("VIP {0} migrated to {1}".format(vip, new_minion_vip))
         assert new_minion_vip != minion_vip
 

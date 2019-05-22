@@ -356,9 +356,9 @@ class TestMcpInstallOvsPike(object):
 
         pillar = 'keepalived:cluster:instance:cicd_control_vip:address'
         addresses = salt_deployed.get_pillar('cid01*', pillar)
-        ip = list(set([ip
+        ip = list(set([ipaddr
                   for item in addresses
-                  for node, ip in item.items() if ip]))
+                  for node, ipaddr in item.items() if ipaddr]))
         LOG.info('Jenkins ip is {}'.format(ip))
         try:
             assert len(ip) > 0, 'fail to find jenkins ip'
@@ -367,9 +367,9 @@ class TestMcpInstallOvsPike(object):
                 tgt='cid*', fun='cmd.run',
                 args='service keepalived restart')
             addresses = salt_deployed.get_pillar('cid01*', pillar)
-            ip = list(set([ip
+            ip = list(set([ipaddr
                       for item in addresses
-                      for node, ip in item.items() if ip]))
+                      for node, ipaddr in item.items() if ipaddr]))
             LOG.info('Jenkins ip is {}'.format(ip))
             assert len(ip) > 0, 'fail to find jenkins ip {}'.format(addresses)
 
@@ -457,9 +457,9 @@ class TestMcpInstallOvsPike(object):
 
         pillar = 'keepalived:cluster:instance:cicd_control_vip:address'
         addresses = salt_deployed.get_pillar('cid01*', pillar)
-        ip = list(set([ip
+        ip = list(set([ipaddr
                   for item in addresses
-                  for node, ip in item.items() if ip]))
+                  for node, ipaddr in item.items() if ipaddr]))
         LOG.info('Jenkins ip is {}'.format(ip))
         try:
             assert len(ip) > 0, 'fail to find jenkins ip'
@@ -468,9 +468,9 @@ class TestMcpInstallOvsPike(object):
                 tgt='cid*', fun='cmd.run',
                 args='service keepalived restart')
             addresses = salt_deployed.get_pillar('cid01*', pillar)
-            ip = list(set([ip
+            ip = list(set([ipaddr
                       for item in addresses
-                      for node, ip in item.items() if ip]))
+                      for node, ipaddr in item.items() if ipaddr]))
             LOG.info('Jenkins ip is {}'.format(ip))
             assert len(ip) > 0, 'fail to find jenkins ip {}'.format(addresses)
 

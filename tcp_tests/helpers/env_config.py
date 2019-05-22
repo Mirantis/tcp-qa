@@ -150,7 +150,7 @@ def disassemble_path(path):
     :param path: string
     :returns: key string, indexes list
     """
-    pattern = re.compile("\[([0-9]*)\]")
+    pattern = re.compile(r"\[([0-9]*)\]")
     # find all indexes of possible list object in path
     indexes = (lambda x: [int(r) for r in pattern.findall(x)]
                if pattern.search(x) else [])

@@ -252,22 +252,22 @@ class K8SManager(ExecuteCommandsMixin):
         if self.__config.k8s.run_extended_virtlet_conformance:
             ci_image = "cloud-images.ubuntu.com/xenial/current/" \
                        "xenial-server-cloudimg-amd64-disk1.img"
-            cmd = ("set -o pipefail; "
-                   "docker run --net=host {0} /virtlet-e2e-tests "
-                   "-include-cloud-init-tests -junitOutput {3} "
-                   "-image {2} -sshuser ubuntu -memoryLimit 1024 "
-                   "-alsologtostderr -cluster-url http://127.0.0.1:8080 "
-                   "-ginkgo.focus '\[Conformance\]' "
-                   "| tee {1}".format(
+            cmd = (r"set -o pipefail; "
+                   r"docker run --net=host {0} /virtlet-e2e-tests "
+                   r"-include-cloud-init-tests -junitOutput {3} "
+                   r"-image {2} -sshuser ubuntu -memoryLimit 1024 "
+                   r"-alsologtostderr -cluster-url http://127.0.0.1:8080 "
+                   r"-ginkgo.focus '\[Conformance\]' "
+                   r"| tee {1}".format(
                     self.__config.k8s_deploy.kubernetes_virtlet_image,
                     log_file, ci_image, report_name))
         else:
-            cmd = ("set -o pipefail; "
-                   "docker run --net=host {0} /virtlet-e2e-tests "
-                   "-junitOutput {2} "
-                   "-alsologtostderr -cluster-url http://127.0.0.1:8080 "
-                   "-ginkgo.focus '\[Conformance\]' "
-                   "| tee {1}".format(
+            cmd = (r"set -o pipefail; "
+                   r"docker run --net=host {0} /virtlet-e2e-tests "
+                   r"-junitOutput {2} "
+                   r"-alsologtostderr -cluster-url http://127.0.0.1:8080 "
+                   r"-ginkgo.focus '\[Conformance\]' "
+                   r"| tee {1}".format(
                     self.__config.k8s_deploy.kubernetes_virtlet_image,
                     log_file, report_name))
         LOG.info("Executing: {}".format(cmd))

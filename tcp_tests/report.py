@@ -188,7 +188,7 @@ def get_failed_results(t_client, run, result_type):
     LOG.info("Get results for run - {}".format(run.name))
     results = t_client.results(run, result_type)
     results_with_test = []
-    if result_type is '5':
+    if result_type == '5':
         ret = [(run, r) for r in results
                if r.raw_data()['status_id'] is int(result_type) and
                r.raw_data()['defects'] is None]
