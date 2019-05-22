@@ -1,0 +1,95 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f691a2c4_fbe19a3a",
+        "filename": "tcp_tests/templates/cookied-model-generator/salt_heat-cicd-k8s-genie.yaml",
+        "patchSetId": 12
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-22T16:52:48Z",
+      "side": 1,
+      "message": "\u0027secrets_encryption_enabled\u0027 missing in the context file. do we need this key here?",
+      "range": {
+        "startLine": 17,
+        "startChar": 0,
+        "endLine": 17,
+        "endChar": 57
+      },
+      "revId": "20d348529631f121a9b1b673dc1c22004701e3dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "4d5c6262_12db9b3f",
+        "filename": "tcp_tests/templates/heat-cicd-k8s-genie/underlay--meta-data.yaml",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-22T16:52:48Z",
+      "side": 1,
+      "message": "this file is not required for heat-based templates",
+      "revId": "20d348529631f121a9b1b673dc1c22004701e3dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "b4c1633a_fa1b8041",
+        "filename": "tcp_tests/templates/heat-cicd-k8s-genie/underlay--user-data1604-swp.yaml",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-22T16:52:48Z",
+      "side": 1,
+      "message": "this file is not required for heat-based templates",
+      "revId": "20d348529631f121a9b1b673dc1c22004701e3dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "25e5e552_52a6d5ce",
+        "filename": "tcp_tests/templates/heat-cicd-k8s-genie/underlay--user-data1604.yaml",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-22T16:52:48Z",
+      "side": 1,
+      "message": "this file is not required for heat-based templates",
+      "revId": "20d348529631f121a9b1b673dc1c22004701e3dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "d3e6adbb_8601afe3",
+        "filename": "tcp_tests/templates/heat-cicd-k8s-genie/underlay.yaml",
+        "patchSetId": 12
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-22T16:52:48Z",
+      "side": 1,
+      "message": "this file is not required for heat-based templates",
+      "revId": "20d348529631f121a9b1b673dc1c22004701e3dd",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
