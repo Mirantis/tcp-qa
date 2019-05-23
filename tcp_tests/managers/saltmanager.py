@@ -449,15 +449,16 @@ class SaltManager(ExecuteCommandsMixin):
         if not haproxy_params:
             return
         k8s_params = result.get(
+            'parameters', {}).get(
             'kubernetes', {}).get(
             'master', {}).get(
             'admin', {})
         if not k8s_params:
             return
-        kube_host = haproxy_params['address']
+        kube_host = haproxy_params[0]['address']
         LOG.info("kube_host: {}".
                  format(kube_host))
-        kube_apiserver_port = haproxy_params['port']
+        kube_apiserver_port = haproxy_params[0]['port']
         LOG.info("kube_apiserver_port: {}".
                  format(kube_apiserver_port))
         kubernetes_admin_user = k8s_params['username']
