@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "75bba82e_1d2b8852",
+        "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
+        "patchSetId": 4
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-23T15:12:13Z",
+      "side": 1,
+      "message": "1. This is not a bash source file. Please run it as a binary\n2. Do not run it before run_jenkins_job.py, there are no VCP nodes yet. \n\nIt\u0027s better to create a separate stage for this command , after https://github.com/Mirantis/tcp-qa/blob/master/jobs/pipelines/swarm-deploy-cicd.groovy#L52-L54",
+      "range": {
+        "startLine": 521,
+        "startChar": 12,
+        "endLine": 521,
+        "endChar": 58
+      },
+      "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "f3f88599_41cb87fb",
+        "filename": "tcp_tests/utils/create_env_jenkins_cicd.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-23T15:12:13Z",
+      "side": 1,
+      "message": "Please import modules, not objects\n\nfrom tcp_tests.managers import saltmanager",
+      "range": {
+        "startLine": 8,
+        "startChar": 4,
+        "endLine": 8,
+        "endChar": 58
+      },
+      "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "29973024_fca942b2",
+        "filename": "tcp_tests/utils/create_env_jenkins_cicd.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-23T15:12:13Z",
+      "side": 1,
+      "message": "Need to create an instance of the class:\n\nsaltmanager \u003d saltmanager.SaltManager()",
+      "range": {
+        "startLine": 17,
+        "startChar": 18,
+        "endLine": 17,
+        "endChar": 29
+      },
+      "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
