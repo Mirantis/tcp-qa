@@ -445,10 +445,11 @@ class SaltManager(ExecuteCommandsMixin):
             'proxy', {}).get(
             'listen', {}).get(
             'k8s_secure', {}).get(
-            'binds', {})
+            'binds', {})[0]
         if not haproxy_params:
             return
         k8s_params = result.get(
+            'parameters', {}).get(
             'kubernetes', {}).get(
             'master', {}).get(
             'admin', {})
