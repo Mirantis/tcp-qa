@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7f567d03_1826a5c9",
+        "filename": "jobs/pipelines/swarm-deploy-cicd.groovy",
+        "patchSetId": 5
+      },
+      "lineNbr": 55,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-23T16:07:23Z",
+      "side": 1,
+      "message": "please create a stage, not a \u0027try\u0027 block",
+      "range": {
+        "startLine": 55,
+        "startChar": 0,
+        "endLine": 55,
+        "endChar": 17
+      },
+      "revId": "728f807a3213f5c766a1f5aaed304262823caf91",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "454f681b_0e6231d2",
+        "filename": "jobs/pipelines/swarm-deploy-cicd.groovy",
+        "patchSetId": 5
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-23T16:07:23Z",
+      "side": 1,
+      "message": "shared.run_cmd\n\nalso, please set the environment variable TESTS_CONFIGS, like there:\n\nhttps://github.com/Mirantis/tcp-qa/blob/9237e3c2c7734a028d4d30abe2457aef9c6c6d88/src/com/mirantis/system_qa/SharedPipeline.groovy#L567",
+      "range": {
+        "startLine": 57,
+        "startChar": 16,
+        "endLine": 57,
+        "endChar": 23
+      },
+      "revId": "728f807a3213f5c766a1f5aaed304262823caf91",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "e3b2e518_f1f8e6a6",
+        "filename": "tcp_tests/utils/create_env_jenkins_cicd.py",
+        "patchSetId": 5
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-23T16:07:23Z",
+      "side": 1,
+      "message": "Please add verification for TESTS_CONFIGS environment variable.\n\nIf it is not set - then the Managers will require additional environment variables which are not suitable to use here.\n\nhttps://github.com/Mirantis/tcp-qa/blob/master/tcp_tests/utils/get_logs.py#L40-L45",
+      "range": {
+        "startLine": 18,
+        "startChar": 4,
+        "endLine": 18,
+        "endChar": 11
+      },
+      "revId": "728f807a3213f5c766a1f5aaed304262823caf91",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
