@@ -64,8 +64,8 @@ class SaltManager(ExecuteCommandsMixin):
                               label="Install and configure salt")
         self.create_env_salt()
         self.create_env_jenkins_day01()
-        self.create_env_jenkins_cicd()
-        self.create_env_k8s()
+        # self.create_env_jenkins_cicd()
+        # self.create_env_k8s()
 
     def change_creds(self, username, password):
         self.__user = username
