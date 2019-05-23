@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "bf563ed0_8c1758d1",
+        "filename": "tcp_tests/managers/saltmanager.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-05-23T09:55:13Z",
+      "side": 1,
+      "message": "always need to verify if index exist before use it",
+      "range": {
+        "startLine": 448,
+        "startChar": 26,
+        "endLine": 448,
+        "endChar": 27
+      },
+      "revId": "a7fce891a9f5ac78a98fb04763c187d4c20abe83",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
