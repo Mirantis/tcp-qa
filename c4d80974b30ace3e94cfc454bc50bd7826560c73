@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d6ec4178_c1790503",
+        "filename": "src/com/mirantis/system_qa/SharedPipeline.groovy",
+        "patchSetId": 4
+      },
+      "lineNbr": 521,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-05-23T15:32:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "75bba82e_1d2b8852",
+      "range": {
+        "startLine": 521,
+        "startChar": 12,
+        "endLine": 521,
+        "endChar": 58
+      },
+      "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "f3f88599_41cb87fb",
         "filename": "tcp_tests/utils/create_env_jenkins_cicd.py",
         "patchSetId": 4
@@ -36,6 +60,30 @@
       "writtenOn": "2019-05-23T15:12:13Z",
       "side": 1,
       "message": "Please import modules, not objects\n\nfrom tcp_tests.managers import saltmanager",
+      "range": {
+        "startLine": 8,
+        "startChar": 4,
+        "endLine": 8,
+        "endChar": 58
+      },
+      "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "22befe59_98483363",
+        "filename": "tcp_tests/utils/create_env_jenkins_cicd.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-05-23T15:32:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f3f88599_41cb87fb",
       "range": {
         "startLine": 8,
         "startChar": 4,
@@ -83,6 +131,54 @@
       "side": 1,
       "message": "One more comment. The class SaltManager requires \u0027config\u0027 and \u0027underlay\u0027 classes as input. Please see how they are initialized in get_logs.py",
       "parentUuid": "29973024_fca942b2",
+      "range": {
+        "startLine": 17,
+        "startChar": 18,
+        "endLine": 17,
+        "endChar": 29
+      },
+      "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "c3504ff9_3f73599e",
+        "filename": "tcp_tests/utils/create_env_jenkins_cicd.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-05-23T15:32:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "29973024_fca942b2",
+      "range": {
+        "startLine": 17,
+        "startChar": 18,
+        "endLine": 17,
+        "endChar": 29
+      },
+      "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "ad02c786_e776432a",
+        "filename": "tcp_tests/utils/create_env_jenkins_cicd.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-05-23T15:32:40Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "fb487d32_2599b02b",
       "range": {
         "startLine": 17,
         "startChar": 18,
