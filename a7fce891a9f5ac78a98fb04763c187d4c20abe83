@@ -22,6 +22,30 @@
       "revId": "a7fce891a9f5ac78a98fb04763c187d4c20abe83",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "3909795e_b1fef76e",
+        "filename": "tcp_tests/managers/saltmanager.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-05-23T10:09:15Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "bf563ed0_8c1758d1",
+      "range": {
+        "startLine": 448,
+        "startChar": 26,
+        "endLine": 448,
+        "endChar": 27
+      },
+      "revId": "a7fce891a9f5ac78a98fb04763c187d4c20abe83",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
