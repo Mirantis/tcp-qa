@@ -21,8 +21,11 @@
 # Currently we support 2 salt version that can be set over bellow var
 {% set SALT_VERSION = os_env('SALT_VERSION','2017.7') %}
 {% set REPOSITORY_SUITE = os_env('REPOSITORY_SUITE', 'testing') %}
+{% set UPDATE_REPO_CUSTOM_TAG = os_env('UPDATE_REPO_CUSTOM_TAG', '') %}
+{% set UPDATE_VERSION = os_env('UPDATE_VERSION', 'proposed') %}
 {# set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', 'deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME} ' + REPOSITORY_SUITE + ' salt extra') #}
 {% set FORMULA_REPOSITORY = os_env('FORMULA_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/salt-formulas"+"/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
+{% set UPDATE_FORMULA_REPOSITORY = os_env('UPDATE_FORMULA_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/update" + UPDATE_VERSION + "/salt-formulas"+"/${DISTRIB_CODENAME} ${DISTRIB_CODENAME} main") %}
 {# set FORMULA_GPG = os_env('FORMULA_GPG', 'http://apt.mirantis.com/public.gpg') #}
 {% set FORMULA_GPG = os_env('FORMULA_GPG', "http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/salt-formulas/xenial/archive-salt-formulas.key") %}
 {# set SALT_REPOSITORY = os_env('SALT_REPOSITORY', "deb [arch=amd64] http://apt.mirantis.com/${DISTRIB_CODENAME}/salt/2016.3 " + REPOSITORY_SUITE + " main") #}
@@ -35,7 +38,6 @@
 {% set UBUNTU_SECURITY_REPOSITORY = os_env('UBUNTU_SECURITY_REPOSITORY', "deb [arch=amd64] http://mirror.mirantis.com/" + REPOSITORY_SUITE + "/ubuntu/ ${DISTRIB_CODENAME}-security main restricted universe") %}
 {% set UBUNTU_KEY_SERVER = os_env('UBUNTU_KEY_SERVER', 'keyserver.ubuntu.com') %}
 {% set UBUNTU_KEY_ID = os_env('UBUNTU_KEY_ID', '0E08A149DE57BFBE') %}
-{% set UPDATE_REPO_CUSTOM_TAG = os_env('UPDATE_REPO_CUSTOM_TAG', '') %}
 
 {# Address pools for reclass cluster model are taken in the following order:
  # 1. environment variables,
@@ -89,6 +91,25 @@
 
 {%- endmacro %}
 
+
+{%- macro MACRO_INSTALL_FORMULAS_FROM_UPDATE() %}
+{#####################################################}
+
+- description: 'Configure key on nodes and install packages'
+  cmd: |
+    rm -rf trusted* ;
+    rm -rf /etc/apt/sources.list ;
+    . /etc/lsb-release;  # Get DISTRIB_CODENAME variable
+    echo "{{ UPDATE_FORMULA_REPOSITORY }}" > /etc/apt/sources.list.d/mcp_update_salt.list;
+    wget -O - "{{ FORMULA_GPG }}" | apt-key add -;
+    eatmydata apt-get clean;
+    apt-get update;
+    sync;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
 
 {%- macro MACRO_INSTALL_SALT_MASTER() %}
 {######################################}
