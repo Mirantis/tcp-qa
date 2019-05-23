@@ -88,6 +88,14 @@ resources:
       env_name: { get_param: env_name }
       mcp_version: { get_param: mcp_version }
       cfg01_flavor: { get_param: cfg_flavor }
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '15' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '15' ]
       instance_name: cfg01
       instance_domain: {get_param: instance_domain}
       network: { get_attr: [networks, network] }
@@ -117,6 +125,30 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '13' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '11' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '12' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '13' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '11' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '12' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '13' ]
 
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
@@ -145,6 +177,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '53' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '51' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '52' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '53' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '51' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '52' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '53' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   fake_kvm_cluster:
@@ -172,6 +229,30 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '243' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '241' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '242' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '243' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '241' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '242' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '243' ]
 
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
@@ -200,6 +281,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '43' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '41' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '42' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '43' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '41' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '42' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '43' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   cicd_cluster:
@@ -227,6 +333,30 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '93' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '91' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '92' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '93' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '91' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '92' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '93' ]
 
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
@@ -255,6 +385,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '73' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '71' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '72' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '73' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '71' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '72' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '73' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   stacklight_log_cluster:
@@ -282,6 +437,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '63' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '61' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '62' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '63' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '61' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '62' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '63' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   stacklight_mtr_cluster:
@@ -309,6 +489,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '99' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '97' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '98' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '99' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '97' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '98' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '99' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   prx01_virtual:
@@ -326,6 +531,14 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '81' ]
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '81' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '81' ]
 
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
@@ -344,6 +557,14 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '82' ]
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '82' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '82' ]
 
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
@@ -362,6 +583,15 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '101' ]
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '101' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '101' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   cmp002_virtual:
@@ -379,6 +609,15 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '102' ]
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '102' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '102' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   foundation_node:
@@ -397,6 +636,15 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '5' ]
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '5' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '5' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   ceph_cmn_cluster:
@@ -424,6 +672,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '68' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '66' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '67' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '68' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '66' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '67' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '68' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   ceph_rgw_cluster:
@@ -451,6 +724,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '78' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '76' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '77' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '78' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '76' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '77' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '78' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   ceph_osd_cluster:
@@ -478,6 +776,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '203' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '201' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '202' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '203' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '201' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '202' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '203' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   openstack_gtw_cluster:
@@ -505,6 +828,31 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '226' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '224' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '225' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '226' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '224' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '225' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '226' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   openstack_barbican_cluster:
@@ -532,6 +880,7 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '47' ]
+
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
   dns01_virtual:
@@ -549,6 +898,14 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '113' ]
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '113' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '113' ]
 
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
@@ -567,6 +924,14 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '114' ]
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '114' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '114' ]
 
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
