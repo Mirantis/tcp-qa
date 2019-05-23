@@ -68,6 +68,30 @@
       "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "fb487d32_2599b02b",
+        "filename": "tcp_tests/utils/create_env_jenkins_cicd.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-23T15:13:41Z",
+      "side": 1,
+      "message": "One more comment. The class SaltManager requires \u0027config\u0027 and \u0027underlay\u0027 classes as input. Please see how they are initialized in get_logs.py",
+      "parentUuid": "29973024_fca942b2",
+      "range": {
+        "startLine": 17,
+        "startChar": 18,
+        "endLine": 17,
+        "endChar": 29
+      },
+      "revId": "c4d80974b30ace3e94cfc454bc50bd7826560c73",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
