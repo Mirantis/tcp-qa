@@ -518,6 +518,7 @@ def run_job_on_cicd_nodes(stack_to_install, timeout=2400) {
         run_cmd("""\
             export ENV_NAME=${ENV_NAME}
             . ./tcp_tests/utils/env_salt
+            . ./tcp_tests/utils/create_env_jenkins_cicd.py
             . ./tcp_tests/utils/env_jenkins_cicd
             export JENKINS_BUILD_TIMEOUT=${timeout}
             JOB_PARAMETERS=\"{
