@@ -7,6 +7,10 @@ parameters:
     type: string
   salt_master_control_ip:
     type: string
+  tenant_net_static_ip:
+    type: string
+  external_net_static_ip:
+    type: string
   network:
     type: string
   cfg01_flavor:
@@ -49,12 +53,16 @@ resources:
     properties:
       port_security_enabled: false
       network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+      fixed_ips:
+        - ip_address: { get_param: tenant_net_static_ip }
 
   instance_port04:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
       network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+      fixed_ips:
+        - ip_address: { get_param: external_net_static_ip }
 
   instance_instance:
     type: OS::Nova::Server

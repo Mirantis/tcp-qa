@@ -25,6 +25,18 @@ parameters:
     type: string
   instance03_control_net_static_ip:
     type: string
+  instance01_tenant_net_static_ip:
+    type: string
+  instance02_tenant_net_static_ip:
+    type: string
+  instance03_tenant_net_static_ip:
+    type: string
+  instance01_external_net_static_ip:
+    type: string
+  instance02_external_net_static_ip:
+    type: string
+  instance03_external_net_static_ip:
+    type: string
   instance01_role:
     type: comma_delimited_list
     default: [salt_minion]
@@ -50,6 +62,8 @@ resources:
       key_pair: { get_param: key_pair }
       network: { get_param: network }
       control_net_static_ip: {get_param: instance01_control_net_static_ip }
+      tenant_net_static_ip: {get_param: instance01_tenant_net_static_ip }
+      external_net_static_ip: {get_param: instance01_external_net_static_ip }
       instance_name: { get_param: instance01_name }
       role: { get_param: instance01_role }
       instance_domain: { get_param: instance_domain }
@@ -65,6 +79,8 @@ resources:
       key_pair: { get_param: key_pair }
       network: { get_param: network }
       control_net_static_ip: {get_param: instance02_control_net_static_ip }
+      tenant_net_static_ip: {get_param: instance02_tenant_net_static_ip }
+      external_net_static_ip: {get_param: instance02_external_net_static_ip }
       instance_name: { get_param: instance02_name }
       role: { get_param: instance02_role }
       instance_domain: { get_param: instance_domain }
@@ -80,6 +96,8 @@ resources:
       key_pair: { get_param: key_pair }
       network: { get_param: network }
       control_net_static_ip: {get_param: instance03_control_net_static_ip }
+      tenant_net_static_ip: {get_param: instance03_tenant_net_static_ip }
+      external_net_static_ip: {get_param: instance03_external_net_static_ip }
       instance_name: { get_param: instance03_name }
       role: { get_param: instance03_role }
       instance_domain: { get_param: instance_domain }
