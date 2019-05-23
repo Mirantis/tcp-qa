@@ -52,6 +52,12 @@ timeout(time: install_timeout + 600, unit: 'SECONDS') {
                 stage("Run Jenkins job on salt-master [deploy_openstack:${env.STACK_INSTALL}]") {
                     shared.run_job_on_day01_node(env.STACK_INSTALL, install_timeout)
                 }
+            stage("Create env_jenkins_cicd and env_k8s files") {
+                shared.run_cmd("""\
+                    export TESTS_CONFIGS=\$(pwd)/${ENV_NAME}_salt_deployed.ini
+                    python ./tcp_tests/utils/create_env_jenkins_cicd.py
+                 """)
+            }
 
                 for (stack in "${env.STACK_INSTALL}".split(",")) {
                     stage("Sanity check the deployed component [${stack}]") {
