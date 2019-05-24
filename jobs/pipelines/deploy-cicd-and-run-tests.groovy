@@ -161,8 +161,11 @@ def test(shared, common, steps, env_manager) {
                 shared.swarm_testrail_report(steps, node_with_reports)
             }
             stage("Store TestRail reports to job description") {
-                def String description = readFile("description.txt")
-                currentBuild.description += "${description}"
+                if (fileExists("jenkins_agent_description.txt")){
+
+                def String jenkins_agent_description  = readFile("jenkins_agent_description.txt")
+                currentBuild.description += "${jenkins_agent_description}"
+                }
             }
         }
     } // try
