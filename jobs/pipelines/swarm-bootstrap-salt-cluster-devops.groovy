@@ -70,6 +70,7 @@ node ("${PARENT_NODE_NAME}") {
                 export ENV_MANAGER=devops
                 export PYTHONIOENCODING=UTF-8
                 export REPOSITORY_SUITE=${MCP_VERSION}
+                export UPDATE_VERSION=${UPDATE_VERSION}
                 export TEST_GROUP=test_create_environment
                 export LOG_NAME=swarm_test_create_environment.log
                 py.test -vvv -s -p no:django -p no:ipdb --junit-xml=deploy_hardware.xml -k \${TEST_GROUP}
@@ -123,6 +124,7 @@ node ("${PARENT_NODE_NAME}") {
                     export BOOTSTRAP_TIMEOUT=1800
                     export PYTHONIOENCODING=UTF-8
                     export REPOSITORY_SUITE=${MCP_VERSION}
+                    export UPDATE_VERSION=${UPDATE_VERSION}
                     export TEST_GROUP=test_bootstrap_salt
                     export LOG_NAME=swarm_test_bootstrap_salt.log
                     py.test -vvv -s -p no:django -p no:ipdb --junit-xml=${xml_report_name} -k \${TEST_GROUP}

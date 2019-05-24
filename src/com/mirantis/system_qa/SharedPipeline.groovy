@@ -205,6 +205,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
+        def mcp_common_scripts_refs = env.MCP_COMMON_SCRIPTS_REFS ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
         def mcp_salt_repo_url = env.MCP_SALT_REPO_URL ?: ''
         def mcp_salt_repo_key = env.MCP_SALT_REPO_KEY ?: ''
@@ -214,6 +215,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
         def env_lab_ctl_iface = env.LAB_CONTROL_IFACE ?: ''
         def update_repo_custom_tag = env.UPDATE_REPO_CUSTOM_TAG ?: ''
+        def update_version = env.UPDATE_VERSION ?: ''
         def parameters = [
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'PARENT_WORKSPACE', value: pwd()),
@@ -239,6 +241,8 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
                 string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
                 string(name: 'JENKINS_PIPELINE_BRANCH', value: "${jenkins_pipelines_branch}"),
+                string(name: 'MCP_COMMON_SCRIPTS_REFS', value: "${mcp_common_scripts_refs}"),
+                string(name: 'UPDATE_VERSION', value: "${update_version}"),
                 booleanParam(name: 'SHUTDOWN_ENV_ON_TEARDOWN', value: false),
             ]
 
@@ -250,6 +254,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
         def common = new com.mirantis.mk.Common()
         def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: "release/${env.MCP_VERSION}"
         def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
+        def mcp_common_scripts_refs = env.MCP_COMMON_SCRIPTS_REFS ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def jenkins_pipelines_branch = env.JENKINS_PIPELINE_BRANCH ?: ''
@@ -263,6 +268,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
         def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
         def env_lab_ctl_iface = env.LAB_CONTROL_IFACE ?: ''
         def update_repo_custom_tag = env.UPDATE_REPO_CUSTOM_TAG ?: ''
+        def update_version = env.UPDATE_VERSION ?: ''
         def parameters = [
                 string(name: 'PARENT_NODE_NAME', value: "${NODE_NAME}"),
                 string(name: 'JENKINS_SLAVE_NODE_NAME', value: jenkins_slave_node_name),
@@ -282,6 +288,8 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
                 string(name: 'MCP_SALT_REPO_URL', value: "${mcp_salt_repo_url}"),
                 string(name: 'MCP_SALT_REPO_KEY', value: "${mcp_salt_repo_key}"),
+                string(name: 'MCP_COMMON_SCRIPTS_REFS', value: "${mcp_common_scripts_refs}"),
+                string(name: 'UPDATE_VERSION', value: "${update_version}"),
                 string(name: 'IPMI_USER', value: env_ipmi_user),
                 string(name: 'IPMI_PASS', value: env_ipmi_pass),
                 string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
@@ -416,6 +424,7 @@ def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IP
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
         def jenkins_pipelines_branch=env.JENKINS_PIPELINE_BRANCH ?: ''
         def update_repo_custom_tag = env.UPDATE_REPO_CUSTOM_TAG ?: ''
+        def update_version = env.UPDATE_VERSION ?: ''
 
         def parameters = [
                 string(name: 'LAB_CONTEXT_NAME', value: "${LAB_CONFIG_NAME}"),
@@ -436,6 +445,8 @@ def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IP
                 string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
                 string(name: 'JENKINS_PIPELINE_BRANCH', value: "${jenkins_pipelines_branch}"),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: env.IMAGE_PATH_CFG01_DAY01),
+                string(name: 'UPDATE_VERSION', value: "${update_version}"),
+
             ]
 
         build_shell_job('swarm-cookied-model-generator', parameters, "deploy_generate_model.xml")
@@ -449,6 +460,7 @@ def generate_configdrive_iso(SALT_MASTER_IP, ADMIN_NETWORK_GW) {
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
         def pipeline_library_ref = env.PIPELINE_LIBRARY_REF ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
+        def update_version = env.UPDATE_VERSION?: 'proposed'
         def mcp_salt_repo_url = env.MCP_SALT_REPO_URL ?: ''
         def mcp_salt_repo_key = env.MCP_SALT_REPO_KEY ?: ''
         def deploy_network_mask = env.DEPLOY_NETWORK_NETMASK ?: ''
@@ -472,6 +484,10 @@ def generate_configdrive_iso(SALT_MASTER_IP, ADMIN_NETWORK_GW) {
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
+                string(name: 'UPDATE_VERSION', value: "${update_version}"),
+                string(name: 'MCP_SALT_REPO_UPDATES', value: "deb [arch=amd64] http://mirror.mirantis.com/update/${UPDATE_VERSION}/salt-formulas/xenial xenial main"),
+        ${mcp_salt_updates}"),
+
             ]
         build_pipeline_job('swarm-create-cfg-config-drive', parameters)
 }
