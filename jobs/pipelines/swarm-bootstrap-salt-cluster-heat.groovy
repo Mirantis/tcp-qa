@@ -28,6 +28,7 @@
  *   OS_USER_DOMAIN_NAME           OpenStack user domain name
  *   OS_CREDENTIALS                OpenStack username and password credentials ID in Jenkins
  *   JENKINS_PIPELINE_BRANCH       Should be set in release/proposed/2019.2.0 when we test non-released version
+ *   UPDATE_VERSION                Version of update to deploy
  *   LAB_PARAM_DEFAULTS            Filename placed in tcp_tests/templates/_heat_environments, with default parameters for the heat template
  *
  *   CREATE_JENKINS_NODE_CREDENTIALS   Jenkins username and password with rights to add/delete Jenkins agents
@@ -155,6 +156,7 @@ node ("${PARENT_NODE_NAME}") {
                     export SHUTDOWN_ENV_ON_TEARDOWN=false
                     export PYTHONIOENCODING=UTF-8
                     export REPOSITORY_SUITE=${MCP_VERSION}
+                    export UPDATE_VERSION=${UPDATE_VERSION}
                     export ENV_NAME=${ENV_NAME}
                     export LAB_CONFIG_NAME=${LAB_CONFIG_NAME}
                     export LAB_PARAM_DEFAULTS=${LAB_PARAM_DEFAULTS}
@@ -290,6 +292,7 @@ node ("${JENKINS_SLAVE_NODE_NAME}") {
                         export BOOTSTRAP_TIMEOUT=3600
                         export PYTHONIOENCODING=UTF-8
                         export REPOSITORY_SUITE=${MCP_VERSION}
+                        export UPDATE_VERSION=${UPDATE_VERSION}
                         export TEST_GROUP=test_bootstrap_salt
                         export LOG_NAME=swarm_test_bootstrap_salt.log
                         py.test -vvv -s -p no:django -p no:ipdb --junit-xml=${xml_report_name} -k \${TEST_GROUP}
