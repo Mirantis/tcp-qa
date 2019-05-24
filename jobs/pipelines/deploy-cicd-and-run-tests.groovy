@@ -146,6 +146,7 @@ def test(shared, common, steps, env_manager) {
                     }
                     if ("${env.REPORT_TO_TESTRAIL}" != "false") {
                       stage("report results to testrail") {
+                      common.printMsg("Running on: " + node_with_reports, "blue")
                       shared.swarm_testrail_report(steps, node_with_reports)
                     }
                     }
@@ -157,8 +158,14 @@ def test(shared, common, steps, env_manager) {
             archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
         }
         if ("${env.REPORT_TO_TESTRAIL}" != "false") {
-            stage("report results to testrail") {
-                shared.swarm_testrail_report(steps, node_with_reports)
+            stage("report results to testrail from jenkins master") {
+                common.printMsg("Running on: " + node_with_reports, "blue")
+                common.printMsg("Running on: " + env.NODE_NAME, "blue")
+                shared.verbose_sh("""\
+                       [ -d /home/jenkins/venv_testrail_reporter ] || virtualenv /home/jenkins/venv_testrail_reporter""", true, false, true)
+                shared.run_cmd("""\
+                        . /home/jenkins/venv_testrail_reporter/bin/activate; pip install git+https://github.com/dis-xcom/testrail_reporter -U""")
+                shared.swarm_testrail_report(steps, env.NODE_NAME)
             }
             stage("Store TestRail reports to job description") {
                 if (fileExists("jenkins_agent_description.txt")){
