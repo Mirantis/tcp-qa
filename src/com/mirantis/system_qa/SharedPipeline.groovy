@@ -185,15 +185,18 @@ def prepare_working_dir(env_manager) {
         """)
 }
 
-def update_working_dir() {
+def update_working_dir(Boolean updateRequirements=true) {
         // Use to fetch a patchset from gerrit to the working dir
         run_cmd("""\
             if [ -n "$TCP_QA_REFS" ]; then
                 set -e
                 git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
-            fi
-            pip install -r tcp_tests/requirements.txt
-        """)
+            fi""")
+        if (updateRequirements) {
+            run_cmd("""\
+                pip install -r tcp_tests/requirements.txt
+            """)
+        }
 }
 
 def swarm_bootstrap_salt_cluster_devops() {
