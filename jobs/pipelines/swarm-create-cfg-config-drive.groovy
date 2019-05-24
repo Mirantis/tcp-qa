@@ -20,6 +20,8 @@ smc['MCP_VERSION'] = "${MCP_VERSION}"
 // smc['LOCAL_REPOS'] = 'true'
 smc['MCP_SALT_REPO_KEY'] = "${MCP_SALT_REPO_KEY}"
 smc['MCP_SALT_REPO_URL'] = "${MCP_SALT_REPO_URL}"
+smc['MCP_SALT_REPO_UPDATES'] = "${MCP_SALT_REPO_UPDATES}"
+
 
 def entries(m) {
     m.collect {k, v -> [k, v]}
@@ -186,6 +188,7 @@ node (node_name) {
 #      export LOCAL_REPOS="true"
 #      export MCP_SALT_REPO_KEY="${MCP_SALT_REPO_KEY}"
 #      export MCP_SALT_REPO_URL="${MCP_SALT_REPO_URL}"
+#      export MCP_SALT_REPO_UPDATES="${MCP_SALT_REPO_UPDATES}"
 
 output:
   all: '| tee -a /var/log/cloud-init-output.log /dev/tty0'
