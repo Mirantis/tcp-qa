@@ -146,6 +146,7 @@ def test(shared, common, steps, env_manager) {
                     }
                     if ("${env.REPORT_TO_TESTRAIL}" != "false") {
                       stage("report results to testrail") {
+                      common.printMsg("Running on: " + node_with_reports, "blue")
                       shared.swarm_testrail_report(steps, node_with_reports)
                     }
                     }
@@ -157,7 +158,9 @@ def test(shared, common, steps, env_manager) {
             archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
         }
         if ("${env.REPORT_TO_TESTRAIL}" != "false") {
-            stage("report results to testrail") {
+            stage("report results to testrail from jenkins master") {
+                common.printMsg("Running on: " + node_with_reports, "blue")
+                common.printMsg("Running on: " + env.NODE_NAME, "blue")
                 shared.swarm_testrail_report(steps, node_with_reports)
             }
             stage("Store TestRail reports to job description") {
