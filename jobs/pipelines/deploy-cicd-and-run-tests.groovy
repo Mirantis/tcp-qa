@@ -161,8 +161,9 @@ def test(shared, common, steps, env_manager) {
                 shared.swarm_testrail_report(steps, node_with_reports)
             }
             stage("Store TestRail reports to job description") {
+                if (fileExists("description.txt")) {
                 def String description = readFile("description.txt")
-                currentBuild.description += "${description}"
+                currentBuild.description += "${description}" }
             }
         }
     } // try
