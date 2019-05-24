@@ -7,6 +7,8 @@ parameters:
     type: string
   instance_flavor:
     type: string
+  instance_image:
+    type: string
   instance_name:
     type: string
   instance_config_host:
@@ -58,7 +60,7 @@ resources:
     properties:
       image_update_policy: REBUILD
       flavor: { get_param: instance_flavor }
-      image: { list_join: ['', [ 'ubuntu-16.04-foundation-', { get_param: mcp_version } ]] }
+      image: { get_param: instance_image }
       key_name: { get_param: key_pair }
       name:
         list_join:
