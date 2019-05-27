@@ -524,11 +524,10 @@ class EnvironmentManagerHeat(object):
 
         if env_files_list:
             fields['environment_files'] = env_files_list
-
         self.__stacks.create(**fields)
         self.wait_of_stack_status(EXPECTED_STACK_STATUS, tries=140)
-        LOG.info("Stack '{0}' created"
-                 .format(self.__config.hardware.heat_stack_name))
+        LOG.info("Stack '{0}' created".format(
+            self.__config.hardware.heat_stack_name))
 
     def stop(self):
         """Stop environment"""
