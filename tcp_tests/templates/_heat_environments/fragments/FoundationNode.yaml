@@ -3,8 +3,6 @@ heat_template_version: queens
 description: Single server instance fragment
 
 parameters:
-  network:
-    type: string
   instance_flavor:
     type: string
   instance_image:
@@ -13,17 +11,31 @@ parameters:
     type: string
   instance_config_host:
     type: string
+  management_net:
+    type: string
+  control_net:
+    type: string
+  tenant_net:
+    type: string
+  external_net:
+    type: string
   key_pair:
     type: string
   instance_domain:
     type: string
   net_public:
     type: string
+  management_net_static_ip:
+    type: string
   control_net_static_ip:
     type: string
   tenant_net_static_ip:
     type: string
   external_net_static_ip:
+    type: string
+  management_subnet_gateway_ip:
+    type: string
+  nameservers:
     type: string
   underlay_userdata:
     type: string
@@ -34,32 +46,40 @@ parameters:
   role:
     type: comma_delimited_list
     default: [foundation_jenkins_slave]
+  bm_availability_zone:
+    type: string
 
 resources:
   instance_port01:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+      network_id: { get_param: management_net }
+      #network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+      fixed_ips:
+        - ip_address: { get_param: management_net_static_ip }
   instance_port02:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+      network_id: { get_param: control_net }
+      #network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: control_net_static_ip }
   instance_port03:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+      network_id: { get_param: tenant_net }
+      #network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: tenant_net_static_ip }
   instance_port04:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+      network_id: { get_param: external_net }
+      #network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: external_net_static_ip }
 
@@ -70,6 +90,7 @@ resources:
       flavor: { get_param: instance_flavor }
       image: { get_param: instance_image }
       key_name: { get_param: key_pair }
+      availability_zone: { get_param: bm_availability_zone }
       name:
         list_join:
         - '.'
@@ -90,6 +111,10 @@ resources:
             $node_hostname: { get_param: instance_name }
             $node_domain: { get_param: instance_domain }
             $config_host: { get_param: instance_config_host }
+            $management_static_ip: { get_param: management_net_static_ip }
+            $control_static_ip: { get_param: control_net_static_ip }
+            $management_gw: { get_param: management_subnet_gateway_ip }
+            $dnsaddress: { get_param: nameservers }
       metadata:
         roles: { get_param: role }
 
@@ -120,10 +145,10 @@ outputs:
       get_attr:
       - instance_instance
       - addresses
-      - 'management_net'
+      - { get_param: management_net }
       - 0
       - addr
-    description: "Instance's private IP address"
+    description: "Instance's management IP address"
   instance:
     value: { get_resource: instance_instance }
     description: "Instance"
