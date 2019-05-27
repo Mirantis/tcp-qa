@@ -3,8 +3,6 @@ heat_template_version: queens
 description: Single server instance fragment
 
 parameters:
-  network:
-    type: string
   instance_flavor:
     type: string
   instance_name:
