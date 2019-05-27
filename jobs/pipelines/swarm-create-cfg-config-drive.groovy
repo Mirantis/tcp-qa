@@ -27,6 +27,7 @@ def entries(m) {
     m.collect {k, v -> [k, v]}
 }
 
+timeout(time: 2, unit: 'HOURS') {
 node (node_name) {
 
   timestamps(){
@@ -247,3 +248,4 @@ merge_how: "dict(recurse_array)+list(append)"
     }
   }
 }
+} // timeout

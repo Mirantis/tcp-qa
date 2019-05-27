@@ -50,6 +50,7 @@ def cfg01_day01_image_name = "cfg01-day01-${MCP_VERSION}"
 def ubuntu_vcp_image_name = "ubuntu-vcp-${MCP_VERSION}"
 def ubuntu_foundation_image_name = "ubuntu-16.04-foundation-${MCP_VERSION}"
 
+timeout(time: 2, unit: 'HOURS') {
 node ("${PARENT_NODE_NAME}") {
     if (! fileExists("${PARENT_WORKSPACE}")) {
         error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
@@ -317,3 +318,4 @@ node ("${JENKINS_SLAVE_NODE_NAME}") {
         } // withCredentials
     } // dir
 } // node
+} // timeout

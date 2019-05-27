@@ -111,6 +111,8 @@ def test(shared, common, steps, env_manager) {
     }
 }
 
+
+timeout(time: 12, unit: 'HOURS') {
 // main
 // Temporary disable throttle to check how it will run
 //throttle(['fuel_devops_environment']) {
@@ -185,3 +187,4 @@ def test(shared, common, steps, env_manager) {
 
 
 //}
+} // timeout
