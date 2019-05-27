@@ -502,6 +502,16 @@ class EnvironmentManagerHeat(object):
         LOG.info('Heat stack "{0}" ready'
                  .format(self.__config.hardware.heat_stack_name))
 
+    def _verify_resources_status(self, status):
+        """Check that all resources have verified `status`
+
+        In case when all resources have expected status return empty list,
+            otherwise return a list with resources with incorrect status.
+        """
+        ret = [r for r in self.__nested_resources if
+               r.resource_status != status]
+        return ret
+
     def _create_environment(self):
         tpl_files, template = template_utils.get_template_contents(
             self.__config.hardware.heat_conf_path)
@@ -529,11 +539,39 @@ class EnvironmentManagerHeat(object):
         self.wait_of_stack_status(EXPECTED_STACK_STATUS)
         LOG.info("Stack '{0}' created"
                  .format(self.__config.hardware.heat_stack_name))
+        incorrect_resources = self._verify_resources_status('CREATE_COMPLETE')
+        if incorrect_resources:
+            LOG.info("Recreate the stack because some resources have "
+                     "incorrect status")
+            for r in incorrect_resources:
+                LOG.error('The resource %s has status %s. But it should be %s',
+                        r.resource_name, r.resource_status, 'CREATE_COMPLETE')
+            self.delete_environment()
+            self.__stacks.create(**fields)
+            self.wait_of_stack_status(EXPECTED_STACK_STATUS)
+            LOG.info("Stack '%s' re-created",
+                     self.__config.hardware.heat_stack_name)
+            incorrect_resources2 = \
+                self._verify_resources_status('CREATE_COMPLETE')
+            if incorrect_resources2:
+                LOG.error("The stack's '%s' resources again have incorrect "
+                          "status", self.__config.hardware.heat_stack_name)
+                raise exceptions.EnvironmentBadStatus(
+                    self.__config.hardware.heat_stack_name,
+                    'CREATE_COMPLETE',
+                    'CREATE_COMPLETE',
+                    incorrect_resources2
+                )
 
     def stop(self):
         """Stop environment"""
         LOG.warning("HEAT Manager doesn't support stop environment feature")
         pass
+
+    def delete_environment(self):
+        self.__stacks.delete(self._current_stack.id)
+        self.wait_of_stack_status('DELETE_COMPLETE',
+                                  delay=30, tries=20)
 
 # TODO(ddmitriev): add all Environment methods
     @staticmethod
