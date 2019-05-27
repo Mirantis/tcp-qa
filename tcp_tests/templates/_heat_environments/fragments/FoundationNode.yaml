@@ -13,6 +13,14 @@ parameters:
     type: string
   instance_config_host:
     type: string
+  management_net:
+    type: string
+  control_net:
+    type: string
+  tenant_net:
+    type: string
+  external_net:
+    type: string
   key_pair:
     type: string
   instance_domain:
@@ -40,26 +48,30 @@ resources:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+      network_id: { get_param: management_net }
+      #network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
   instance_port02:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+      network_id: { get_param: control_net }
+      #network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: control_net_static_ip }
   instance_port03:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+      network_id: { get_param: tenant_net }
+      #network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: tenant_net_static_ip }
   instance_port04:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+      network_id: { get_param: external_net }
+      #network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: external_net_static_ip }
 
@@ -120,10 +132,10 @@ outputs:
       get_attr:
       - instance_instance
       - addresses
-      - 'management_net'
+      - { get_param: management_net }
       - 0
       - addr
-    description: "Instance's private IP address"
+    description: "Instance's management IP address"
   instance:
     value: { get_resource: instance_instance }
     description: "Instance"
