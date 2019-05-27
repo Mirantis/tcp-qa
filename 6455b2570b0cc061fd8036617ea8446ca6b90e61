@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "458c067a_d5e07883",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Subnets.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-27T11:48:40Z",
+      "side": 1,
+      "message": "Subnets",
+      "range": {
+        "startLine": 4,
+        "startChar": 13,
+        "endLine": 4,
+        "endChar": 20
+      },
+      "revId": "6455b2570b0cc061fd8036617ea8446ca6b90e61",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}

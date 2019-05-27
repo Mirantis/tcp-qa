@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "49350f72_083d6cf9",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/MasterNode.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 71,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-27T11:48:40Z",
+      "side": 1,
+      "message": "please add availability_zone from \"cfg_availability_zone\" parameter",
+      "range": {
+        "startLine": 71,
+        "startChar": 4,
+        "endLine": 71,
+        "endChar": 15
+      },
+      "revId": "c07ffa87a6c6cf87cd894351ef210d01497a7812",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5c859d59_1e0fd552",
+        "filename": "tcp_tests/templates/heat-bm-cicd-queens-contrail-sl/underlay.hot",
+        "patchSetId": 3
+      },
+      "lineNbr": 35,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-27T11:48:40Z",
+      "side": 1,
+      "message": "Please add MCP::Subnets instead of MCP::Networks here.\nSet the names of the created networks for management_net, control_net, tenant_net, external_net",
+      "range": {
+        "startLine": 32,
+        "startChar": 0,
+        "endLine": 35,
+        "endChar": 39
+      },
+      "revId": "c07ffa87a6c6cf87cd894351ef210d01497a7812",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "352090a5_161f2b8a",
+        "filename": "tcp_tests/templates/heat-cicd-pike-contrail41-sl/underlay.hot",
+        "patchSetId": 3
+      },
+      "lineNbr": 81,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-27T11:48:40Z",
+      "side": 1,
+      "message": "remove",
+      "range": {
+        "startLine": 81,
+        "startChar": 0,
+        "endLine": 81,
+        "endChar": 16
+      },
+      "revId": "c07ffa87a6c6cf87cd894351ef210d01497a7812",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
