@@ -26,6 +26,7 @@ if (! env.PARENT_NODE_NAME) {
 
 currentBuild.description = "${PARENT_NODE_NAME}:${ENV_NAME}"
 
+timeout(time: 2, unit: 'HOURS') {
 node ("${PARENT_NODE_NAME}") {
     if (! fileExists("${PARENT_WORKSPACE}")) {
         error "'PARENT_WORKSPACE' contains path to non-existing directory ${PARENT_WORKSPACE} on the node '${PARENT_NODE_NAME}'."
@@ -225,3 +226,4 @@ node ("${PARENT_NODE_NAME}") {
         }
     }
 }
+} // timeout
