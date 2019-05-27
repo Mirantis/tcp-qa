@@ -524,8 +524,12 @@ class EnvironmentManagerHeat(object):
 
         if env_files_list:
             fields['environment_files'] = env_files_list
+        try:
+            self.__stacks.create(**fields)
+        except heat_exceptions.HTTPBadGateway:
+            LOG.info('GOT 502 but will wait for completion')
+            self.wait_of_stack_status(EXPECTED_STACK_STATUS, tries=140)
 
-        self.__stacks.create(**fields)
         self.wait_of_stack_status(EXPECTED_STACK_STATUS, tries=140)
         LOG.info("Stack '{0}' created"
                  .format(self.__config.hardware.heat_stack_name))
