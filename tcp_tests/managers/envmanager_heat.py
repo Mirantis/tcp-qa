@@ -44,7 +44,7 @@ from tcp_tests import logger
 LOG = logger.logger
 
 EXPECTED_STACK_STATUS = "CREATE_COMPLETE"
-BAD_STACK_STATUSES = ["CREATE_FAILED"]
+BAD_STACK_STATUSES = ["CREATE_FAILED", "DELETE_FAILED"]
 
 # Disable multiple notifications like:
 # "InsecureRequestWarning: Unverified HTTPS request is being made."
@@ -331,11 +331,17 @@ class EnvironmentManagerHeat(object):
         ])
         return wrong_resources
 
-    def wait_of_stack_status(self, status, delay=30, tries=60):
+    def wait_of_stack_status(self, status, delay=30, tries=60,
+                             wait_for_delete=False):
 
         @retry(exceptions.EnvironmentWrongStatus, delay=delay, tries=tries)
         def wait():
-            st = self._current_stack.stack_status
+            try:
+                st = self._current_stack.stack_status
+            except heat_exceptions.HTTPNotFound as ex:
+                if wait_for_delete is True:
+                    return
+                raise ex
             if st == status:
                 return
             elif st in BAD_STACK_STATUSES:
@@ -502,6 +508,16 @@ class EnvironmentManagerHeat(object):
         LOG.info('Heat stack "{0}" ready'
                  .format(self.__config.hardware.heat_stack_name))
 
+    def _verify_resources_status(self, status):
+        """Check that all resources have verified `status`
+
+        In case when all resources have expected status return empty list,
+            otherwise return a list with resources with incorrect status.
+        """
+        ret = [r for r in self.__nested_resources if
+               r.resource_status != status]
+        return ret
+
     def _create_environment(self):
         tpl_files, template = template_utils.get_template_contents(
             self.__config.hardware.heat_conf_path)
@@ -524,15 +540,53 @@ class EnvironmentManagerHeat(object):
 
         if env_files_list:
             fields['environment_files'] = env_files_list
-        self.__stacks.create(**fields)
-        self.wait_of_stack_status(EXPECTED_STACK_STATUS, tries=140)
-        LOG.info("Stack '{0}' created".format(
-            self.__config.hardware.heat_stack_name))
+
+        @retry(heat_exceptions.HTTPBadGateway, delay=15, tries=20)
+        def safe_heat_stack_create():
+            self.__stacks.create(**fields)
+
+        @retry(exceptions.EnvironmentWrongStatus, delay=60, tries=3)
+        def safe_create():
+            safe_heat_stack_create()
+            self.wait_of_stack_status(EXPECTED_STACK_STATUS, tries=140)
+            LOG.info("Stack '%s' created",
+                     self.__config.hardware.heat_stack_name)
+            incorrect_resources = self._verify_resources_status(
+                EXPECTED_STACK_STATUS)
+            if incorrect_resources:
+                LOG.info("Recreate the stack because some resources have "
+                         "incorrect status")
+                for r in incorrect_resources:
+                    LOG.error(
+                        'The resource %s has status %s. But it should be %s',
+                        r.resource_name,
+                        r.resource_status,
+                        EXPECTED_STACK_STATUS)
+                self.delete_environment()
+                raise exceptions.EnvironmentBadStatus(
+                    self.__config.hardware.heat_stack_name,
+                    EXPECTED_STACK_STATUS,
+                    EXPECTED_STACK_STATUS,
+                    incorrect_resources)
+        safe_create()
 
     def stop(self):
         """Stop environment"""
         LOG.warning("HEAT Manager doesn't support stop environment feature")
         pass
+
+    def delete_environment(self):
+        LOG.info("Delete stack '%s'",
+                 self.__config.hardware.heat_stack_name)
+
+        @retry(heat_exceptions.HTTPBadGateway, delay=15, tries=20)
+        def safe_heat_stack_delete():
+            self.__stacks.delete(self._current_stack.id)
+
+        safe_heat_stack_delete()
+        self.wait_of_stack_status('DELETE_COMPLETE',
+                                  delay=30, tries=20,
+                                  wait_for_delete=True)
 
 # TODO(ddmitriev): add all Environment methods
     @staticmethod
