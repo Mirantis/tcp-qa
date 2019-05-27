@@ -498,3 +498,36 @@ nodes:
           role: single_dhcp
         ens4:
           role: single_ctl
+
+    mdb01:
+      reclass_storage_name: openstack_telemetry_node01
+      roles:
+      - linux_system_codename_xenial
+      - openstack_telemetry
+      interfaces:
+        ens2:
+          role: single_dhcp
+        ens3:
+          role: single_ctl
+
+    mdb02:
+      reclass_storage_name: openstack_telemetry_node02
+      roles:
+      - linux_system_codename_xenial
+      - openstack_telemetry
+      interfaces:
+        ens2:
+          role: single_dhcp
+        ens3:
+          role: single_ctl
+
+    mdb03:
+      reclass_storage_name: openstack_telemetry_node03
+      roles:
+      - linux_system_codename_xenial
+      - openstack_telemetry
+      interfaces:
+        ens2:
+          role: single_dhcp
+        ens3:
+          role: single_ctl
