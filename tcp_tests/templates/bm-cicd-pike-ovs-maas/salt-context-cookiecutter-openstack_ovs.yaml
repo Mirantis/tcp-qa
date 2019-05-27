@@ -932,3 +932,13 @@ default_context:
   octavia_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2Oc8MmxBOgcG2ioijXmZ1Jil+LzPoMUyLwZujQoI3fc5Sfm45y1t22NR966G8jqnHVIKe/JaLT0W3x5bCr4rAsIYptTEu+oqW24nsrcsisZeS36apk3g71cp5Up9kf6ZBaSTFFaBfavxEo1XcaR0213vhWOE/5HpdIolDVnxvt4czXS/oiNNj+M9zOMr57IJ4SPiptKdXx4qWouGGq65JBGZQ7YNFKMtV2l1/YEHj8F1YWwNg6ZfuZvySkSv29D5zUkoxcPAPp6HPJTyQT7WRWbnM54TLgd1ggym9R83j0/VqdFXYhJDVkT6vbYgAwqXS16SsYfR7/U0/UMXmsg0z
   cinder_backup_engine: 'ceph'
   cinder_ceph_backup_pool_name: 'backups'
+  openstack_keystone_security:
+    disable_user_account_days_inactive: 20
+    lockout_failure_attempts: 60
+    lockout_duration: 600
+    password_expires_days: 730
+    unique_last_password_count: 5
+    minimum_password_age: 0
+    password_regex: "'^[a-zA-Z0-9~!@#%^&\\*_=+]{32,}$$'"
+    password_regex_description: "Your password could contains capital letters, lowercase letters, digits, symbols '~ ! @ # % ^ & * _ = +' and have a minimum length of 32 characters"
+    change_password_upon_first_use: False
