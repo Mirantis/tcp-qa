@@ -250,12 +250,12 @@ default_context:
   tenant_network_gateway: 10.167.6.1
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: 10.167.6.0/24
-  tenant_telemetry_enabled: 'False'
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
   version: proposed
   vnf_onboarding_enabled: 'False'
+  tenant_telemetry_enabled: 'True'
   openstack_telemetry_address: 10.167.4.83
   openstack_telemetry_hostname: mdb
   openstack_telemetry_node01_address: 10.167.4.84
@@ -367,3 +367,4 @@ default_context:
   cinder_backup_engine: 'ceph'
   cinder_ceph_backup_pool_name: 'backups'
   jenkins_pipelines_branch: 'release/2019.2.0'
+

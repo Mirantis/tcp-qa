@@ -250,7 +250,7 @@ default_context:
   tenant_network_gateway: 10.167.6.1
   tenant_network_netmask: 255.255.255.0
   tenant_network_subnet: 10.167.6.0/24
-  tenant_telemetry_enabled: 'False'
+  tenant_telemetry_enabled: 'True'
   tenant_vlan: '20'
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
