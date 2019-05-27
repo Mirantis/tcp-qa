@@ -13,6 +13,14 @@ parameters:
     type: string
   network:
     type: string
+  management_net:
+    type: string
+  control_net:
+    type: string
+  tenant_net:
+    type: string
+  external_net:
+    type: string
   cfg01_flavor:
     type: string
   instance_name:
@@ -30,13 +38,16 @@ parameters:
   role:
     type: comma_delimited_list
     default: [salt_master]
+  bm_availability_zone:
+    type: string
 
 resources:
   instance_port01:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+      network_id: { get_param: management_net }
+      #network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: management_subnet_cfg01_ip }
 
@@ -44,7 +55,8 @@ resources:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+      network_id: { get_param: control_net }
+      #network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: salt_master_control_ip }
 
@@ -52,7 +64,8 @@ resources:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+      network_id: { get_param: tenant_net }
+      #network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: tenant_net_static_ip }
 
@@ -60,7 +73,8 @@ resources:
     type: OS::Neutron::Port
     properties:
       port_security_enabled: false
-      network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+      network_id: { get_param: external_net }
+      #network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: external_net_static_ip }
 
@@ -71,6 +85,7 @@ resources:
       flavor: { get_param: cfg01_flavor }
       image: { list_join: ['', [ 'cfg01-day01-', { get_param: mcp_version } ]] }
       key_name: { get_param: key_pair }
+      availability_zone: { get_param: bm_availability_zone }
       name:
         list_join:
         - '.'
@@ -109,7 +124,7 @@ outputs:
       get_attr:
       - instance_instance
       - addresses
-      - 'management_net'
+      - { get_param: management_net }
       - 0
       - addr
     description: "Instance's private IP address"
