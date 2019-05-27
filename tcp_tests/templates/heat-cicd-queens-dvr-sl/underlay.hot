@@ -880,6 +880,30 @@ resources:
         list_join:
         - '.'
         - [ { get_attr: [networks, control_net_prefix] }, '47' ]
+      instance01_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '45' ]
+      instance02_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '46' ]
+      instance03_tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, tenant_net_prefix] }, '47' ]
+      instance01_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '45' ]
+      instance02_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '46' ]
+      instance03_external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [networks, external_net_prefix] }, '47' ]
 
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 
