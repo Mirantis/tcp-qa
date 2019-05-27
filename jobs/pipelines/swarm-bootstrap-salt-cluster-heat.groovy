@@ -166,7 +166,7 @@ node ("${PARENT_NODE_NAME}") {
             }
 
             stage("Add the Jenkins slave node") {
-                def jenkins_slave_ip_value_name = "foundation_floating"
+                def jenkins_slave_ip_value_name = "foundation_public_ip"
                 def jenkins_slave_ip = shared.run_cmd_stdout("openstack --insecure stack output show ${ENV_NAME} ${jenkins_slave_ip_value_name} -f value -c output_value").trim().split().last()
                 def jenkins_slave_executors = 2
                 common.printMsg("JENKINS_SLAVE_NODE_NAME=${JENKINS_SLAVE_NODE_NAME}", "green")

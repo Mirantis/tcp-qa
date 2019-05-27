@@ -77,6 +77,16 @@ resources:
     properties:
       stack_name: { get_param: "OS::stack_name" }
       env_name: { get_param: env_name }
+  subnets:
+    depends_on: [networks]
+    type: MCP::Subnets
+    properties:
+      stack_name: { get_param: "OS::stack_name" }
+      env_name: { get_param: env_name }
+      management_net: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+      control_net: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+      tenant_net: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+      external_net: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
 
   #flavors:
   #  type: MCP::Flavors
@@ -88,6 +98,10 @@ resources:
       env_name: { get_param: env_name }
       mcp_version: { get_param: mcp_version }
       cfg01_flavor: { get_param: cfg_flavor }
+      management_net: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+      control_net: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+      tenant_net: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+      external_net: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
       tenant_net_static_ip:
         list_join:
         - '.'
@@ -98,7 +112,6 @@ resources:
         - [ { get_attr: [networks, external_net_prefix] }, '15' ]
       instance_name: cfg01
       instance_domain: {get_param: instance_domain}
-      network: { get_attr: [networks, network] }
 
   control_cluster:
     type: MCP::MultipleInstance
@@ -111,7 +124,6 @@ resources:
       instance02_name: ctl02
       instance03_name: ctl03
       instance_flavor: {get_param: ctl_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -163,7 +175,6 @@ resources:
       instance02_name: dbs02
       instance03_name: dbs03
       instance_flavor: {get_param: dbs_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -215,7 +226,6 @@ resources:
       instance02_name: kvm02
       instance03_name: kvm03
       instance_flavor: {get_param: kvm_fake_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -267,7 +277,6 @@ resources:
       instance02_name: msg02
       instance03_name: msg03
       instance_flavor: {get_param: msg_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -319,7 +328,6 @@ resources:
       instance02_name: cid02
       instance03_name: cid03
       instance_flavor: {get_param: cid_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -371,7 +379,6 @@ resources:
       instance02_name: mon02
       instance03_name: mon03
       instance_flavor: {get_param: mon_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -423,7 +430,6 @@ resources:
       instance02_name: log02
       instance03_name: log03
       instance_flavor: {get_param: log_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -475,7 +481,6 @@ resources:
       instance02_name: mtr02
       instance03_name: mtr03
       instance_flavor: {get_param: mtr_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -525,7 +530,6 @@ resources:
       instance_domain: {get_param: instance_domain}
       instance_name: prx01
       instance_flavor: {get_param: prx_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       control_net_static_ip:
         list_join:
@@ -551,7 +555,6 @@ resources:
       instance_domain: {get_param: instance_domain}
       instance_name: prx02
       instance_flavor: {get_param: prx_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       control_net_static_ip:
         list_join:
@@ -577,7 +580,6 @@ resources:
       instance_domain: {get_param: instance_domain}
       instance_name: cmp001
       instance_flavor: {get_param: cmp_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       control_net_static_ip:
         list_join:
@@ -603,7 +605,6 @@ resources:
       instance_domain: {get_param: instance_domain}
       instance_name: cmp002
       instance_flavor: {get_param: cmp_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       control_net_static_ip:
         list_join:
@@ -630,8 +631,15 @@ resources:
       instance_name: foundation
       instance_image: { get_param: foundation_image }
       instance_flavor: {get_param: foundation_flavor}
-      network: { get_attr: [networks, network] }
+      management_net: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
+      control_net: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
+      tenant_net: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
+      external_net: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
       underlay_userdata: { get_file: ./underlay--user-data-foundation.yaml }
+      management_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [subnets, management_net_prefix] }, '5' ]
       control_net_static_ip:
         list_join:
         - '.'
@@ -658,7 +666,6 @@ resources:
       instance02_name: cmn02
       instance03_name: cmn03
       instance_flavor: {get_param: cmn_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -710,7 +717,6 @@ resources:
       instance02_name: rgw02
       instance03_name: rgw03
       instance_flavor: {get_param: rgw_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -762,7 +768,6 @@ resources:
       instance02_name: osd002
       instance03_name: osd003
       instance_flavor: {get_param: osd_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -814,7 +819,6 @@ resources:
       instance02_name: gtw02
       instance03_name: gtw03
       instance_flavor: {get_param: gtw_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -866,7 +870,6 @@ resources:
       instance02_name: kmn02
       instance03_name: kmn03
       instance_flavor: {get_param: kmn_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
@@ -916,7 +919,6 @@ resources:
       instance_domain: {get_param: instance_domain}
       instance_name: dns01
       instance_flavor: {get_param: dns_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       control_net_static_ip:
         list_join:
@@ -942,7 +944,6 @@ resources:
       instance_domain: {get_param: instance_domain}
       instance_name: dns02
       instance_flavor: {get_param: dns_flavor}
-      network: { get_attr: [networks, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       control_net_static_ip:
         list_join:
