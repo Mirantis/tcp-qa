@@ -145,10 +145,16 @@ def test(shared, common, steps, env_manager) {
                         archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
                     }
                     if ("${env.REPORT_TO_TESTRAIL}" != "false") {
-                      stage("report results to testrail") {
-                      common.printMsg("Running on: " + node_with_reports, "blue")
-                      shared.swarm_testrail_report(steps, node_with_reports)
+                        stage("report results to testrail") {
+                            common.printMsg("Running on: " + node_with_reports, "blue")
+                            shared.swarm_testrail_report(steps, node_with_reports)
                     }
+                        stage("Store TestRail reports to job description from ${jenkins_slave_node_name}") {
+                            if (fileExists("description.txt")) {
+                                def String description  = readFile("jenkins_agent_description.txt")
+                                currentBuild.description += "${description}"
+                            }
+                        }
                     }
                 }
             }
@@ -168,10 +174,9 @@ def test(shared, common, steps, env_manager) {
                 shared.swarm_testrail_report(steps, env.NODE_NAME)
             }
             stage("Store TestRail reports to job description") {
-                if (fileExists("jenkins_agent_description.txt")){
-
-                def String jenkins_agent_description  = readFile("jenkins_agent_description.txt")
-                currentBuild.description += "${jenkins_agent_description}"
+                if (fileExists("description.txt")) {
+                    def String description  = readFile("jenkins_agent_description.txt")
+                    currentBuild.description += "${description}"
                 }
             }
         }
