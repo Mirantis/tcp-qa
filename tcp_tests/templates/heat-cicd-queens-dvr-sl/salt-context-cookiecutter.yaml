@@ -367,3 +367,13 @@ default_context:
   cinder_backup_engine: 'ceph'
   cinder_ceph_backup_pool_name: 'backups'
   jenkins_pipelines_branch: 'release/2019.2.0'
+  openstack_keystone_security:
+    disable_user_account_days_inactive: 7
+    lockout_failure_attempts: 60
+    lockout_duration: 600
+    password_expires_days: 730
+    unique_last_password_count: 5
+    minimum_password_age: 0
+    password_regex: "'^[a-zA-Z0-9~!@#%^&\\*_=+]{32,}$$'"
+    password_regex_description: "Your password could contains capital letters, lowercase letters, digits, symbols '~ ! @ # % ^ & * _ = +' and have a minimum length of 32 characters"
+    change_password_upon_first_use: False
