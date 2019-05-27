@@ -67,6 +67,16 @@ parameters:
 
 resources:
   networks:
+    type: MCP::Subnets
+    properties:
+      stack_name: { get_param: "OS::stack_name" }
+      env_name: { get_param: env_name }
+      management_net: { list_join: ['-', [ 'management_subnet', { get_param: env_name } ]] }
+      control_net: { list_join: ['-', [ 'control_subnet', { get_param: env_name } ]] }
+      tenant_net: { list_join: ['-', [ 'tenant_subnet', { get_param: env_name } ]] }
+      external_net: { list_join: ['-', [ 'external_subnet', { get_param: env_name } ]] }
+    type: string
+  l2_networks:
     type: MCP::Networks
     properties:
       stack_name: { get_param: "OS::stack_name" }
