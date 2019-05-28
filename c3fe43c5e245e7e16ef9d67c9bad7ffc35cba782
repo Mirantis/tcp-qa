@@ -22,6 +22,76 @@
       "revId": "c3fe43c5e245e7e16ef9d67c9bad7ffc35cba782",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "bc03660a_a8701775",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-28T10:23:20Z",
+      "side": 1,
+      "message": "+1 for retry",
+      "parentUuid": "314279e7_c82fc6ac",
+      "range": {
+        "startLine": 538,
+        "startChar": 37,
+        "endLine": 538,
+        "endChar": 38
+      },
+      "revId": "c3fe43c5e245e7e16ef9d67c9bad7ffc35cba782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "a40b1349_91dd8123",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 542,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-28T10:23:20Z",
+      "side": 1,
+      "message": "You can use the variable EXPECTED_STACK_STATUS from L46, to not hardcode this string",
+      "range": {
+        "startLine": 542,
+        "startChar": 60,
+        "endLine": 542,
+        "endChar": 78
+      },
+      "revId": "c3fe43c5e245e7e16ef9d67c9bad7ffc35cba782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0a382184_8e0a8418",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-28T10:23:20Z",
+      "side": 1,
+      "message": "I think this block could be placed in a method with @retry , instead of all this code from L538 to L566.\n\nIn this case, we could catch in try/except the 502 error from self.__stacks.create(**fields), and raise the same exception exceptions.EnvironmentBadStatus(), to use the @retry for the exception type.",
+      "range": {
+        "startLine": 551,
+        "startChar": 0,
+        "endLine": 566,
+        "endChar": 17
+      },
+      "revId": "c3fe43c5e245e7e16ef9d67c9bad7ffc35cba782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
