@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "314279e7_c82fc6ac",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 3
+      },
+      "lineNbr": 538,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-05-28T09:30:33Z",
+      "side": 1,
+      "message": "Dima could you also add here retry, currently we got here 502 (see DEV-465) Sou would be nice to have here at least",
+      "range": {
+        "startLine": 538,
+        "startChar": 37,
+        "endLine": 538,
+        "endChar": 38
+      },
+      "revId": "c3fe43c5e245e7e16ef9d67c9bad7ffc35cba782",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
