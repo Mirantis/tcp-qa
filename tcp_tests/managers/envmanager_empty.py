@@ -40,6 +40,12 @@ class EnvironmentManagerEmpty(object):
         - Store the state of the environment <name> to the 'config' object
         - Save 'config' object to a file 'config_<name>.ini'
         """
+        if not settings.MAKE_SNAPSHOT_STAGES and not force:
+            msg = ("[ SKIP snapshot '{0}' because MAKE_SNAPSHOT_STAGES=false ]"
+                   " {1}".format(name, description or ''))
+            LOG.info("\n\n{0}\n{1}".format(msg, '*' * len(msg)))
+            return
+
         self.__config.hardware.current_snapshot = name
         settings_oslo.save_config(self.__config, name)
 
