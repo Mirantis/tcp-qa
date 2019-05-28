@@ -275,7 +275,7 @@ class SaltManager(ExecuteCommandsMixin):
         result = self.local(tgt=tgt, fun='cmd.run', args=cmd)
         return result['return']
 
-    @utils.retry(3, exception=libpepper.PepperException)
+    @utils.retry(10, exception=libpepper.PepperException)
     def sync_time(self, tgt='*'):
         LOG.info("NTP time sync on the salt minions '{0}'".format(tgt))
         # Force authentication update on the next API access
@@ -298,7 +298,7 @@ class SaltManager(ExecuteCommandsMixin):
                    'fi;'
                    'sleep 3;'
                    'if [ -x /usr/sbin/ntpdate ]; then'
-                   '  ntpdate -s ntp.ubuntu.com;'
+                   '  ntpdate -s pool.ntp.org;'
                    'else'
                    '  ntpd -gq;'
                    'fi;'
@@ -311,7 +311,7 @@ class SaltManager(ExecuteCommandsMixin):
                    '  systemctl start maas-regiond; fi;')
             self.run_state(
                 tgt,
-                'cmd.run', cmd, timeout=3600)  # noqa
+                'cmd.run', cmd, timeout=360)  # noqa
         new_time_res = self.run_state(tgt, 'cmd.run', 'date')
         for node_name, time in sorted(new_time_res[0]['return'][0].items()):
             LOG.info("{0}: {1}".format(node_name, time))

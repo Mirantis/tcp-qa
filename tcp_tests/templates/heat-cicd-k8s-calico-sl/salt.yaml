@@ -5,6 +5,7 @@
 # Other salt model repository parameters see in shared-salt.yaml
 
 {% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-maas.yaml' as SHARED_MAAS with context %}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
@@ -21,3 +22,7 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+
+# For 'maas_enabled: True'
+{{ SHARED_MAAS.AUTH_IN_MAAS() }}
+{{ SHARED_MAAS.SET_LOCAL_NTP() }}
