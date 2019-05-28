@@ -389,6 +389,12 @@ class EnvironmentManagerHeat(object):
 
         :name: string
         """
+        if not settings.MAKE_SNAPSHOT_STAGES:
+            msg = ("[ SKIP snapshot '{0}' because MAKE_SNAPSHOT_STAGES=false ]"
+                   .format(name))
+            LOG.info("\n\n{0}\n{1}".format(msg, '*' * len(msg)))
+            return
+
         LOG.info("Store INI config (without env snapshot) named '{0}'"
                  .format(name))
         self.__config.hardware.current_snapshot = name
