@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a8cfed78_1965b3d4",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 581,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2019-05-28T15:34:25Z",
+      "side": 1,
+      "message": "We can\u0027t see status of stack when it is deleted without some additional approach. Need to change the way of getting DELETE_COMPLETE status",
+      "range": {
+        "startLine": 581,
+        "startChar": 35,
+        "endLine": 581,
+        "endChar": 50
+      },
+      "revId": "68c69dc7f38e7e9548da3d6d6c64f36a6ab5aac8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
