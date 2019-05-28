@@ -505,9 +505,9 @@ nodes:
       - linux_system_codename_xenial
       - openstack_telemetry
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
+          role: single_dhcp
+        ens4:
           role: single_ctl
 
     mdb02:
@@ -516,9 +516,9 @@ nodes:
       - linux_system_codename_xenial
       - openstack_telemetry
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
+          role: single_dhcp
+        ens4:
           role: single_ctl
 
     mdb03:
@@ -527,7 +527,7 @@ nodes:
       - linux_system_codename_xenial
       - openstack_telemetry
       interfaces:
-        ens2:
-          role: single_dhcp
         ens3:
+          role: single_dhcp
+        ens4:
           role: single_ctl
