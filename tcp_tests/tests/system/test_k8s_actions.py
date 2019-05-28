@@ -203,7 +203,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.k8s_genie
     @pytest.mark.k8s_system
     def test_k8s_genie_flannel(self, show_step, config,
-                               salt_deployed, k8s_deployed):
+                               salt_actions, k8s_deployed):
         """Test genie-cni+flannel cni setup
 
         Scenario:
@@ -228,15 +228,15 @@ class TestMCPK8sActions(object):
         # Find out calico and flannel networks
         tgt_k8s_control = "I@kubernetes:master"
 
-        flannel_pillar = salt_deployed.get_pillar(
+        flannel_pillar = salt_actions.get_pillar(
             tgt=tgt_k8s_control,
             pillar="kubernetes:master:network:flannel:private_ip_range")[0]
         flannel_network = netaddr.IPNetwork(flannel_pillar.values()[0])
         LOG.info("Flannel network: {}".format(flannel_network))
 
-        calico_network_pillar = salt_deployed.get_pillar(
+        calico_network_pillar = salt_actions.get_pillar(
             tgt=tgt_k8s_control, pillar="_param:calico_private_network")[0]
-        calico_netmask_pillar = salt_deployed.get_pillar(
+        calico_netmask_pillar = salt_actions.get_pillar(
             tgt=tgt_k8s_control, pillar="_param:calico_private_netmask")[0]
         calico_network = netaddr.IPNetwork(
             "{0}/{1}".format(calico_network_pillar.values()[0],
@@ -322,8 +322,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.k8s_dashboard
     @pytest.mark.k8s_system
-    def test_k8s_dashboard(self, show_step, config,
-                           salt_deployed, k8s_deployed):
+    def test_k8s_dashboard(self, show_step, config, k8s_deployed):
         """Test dashboard setup
 
         Scenario:
@@ -399,8 +398,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.fail_snapshot
     @pytest.mark.k8s_ingress_nginx
     @pytest.mark.k8s_system
-    def test_k8s_ingress_nginx(self, show_step, config,
-                               salt_deployed, k8s_deployed):
+    def test_k8s_ingress_nginx(self, show_step, config, k8s_deployed):
         """Test ingress-nginx configured and working with metallb
 
         Scenario:
@@ -471,7 +469,7 @@ class TestMCPK8sActions(object):
     @pytest.mark.grab_versions
     @pytest.mark.fail_snapshot
     def test_k8s_cicd_upgrade(self, show_step, config,
-                              salt_deployed, k8s_deployed):
+                              salt_actions, k8s_deployed):
         """Test k8s upgrade cicd pipeline
 
         Scenario:
@@ -480,10 +478,10 @@ class TestMCPK8sActions(object):
             3. Wait for job to end
         """
         show_step(1)
-        jenkins_info = salt_deployed.get_pillar(
+        jenkins_info = salt_actions.get_pillar(
             tgt='cid*1*', pillar="jenkins:client:master")[0].values()[0]
 
-        salt_api = salt_deployed.get_pillar(
+        salt_api = salt_actions.get_pillar(
             tgt='cid*1*', pillar="_param:jenkins_salt_api_url")[0].values()[0]
 
         show_step(2)
