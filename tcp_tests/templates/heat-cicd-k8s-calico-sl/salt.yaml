@@ -21,3 +21,7 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: true
+
+# For 'maas_enabled: True'
+{{ SHARED_MAAS.AUTH_IN_MAAS() }}
+{{ SHARED_MAAS.SET_LOCAL_NTP() }}

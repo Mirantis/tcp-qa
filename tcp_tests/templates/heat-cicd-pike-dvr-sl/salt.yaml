@@ -12,3 +12,6 @@
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
 
+# For 'maas_enabled: True'
+{{ SHARED_MAAS.AUTH_IN_MAAS() }}
+{{ SHARED_MAAS.SET_LOCAL_NTP() }}

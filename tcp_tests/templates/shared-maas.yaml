@@ -3,7 +3,7 @@
 {%- macro AUTH_IN_MAAS() %}
 
 - description: MaaS auth
-  cmd: bash -x /var/lib/maas/.maas_login.sh
+  cmd: bash -x /var/lib/maas/.maas_login.sh && sleep 30
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
@@ -13,7 +13,17 @@
 {%- macro SET_LOCAL_DNS() %}
 
 - description: Set upstream dns in MaaS
-  cmd: sleep 30; maas mirantis maas set-config name=upstream_dns value='{{ ETH0_IP_ADDRESS_CFG01 }} 8.8.8.8 8.8.4.4'
+  cmd: maas mirantis maas set-config name=upstream_dns value='{{ ETH0_IP_ADDRESS_CFG01 }} 8.8.8.8 8.8.4.4'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+{%- endmacro %}
+
+{%- macro SET_LOCAL_NTP() %}
+
+- description: Set upstream NTP in MaaS
+  cmd: maas mirantis maas set-config name=ntp_server value='ntp.cesnet.cz,pool.ntp.org'
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
