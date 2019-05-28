@@ -285,23 +285,30 @@ class SaltManager(ExecuteCommandsMixin):
         if not settings.SKIP_SYNC_TIME:
             cmd = ('service ntp stop;'
                    'if systemctl is-active --quiet maas-rackd; then'
-                   '  systemctl stop maas-rackd; RACKD=true;'
-                   'else'
-                   '  RACKD=false;'
+                   '  systemctl stop maas-rackd;'
+                   '  touch /tmp/maas-rackd.work;'
                    'fi;'
                    'if systemctl is-active --quiet maas-regiond; then'
-                   '  systemctl stop maas-regiond; REGIOND=true;'
-                   'else'
-                   '  REGIOND=false;'
+                   '  systemctl stop maas-regiond;'
+                   '  touch /tmp/maas-regiond.work;'
                    'fi;'
+                   'if systemctl is-active --quiet maas-proxy; then'
+                   '  systemctl stop maas-proxy;'
+                   '  touch /tmp/maas-proxy.work;'
+                   'fi;'
+                   'sleep 3;'
                    'if [ -x /usr/sbin/ntpdate ]; then'
                    '  ntpdate -s ntp.ubuntu.com;'
                    'else'
                    '  ntpd -gq;'
                    'fi;'
                    'service ntp start;'
-                   'if $RACKD; then systemctl start maas-rackd; fi;'
-                   'if $REGIOND; then systemctl start maas-regiond; fi;')
+                   'if [ -f /tmp/maas-proxy.work ]; then'
+                   '  systemctl start maas-proxy; fi;'
+                   'if [ -f /tmp/maas-rackd.work ]; then'
+                   '  systemctl start maas-rackd; fi;'
+                   'if [ -f /tmp/maas-regiond.work ]; then'
+                   '  systemctl start maas-regiond; fi;')
             self.run_state(
                 tgt,
                 'cmd.run', cmd)  # noqa
