@@ -697,7 +697,7 @@ outputs:
     description: Admin network CIDR
     value: { get_param: management_subnet_cidr }
 
-  foundation_floating:
+  foundation_public_ip:
     description: foundation node IP address (floating) from external network
     value:
       get_attr:

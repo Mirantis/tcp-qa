@@ -104,13 +104,24 @@ This node is used to launch a Jenkins agent and run Jenkins jobs inside the
 heat stack. Depending on environment, the Foundation node could be connected
 to several or to all the internal networks to run necessary tests.
 
-The template 'outputs' should contain the 'foundation_floating' key, for example:
+The template 'outputs' should contain the 'foundation_public_ip' key, for example:
+For virtual deploys:
 ```
 outputs:
-  foundation_floating:
+  foundation_public_ip:
     description: foundation node IP address (floating) from external network
     value:
       get_attr:
       - foundation_node
       - instance_floating_address
+```
+For Baremetal deploys
+```
+outputs:
+  foundation_public_ip:
+    description: foundation node IP address (floating) from external network
+    value:
+      get_attr:
+      - foundation_node
+      - instance_address # Here will get management IP
 ```
