@@ -1,6 +1,6 @@
-{% from 'bm-cicd-pike-ovs-maas/underlay.yaml' import HOSTNAME_CFG01 with context %}
-{% from 'bm-cicd-pike-ovs-maas/underlay.yaml' import LAB_CONFIG_NAME with context %}
-{% from 'bm-cicd-pike-ovs-maas/underlay.yaml' import DOMAIN_NAME with context %}
+{% set HOSTNAME_CFG01='cfg01.bm-cicd-pike-ovs-maas.local' %}
+{% set LAB_CONFIG_NAME='bm-cicd-pike-ovs-maas' %}
+{% set DOMAIN_NAME='bm-cicd-pike-ovs-maas.local' %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 

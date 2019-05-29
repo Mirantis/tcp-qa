@@ -1,0 +1,99 @@
+---
+
+heat_template_version: queens
+
+description: MCP environment for bm-cicd-queens-ovs-maas
+
+parameters:
+  instance_domain:
+    type: string
+    default: bm-cicd-queens-ovs-maas.local
+  mcp_version:
+    type: string
+  env_name:
+    type: string
+  key_pair:
+    type: string
+  cfg_flavor:
+    type: string
+  foundation_image:
+    type: string
+  foundation_flavor:
+    type: string
+
+resources:
+  subnets:
+    type: MCP::Subnets
+    properties:
+      stack_name: { get_param: "OS::stack_name" }
+      env_name: { get_param: env_name }
+      management_net: 'system-phys-2401'
+      control_net: 'system-phys-2404'
+      tenant_net: 'system-phys-2406'
+      external_net: 'system-phys-2403'
+
+  #flavors:
+  #  type: MCP::Flavors
+
+  cfg01_node:
+    type: MCP::MasterNode
+    depends_on: [subnets]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      cfg01_flavor: { get_param: cfg_flavor }
+      management_net: 'system-phys-2401'
+      control_net: 'system-phys-2404'
+      tenant_net: 'system-phys-2406'
+      external_net: 'system-phys-2403'
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [subnets, tenant_net_prefix] }, '2' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [subnets, external_net_prefix] }, '2' ]
+      instance_name: cfg01
+      instance_domain: {get_param: instance_domain}
+
+  foundation_node:
+    type: MCP::FoundationNode
+    depends_on: [subnets]
+    properties:
+      env_name: { get_param: env_name }
+      mcp_version: { get_param: mcp_version }
+      instance_domain: {get_param: instance_domain}
+      instance_name: foundation
+      management_net: 'system-phys-2401'
+      control_net: 'system-phys-2404'
+      tenant_net: 'system-phys-2406'
+      external_net: 'system-phys-2403'
+      instance_image: { get_param: foundation_image }
+      instance_flavor: {get_param: foundation_flavor}
+      underlay_userdata: { get_file: ./underlay--user-data-foundation.yaml }
+      management_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [subnets, management_net_prefix] }, '62' ]
+      control_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [subnets, control_net_prefix] }, '5' ]
+      tenant_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [subnets, tenant_net_prefix] }, '5' ]
+      external_net_static_ip:
+        list_join:
+        - '.'
+        - [ { get_attr: [subnets, external_net_prefix] }, '5' ]
+      instance_config_host: { get_attr: [cfg01_node, instance_address] }
+outputs:
+  foundation_public_ip:
+    description: foundation node IP address (management)
+    value:
+      get_attr:
+      - foundation_node
+      - instance_address
+...
