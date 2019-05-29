@@ -96,8 +96,8 @@ class TestCvpPipelines(object):
     @pytest.mark.grab_versions
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_cvp_func_sanity
-    def test_run_cvp_func_sanity(self, salt_actions, show_step, _):
-        """Runner for Pipeline CVP - Functional tests
+    def test_run_cvp_sanity(self, salt_actions, show_step, _):
+        """Runner for Pipeline CVP Sanity tests
 
         Scenario:
             1. Get CICD Jenkins access credentials from salt
@@ -132,7 +132,7 @@ class TestCvpPipelines(object):
         job_name = 'cvp-sanity'
         skipped_packages = ("python-setuptools,"
                             "python-pkg-resources,xunitmerge,"
-                            "python-gnocchiclient, "
+                            "python-gnocchiclient,"
                             "python-ujson,python-octaviaclient")
 
         job_parameters = {
@@ -147,7 +147,7 @@ class TestCvpPipelines(object):
         }
 
         show_step(2)
-        cvp_func_sanity_result = run_jenkins_job.run_job(
+        cvp_sanity_result = run_jenkins_job.run_job(
             host=jenkins_url,
             username=jenkins_user,
             password=jenkins_pass,
@@ -156,7 +156,7 @@ class TestCvpPipelines(object):
             verbose=True,
             job_name=job_name,
             job_parameters=job_parameters,
-            job_output_prefix='[ cvp-func/{build_number}:platform {time} ] ')
+            job_output_prefix='[ cvp-sanity/{build_number}:platform {time} ] ')
 
         show_step(3)
         (description, stages) = get_jenkins_job_stages.get_deployment_result(
@@ -169,7 +169,7 @@ class TestCvpPipelines(object):
         LOG.info(description)
         LOG.info('\n'.join(stages))
         LOG.info('Job {0} result: {1}'.format(job_name,
-                                              cvp_func_sanity_result))
+                                              cvp_sanity_result))
         # Download XML report
         show_step(4)
         destination_name = os.path.join(settings.LOGS_DIR,
