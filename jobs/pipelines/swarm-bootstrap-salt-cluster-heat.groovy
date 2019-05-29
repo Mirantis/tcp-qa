@@ -237,7 +237,12 @@ node ("${PARENT_NODE_NAME}") {
                 """)
                 shared.verbose_sh(script_delete_agent, true, false, true)
                 shared.verbose_sh(script_create_agent, true, false, true)
-
+                timeout(time: 30, unit: 'MINUTES') {
+                    node("${JENKINS_SLAVE_NODE_NAME}") {
+                        sh "echo 'ok'"
+                        println "Jenkins agent is available now and can executes commands"
+                    }
+                }
                 // Store jenkins agent IP address
                 jenkins_agent_description = "ssh jenkins@${jenkins_slave_ip}  # foundation node with Jenkins agent <a href=${JENKINS_URL}/computer/${JENKINS_SLAVE_NODE_NAME}>${JENKINS_SLAVE_NODE_NAME}</a><br>ssh root@${SALT_MASTER_IP}  # cfg01 node<br>"
                 writeFile(file: "jenkins_agent_description.txt", text: jenkins_agent_description, encoding: "UTF-8")
