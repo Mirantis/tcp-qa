@@ -12,7 +12,11 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from tcp_tests import settings
 from tcp_tests import settings_oslo
+from tcp_tests import logger
+
+LOG = logger.logger
 
 
 class EnvironmentManagerEmpty(object):
@@ -40,6 +44,12 @@ class EnvironmentManagerEmpty(object):
         - Store the state of the environment <name> to the 'config' object
         - Save 'config' object to a file 'config_<name>.ini'
         """
+        if not settings.MAKE_SNAPSHOT_STAGES:
+            msg = ("[ SKIP snapshot '{0}' because MAKE_SNAPSHOT_STAGES=false ]"
+                   .format(name))
+            LOG.info("\n\n{0}\n{1}".format(msg, '*' * len(msg)))
+            return
+
         self.__config.hardware.current_snapshot = name
         settings_oslo.save_config(self.__config, name)
 
