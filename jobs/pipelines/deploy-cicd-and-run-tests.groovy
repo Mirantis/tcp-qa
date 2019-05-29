@@ -38,6 +38,11 @@ def deploy(shared, common, steps, env_manager) {
             } else {
                 throw new Exception("Unknow env_manager: '${env_manager}'")
             }
+
+            if (fileExists("jenkins_agent_description.txt")) {
+                def String jenkins_agent_description = readFile("jenkins_agent_description.txt")
+                currentBuild.description += "${jenkins_agent_description}"
+            }
         }
 
         stage("Install core infrastructure and deploy CICD nodes") {
@@ -135,36 +140,10 @@ timeout(time: 15, unit: 'HOURS') {
             }
         }
 
-        if (fileExists("jenkins_agent_description.txt")) {
-            def String jenkins_agent_description = readFile("jenkins_agent_description.txt")
-            currentBuild.description += "${jenkins_agent_description}"
-
-            // if there is a separated foundation node on $jenkins_slave_node_name,
-            // then archive artifacts also on that node
-            if (jenkins_slave_node_name != env.NODE_NAME) {
-                node ("${jenkins_slave_node_name}") {
-                    stage("Archive all xml reports from node ${jenkins_slave_node_name}") {
-                        archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
-                    }
-                    if ("${env.REPORT_TO_TESTRAIL}" != "false") {
-                        stage("report results to testrail") {
-                            common.printMsg("Running on: " + node_with_reports, "blue")
-                            shared.swarm_testrail_report(steps, node_with_reports)
-                    }
-                        stage("Store TestRail reports to job description from ${jenkins_slave_node_name}") {
-                            if (fileExists("description.txt")) {
-                                def String description  = readFile("description.txt")
-                                currentBuild.description += "${description}"
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         stage("Archive all xml reports") {
             archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
         }
+
         if ("${env.REPORT_TO_TESTRAIL}" != "false") {
             stage("report results to testrail from jenkins master") {
                 common.printMsg("Running on: " + node_with_reports, "blue")
@@ -182,6 +161,31 @@ timeout(time: 15, unit: 'HOURS') {
                 }
             }
         }
+
+        if (fileExists("jenkins_agent_description.txt")) {
+            // if there is a separated foundation node on $jenkins_slave_node_name,
+            // then archive artifacts also on that node
+            if (jenkins_slave_node_name != env.NODE_NAME) {
+                node ("${jenkins_slave_node_name}") {
+                    stage("Archive all xml reports from node ${jenkins_slave_node_name}") {
+                        archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
+                    }
+                    if ("${env.REPORT_TO_TESTRAIL}" != "false") {
+                        stage("report results to testrail") {
+                            common.printMsg("Running on: " + node_with_reports, "blue")
+                            shared.swarm_testrail_report(steps, node_with_reports)
+                        }
+                        stage("Store TestRail reports to job description from ${jenkins_slave_node_name}") {
+                            if (fileExists("description.txt")) {
+                                def String description  = readFile("description.txt")
+                                currentBuild.description += "${description}"
+                            }
+                        }
+                    }
+                } // node
+            }
+        }
+
     } // try
   } // node
 
