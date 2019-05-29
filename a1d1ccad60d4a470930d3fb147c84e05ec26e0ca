@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76a71806_94257fa3",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Compute.yaml",
+        "patchSetId": 25
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-29T16:41:27Z",
+      "side": 1,
+      "message": "Please pass the networks names from .hot files",
+      "range": {
+        "startLine": 39,
+        "startChar": 18,
+        "endLine": 39,
+        "endChar": 85
+      },
+      "revId": "a1d1ccad60d4a470930d3fb147c84e05ec26e0ca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "81d10ffb_0e52ff93",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/Instance.yaml",
+        "patchSetId": 25
+      },
+      "lineNbr": 39,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-29T16:41:27Z",
+      "side": 1,
+      "message": "Please pass the networks names from .hot files",
+      "range": {
+        "startLine": 39,
+        "startChar": 18,
+        "endLine": 39,
+        "endChar": 85
+      },
+      "revId": "a1d1ccad60d4a470930d3fb147c84e05ec26e0ca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "648902ae_b6ef91d8",
+        "filename": "tcp_tests/templates/heat-bm-cicd-queens-contrail-sl/underlay.hot",
+        "patchSetId": 25
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-29T16:41:27Z",
+      "side": 1,
+      "message": "why not x.x.x.5 ?",
+      "range": {
+        "startLine": 80,
+        "startChar": 61,
+        "endLine": 80,
+        "endChar": 64
+      },
+      "revId": "a1d1ccad60d4a470930d3fb147c84e05ec26e0ca",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
