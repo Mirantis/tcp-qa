@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "a3ce8113_289e454c",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 8
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-29T11:45:39Z",
+      "side": 1,
+      "message": "For debugging, it may be useful to leave the stack \"as is\" in case of failure.\n\nMaybe, the deletion of the stack can be moved to start of this function? something like \"check for presence of the stack, delete if exists, then safe_heat_stack_create()\"",
+      "range": {
+        "startLine": 566,
+        "startChar": 16,
+        "endLine": 566,
+        "endChar": 41
+      },
+      "revId": "fac0a662d153cf2a8b8ed2bb219213dc8b349b8d",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
