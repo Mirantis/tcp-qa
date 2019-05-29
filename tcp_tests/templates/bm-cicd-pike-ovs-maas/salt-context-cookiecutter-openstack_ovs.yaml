@@ -1,33 +1,4 @@
 default_context:
-  backup_private_key: |-
-    -----BEGIN RSA PRIVATE KEY-----
-    MIIEogIBAAKCAQEAvDqzt/PHWvSSJrBtvD3UWp21CDrAajgOPeXrVm7VU+sDDpw0
-    YqDvVhYfT/N6ha+SWOK00KyTuMMbB8/I4tvsP9vvCXy7v2AJID/ZO2z/t8KfTDEJ
-    C75/6a0UBg6sl3i7+cUOHbeK+lkcfdnSI1H8Jzdhk4Xj7t7q+MIKTs5n+AlScgyz
-    NSiD2nG/U5LmaQ+rjZ1VsF9J0YTds0yLDF3hztVoDTs7j5obl7Xab3ZlwalgH5Gc
-    Id6BI09jkUbppdPzHpzV2oad7cFpVYTt9m3/MMT0amzPuwl/u/dI64rRuWPe60eT
-    qeVMQD0zP6o9F79upbzQStt82lPJcfF4CXvxYwIDAQABAoIBAAHUXDzUfMKQj/8a
-    RebHfxHmaIUM9SPTKahGXNQ5PY+UQDJbKFMxF0Jx8pn3VuCHxVdh1LoWg1UPaGra
-    BSzXUGOKgrdH5BdHGq+aj0T5mT6zAJNgAqN/lYSy7vfkGp9aSBF0bd+yEgK+7Pz4
-    Kge320iSTDt/2KhQuF30nN8JOI97m2uk2YHH8TixfVtmgLPEy+0Mw4VZLsHD4OY1
-    zu8xN6co2aQR0DB0MPKD6IxH62wSOJKBzF4o5xzzy/fl0ysDZbZ8Z/5Rejvp3yNT
-    68B0X5CM27hVdYE+/tcKGl9WKmewIf3fTZUfBcwFIObMIl9fkK/519nwFed4AfOX
-    /a2LCBECgYEA9Lyl/eyzXuU2dgs6Gw/WMobqOVnHF9wbukS1XSKdwMogtpt7Pb23
-    +32r9xHgeRDvvWwSp8lNPZ8mu77dQ6akbOuOk5C6V3Mqt4zam3DBDMtL63nKq8tq
-    LQ0PVjj8cAgu3GSDCz7htqUb44rn5tX9zlM0vrwxzyYqbet7ZbsGoYsCgYEAxORQ
-    JFn1vwag8VBw3bngx3SJ46CpCC8Gz830W7pEaTS6zTTiDC4p5sATGya91JS8l47G
-    ikP2bcWzvT6aP/u+TZSqZiqp5Kn37fx8Et+ltIl47SH+PJHIR9F9r2f9zqla6mlP
-    zcX/mTSuAJCTP4whQA3/f1wNAeBnewhK9fXCOokCgYAz6TPYSXW+giXsIfOAO/q2
-    GvHhmk5lnDVxbBOAHtCRTQ5lTVN1xCEbQgvQy0TuyQ3hAuRuHH+6u2BO4Gw0Zkto
-    IwrJ+B/eXrpH1qOj5uW73f9Lgjjf+bSau7NuGYZKCSJPcy5smzjrMdhZimQoDWnZ
-    csK0VlzGUJUdXZ599I6ygwKBgGTf+LN3J7H0Snb4WKsw9Zoa+h6WjKO1vE6xXVW1
-    rCEes+o5Autsp2ki1WcexTlp7unTa6MhSNta5Ei8Dzli2FBVL6xihWKzNmRG7Kaa
-    0QIbQMp1lRUhN7Sb/0HkDKRaHktlI07w95Bd7hw59kcjm1F/Gnz9A2kHuNzPFeDI
-    RffJAoGAdeCID5sb0oHEHTIxxB+cgfaiyaAe9qrW2INNWLVn5OTDh6cidatnWAor
-    M/SxwNoiYcCpi869q7wzjw5gNOVoNJbmwzDA7s+lgjTPQpq2jmO6RtweKbYoN5Zw
-    ++LiD3r07TD3p2QAyeooT29D/d6/2Hd6oyTJcZWIQTN+MTcXQO4=
-    -----END RSA PRIVATE KEY-----
-  backup_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC8OrO388da9JImsG28PdRanbUIOsBqOA495etWbtVT6wMOnDRioO9WFh9P83qFr5JY4rTQrJO4wxsHz8ji2+w/2+8JfLu/YAkgP9k7bP+3wp9MMQkLvn/prRQGDqyXeLv5xQ4dt4r6WRx92dIjUfwnN2GThePu3ur4wgpOzmf4CVJyDLM1KIPacb9TkuZpD6uNnVWwX0nRhN2zTIsMXeHO1WgNOzuPmhuXtdpvdmXBqWAfkZwh3oEjT2ORRuml0/MenNXahp3twWlVhO32bf8wxPRqbM+7CX+790jritG5Y97rR5Op5UxAPTM/qj0Xv26lvNBK23zaU8lx8XgJe/Fj
   bmk_enabled: 'False'
   cicd_control_node01_address: 10.167.11.91
   cicd_control_node01_hostname: cid01
@@ -38,35 +9,6 @@ default_context:
   cicd_control_vip_address: 10.167.11.90
   cicd_control_vip_hostname: cid
   cicd_enabled: 'True'
-  cicd_private_key: |-
-    -----BEGIN RSA PRIVATE KEY-----
-    MIIEowIBAAKCAQEAshiE2vK11KH1/PHO9v5IcT1ol3kuAorv6IgW+1paT9w4pFnd
-    H2DHQxTJsZ629cig+ELVAKHQnkND2U++/DM20ai5ZfpOwlvd+dL95/FbGb62Ozxx
-    kxBjyc/Bbbs8LcZtS1SN+agdkjQG1StpckUbFppoJ9nzWgnEcdYdonQ6aThgd+YL
-    rAOX04s3cMlCflClQl3lGFo24Qdhk/Y4M5rodfqfD5NOSKEhYP/dTMunri8zB5bU
-    ifvOvCWUKUOxLjkx95raY82xMHUobMYk87RcLPcq8pyz96/FPoiLqxM1oznTKNiI
-    0bW0xjf7FFjfLCjTapKZPRz8+Wkvzmzj35LLrwIDAQABAoIBADJoGCo0Kdy93nay
-    JgboX66VV+YPaUNU+aQR6JdJsmgKB4oU2S4JYTyORKveJSCZoV3C5LCiG/6/QRPf
-    q0mMYUaj/51qZCJEiCYuXqjoOgWmYcOQTwD10ZiMEc4yAU1fbQ22J9zyhTQdP5XU
-    DKtH/eu+1h35ZRQl0ZD6rjaNuP6QekJM6IVCC7XBaCG5+wSER9R25HbbDhdb7CwH
-    W1GP9IgISqy9Z3f4PQOyCUmn/O99lN8kry6ui7bCywRfITV6C+pn02DpMgzKZ8jn
-    3yts1f2mIbYVxnahtCaI3QTag6wBsnFq+U0uIXrUGMeeRzg9N1Ur01qdJpIR9g0v
-    Nt7QUZkCgYEA4lEavsFitSll/33JY4q82nYpjXAxTON3xraUqNYn5Cde06gNi8n1
-    t9TCLUqDhSpvgEOyJE/uwo5LAj79Ce2EwLkCttNggqRXBlY5ZpljwfWmxZtuGm/z
-    BJaOtkaK/1diR/+Qn/fTMyPH5JIXuQ6/XF60W4MSbzPgY4GO1BDx+G0CgYEAyXRT
-    00GDdiXbxQmzeHTO9Bg5y36Y1FEWDLnc89bpHPTR4sT/XCczerevy/l8jsdzZlnu
-    5ZddfWMF7EGNo51Zbmi0oLQ7nzigoVFcnhFHRFoCP36T9mvJk7O8Ao3ttpl/J2r0
-    mFiaKi0lhmZVbNpmliKjWAMZJyt6I7AfYekcOwsCgYEA0W8MuQptNgkhgtX80ElL
-    iz9eJK12chjuds3vtG66a8CjWGtkXcB/y6bwKsmR/GHQ3XnIGSJ/aTwU3fc8YzuS
-    ZmbPxDDIVx2OCycv52p7jrqtoqC7u2tuEQji+Hs/lhxfrxEp3V+R6vlpunQX0AF9
-    xRU/ApDBNndjZ7I1YrprseECgYA+zx8HgaiMIJeZokGrb7fKkPcMBCeAItveEeDa
-    wYmito3txv/a6nn5a+XKkbmNBpBrO+To/j1ux33kQDf56Cgm7UxLwoXISa6DPUvE
-    GJ0AqZOD2mIldUu+2k3m+ftAcDEdyBIEobNHLRZDBgriSmGrs5b77NNdzAdjsxjF
-    vRlJKwKBgD8DcP/C9pABC2mRQyH//RTk6XZfiDY0L18lwH7acEdHlJiF1PTwvIHD
-    cj1nMyG2MxEiSt1E5O/YQ4Lo3sognFIb8keu7IYxEgLXhvWFR3RwaYCjrF4ZGfD2
-    +83eUFPZQvEwTY/8OCogzJQfs1CT8+pLdO9tZQbrAaxfmF6c48KN
-    -----END RSA PRIVATE KEY-----
-  cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCyGITa8rXUofX88c72/khxPWiXeS4Ciu/oiBb7WlpP3DikWd0fYMdDFMmxnrb1yKD4QtUAodCeQ0PZT778MzbRqLll+k7CW9350v3n8VsZvrY7PHGTEGPJz8Ftuzwtxm1LVI35qB2SNAbVK2lyRRsWmmgn2fNaCcRx1h2idDppOGB35gusA5fTizdwyUJ+UKVCXeUYWjbhB2GT9jgzmuh1+p8Pk05IoSFg/91My6euLzMHltSJ+868JZQpQ7EuOTH3mtpjzbEwdShsxiTztFws9yrynLP3r8U+iIurEzWjOdMo2IjRtbTGN/sUWN8sKNNqkpk9HPz5aS/ObOPfksuv
   cluster_domain: bm-cicd-pike-ovs-maas.local
   cluster_name: bm-cicd-pike-ovs-maas
   compute_bond_mode: active-backup
@@ -118,7 +60,7 @@ default_context:
   maas_deploy_address: 172.16.164.2
   maas_deploy_cidr: 172.16.164.0/26
   maas_deploy_gateway: 172.16.164.1
-  maas_deploy_range_end: 172.16.164.62
+  maas_deploy_range_end: 172.16.164.61
   maas_deploy_range_start: 172.16.164.18
   maas_deploy_vlan: '0'
   maas_dhcp_enabled: 'True'
@@ -772,7 +714,7 @@ default_context:
   reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
   salt_api_password: HlcaUHzUnsWsg62uhF8ua5KEbqRbzijz
   salt_api_password_hash: $6$qdIFillN$XnzP7oIXRcbroVch7nlthyrSekjKlWND8q2MtoMF3Wz2ymepjAOjyqpyR55nmbH9OQzS8EcQJ6sfr5hWKDesV1
-  salt_master_address: 10.167.11.2
+  salt_master_address: 10.167.11.5
   salt_master_hostname: cfg01
   salt_master_management_address: 172.16.164.2
   shared_reclass_branch: proposed
@@ -884,7 +826,7 @@ default_context:
   openstack_create_public_network: 'True'
   openstack_public_neutron_subnet_gateway: 172.17.42.1
   openstack_public_neutron_subnet_cidr: 172.17.42.0/26
-  openstack_public_neutron_subnet_allocation_start: 172.17.42.15
+  openstack_public_neutron_subnet_allocation_start: 172.17.42.20
   openstack_public_neutron_subnet_allocation_end: 172.17.42.55
   backend_vlan: '2402'
   storage_vlan: '2405'  # not implemented yet, placeholder
@@ -901,35 +843,6 @@ default_context:
   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
   octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
   openstack_octavia_enabled: 'True'
-  octavia_private_key: |-
-    -----BEGIN RSA PRIVATE KEY-----
-    MIIEpAIBAAKCAQEAtjnPDJsQToHBtoqIo15mdSYpfi8z6DFMi8Gbo0KCN33OUn5u
-    OctbdtjUfeuhvI6px1SCnvyWi09Ft8eWwq+KwLCGKbUxLvqKltuJ7K3LIrGXkt+m
-    qZN4O9XKeVKfZH+mQWkkxRWgX2r8RKNV3GkdNtd74VjhP+R6XSKJQ1Z8b7eHM10v
-    6IjTY/jPczjK+eyCeEj4qbSnV8eKlqLhhquuSQRmUO2DRSjLVdpdf2BB4/BdWFsD
-    YOmX7mb8kpEr9vQ+c1JKMXDwD6ehzyU8kE+1kVm5zOeEy4HdYIMpvUfN49P1anRV
-    2ISQ1ZE+r22IAMKl0tekrGH0e/1NP1DF5rINMwIDAQABAoIBAQCkP/cgpaRNHyg8
-    ISKIHs67SWqdEm73G3ijgB+JSKmW2w7dzJgN//6xYUAnP/zIuM7PnJ0gMQyBBTMS
-    NBTv5spqZLKJZYivj6Tb1Ya8jupKm0jEWlMfBo2ZYVrfgFmrfGOfEebSvmuPlh9M
-    vuzlftmWVSSUOkjODmM9D6QpzgrbpktBuA/WpX+6esMTwJpOcQ5xZWEnHXnVzuTc
-    SncodVweE4gz6F1qorbqIJz8UAUQ5T0OZTdHzIS1IbamACHWaxQfixAO2s4+BoUK
-    ANGGZWkfneCxx7lthvY8DiKn7M5cSRnqFyDToGqaLezdkMNlGC7v3U11FF5blSEW
-    fL1o/HwBAoGBAOavhTr8eqezTchqZvarorFIq7HFWk/l0vguIotu6/wlh1V/KdF+
-    aLLHgPgJ5j+RrCMvTBoKqMeeHfVGrS2udEy8L1mK6b3meG+tMxU05OA55abmhYn7
-    7vF0q8XJmYIHIXmuCgF90R8Piscb0eaMlmHW9unKTKo8EOs5j+D8+AMJAoGBAMo4
-    8WW+D3XiD7fsymsfXalf7VpAt/H834QTbNZJweUWhg11eLutyahyyfjjHV200nNZ
-    cnU09DWKpBbLg7d1pyT69CNLXpNnxuWCt8oiUjhWCUpNqVm2nDJbUdlRFTzYb2fS
-    ZC4r0oQaPD5kMLSipjcwzMWe0PniySxNvKXKInFbAoGBAKxW2qD7uKKKuQSOQUft
-    aAksMmEIAHWKTDdvOA2VG6XvX5DHBLXmy08s7rPfqW06ZjCPCDq4Velzvgvc9koX
-    d/lP6cvqlL9za+x6p5wjPQ4rEt/CfmdcmOE4eY+1EgLrUt314LHGjjG3ScWAiirE
-    QyDrGOIGaYoQf89L3KqIMr0JAoGARYAklw8nSSCUvmXHe+Gf0yKA9M/haG28dCwo
-    780RsqZ3FBEXmYk1EYvCFqQX56jJ25MWX2n/tJcdpifz8Q2ikHcfiTHSI187YI34
-    lKQPFgWb08m1NnwoWrY//yx63BqWz1vjymqNQ5GwutC8XJi5/6Xp+tGGiRuEgJGH
-    EIPUKpkCgYAjBIVMkpNiLCREZ6b+qjrPV96ed3iTUt7TqP7yGlFI/OkORFS38xqC
-    hBP6Fk8iNWuOWQD+ohM/vMMnvIhk5jwlcwn+kF0ra04gi5KBFWSh/ddWMJxUtPC1
-    2htvlEc6zQAR6QfqXHmwhg1hP81JcpqpicQzCMhkzLoR1DC6stXdLg==
-    -----END RSA PRIVATE KEY-----
-  octavia_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2Oc8MmxBOgcG2ioijXmZ1Jil+LzPoMUyLwZujQoI3fc5Sfm45y1t22NR966G8jqnHVIKe/JaLT0W3x5bCr4rAsIYptTEu+oqW24nsrcsisZeS36apk3g71cp5Up9kf6ZBaSTFFaBfavxEo1XcaR0213vhWOE/5HpdIolDVnxvt4czXS/oiNNj+M9zOMr57IJ4SPiptKdXx4qWouGGq65JBGZQ7YNFKMtV2l1/YEHj8F1YWwNg6ZfuZvySkSv29D5zUkoxcPAPp6HPJTyQT7WRWbnM54TLgd1ggym9R83j0/VqdFXYhJDVkT6vbYgAwqXS16SsYfR7/U0/UMXmsg0z
   cinder_backup_engine: 'ceph'
   cinder_ceph_backup_pool_name: 'backups'
   openstack_keystone_security:
@@ -942,3 +855,7 @@ default_context:
     password_regex: "'^[a-zA-Z0-9~!@#%^&\\*_=+]{32,}$$'"
     password_regex_description: "Your password could contains capital letters, lowercase letters, digits, symbols '~ ! @ # % ^ & * _ = +' and have a minimum length of 32 characters"
     change_password_upon_first_use: False
+  secrets_encryption_enabled: 'True'
+  secrets_encryption_key_id: 'F5CB2ADC36159B03'
+  # Used on CI only.
+  secrets_encryption_private_key: ''

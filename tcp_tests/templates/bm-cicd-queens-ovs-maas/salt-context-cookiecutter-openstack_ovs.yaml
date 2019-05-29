@@ -714,7 +714,7 @@ default_context:
   reclass_repository: https://github.com/Mirantis/mk-lab-salt-model.git
   salt_api_password: HlcaUHzUnsWsg62uhF8ua5KEbqRbzijz
   salt_api_password_hash: $6$qdIFillN$XnzP7oIXRcbroVch7nlthyrSekjKlWND8q2MtoMF3Wz2ymepjAOjyqpyR55nmbH9OQzS8EcQJ6sfr5hWKDesV1
-  salt_master_address: 10.167.11.2
+  salt_master_address: 10.167.11.5
   salt_master_hostname: cfg01
   salt_master_management_address: 172.16.164.2
   shared_reclass_branch: proposed
@@ -826,7 +826,7 @@ default_context:
   openstack_create_public_network: 'True'
   openstack_public_neutron_subnet_gateway: 172.17.42.1
   openstack_public_neutron_subnet_cidr: 172.17.42.0/26
-  openstack_public_neutron_subnet_allocation_start: 172.17.42.15
+  openstack_public_neutron_subnet_allocation_start: 172.17.42.20
   openstack_public_neutron_subnet_allocation_end: 172.17.42.55
   backend_vlan: '2402'
   storage_vlan: '2405'  # not implemented yet, placeholder
@@ -849,3 +849,13 @@ default_context:
   secrets_encryption_private_key: ''
   cinder_backup_engine: 'ceph'
   cinder_ceph_backup_pool_name: 'backups'
+  openstack_keystone_security:
+    disable_user_account_days_inactive: 7
+    lockout_failure_attempts: 60
+    lockout_duration: 600
+    password_expires_days: 730
+    unique_last_password_count: 5
+    minimum_password_age: 0
+    password_regex: "'^[a-zA-Z0-9~!@#%^&\\*_=+]{32,}$$'"
+    password_regex_description: "Your password could contains capital letters, lowercase letters, digits, symbols '~ ! @ # % ^ & * _ = +' and have a minimum length of 32 characters"
+    change_password_upon_first_use: False
