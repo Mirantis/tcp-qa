@@ -1,0 +1,50 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9213880c_e2400f7d",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 566,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-29T08:59:22Z",
+      "side": 1,
+      "message": "@retry is catching EnvironmentWrongStatus",
+      "range": {
+        "startLine": 566,
+        "startChar": 33,
+        "endLine": 566,
+        "endChar": 53
+      },
+      "revId": "3b1574a11d44fc23e9a3833f23387bd214eacc4a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "0ed4de64_712b4efc",
+        "filename": "tcp_tests/managers/envmanager_heat.py",
+        "patchSetId": 6
+      },
+      "lineNbr": 569,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-29T08:59:22Z",
+      "side": 1,
+      "message": "for EnvironmentBadStatus(), there should be a sting that describes the actual status",
+      "range": {
+        "startLine": 569,
+        "startChar": 20,
+        "endLine": 569,
+        "endChar": 41
+      },
+      "revId": "3b1574a11d44fc23e9a3833f23387bd214eacc4a",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
