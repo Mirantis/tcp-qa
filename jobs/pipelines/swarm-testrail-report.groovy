@@ -33,6 +33,7 @@ node ("${PARENT_NODE_NAME}") {
     }
     dir("${PARENT_WORKSPACE}") {
         def description = ''
+        def exception_message = ''
         try {
 
             if (env.TCP_QA_REFS) {
@@ -47,7 +48,6 @@ node ("${PARENT_NODE_NAME}") {
             def testrail_name_template = ''
             def reporter_extra_options = []
 
-            def report_result = ''
             def report_url = ''
 
             //  deployment_report_name = "deployment_${ENV_NAME}.xml"
@@ -83,14 +83,15 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(report_result, "blue")
-                    report_url = report_result.split("\n").each {
+                    ret = shared.upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    common.printMsg(ret.stdout, "blue")
+                    report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
                             description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
+                    exception_message += ret.exception
                 }
             }
 
@@ -104,14 +105,15 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(report_result, "blue")
-                    report_url = report_result.split("\n").each {
+                    ret = shared.upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    common.printMsg(ret.stdout, "blue")
+                    report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
                             description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
+                    exception_message += ret.exception
                 }
             }
 
@@ -120,14 +122,15 @@ node ("${PARENT_NODE_NAME}") {
                     testSuiteName = env.TEMPEST_TEST_SUITE_NAME
                     methodname = "{classname}.{methodname}"
                     testrail_name_template = "{title}"
-                    report_result = shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
-                    common.printMsg(report_result, "blue")
-                    report_url = report_result.split("\n").each {
+                    ret = shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
+                    common.printMsg(ret.stdout, "blue")
+                    report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
                             description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
+                    exception_message += ret.exception
                 }
             }
 
@@ -146,14 +149,15 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'Conformance\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(report_result, "blue")
-                    report_url = report_result.split("\n").each {
+                    ret = shared.upload_results_to_testrail(k8s_conformance_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    common.printMsg(ret.stdout, "blue")
+                    report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
                             description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
+                    exception_message += ret.exception
                 }
             }
 
@@ -168,14 +172,15 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'Conformance\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(k8s_conformance_virtlet_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(report_result, "blue")
-                    report_url = report_result.split("\n").each {
+                    ret = shared.upload_results_to_testrail(k8s_conformance_virtlet_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    common.printMsg(ret.stdout, "blue")
+                    report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
                             description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
+                    exception_message += ret.exception
                 }
             }
 
@@ -184,14 +189,15 @@ node ("${PARENT_NODE_NAME}") {
                     testSuiteName = "LMA2.0_Automated"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
-                    report_result = shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template)
-                    common.printMsg(report_result, "blue")
-                    report_url = report_result.split("\n").each {
+                    ret = shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template)
+                    common.printMsg(ret.stdout, "blue")
+                    report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
                             description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
+                    exception_message += ret.exception
                 }
             }
 
@@ -206,15 +212,21 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
                     ]
-                    report_result = shared.upload_results_to_testrail(cvp_sanity_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
-                    common.printMsg(report_result, "blue")
-                    report_url = report_result.split("\n").each {
+                    ret = shared.upload_results_to_testrail(cvp_sanity_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
+                    common.printMsg(ret.stdout, "blue")
+                    report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
                             common.printMsg("Found report URL: " + it.trim().split().last(), "blue")
                             description += "<a href=" + it.trim().split().last() + ">${testSuiteName}</a><br>"
                         }
                     }
+                    exception_message += ret.exception
                 }
+            }
+
+            // Check if there were any exceptions during reporting
+            if (exception_message) {
+                throw new Exception(exception_message)
             }
 
         } catch (e) {
