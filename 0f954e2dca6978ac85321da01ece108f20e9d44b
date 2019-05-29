@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "6d8e20d8_ce453757",
+        "filename": "tcp_tests/tests/system/test_cvp_pipelines.py",
+        "patchSetId": 1
+      },
+      "lineNbr": 402,
+      "author": {
+        "id": 1009910
+      },
+      "writtenOn": "2019-05-29T21:57:26Z",
+      "side": 1,
+      "message": "report name for tempest should match this pattern:\nhttps://github.com/Mirantis/tcp-qa/blob/master/jobs/pipelines/swarm-testrail-report.groovy#L58",
+      "range": {
+        "startLine": 402,
+        "startChar": 41,
+        "endLine": 402,
+        "endChar": 59
+      },
+      "revId": "0f954e2dca6978ac85321da01ece108f20e9d44b",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
