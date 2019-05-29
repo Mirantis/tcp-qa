@@ -4,6 +4,7 @@ nodes:
       roles:
       - infra_config
       - linux_system_codename_xenial
+      - features_runtest_cfg
       interfaces:
         ens3:
           role: single_static_mgm

@@ -209,6 +209,14 @@ class RuntestManager(object):
                             "'{\"external\":true,\"ip_prefix\":\"" +
                             public_network + "\",\"ip_prefix_len\":24," +
                             "\"asn\":64512,\"target\":10000}'")},
+                {
+                    'description': "Create heat network",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            "salt -C 'I@opencontrail:control:role:primary' " +
+                            "contrail.virtual_network_create heat-net " +
+                            "'{\"external\":false,\"ip_prefix\":\"" +
+                            "10.20.30.0\",\"ip_prefix_len\":24}'")},
             ]
             commands = contrail_commands + commands
 
