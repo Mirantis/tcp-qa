@@ -973,7 +973,6 @@ resources:
       instance02_name: mdb02
       instance03_name: mdb03
       instance_flavor: {get_param: mdb_flavor}
-      network: { get_attr: [subnets, network] }
       underlay_userdata: { get_file: ./underlay-userdata.yaml }
       instance01_control_net_static_ip:
         list_join:
