@@ -125,7 +125,7 @@ class TestCvpPipelines(object):
             maas_minion_id = salt.get_single_pillar(
                 tgt='I@maas:cluster or I@maas:region',
                 pillar="__reclass__:nodename")
-            ntp_skipped_nodes = 'ntp_skipped_nodes={0}'.format(maas_minion_id)
+            ntp_skipped_nodes = '{0}'.format(maas_minion_id)
         except LookupError:
             ntp_skipped_nodes = ''
 
@@ -142,7 +142,7 @@ class TestCvpPipelines(object):
                   - skipped_packages='{0}'
                   - skipped_modules='xunitmerge,setuptools'
                   - skipped_services='docker,containerd'
-                  - skipped_nodes='{1}'"""
+                  - ntp_skipped_nodes='{1}'"""
                 .format(skipped_packages, ntp_skipped_nodes)),
         }
 
