@@ -1536,3 +1536,15 @@
   skip_fail: false
 
 {%- endmacro %}
+
+{%- macro MACRO_IPFLUSH_TENANTS_IFACES() %}
+{######################################}
+- description: WR Flush addresses on tenant and external ifaces
+  cmd: |
+    salt -C 'gtw* or cmp*' cmd.run 'ip address flush dev ens5';
+    salt -C 'gtw* or cmp*' cmd.run 'ip address flush dev ens6';
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+
+{%- endmacro %}
