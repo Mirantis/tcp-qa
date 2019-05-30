@@ -83,6 +83,7 @@ default_context:
   kubernetes_ingressnginx_controller_replicas: 2
   local_repositories: 'False'
   maas_deploy_address: ==IPV4_NET_ADMIN_PREFIX==.15
+  maas_enabled: 'False'
   maas_deploy_range_end: ==IPV4_NET_ADMIN_PREFIX==.199
   maas_deploy_range_start: ==IPV4_NET_ADMIN_PREFIX==.180
   maas_deploy_vlan: '0'
