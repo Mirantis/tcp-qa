@@ -48,7 +48,8 @@ else:
 parameter_name = sys.argv[1]
 parameter_value = env['parameter_defaults'].get(parameter_name)
 if parameter_value is None:
-    parameter_value = template['parameters'].get(parameter_name)
+    parameter_template = template['parameters'].get(parameter_name,{})
+    parameter_value = parameter_template.get('default')
     if parameter_value is None:
         raise Exception("Parameter '{0}' not found in env file '{1}' "
                         "and temlate file '{2}'"
