@@ -12,19 +12,36 @@ parameters:
     type: string
   env_name:
     type: string
+  nameservers:
+    type: comma_delimited_list
+    default: 172.18.208.44
   control_subnet_cidr:
     type: string
+    default: "10.6.0.0/24"
+  tenant_subnet_cidr:
+    type: string
+    default: "10.8.0.0/24"
+  external_subnet_cidr:
+    type: string
+    default: "192.168.200.0/24"
   management_subnet_cidr:
     type: string
-  management_subnet_pool_start:
-    type: string
-  management_subnet_pool_end:
-    type: string
+    default: "10.7.0.0/24"
   management_subnet_cfg01_ip:
     type: string
+    default: 10.7.0.15
   management_subnet_gateway_ip:
     type: string
-
+    default: 10.7.0.1
+  management_subnet_pool_start:
+    type: string
+    default: 10.7.0.20
+  management_subnet_pool_end:
+    type: string
+    default: 10.7.0.90
+  salt_master_control_ip:
+    type: string
+    default: 10.6.0.15
   key_pair:
     type: string
 

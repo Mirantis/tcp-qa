@@ -20,9 +20,38 @@ parameters:
     type: string
   foundation_flavor:
     type: string
-
   bm_availability_zone:
     type: string
+  nameservers:
+    type: comma_delimited_list
+    default: 172.18.208.44
+  control_subnet_cidr:
+    type: string
+    default: "10.167.11.0/24"
+  tenant_subnet_cidr:
+    type: string
+    default: "10.167.12.0/24"
+  external_subnet_cidr:
+    type: string
+    default: "172.17.42.0/26"
+  management_subnet_cidr:
+    type: string
+    default: "172.16.164.0/26"
+  management_subnet_cfg01_ip:
+    type: string
+    default: 172.16.164.2
+  management_subnet_gateway_ip:
+    type: string
+    default: 172.16.164.1
+  management_subnet_pool_start:
+    type: string
+    default: 172.16.164.3
+  management_subnet_pool_end:
+    type: string
+    default: 172.16.164.61
+  salt_master_control_ip:
+    type: string
+    default: 10.167.11.15
 
 resources:
   subnets:
