@@ -55,7 +55,6 @@ resources:
     properties:
       port_security_enabled: false
       network_id: { get_param: management_net }
-      #network_id: { list_join: ['-', [ 'management_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: management_net_static_ip }
   instance_port02:
@@ -63,7 +62,6 @@ resources:
     properties:
       port_security_enabled: false
       network_id: { get_param: control_net }
-      #network_id: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: control_net_static_ip }
   instance_port03:
@@ -71,7 +69,6 @@ resources:
     properties:
       port_security_enabled: false
       network_id: { get_param: tenant_net }
-      #network_id: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: tenant_net_static_ip }
   instance_port04:
@@ -79,7 +76,6 @@ resources:
     properties:
       port_security_enabled: false
       network_id: { get_param: external_net }
-      #network_id: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
       fixed_ips:
         - ip_address: { get_param: external_net_static_ip }
 
