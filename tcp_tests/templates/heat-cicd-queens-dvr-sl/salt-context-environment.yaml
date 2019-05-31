@@ -318,7 +318,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: bond0_ab_ovs_vxlan_mesh
+          role: bond0_ab_ovs_vxlan_mesh_no_tag
         ens6:
           role: bond1_ab_ovs_floating
 
@@ -333,7 +333,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: bond0_ab_ovs_vxlan_mesh
+          role: bond0_ab_ovs_vxlan_mesh_no_tag
         ens6:
           role: bond1_ab_ovs_floating
 
@@ -348,7 +348,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: bond0_ab_ovs_vxlan_mesh
+          role: bond0_ab_ovs_vxlan_mesh_no_tag
         ens6:
           role: bond1_ab_ovs_floating
 
@@ -363,7 +363,7 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: bond0_ab_ovs_vxlan_mesh
+          role: bond0_ab_ovs_vxlan_mesh_no_tag
         ens6:
           role: bond1_ab_ovs_floating
 
