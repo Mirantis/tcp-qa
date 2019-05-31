@@ -62,6 +62,8 @@ parameters:
     type: string
   vsrx_flavor:
     type: string
+  prx_flavor:
+    type: string
   net_public:
     type: string
 
