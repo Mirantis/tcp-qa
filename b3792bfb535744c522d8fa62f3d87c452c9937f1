@@ -1,0 +1,44 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "285de290_80213b4e",
+        "filename": "tcp_tests/templates/_heat_environments/fragments/MultipleInstance.yaml",
+        "patchSetId": 1
+      },
+      "lineNbr": 64,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2019-05-31T10:37:07Z",
+      "side": 1,
+      "message": "Please add to each instance",
+      "range": {
+        "startLine": 64,
+        "startChar": 6,
+        "endLine": 64,
+        "endChar": 24
+      },
+      "revId": "b3792bfb535744c522d8fa62f3d87c452c9937f1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "958f646c_159247ba",
+        "filename": "tcp_tests/templates/heat-cicd-k8s-calico-sl/underlay.hot",
+        "patchSetId": 1
+      },
+      "lineNbr": 116,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2019-05-31T10:37:07Z",
+      "side": 1,
+      "message": "Not sure if it will work that way for MultipleInstance. It seems that we should add for every instance like it done for instances names (01,02,03)",
+      "revId": "b3792bfb535744c522d8fa62f3d87c452c9937f1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
