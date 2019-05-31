@@ -50,6 +50,9 @@ parameters:
     type: string
   env_name:
     type: string
+  availability_zone:
+    type: string
+
 
 resources:
   instance01:
@@ -58,6 +61,7 @@ resources:
       env_name: { get_param: env_name }
       mcp_version: { get_param: mcp_version }
       key_pair: { get_param: key_pair }
+      availability_zone: { get_param: availability_zone }
       control_net_static_ip: {get_param: instance01_control_net_static_ip }
       tenant_net_static_ip: {get_param: instance01_tenant_net_static_ip }
       external_net_static_ip: {get_param: instance01_external_net_static_ip }

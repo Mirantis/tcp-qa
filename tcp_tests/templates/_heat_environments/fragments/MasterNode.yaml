@@ -36,7 +36,7 @@ parameters:
   role:
     type: comma_delimited_list
     default: [salt_master]
-  bm_availability_zone:
+  availability_zone:
     type: string
 
 resources:
@@ -83,7 +83,7 @@ resources:
       flavor: { get_param: cfg01_flavor }
       image: { list_join: ['', [ 'cfg01-day01-', { get_param: mcp_version } ]] }
       key_name: { get_param: key_pair }
-      availability_zone: { get_param: bm_availability_zone }
+      availability_zone: { get_param: availability_zone }
       name:
         list_join:
         - '.'
