@@ -24,6 +24,33 @@ parameters:
     type: string
   bm_availability_zone:
     type: string
+  control_subnet_cidr:
+    type: string
+    default: "10.6.0.0/24"
+  tenant_subnet_cidr:
+    type: string
+    default: "10.8.0.0/24"
+  external_subnet_cidr:
+    type: string
+    default: "192.168.200.0/24"
+  management_subnet_cidr:
+    type: string
+    default: "172.16.49.64/26"
+  management_subnet_cfg01_ip:
+    type: string
+    default: 172.16.49.66
+  management_subnet_gateway_ip:
+    type: string
+    default: 172.16.49.65
+  management_subnet_pool_start:
+    type: string
+    default: 172.16.49.68
+  management_subnet_pool_end:
+    type: string
+    default: 172.16.49.124
+  salt_master_control_ip:
+    type: string
+    default: 10.6.0.15
 
 resources:
   subnets:
@@ -35,6 +62,13 @@ resources:
       control_net: 'system-phys-2422'
       tenant_net: 'system-phys-2423'
       external_net: 'system-phys-2424'
+      control_subnet_cidr: { get_param: control_subnet_cidr }
+      tenant_subnet_cidr: { get_param: tenant_subnet_cidr }
+      external_subnet_cidr: { get_param: external_subnet_cidr }
+      management_subnet_cidr: { get_param: management_subnet_cidr }
+      management_subnet_gateway_ip: { get_param: management_subnet_gateway_ip }
+      management_subnet_pool_start: { get_param: management_subnet_pool_start }
+      management_subnet_pool_end: { get_param: management_subnet_pool_end }
 
   #flavors:
   #  type: MCP::Flavors
@@ -51,6 +85,8 @@ resources:
       control_net: 'system-phys-2422'
       tenant_net: 'system-phys-2423'
       external_net: 'system-phys-2424'
+      salt_master_control_ip: { get_param: salt_master_control_ip }
+      management_subnet_cfg01_ip: { get_param: management_subnet_cfg01_ip }
       tenant_net_static_ip:
         list_join:
         - '.'
@@ -75,6 +111,7 @@ resources:
       control_net: 'system-phys-2422'
       tenant_net: 'system-phys-2423'
       external_net: 'system-phys-2424'
+      management_subnet_gateway_ip: { get_param: management_subnet_gateway_ip }
       instance_image: { get_param: foundation_image }
       instance_flavor: {get_param: foundation_flavor}
       underlay_userdata: { get_file: ./underlay--user-data-foundation.yaml }

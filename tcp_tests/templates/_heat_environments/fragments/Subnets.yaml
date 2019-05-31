@@ -54,11 +54,9 @@ resources:
     type: OS::Neutron::Subnet
     properties:
       name: { list_join: ['-', [ { get_param: control_net }, 'subnet', { get_param: env_name } ]] }
-      #name: control_subnet
       network: { get_param: control_net }
       cidr: { get_param: control_subnet_cidr }
       #enable_dhcp: { get_param: control_net_dhcp }
-      #dns_nameservers: { get_param: nameservers }
       dns_nameservers: [0.0.0.0]
       gateway_ip: null
       tags:
@@ -68,11 +66,9 @@ resources:
     type: OS::Neutron::Subnet
     properties:
       name: { list_join: ['-', [ { get_param: tenant_net }, 'subnet', { get_param: env_name } ]] }
-      #name: tenant_subnet
       network: { get_param: tenant_net }
       cidr: { get_param: tenant_subnet_cidr }
       #enable_dhcp: { get_param: tenant_net_dhcp }
-      #dns_nameservers: { get_param: nameservers }
       dns_nameservers: [0.0.0.0]
       gateway_ip: null
       tags:
@@ -83,7 +79,6 @@ resources:
     properties:
       gateway_ip: { get_param: management_subnet_gateway_ip }
       name: { list_join: ['-', [ { get_param: management_net }, 'subnet', { get_param: env_name } ]] }
-      #name: management_subnet
       network: { get_param: management_net }
       cidr: { get_param: management_subnet_cidr }
       enable_dhcp: { get_param: management_net_dhcp }
@@ -98,11 +93,9 @@ resources:
     type: OS::Neutron::Subnet
     properties:
       name: { list_join: ['-', [ { get_param: external_net }, 'subnet', { get_param: env_name } ]] }
-      #name: external_subnet
       network: { get_param: external_net }
       cidr: { get_param: external_subnet_cidr }
       #enable_dhcp: { get_param: external_net_dhcp }
-      #dns_nameservers: { get_param: nameservers }
       dns_nameservers: [0.0.0.0]
       gateway_ip: null
       tags:

@@ -31,8 +31,6 @@ parameters:
     type: string
   external_net_static_ip:
     type: string
-  # underlay_userdata:
-  #   type: string
   env_name:
     type: string
   mcp_version:

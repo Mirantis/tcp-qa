@@ -6,39 +6,8 @@ description: Network fragment
 parameters:
   env_name:
     type: string
-  net_public:
-    type: string
   stack_name:
     type: string
-  control_subnet_cidr:
-    type: string
-  tenant_subnet_cidr:
-    type: string
-  management_subnet_cidr:
-    type: string
-  external_subnet_cidr:
-    type: string
-  management_subnet_gateway_ip:
-    type: string
-#  control_net_dhcp:
-#    type: boolean
-#    default: false
-#  tenant_net_dhcp:
-#    type: boolean
-#    default: false
-  management_net_dhcp:
-    type: boolean
-    default: true
-  management_subnet_pool_start:
-    type: string
-  management_subnet_pool_end:
-    type: string
-#  external_net_dhcp:
-#    type: boolean
-#    default: false
-
-  nameservers:
-    type: comma_delimited_list
 
 resources:
   control_net:

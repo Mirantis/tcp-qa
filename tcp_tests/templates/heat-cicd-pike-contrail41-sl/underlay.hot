@@ -14,16 +14,31 @@ parameters:
     type: string
   control_subnet_cidr:
     type: string
+    default: "10.6.0.0/24"
+  tenant_subnet_cidr:
+    type: string
+    default: "10.8.0.0/24"
+  external_subnet_cidr:
+    type: string
+    default: "192.168.200.0/24"
   management_subnet_cidr:
     type: string
-  management_subnet_pool_start:
-    type: string
-  management_subnet_pool_end:
-    type: string
+    default: "10.7.0.0/24"
   management_subnet_cfg01_ip:
     type: string
+    default: 10.7.0.15
   management_subnet_gateway_ip:
     type: string
+    default: 10.7.0.1
+  management_subnet_pool_start:
+    type: string
+    default: 10.7.0.20
+  management_subnet_pool_end:
+    type: string
+    default: 10.7.0.90
+  salt_master_control_ip:
+    type: string
+    default: 10.6.0.15
 
   key_pair:
     type: string
@@ -91,6 +106,13 @@ resources:
       control_net: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
       tenant_net: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
       external_net: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+      control_subnet_cidr: { get_param: control_subnet_cidr }
+      tenant_subnet_cidr: { get_param: tenant_subnet_cidr }
+      external_subnet_cidr: { get_param: external_subnet_cidr }
+      management_subnet_cidr: { get_param: management_subnet_cidr }
+      management_subnet_gateway_ip: { get_param: management_subnet_gateway_ip }
+      management_subnet_pool_start: { get_param: management_subnet_pool_start }
+      management_subnet_pool_end: { get_param: management_subnet_pool_end }
 
   #flavors:
   #  type: MCP::Flavors
@@ -107,6 +129,8 @@ resources:
       control_net: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
       tenant_net: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
       external_net: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+      salt_master_control_ip: { get_param: salt_master_control_ip }
+      management_subnet_cfg01_ip: { get_param: management_subnet_cfg01_ip }
       tenant_net_static_ip:
         list_join:
         - '.'
@@ -910,6 +934,7 @@ resources:
       control_net: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
       tenant_net: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
       external_net: { list_join: ['-', [ 'external_net', { get_param: env_name } ]] }
+      management_subnet_gateway_ip: { get_param: management_subnet_gateway_ip }
       underlay_userdata: { get_file: ./underlay--user-data-foundation.yaml }
       management_net_static_ip:
         list_join:
