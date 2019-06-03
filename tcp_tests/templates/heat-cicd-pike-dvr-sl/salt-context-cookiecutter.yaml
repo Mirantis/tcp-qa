@@ -293,6 +293,7 @@ default_context:
   stacklight_version: '2'
   stacklight_long_term_storage_type: prometheus
   nova_vnc_tls_enabled: 'True'
+  stacklight_ssl_enabled: 'True'
   galera_ssl_enabled: 'True'
   openstack_mysql_x509_enabled: 'True'
   rabbitmq_ssl_enabled: 'True'

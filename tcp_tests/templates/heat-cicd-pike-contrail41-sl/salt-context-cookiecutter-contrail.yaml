@@ -297,6 +297,7 @@ default_context:
   barbican_integration_enabled: 'False'
   # SSL settings
   nova_vnc_tls_enabled: 'True'
+  stacklight_ssl_enabled: 'True'
   galera_ssl_enabled: 'True'
   openstack_mysql_x509_enabled: 'True'
   rabbitmq_ssl_enabled: 'True'
