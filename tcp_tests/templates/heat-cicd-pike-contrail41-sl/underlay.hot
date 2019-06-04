@@ -20,7 +20,7 @@ parameters:
     default: "10.8.0.0/24"
   external_subnet_cidr:
     type: string
-    default: "192.168.200.0/24"
+    default: "10.9.0.0/24"
   management_subnet_cidr:
     type: string
     default: "10.7.0.0/24"

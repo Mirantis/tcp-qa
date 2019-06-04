@@ -159,7 +159,7 @@ class RuntestManager(object):
         if contrail_integration:
             vsrx_router = self.__salt_api.get_single_pillar(
                 tgt="I@opencontrail:control:role:primary",
-                pillar="_param:opencontrail_router01_address")
+                pillar="_param:opencontrail_router02_address")
             public_network = "192.168.200.0"
             contrail_commands = [
                 {
@@ -167,6 +167,12 @@ class RuntestManager(object):
                     'node_name': self.target_name,
                     'cmd': ("set -ex; ip route replace " +
                             public_network + "/24 via " + vsrx_router)},
+                {
+                    'description': "Iptables for public",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex; iptables -t nat -A POSTROUTING -s " +
+                            public_network + "/24 ! -d " + public_network +
+                            "/24 -j MASQUERADE")},
                 {
                     'description': "Align security group: remove all rules",
                     'node_name': self.target_name,
@@ -210,13 +216,11 @@ class RuntestManager(object):
                             public_network + "\",\"ip_prefix_len\":24," +
                             "\"asn\":64512,\"target\":10000}'")},
                 {
-                    'description': "Create heat network",
+                    'description': "Run skiped in pipelines neutron.client",
                     'node_name': self.target_name,
                     'cmd': ("set -ex;" +
-                            "salt -C 'I@opencontrail:control:role:primary' " +
-                            "contrail.virtual_network_create heat-net " +
-                            "'{\"external\":false,\"ip_prefix\":\"" +
-                            "10.20.30.0\",\"ip_prefix_len\":24}'")},
+                            "salt -C 'I@neutron:client and cfg*' " +
+                            "state.sls neutron.client|true")},
             ]
             commands = contrail_commands + commands
 

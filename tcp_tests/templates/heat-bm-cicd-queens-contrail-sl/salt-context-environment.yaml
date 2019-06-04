@@ -10,7 +10,10 @@ nodes:
           role: single_static_mgm
         ens4:
           role: single_static_ctl
-    # Physical nodes
+        ens6:
+          role: single_external
+          external_address: 10.9.0.15
+          external_network_netmask: 255.255.255.0
 
     kvm01.heat-bm-cicd-queens-contrail-sl.local:
       reclass_storage_name: infra_kvm_node01
