@@ -859,3 +859,4 @@ default_context:
     password_regex: "'^[a-zA-Z0-9~!@#%^&\\*_=+]{32,}$$'"
     password_regex_description: "Your password could contains capital letters, lowercase letters, digits, symbols '~ ! @ # % ^ & * _ = +' and have a minimum length of 32 characters"
     change_password_upon_first_use: False
+  stacklight_ssl_enabled: 'True'

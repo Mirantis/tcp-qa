@@ -360,7 +360,7 @@ default_context:
   octavia_health_manager_node01_address: 192.168.10.10
   octavia_health_manager_node02_address: 192.168.10.11
   octavia_health_manager_node03_address: 192.168.10.12
-  octavia_manager_cluster: 'True'
+  octavia_manager_cluster: 'False'
   octavia_hm_bind_ip: 192.168.10.12
   octavia_lb_mgmt_cidr: 192.168.10.0/24
   octavia_lb_mgmt_allocation_pool_start: 192.168.10.2

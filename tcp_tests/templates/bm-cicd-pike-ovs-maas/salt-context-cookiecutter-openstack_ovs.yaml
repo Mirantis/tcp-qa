@@ -859,3 +859,4 @@ default_context:
   secrets_encryption_key_id: 'F5CB2ADC36159B03'
   # Used on CI only.
   secrets_encryption_private_key: ''
+  stacklight_ssl_enabled: 'True'
