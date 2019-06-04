@@ -210,13 +210,11 @@ class RuntestManager(object):
                             public_network + "\",\"ip_prefix_len\":24," +
                             "\"asn\":64512,\"target\":10000}'")},
                 {
-                    'description': "Create heat network",
+                    'description': "Run skiped in pipelines neutron.client",
                     'node_name': self.target_name,
                     'cmd': ("set -ex;" +
-                            "salt -C 'I@opencontrail:control:role:primary' " +
-                            "contrail.virtual_network_create heat-net " +
-                            "'{\"external\":false,\"ip_prefix\":\"" +
-                            "10.20.30.0\",\"ip_prefix_len\":24}'")},
+                            "salt -C 'I@neutron.client and cfg*' " +
+                            "state.sls neutron.client|true")},
             ]
             commands = contrail_commands + commands
 
