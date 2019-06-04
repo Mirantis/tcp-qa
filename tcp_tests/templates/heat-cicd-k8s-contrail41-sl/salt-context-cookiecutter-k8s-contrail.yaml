@@ -172,6 +172,7 @@ default_context:
   dns_server02: 1.1.1.1
   email_address: sgudz@mirantis.com
   etcd_ssl: 'True'
+  stacklight_ssl_enabled: 'True'
   gainsight_service_enabled: 'False'
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0

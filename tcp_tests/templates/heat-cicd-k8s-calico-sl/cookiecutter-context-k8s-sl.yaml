@@ -93,6 +93,7 @@ default_context:
   dns_server02: 172.18.208.44
   email_address: ddmitriev@mirantis.com
   etcd_ssl: 'True'
+  stacklight_ssl_enabled: 'True'
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
   infra_kvm01_control_address: ==IPV4_NET_CONTROL_PREFIX==.241
