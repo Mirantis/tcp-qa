@@ -2,12 +2,12 @@
 
 heat_template_version: queens
 
-description: MCP environment for heat-bm-cicd-queens-contrail-sl
+description: MCP environment for heat-bm-cicd-pike-contrail-sl
 
 parameters:
   instance_domain:
     type: string
-    default: heat-bm-cicd-queens-contrail-sl.local
+    default: heat-bm-cicd-pike-contrail-sl.local
   mcp_version:
     type: string
   env_name:
