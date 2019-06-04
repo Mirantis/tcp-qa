@@ -134,7 +134,7 @@ default_context:
   opencontrail_enabled: 'True'
   opencontrail_router01_address: ==IPV4_NET_CONTROL_PREFIX==.220
   opencontrail_router01_hostname: rtr01
-  opencontrail_router02_address: ==IPV4_NET_CONTROL_PREFIX==.101
+  opencontrail_router02_address: ==IPV4_NET_EXTERNAL_PREFIX==.220
   opencontrail_router02_hostname: rtr02
   openldap_enabled: 'True'
   openldap_domain: ${_param:cluster_name}.local
