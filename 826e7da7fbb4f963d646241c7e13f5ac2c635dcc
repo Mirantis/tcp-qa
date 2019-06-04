@@ -51,6 +51,24 @@
       "revId": "826e7da7fbb4f963d646241c7e13f5ac2c635dcc",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "53f2bf6d_5b9eaed8",
+        "filename": "tcp_tests/templates/heat-bm-cicd-pike-contrail-sl/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 3
+      },
+      "lineNbr": 520,
+      "author": {
+        "id": 1011186
+      },
+      "writtenOn": "2019-06-04T13:26:42Z",
+      "side": 1,
+      "message": "yes 499 str, \nbut good that you ask, lets add telemetry + barbican +designate + jenkins_branch param is missing",
+      "parentUuid": "a47a7d93_18026358",
+      "revId": "826e7da7fbb4f963d646241c7e13f5ac2c635dcc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
