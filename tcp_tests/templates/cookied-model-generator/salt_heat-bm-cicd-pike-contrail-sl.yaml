@@ -1,0 +1,66 @@
+{% from 'cookied-model-generator/underlay.yaml' import HOSTNAME_CFG01 with context %}
+{% from 'cookied-model-generator/underlay.yaml' import DOMAIN_NAME with context %}
+
+{% set LAB_CONFIG_NAME = 'heat-bm-cicd-pike-contrail-sl' %}
+# Name of the context file (without extension, that is fixed .yaml) used to render the Environment model
+{% set ENVIRONMENT_MODEL_INVENTORY_NAME = os_env('ENVIRONMENT_MODEL_INVENTORY_NAME','heat-bm-cicd-pike-contrail-sl') %}
+# Path to the context files used to render Cluster and Environment models
+{%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-contrail.yaml' %}
+{%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml', 'salt-context-cookiecutter-contrail.yaml'] %}
+{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2422') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2423') %}
+
+{%- set IPMI_USER = os_env('IPMI_USER', 'mcp-qa') %}
+{%- set IPMI_PASS = os_env('IPMI_PASS', 'password') %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+{{ SHARED.MACRO_INSTALL_PACKAGES_ON_NODES(HOSTNAME_CFG01) }}
+
+{{ SHARED.MACRO_INSTALL_FORMULAS_FROM_UPDATE() }}
+
+{{ SHARED.MACRO_INSTALL_FORMULAS('\*') }}
+
+{{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL(CONTROL_VLAN=CONTROL_VLAN, TENANT_VLAN=TENANT_VLAN) }}
+
+{{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
+
+- description: Temporary WR for correct bridge name according to envoronment templates
+  cmd: |
+    sed -i 's/br\-ctl/br\_ctl/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+    sed -i 's/br\-mgm/br\_mgm/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/kvm.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+{{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
+
+- description: "Add cpu_mode"
+  cmd: |
+    set -e;
+    set -x;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters.nova.compute.cpu_mode custom /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute/init.yml;
+    reclass-tools add-key parameters.nova.compute.libvirt.cpu_model kvm64 /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/openstack/compute/init.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Defining username and password params for IPMI access
+  cmd: |
+    sed -i 's/==IPMI_USER==/${_param:power_user}/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
+    sed -i 's/==IPMI_PASS==/${_param:power_password}/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 10}
+  skip_fail: false
+
+- description: "Add user/password for IPMI access"
+  cmd: |
+    set -e;
+    set -x;
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key parameters._param.power_user {{ IPMI_USER }} /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
+    reclass-tools add-key parameters._param.power_password {{ IPMI_PASS }} /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
