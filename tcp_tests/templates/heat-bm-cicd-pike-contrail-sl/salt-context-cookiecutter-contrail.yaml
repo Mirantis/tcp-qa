@@ -67,8 +67,8 @@ default_context:
     l8kv0xXAElriC1RE1CNtvoOn/uxyRs+2OnNgBVxtAGqUWVdpm6CD
     -----END RSA PRIVATE KEY-----
   cicd_public_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4ELbbhdBkXLOoLnoTJLvKv+uWlFFiyva+OLvt9qhZAWaBhtmh7Kqqqbx5I3QJzTACfFaxDsfdk325OfJZWuyiCzW/Hzn3uKitkBPgy7okNuRaVmEhQej0/2K1Yl1RanGMNq+oi+Nmj4OY47WZ+/0rVqw/wI5qdASyAdLK5/5cowGDSSiQRqaYBS1L0dHEIAnjtCAs9IIWKPmKH8xFZjcdYVQUQXeBF1Sh1aZ4k2Zb7skftPbAh3WSfyhHJrt5p0rF3rARoIabkgtfDBUWYWQ4aUR4LzAeduRq138DncPHNR84cGLbsZp/zcM/EqoNZbRoCHtvj0ScWF2S4XdnJdtj
-  cluster_domain: heat-bm-cicd-queens-contrail-sl.local
-  cluster_name: heat-bm-cicd-queens-contrail-sl
+  cluster_domain: heat-bm-cicd-pike-contrail-sl.local
+  cluster_name: heat-bm-cicd-pike-contrail-sl
   opencontrail_version: 4.1
   linux_repo_contrail_component: oc41
   compute_bond_mode: active-backup
@@ -386,7 +386,7 @@ default_context:
   openstack_proxy_node02_address: ==IPV4_NET_CONTROL_PREFIX==.82
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: ==IPV4_NET_CONTROL_PREFIX==.19
-  openstack_version: queens
+  openstack_version: pike
   oss_enabled: 'False'
   oss_node03_address: ${_param:stacklight_monitor_node03_address}
   oss_webhook_app_id: '24'
@@ -435,7 +435,7 @@ default_context:
   tenant_network_subnet: ==IPV4_NET_TENANT_PREFIX==.0/24
   upstream_proxy_enabled: 'False'
   use_default_network_scheme: 'True'
-  openldap_domain: heat-bm-cicd-queens-contrail-sl.local
+  openldap_domain: heat-bm-cicd-pike-contrail-sl.local
   openldap_enabled: 'True'
   openldap_organisation: ${_param:cluster_name}
   ceph_enabled: 'True'
@@ -509,6 +509,10 @@ default_context:
   openstack_public_neutron_subnet_cidr: 192.168.200.0/24
   openstack_public_neutron_subnet_allocation_start: 192.168.200.10
   openstack_public_neutron_subnet_allocation_end: 192.168.200.250
+  secrets_encryption_enabled: 'True'
+  secrets_encryption_key_id: 'F5CB2ADC36159B03'
+  # Used on CI only.
+  secrets_encryption_private_key: ''
   openstack_keystone_security:
     disable_user_account_days_inactive: 7
     lockout_failure_attempts: 60
