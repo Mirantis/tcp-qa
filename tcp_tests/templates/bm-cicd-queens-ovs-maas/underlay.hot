@@ -88,11 +88,11 @@ resources:
       tenant_net_static_ip:
         list_join:
         - '.'
-        - [ { get_attr: [subnets, tenant_net_prefix] }, '5' ]
+        - [ { get_attr: [subnets, tenant_net_prefix] }, '15' ]
       external_net_static_ip:
         list_join:
         - '.'
-        - [ { get_attr: [subnets, external_net_prefix] }, '5' ]
+        - [ { get_attr: [subnets, external_net_prefix] }, '15' ]
       instance_name: cfg01
       instance_domain: {get_param: instance_domain}
 
@@ -120,15 +120,15 @@ resources:
       control_net_static_ip:
         list_join:
         - '.'
-        - [ { get_attr: [subnets, control_net_prefix] }, '6' ]
+        - [ { get_attr: [subnets, control_net_prefix] }, '5' ]
       tenant_net_static_ip:
         list_join:
         - '.'
-        - [ { get_attr: [subnets, tenant_net_prefix] }, '6' ]
+        - [ { get_attr: [subnets, tenant_net_prefix] }, '5' ]
       external_net_static_ip:
         list_join:
         - '.'
-        - [ { get_attr: [subnets, external_net_prefix] }, '6' ]
+        - [ { get_attr: [subnets, external_net_prefix] }, '5' ]
       instance_config_host: { get_attr: [cfg01_node, instance_address] }
 outputs:
   foundation_public_ip:
