@@ -301,10 +301,10 @@ default_context:
   openstack_internal_protocol: 'https'
   openstack_create_public_network: 'True'
 
-  openstack_public_neutron_subnet_gateway: 10.9.0.1
-  openstack_public_neutron_subnet_cidr: 10.9.0.0/24
-  openstack_public_neutron_subnet_allocation_start: 10.9.0.201
-  openstack_public_neutron_subnet_allocation_end: 10.9.0.245
+  openstack_public_neutron_subnet_gateway: 10.9.128.1
+  openstack_public_neutron_subnet_cidr: 10.9.128.0/24
+  openstack_public_neutron_subnet_allocation_start: 10.9.128.5
+  openstack_public_neutron_subnet_allocation_end: 10.9.128.253
 
   #openstack_public_neutron_subnet_gateway: 172.17.16.1
   #openstack_public_neutron_subnet_cidr: 172.17.16.0/24
