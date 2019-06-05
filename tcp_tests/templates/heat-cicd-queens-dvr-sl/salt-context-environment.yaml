@@ -318,9 +318,9 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: bond0_ab_ovs_vxlan_mesh_no_tag
+          role: heat_single_tenant
         ens6:
-          role: bond1_ab_ovs_floating
+          role: heat_single_ovs_floating
 
     gtw01:
       reclass_storage_name: openstack_gateway_node01
@@ -333,9 +333,9 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: bond0_ab_ovs_vxlan_mesh_no_tag
+          role: heat_single_tenant
         ens6:
-          role: bond1_ab_ovs_floating
+          role: heat_single_ovs_floating
 
     gtw02:
       reclass_storage_name: openstack_gateway_node02
@@ -348,9 +348,9 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: bond0_ab_ovs_vxlan_mesh_no_tag
+          role: heat_single_tenant
         ens6:
-          role: bond1_ab_ovs_floating
+          role: heat_single_ovs_floating
 
     gtw03:
       reclass_storage_name: openstack_gateway_node03
@@ -363,9 +363,9 @@ nodes:
         ens4:
           role: single_ctl
         ens5:
-          role: bond0_ab_ovs_vxlan_mesh_no_tag
+          role: heat_single_tenant
         ens6:
-          role: bond1_ab_ovs_floating
+          role: heat_single_ovs_floating
 
     osd<<count>>:
       reclass_storage_name: ceph_osd_rack01
