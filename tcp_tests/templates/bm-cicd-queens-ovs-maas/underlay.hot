@@ -48,7 +48,7 @@ parameters:
     default: 172.16.164.61
   salt_master_control_ip:
     type: string
-    default: 10.167.11.15
+    default: 10.167.11.5
 
 resources:
   subnets:
