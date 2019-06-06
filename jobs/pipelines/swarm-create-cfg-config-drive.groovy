@@ -68,7 +68,7 @@ node (node_name) {
                     eval \$(ssh-agent)
                     ssh-add ${GERRIT_KEY}
                     cd mcp-common-scripts-git
-                    git fetch ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.com:29418/mcp/mcp-common-scripts ${MCP_COMMON_SCRIPTS_REFS} && git checkout FETCH_HEAD
+                    git fetch https://${GERRIT_USERNAME}@gerrit.mcp.mirantis.com:29418/mcp/mcp-common-scripts ${MCP_COMMON_SCRIPTS_REFS} && git checkout FETCH_HEAD
                     git log -1
                 """)
             }
