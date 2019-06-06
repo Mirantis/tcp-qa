@@ -225,7 +225,7 @@ default_context:
   openstack_ovs_encapsulation_type: vxlan
   #openstack_proxy_address: 172.17.16.80  # external network endpoint
   openstack_proxy_address: 10.167.4.80  # external network endpoint
-  openstack_proxy_vip_interface: ens5
+  openstack_proxy_vip_interface: ens6
   openstack_proxy_hostname: prx
   openstack_proxy_node01_address: 10.167.4.81
   openstack_proxy_node01_hostname: prx01
@@ -301,9 +301,9 @@ default_context:
   openstack_internal_protocol: 'https'
   openstack_create_public_network: 'True'
   openstack_public_neutron_subnet_gateway: 10.9.0.1
-  openstack_public_neutron_subnet_cidr: 10.9.0.0/24
-  openstack_public_neutron_subnet_allocation_start: 10.9.0.201
-  openstack_public_neutron_subnet_allocation_end: 10.9.0.245
+  openstack_public_neutron_subnet_cidr: 10.9.0.0/16
+  openstack_public_neutron_subnet_allocation_start: 10.9.128.5
+  openstack_public_neutron_subnet_allocation_end: 10.9.128.253
 
   #openstack_public_neutron_subnet_gateway: 172.17.16.1
   #openstack_public_neutron_subnet_cidr: 172.17.16.0/24
