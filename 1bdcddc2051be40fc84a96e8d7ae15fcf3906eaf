@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "c395d1bd_920b29e4",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1012320
+      },
+      "writtenOn": "2019-06-10T16:23:22Z",
+      "side": 1,
+      "message": "Why? Addresses of these routers are configurable via cookiecutter context. Why it was changed from 01 to 02?",
+      "range": {
+        "startLine": 162,
+        "startChar": 51,
+        "endLine": 162,
+        "endChar": 52
+      },
+      "revId": "1bdcddc2051be40fc84a96e8d7ae15fcf3906eaf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
