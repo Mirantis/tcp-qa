@@ -22,6 +22,30 @@
       "revId": "1bdcddc2051be40fc84a96e8d7ae15fcf3906eaf",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "775c36c1_b10ea480",
+        "filename": "tcp_tests/managers/runtestmanager.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 162,
+      "author": {
+        "id": 1014475
+      },
+      "writtenOn": "2019-06-10T17:00:11Z",
+      "side": 1,
+      "message": "router01 is used as ip of vsrx bgp peer. \nrouter02 is used as ip to specify route of public network from cfg node",
+      "parentUuid": "c395d1bd_920b29e4",
+      "range": {
+        "startLine": 162,
+        "startChar": 51,
+        "endLine": 162,
+        "endChar": 52
+      },
+      "revId": "1bdcddc2051be40fc84a96e8d7ae15fcf3906eaf",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     }
   ]
 }
