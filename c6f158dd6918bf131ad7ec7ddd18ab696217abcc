@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "fb9c28cd_98706386",
+        "filename": "tcp_tests/templates/heat-bm-cicd-pike-contrail-sl/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 15
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-06-11T18:45:21Z",
+      "side": 1,
+      "message": "do we need this commented part of code?",
+      "revId": "c6f158dd6918bf131ad7ec7ddd18ab696217abcc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b00467f4_e7cdda48",
+        "filename": "tcp_tests/templates/heat-bm-cicd-queens-contrail-sl/salt-context-cookiecutter-contrail.yaml",
+        "patchSetId": 15
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1010001
+      },
+      "writtenOn": "2019-06-11T18:45:21Z",
+      "side": 1,
+      "message": "Do we need this commented part of code?",
+      "revId": "c6f158dd6918bf131ad7ec7ddd18ab696217abcc",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
