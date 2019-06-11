@@ -87,8 +87,8 @@ default_context:
   deploy_network_netmask: 255.255.255.0
   deploy_network_subnet: ==IPV4_NET_ADMIN_PREFIX==.0/24
   deployment_type: physical
-  dns_server01: 172.18.208.44
-  dns_server02: 172.18.176.6
+  dns_server01: 8.8.8.8
+  dns_server02: 8.8.8.8
   email_address: sgudz@mirantis.com
   infra_bond_mode: active-backup
   infra_deploy_nic: eth0
