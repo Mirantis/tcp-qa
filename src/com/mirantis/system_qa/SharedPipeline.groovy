@@ -367,6 +367,7 @@ def swarm_run_pytest(String passed_steps, String jenkins_slave_node_name, Boolea
         def tempest_extra_args = env.TEMPEST_EXTRA_ARGS ?: ''
         def tempest_image_version = env.TEMPEST_IMAGE_VERSION ?: 'pike'
         def tempest_target=env.TEMPEST_TARGET ?: 'gtw01'
+        def tempest_pattern=env.TEMPEST_PATTERN ?: 'tempest'
         def parameters = [
                 string(name: 'ENV_NAME', value: "${ENV_NAME}"),
                 string(name: 'PASSED_STEPS', value: passed_steps),
@@ -381,6 +382,7 @@ def swarm_run_pytest(String passed_steps, String jenkins_slave_node_name, Boolea
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: "${IMAGE_PATH_CFG01_DAY01}"),
                 string(name: 'TEMPEST_IMAGE_VERSION', value: "${tempest_image_version}"),
                 string(name: 'TEMPEST_TARGET', value: "${tempest_target}"),
+                string(name: 'TEMPEST_PATTERN', value: "${tempest_pattern}"),
                 string(name: 'TEMPEST_EXTRA_ARGS', value: "${tempest_extra_args}"),
                 booleanParam(name: 'MAKE_SNAPSHOT_STAGES', value: make_snapshot_stages),
             ]
