@@ -119,7 +119,7 @@ resources:
 
   cfg01_node:
     type: MCP::MasterNode
-    depends_on: [networks]
+    depends_on: [subnets]
     properties:
       env_name: { get_param: env_name }
       mcp_version: { get_param: mcp_version }
@@ -921,7 +921,7 @@ resources:
 
   foundation_node:
     type: MCP::FoundationNode
-    depends_on: [networks]
+    depends_on: [subnets]
     properties:
       env_name: { get_param: env_name }
       mcp_version: { get_param: mcp_version }
