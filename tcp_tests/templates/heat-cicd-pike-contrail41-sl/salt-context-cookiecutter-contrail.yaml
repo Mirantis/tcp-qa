@@ -295,6 +295,11 @@ default_context:
   manila_enabled: 'False'
   barbican_enabled: 'False'
   barbican_integration_enabled: 'False'
+  openstack_create_public_network: 'True'
+  openstack_public_neutron_subnet_gateway: 192.168.200.1
+  openstack_public_neutron_subnet_cidr: 192.168.200.0/24
+  openstack_public_neutron_subnet_allocation_start: 192.168.200.10
+  openstack_public_neutron_subnet_allocation_end: 192.168.200.250
   # SSL settings
   nova_vnc_tls_enabled: 'True'
   stacklight_ssl_enabled: 'True'
