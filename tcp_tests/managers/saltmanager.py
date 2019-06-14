@@ -347,11 +347,11 @@ class SaltManager(ExecuteCommandsMixin):
         env_jenkins_day01_filename = pkg_resources.resource_filename(
             settings.__name__, 'utils/env_jenkins_day01')
 
-        tgt = 'I@docker:client:stack:jenkins and cfg01*'
+        tgt = 'cfg01*'
         jenkins_params = self.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master")
         jenkins_port = jenkins_params['port']
-        jenkins_user = jenkins_params['username']
+        jenkins_user = 'admin'
         jenkins_pass = jenkins_params['password']
 
         with open(env_jenkins_day01_filename, 'w') as f:
@@ -381,7 +381,7 @@ class SaltManager(ExecuteCommandsMixin):
         env_jenkins_cicd_filename = pkg_resources.resource_filename(
             settings.__name__, 'utils/env_jenkins_cicd')
 
-        tgt = 'I@docker:client:stack:jenkins and cid01*'
+        tgt = 'cid01*'
         try:
             jenkins_params = self.get_single_pillar(
                 tgt=tgt, pillar="jenkins:client:master")
@@ -393,7 +393,7 @@ class SaltManager(ExecuteCommandsMixin):
 
         jenkins_host = jenkins_params['host']
         jenkins_port = jenkins_params['port']
-        jenkins_user = jenkins_params['username']
+        jenkins_user = 'admin'
         jenkins_pass = jenkins_params['password']
 
         with open(env_jenkins_cicd_filename, 'w') as f:
