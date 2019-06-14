@@ -1,0 +1,78 @@
+{% set HOSTNAME_CFG01='cfg01.released-bm-pike-ovs.local' %}
+{% set LAB_CONFIG_NAME='released-bm-pike-ovs' %}
+{% set DOMAIN_NAME='released-bm-pike-ovs.local' %}
+
+{% import 'shared-salt.yaml' as SHARED with context %}
+
+- description: Wait for salt-master is ready after configdrive user-data
+  cmd: |
+    timeout 120 salt-call test.ping
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 2, delay: 5}
+  skip_fail: false
+
+{{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}
+
+{{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
+
+- description: Generate a public key for machines in MAAS
+  cmd: |
+    ssh-keygen -y -f ~root/.ssh/id_rsa > ~root/.ssh/id_rsa.pub
+    maas mirantis sshkeys create key="$(cat ~root/.ssh/id_rsa.pub)"
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Run comissioning of BM nodes
+  cmd: |
+    salt-call maas.process_machines
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Wait for machines ready
+  cmd: |
+    salt-call maas.machines_status && timeout 120 salt-call state.sls maas.machines.wait_for_ready
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 7, delay: 5}
+  skip_fail: false
+
+- description: Enforce the interfaces configuration defined in the model for servers
+  cmd: |
+    salt-call state.sls maas.machines.assign_ip;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Assign drive partitions to machines
+  cmd: salt-call state.sls maas.machines.storage
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: Remove all the salt-minions and re-register the cfg01 minion
+  cmd: |
+    salt-key -y -D;
+    salt-call test.ping
+    sleep 5
+    # Check that the cfg01 is registered
+    salt-key | grep cfg01
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
+- description: provision the automatically commissioned physical nodes through MAAS
+  cmd: |
+    salt-call maas.deploy_machines;
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 3, delay: 5}
+  skip_fail: false
+
+- description: Wait for machines deployed
+  cmd: |
+    salt-call maas.machines_status && timeout 300 salt-call state.sls maas.machines.wait_for_deployed
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 6, delay: 5}
+  skip_fail: false
