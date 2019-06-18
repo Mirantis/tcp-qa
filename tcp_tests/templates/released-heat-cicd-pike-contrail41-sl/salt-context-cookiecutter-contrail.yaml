@@ -109,7 +109,17 @@ default_context:
   kqueen_enabled: 'False'
   kubernetes_enabled: 'False'
   local_repositories: 'False'
-  maas_enabled: 'False'
+  maas_enabled: 'True'
+  maas_deploy_address: ==IPV4_NET_ADMIN_PREFIX==.15
+  maas_deploy_cidr: ==IPV4_NET_ADMIN_PREFIX==.0/24
+  maas_deploy_gateway: ==IPV4_NET_ADMIN_PREFIX==.1
+  maas_deploy_range_end: ==IPV4_NET_ADMIN_PREFIX==.240
+  maas_deploy_range_start: ==IPV4_NET_ADMIN_PREFIX==.250
+  maas_deploy_vlan: '0'
+  maas_dhcp_enabled: 'True'
+  maas_fabric_name: fabric-0
+  maas_hostname: cfg01
+  maas_manage_deploy_network: 'True'
   mcp_common_scripts_branch: ''
   mcp_version: proposed
   offline_deployment: 'False'
