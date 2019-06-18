@@ -298,7 +298,8 @@ class SaltManager(ExecuteCommandsMixin):
                    'fi;'
                    'sleep 3;'
                    # note: maas-rackd will return 'pool' after start
-                   'sed -i \'s/^pool /server /g\' /etc/ntp/maas.conf;'
+                   'sed -i \'s/^pool ntp.ubuntu.com/server ntp.cesnet.cz/g\' '
+                   '/etc/ntp/maas.conf;'
                    'if [ -x /usr/sbin/ntpdate ]; then'
                    '  ntpdate -s ntp.ubuntu.com;'
                    'else'
