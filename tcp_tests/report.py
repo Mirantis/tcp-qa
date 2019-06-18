@@ -186,7 +186,7 @@ def get_failed_results(t_client, run, result_type):
      test(id,name..)]
     """
     LOG.info("Get results for run - {}".format(run.name))
-    results = t_client.results(run, result_type)
+    results = t_client.results(run)
     results_with_test = []
     if result_type == '5':
         ret = [(run, r) for r in results
