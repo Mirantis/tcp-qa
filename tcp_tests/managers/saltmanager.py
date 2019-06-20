@@ -283,35 +283,21 @@ class SaltManager(ExecuteCommandsMixin):
         # before or after time sync.
         self.__api = None
         if not settings.SKIP_SYNC_TIME:
-            cmd = ('service ntp stop;'
-                   'if systemctl is-active --quiet maas-rackd; then'
-                   '  systemctl stop maas-rackd;'
-                   '  touch /tmp/maas-rackd.work;'
-                   'fi;'
-                   'if systemctl is-active --quiet maas-regiond; then'
-                   '  systemctl stop maas-regiond;'
-                   '  touch /tmp/maas-regiond.work;'
-                   'fi;'
-                   'if systemctl is-active --quiet maas-proxy; then'
-                   '  systemctl stop maas-proxy;'
-                   '  touch /tmp/maas-proxy.work;'
-                   'fi;'
-                   'sleep 3;'
+            cmd = ('chmod -x /usr/sbin/ntpd'
+                   'service ntp stop;'
                    # note: maas-rackd will return 'pool' after start
                    'sed -i \'s/^pool ntp.ubuntu.com/server ntp.cesnet.cz/g\' '
                    '/etc/ntp/maas.conf;'
+                   'sed -i \'s/^pool ntp.ubuntu.com/server ntp.cesnet.cz/g\' '
+                   '/etc/ntp.conf;'
                    'if [ -x /usr/sbin/ntpdate ]; then'
-                   '  ntpdate -s ntp.ubuntu.com;'
+                   '  ntpdate -s ntp.cesnet.cz;'
                    'else'
                    '  ntpd -gq;'
                    'fi;'
+                   'chmod +x /usr/sbin/ntpd'
                    'service ntp start;'
-                   'if [ -f /tmp/maas-proxy.work ]; then'
-                   '  systemctl start maas-proxy; fi;'
-                   'if [ -f /tmp/maas-rackd.work ]; then'
-                   '  systemctl start maas-rackd; fi;'
-                   'if [ -f /tmp/maas-regiond.work ]; then'
-                   '  systemctl start maas-regiond; fi;')
+                   'sleep 3; ntpq -pn;')
             self.run_state(
                 tgt,
                 'cmd.run', cmd, timeout=360)  # noqa
