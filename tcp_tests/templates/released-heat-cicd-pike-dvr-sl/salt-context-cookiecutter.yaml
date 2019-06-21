@@ -365,3 +365,14 @@ default_context:
   octavia_lb_mgmt_allocation_pool_end: 192.168.10.200
   cinder_backup_engine: 'ceph'
   cinder_ceph_backup_pool_name: 'backups'
+  maas_enabled: 'True'
+  maas_deploy_address: ==IPV4_NET_ADMIN_PREFIX==.15
+  maas_deploy_cidr: ==IPV4_NET_ADMIN_PREFIX==.0/24
+  maas_deploy_gateway: ==IPV4_NET_ADMIN_PREFIX==.1
+  maas_deploy_range_end: ==IPV4_NET_ADMIN_PREFIX==.250
+  maas_deploy_range_start: ==IPV4_NET_ADMIN_PREFIX==.240
+  maas_deploy_vlan: '0'
+  maas_dhcp_enabled: 'False'
+  maas_fabric_name: fabric-0
+  maas_hostname: cfg01
+  maas_manage_deploy_network: 'True'
