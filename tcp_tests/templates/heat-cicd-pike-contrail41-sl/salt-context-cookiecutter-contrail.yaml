@@ -188,7 +188,7 @@ default_context:
   openstack_proxy_node02_address: ==IPV4_NET_CONTROL_PREFIX==.82
   openstack_proxy_node02_hostname: prx02
   openstack_upgrade_node01_address: ==IPV4_NET_CONTROL_PREFIX==.19
-  openstack_version: queens
+  openstack_version: pike
   oss_enabled: 'False'
   oss_node03_address: ${_param:stacklight_monitor_node03_address}
   oss_webhook_app_id: '24'
