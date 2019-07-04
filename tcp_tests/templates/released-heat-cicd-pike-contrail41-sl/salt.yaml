@@ -6,6 +6,13 @@
 
 {% import 'shared-salt.yaml' as SHARED with context %}
 
+# - description: Remove update repos
+#   cmd: |
+#     find /srv/salt/reclass/classes/cluster/ -type f -exec sed -i -e '/system\.linux\.system\.repo\.mcp\.apt_mirantis\.update/ s/^/#/' {} \;
+#   node_name: {{ HOSTNAME_CFG01 }}
+#   retry: {count: 1, delay: 5}
+#   skip_fail: false
+
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
 {{SHARED.MACRO_CHECK_SALT_VERSION_SERVICES_ON_CFG()}}

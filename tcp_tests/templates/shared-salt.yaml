@@ -695,7 +695,7 @@
     reclass-tools add-key parameters._param.linux_system_repo_update_url 'http://mirror.mirantis.com/update/{{ UPDATE_REPO_CUSTOM_TAG }}/' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/openstack/init.yml;
     reclass-tools add-key parameters._param.linux_system_repo_update_url 'http://mirror.mirantis.com/update/{{ UPDATE_REPO_CUSTOM_TAG }}/' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/kubernetes/init.yml;
     # Replace ubuntu_updates repo tag independently, because it has another url structure
-    reclass-tools add-key parameters.linux.system.repo.ubuntu_updates.source 'deb [arch=amd64] http://mirror.mirantis.com/{{ UPDATE_REPO_CUSTOM_TAG }}/ubuntu/ ${_param:linux_system_codename}-updates main restricted universe' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/apt_repos.yml;
+    # reclass-tools add-key parameters.linux.system.repo.ubuntu_updates.source 'deb [arch=amd64] http://mirror.mirantis.com/{{ UPDATE_REPO_CUSTOM_TAG }}/ubuntu/ ${_param:linux_system_codename}-updates main restricted universe' /srv/salt/reclass/classes/cluster/{{ CLUSTER_NAME }}/infra/apt_repos.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
