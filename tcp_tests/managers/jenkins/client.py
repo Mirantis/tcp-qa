@@ -45,7 +45,8 @@ class JenkinsClient(object):
         self.__client = JenkinsWrapper(
             host,
             username=username,
-            password=password)
+            password=password,
+            ssl_verify=False)
 
     def jobs(self):
         return self.__client.get_jobs()

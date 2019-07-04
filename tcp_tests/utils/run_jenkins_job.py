@@ -121,7 +121,8 @@ def run_job(host, username, password,
     jenkins = JenkinsClient(
         host=host,
         username=username,
-        password=password)
+        password=password,
+        ssl_verify=False)
 
     job_params = jenkins.make_defults_params(job_name)
     if job_parameters is not None:  # job_parameters = {}

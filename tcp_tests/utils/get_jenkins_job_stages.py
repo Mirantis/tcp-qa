@@ -77,7 +77,8 @@ def get_deployment_result(host, username, password, job_name, build_number):
     """
     jenkins = client.JenkinsClient(host=host,
                                    username=username,
-                                   password=password)
+                                   password=password,
+                                   ssl_verify=False)
 
     def get_stages(nodes, indent=0, show_status=True):
         res = []

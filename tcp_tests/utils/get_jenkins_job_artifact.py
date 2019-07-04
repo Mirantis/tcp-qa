@@ -83,7 +83,8 @@ def download_artifact(host, username, password,
     jenkins = JenkinsClient(
         host=host,
         username=username,
-        password=password)
+        password=password,
+        ssl_verify=False)
 
     content = jenkins.get_artifact(job_name, build_number,
                                    artifact_path, destination_name)
