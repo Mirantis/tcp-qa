@@ -11,41 +11,15 @@ from devops.helpers import helpers
 from requests.exceptions import ConnectionError
 
 
-class JenkinsWrapper(jenkins.Jenkins):
-    """Workaround for the bug:
-       https://bugs.launchpad.net/python-jenkins/+bug/1775047
-    """
-    def _response_handler(self, response):
-        '''Handle response objects'''
-
-        # raise exceptions if occurred
-        response.raise_for_status()
-
-        headers = response.headers
-        if (headers.get('content-length') is None and
-                headers.get('transfer-encoding') is None and
-                (response.status_code == 201 and
-                 headers.get('location') is None) and
-                (response.content is None or len(response.content) <= 0)):
-            # response body should only exist if one of these is provided
-            raise jenkins.EmptyResponseException(
-                "Error communicating with server[%s]: "
-                "empty response" % self.server)
-
-        # Response objects will automatically return unicode encoded
-        # when accessing .text property
-        return response
-
-
 class JenkinsClient(object):
 
     def __init__(self, host=None, username='admin', password='r00tme'):
         host = host or 'http://172.16.44.33:8081'
-        # self.__client = jenkins.Jenkins(
-        self.__client = JenkinsWrapper(
+        self.__client = jenkins.Jenkins(
             host,
             username=username,
             password=password)
+        self.__client._session.verify = False
 
     def jobs(self):
         return self.__client.get_jobs()
