@@ -53,7 +53,11 @@ class TestCvpPipelines(object):
             tgt=tgt, pillar="jenkins:client:master:host")
         jenkins_port = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:port")
-        jenkins_url = 'http://{0}:{1}'.format(jenkins_host, jenkins_port)
+        jenkins_protocol = salt.get_single_pillar(
+            tgt=tgt, pillar="jenkins:client:master:proto")
+        jenkins_url = '{0}://{1}:{2}'.format(jenkins_protocol,
+                                             jenkins_host,
+                                             jenkins_port)
         jenkins_user = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:username")
         jenkins_pass = salt.get_single_pillar(
@@ -113,7 +117,11 @@ class TestCvpPipelines(object):
             tgt=tgt, pillar="jenkins:client:master:host")
         jenkins_port = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:port")
-        jenkins_url = 'http://{0}:{1}'.format(jenkins_host, jenkins_port)
+        jenkins_protocol = salt.get_single_pillar(
+            tgt=tgt, pillar="jenkins:client:master:proto")
+        jenkins_url = '{0}://{1}:{2}'.format(jenkins_protocol,
+                                             jenkins_host,
+                                             jenkins_port)
         jenkins_user = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:username")
         jenkins_pass = salt.get_single_pillar(
@@ -209,7 +217,11 @@ class TestCvpPipelines(object):
             tgt=tgt, pillar="jenkins:client:master:host")
         jenkins_port = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:port")
-        jenkins_url = 'http://{0}:{1}'.format(jenkins_host, jenkins_port)
+        jenkins_protocol = salt.get_single_pillar(
+            tgt=tgt, pillar="jenkins:client:master:proto")
+        jenkins_url = '{0}://{1}:{2}'.format(jenkins_protocol,
+                                             jenkins_host,
+                                             jenkins_port)
         jenkins_user = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:username")
         jenkins_pass = salt.get_single_pillar(
@@ -273,7 +285,11 @@ class TestCvpPipelines(object):
             tgt=tgt, pillar="jenkins:client:master:host")
         jenkins_port = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:port")
-        jenkins_url = 'http://{0}:{1}'.format(jenkins_host, jenkins_port)
+        jenkins_protocol = salt.get_single_pillar(
+            tgt=tgt, pillar="jenkins:client:master:proto")
+        jenkins_url = '{0}://{1}:{2}'.format(jenkins_protocol,
+                                             jenkins_host,
+                                             jenkins_port)
         jenkins_user = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:username")
         jenkins_pass = salt.get_single_pillar(

@@ -39,13 +39,15 @@ class JenkinsWrapper(jenkins.Jenkins):
 
 class JenkinsClient(object):
 
-    def __init__(self, host=None, username='admin', password='r00tme'):
+    def __init__(self, host=None, username='admin', password='r00tme',
+                 ssl_verify=False):
         host = host or 'http://172.16.44.33:8081'
-        # self.__client = jenkins.Jenkins(
-        self.__client = JenkinsWrapper(
+        self.__client = jenkins.Jenkins(
+        # self.__client = JenkinsWrapper(
             host,
             username=username,
-            password=password)
+            password=password,
+            ssl_verify=ssl_verify)
 
     def jobs(self):
         return self.__client.get_jobs()
