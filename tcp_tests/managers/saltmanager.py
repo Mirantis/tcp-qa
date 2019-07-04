@@ -336,17 +336,31 @@ class SaltManager(ExecuteCommandsMixin):
         tgt = 'I@docker:client:stack:jenkins and cfg01*'
         jenkins_params = self.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master")
-        jenkins_port = jenkins_params['port']
-        jenkins_user = jenkins_params['username']
-        jenkins_pass = jenkins_params['password']
+        jenkins_host = jenkins_params.get('host')
+        jenkins_port = jenkins_params.get('port')
+        jenkins_protocol = jenkins_params.get('proto', 'http')
+        jenkins_user = jenkins_params.get('username', 'admin')
+        jenkins_pass = jenkins_params.get('password')
+
+        if not all([jenkins_host,
+                    jenkins_port,
+                    jenkins_protocol,
+                    jenkins_user,
+                    jenkins_pass]):
+            raise LookupError(
+                "Some of the required parameters for Jenkins not set in the "
+                "pillar jenkins:client:master on {0}: {1}"
+                .format(tgt, jenkins_params))
 
         with open(env_jenkins_day01_filename, 'w') as f:
             f.write(
-                'export JENKINS_URL=http://{host}:{port}\n'
+                'export JENKINS_URL={protocol}://{host}:{port}\n'
                 'export JENKINS_USER={user}\n'
                 'export JENKINS_PASS={password}\n'
                 'export JENKINS_START_TIMEOUT=60\n'
                 'export JENKINS_BUILD_TIMEOUT=1800\n'
+                '# Disable SSL verify for python-jenkins:\n'
+                'export PYTHONHTTPSVERIFY=0\n'
                 'echo "export JENKINS_URL=${{JENKINS_URL}}'
                 '  # Jenkins API URL"\n'
                 'echo "export JENKINS_USER=${{JENKINS_USER}}'
@@ -357,8 +371,9 @@ class SaltManager(ExecuteCommandsMixin):
                 '  # Timeout waiting for job in queue to start building"\n'
                 'echo "export JENKINS_BUILD_TIMEOUT=${{JENKINS_BUILD_TIMEOUT}}'
                 '  # Timeout waiting for building job to complete"\n'
-                .format(host=self.host, port=jenkins_port,
-                        user=jenkins_user, password=jenkins_pass)
+                .format(host=jenkins_host, port=jenkins_port,
+                        protocol=jenkins_protocol, user=jenkins_user,
+                        password=jenkins_pass)
             )
 
     def create_env_jenkins_cicd(self):
@@ -377,18 +392,31 @@ class SaltManager(ExecuteCommandsMixin):
                       .format(env_jenkins_cicd_filename, tgt, e.message))
             return
 
-        jenkins_host = jenkins_params['host']
-        jenkins_port = jenkins_params['port']
-        jenkins_user = jenkins_params['username']
-        jenkins_pass = jenkins_params['password']
+        jenkins_host = jenkins_params.get('host')
+        jenkins_port = jenkins_params.get('port')
+        jenkins_protocol = jenkins_params.get('proto', 'http')
+        jenkins_user = jenkins_params.get('username', 'admin')
+        jenkins_pass = jenkins_params.get('password')
+
+        if not all([jenkins_host,
+                    jenkins_port,
+                    jenkins_protocol,
+                    jenkins_user,
+                    jenkins_pass]):
+            raise LookupError(
+                "Some of the required parameters for Jenkins not set in the "
+                "pillar jenkins:client:master on {0}: {1}"
+                .format(tgt, jenkins_params))
 
         with open(env_jenkins_cicd_filename, 'w') as f:
             f.write(
-                'export JENKINS_URL=http://{host}:{port}\n'
+                'export JENKINS_URL={protocol}://{host}:{port}\n'
                 'export JENKINS_USER={user}\n'
                 'export JENKINS_PASS={password}\n'
                 'export JENKINS_START_TIMEOUT=60\n'
                 'export JENKINS_BUILD_TIMEOUT=1800\n'
+                '# Disable SSL verify for python-jenkins:\n'
+                'export PYTHONHTTPSVERIFY=0\n'
                 'echo "export JENKINS_URL=${{JENKINS_URL}}'
                 '  # Jenkins API URL"\n'
                 'echo "export JENKINS_USER=${{JENKINS_USER}}'
@@ -400,7 +428,8 @@ class SaltManager(ExecuteCommandsMixin):
                 'echo "export JENKINS_BUILD_TIMEOUT=${{JENKINS_BUILD_TIMEOUT}}'
                 '  # Timeout waiting for building job to complete"\n'
                 .format(host=jenkins_host, port=jenkins_port,
-                        user=jenkins_user, password=jenkins_pass)
+                        protocol=jenkins_protocol, user=jenkins_user,
+                        password=jenkins_pass)
             )
 
     def create_env_k8s(self):
