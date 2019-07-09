@@ -843,7 +843,7 @@ default_context:
   octavia_lb_mgmt_allocation_pool_start: 192.168.1.2
   octavia_lb_mgmt_allocation_pool_end: 192.168.1.200
   openstack_octavia_enabled: 'True'
-  secrets_encryption_enabled: 'False'
+  secrets_encryption_enabled: 'True'
   secrets_encryption_key_id: 'F5CB2ADC36159B03'
   # Used on CI only.
   secrets_encryption_private_key: ''
