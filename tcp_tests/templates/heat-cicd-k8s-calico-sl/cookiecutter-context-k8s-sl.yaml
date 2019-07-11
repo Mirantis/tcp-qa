@@ -1,4 +1,5 @@
 default_context:
+  jenkins_cfg_admin_password: r00tme
   auditd_enabled: 'False'
   backup_private_key: |
       -----BEGIN RSA PRIVATE KEY-----

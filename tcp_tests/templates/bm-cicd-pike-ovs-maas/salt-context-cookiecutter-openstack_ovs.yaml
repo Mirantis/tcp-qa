@@ -1,4 +1,5 @@
 default_context:
+  jenkins_cfg_admin_password: r00tme
   bmk_enabled: 'False'
   cicd_control_node01_address: 10.167.11.91
   cicd_control_node01_hostname: cid01

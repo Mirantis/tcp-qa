@@ -1,4 +1,5 @@
 default_context:
+  jenkins_cfg_admin_password: r00tme
   auditd_enabled: 'False'
   bmk_enabled: 'False'
   calico_cni_image: docker-prod-local.artifactory.mirantis.com/mirantis/projectcalico/calico/cni:latest
