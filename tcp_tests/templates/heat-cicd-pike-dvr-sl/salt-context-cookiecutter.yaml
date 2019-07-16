@@ -1,4 +1,5 @@
 default_context:
+  strong_usernames: True
   jenkins_cfg_admin_password: r00tme
   auditd_enabled: 'False'
   backend_network_netmask: 255.255.255.0
