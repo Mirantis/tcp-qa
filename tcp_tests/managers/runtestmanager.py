@@ -207,6 +207,12 @@ class RuntestManager(object):
                             "openstack security group rule create default " +
                             "--ingress --protocol icmp'; ")},
                 {
+                    'description': "Run skiped in pipelines neutron.client",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            "salt -C 'I@neutron:client and cfg*' " +
+                            "state.sls neutron.client|true")},
+                {
                     'description': "Create public network with target",
                     'node_name': self.target_name,
                     'cmd': ("set -ex;" +
@@ -214,23 +220,9 @@ class RuntestManager(object):
                             "contrail.virtual_network_create public " +
                             "'{\"external\":true,\"ip_prefix\":\"" +
                             public_network + "\",\"ip_prefix_len\":24," +
-                            "\"asn\":64512,\"target\":10000}'")},
-                {
-                    'description': "Run skiped in pipelines neutron.client",
-                    'node_name': self.target_name,
-                    'cmd': ("set -ex;" +
-                            "salt -C 'I@neutron:client and cfg*' " +
-                            "state.sls neutron.client|true")},
+                            "\"asn\":64512,\"target\":10000}'")},git 
             ]
-            post_contrail_commands = [
-                {
-                    'description': "Delete admin role",
-                    'node_name': self.target_name,
-                    'cmd': ("set -ex;" +
-                            "sed -i 's/tempest_roles = admin//g' " +
-                            TEMPEST_CFG_DIR + "/tempest.conf")},
-            ]
-            commands = contrail_commands + commands + post_contrail_commands
+            commands = contrail_commands + commands
 
         if barbican_integration:
             commands.append({
