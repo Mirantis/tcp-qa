@@ -341,7 +341,7 @@ default_context:
   openssh_groups: ''
   openstack_benchmark_node01_address: ==IPV4_NET_CONTROL_PREFIX==.95
   openstack_benchmark_node01_hostname: bmk01
-  openstack_cluster_size: compact
+  openstack_cluster_size: nfvi
   openstack_compute_count: '2'
   openstack_compute_rack01_hostname: cmp
   openstack_compute_single_address_ranges: ==IPV4_NET_CONTROL_PREFIX==.101-==IPV4_NET_CONTROL_PREFIX==.102
