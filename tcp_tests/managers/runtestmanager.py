@@ -160,6 +160,7 @@ class RuntestManager(object):
             vsrx_router = self.__salt_api.get_single_pillar(
                 tgt="I@opencontrail:control:role:primary",
                 pillar="_param:opencontrail_router02_address")
+            target_asn = '["target:64512:10000"]'
             public_network = "192.168.200.0"
             contrail_commands = [
                 {
@@ -207,30 +208,20 @@ class RuntestManager(object):
                             "openstack security group rule create default " +
                             "--ingress --protocol icmp'; ")},
                 {
+                    'description': "Run skipped in pipelines neutron.client",
+                    'node_name': self.target_name,
+                    'cmd': ("set -ex;" +
+                            "salt -C 'I@neutron:client and cfg*' " +
+                            "state.sls neutron.client|true")},
+                {
                     'description': "Create public network with target",
                     'node_name': self.target_name,
                     'cmd': ("set -ex;" +
                             "salt -C 'I@opencontrail:control:role:primary' " +
                             "contrail.virtual_network_create public " +
-                            "'{\"external\":true,\"ip_prefix\":\"" +
-                            public_network + "\",\"ip_prefix_len\":24," +
-                            "\"asn\":64512,\"target\":10000}'")},
-                {
-                    'description': "Run skiped in pipelines neutron.client",
-                    'node_name': self.target_name,
-                    'cmd': ("set -ex;" +
-                            "salt -C 'I@neutron:client and cfg*' " +
-                            "state.sls neutron.client|true")},
+                            "route_target_list='" + target_asn + "'")}
             ]
-            post_contrail_commands = [
-                {
-                    'description': "Delete admin role",
-                    'node_name': self.target_name,
-                    'cmd': ("set -ex;" +
-                            "sed -i 's/tempest_roles = admin//g' " +
-                            TEMPEST_CFG_DIR + "/tempest.conf")},
-            ]
-            commands = contrail_commands + commands + post_contrail_commands
+            commands = contrail_commands + commands
 
         if barbican_integration:
             commands.append({
