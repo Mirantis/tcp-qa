@@ -16,6 +16,28 @@
 
 {{ SHARED.MACRO_INSTALL_FORMULAS('\*') }}
 
+- description: "Switch to SSH Jenkins slaves on Salt Master"
+  cmd: |
+    set -e;
+    set -x;
+    sed -i 's/jnlp_slave_single/ssh_slave_single/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config/jenkins.yml
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools del-key parameters.jenkins.client.node.slave01.launcher.type /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config/jenkins.yml
+    reclass-tools add-key parameters.jenkins.client.node.slave01.launcher.type ssh /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/config/jenkins.yml
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+- description: "Switch to SSH Jenkins slaves on CICD"
+  cmd: |
+    set -e;
+    set -x;
+    sed -i 's/jnlp_slave_multi/ssh_slave_multi/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/cicd/control/leader.yml
+    . /root/venv-reclass-tools/bin/activate;
+    reclass-tools add-key classes system.jenkins.client.ssh_node /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/cicd/control/leader.yml --merge
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 {{ SHARED.MACRO_GENERATE_COOKIECUTTER_MODEL() }}
 
 {{ SHARED.MACRO_GENERATE_AND_ENABLE_ENVIRONMENT_MODEL() }}
