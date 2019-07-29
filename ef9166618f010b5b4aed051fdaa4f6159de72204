@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b06e5c7_3ed820d4",
+        "filename": "tcp_tests/fixtures/openstack_fixtures.py",
+        "patchSetId": 15
+      },
+      "lineNbr": 96,
+      "author": {
+        "id": 1008256
+      },
+      "writtenOn": "2019-07-29T09:25:39Z",
+      "side": 1,
+      "message": "why ctl01? sometimes we run from gtw* nodes. Maybe we can parameterize this?",
+      "revId": "ef9166618f010b5b4aed051fdaa4f6159de72204",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
