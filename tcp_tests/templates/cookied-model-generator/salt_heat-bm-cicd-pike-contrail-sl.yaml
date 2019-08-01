@@ -7,8 +7,8 @@
 # Path to the context files used to render Cluster and Environment models
 {%- set CLUSTER_CONTEXT_NAME = 'salt-context-cookiecutter-contrail.yaml' %}
 {%- set ENVIRONMENT_CONTEXT_NAMES = ['salt-context-environment.yaml', 'salt-context-cookiecutter-contrail.yaml'] %}
-{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2422') %}
-{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2423') %}
+{%- set CONTROL_VLAN = os_env('CONTROL_VLAN', '2404') %}
+{%- set TENANT_VLAN = os_env('TENANT_VLAN', '2406') %}
 
 {%- set IPMI_USER = os_env('IPMI_USER', 'mcp-qa') %}
 {%- set IPMI_PASS = os_env('IPMI_PASS', 'password') %}
