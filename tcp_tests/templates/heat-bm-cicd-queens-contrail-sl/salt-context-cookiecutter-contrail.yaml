@@ -422,13 +422,13 @@ default_context:
   stacklight_monitor_node02_hostname: mon02
   stacklight_monitor_node03_address: ==IPV4_NET_CONTROL_PREFIX==.73
   stacklight_monitor_node03_hostname: mon03
-  stacklight_telemetry_address: ==IPV4_NET_CONTROL_PREFIX==.85
+  stacklight_telemetry_address: ==IPV4_NET_CONTROL_PREFIX==.96
   stacklight_telemetry_hostname: mtr
-  stacklight_telemetry_node01_address: ==IPV4_NET_CONTROL_PREFIX==.86
+  stacklight_telemetry_node01_address: ==IPV4_NET_CONTROL_PREFIX==.97
   stacklight_telemetry_node01_hostname: mtr01
-  stacklight_telemetry_node02_address: ==IPV4_NET_CONTROL_PREFIX==.87
+  stacklight_telemetry_node02_address: ==IPV4_NET_CONTROL_PREFIX==.98
   stacklight_telemetry_node02_hostname: mtr02
-  stacklight_telemetry_node03_address: ==IPV4_NET_CONTROL_PREFIX==.88
+  stacklight_telemetry_node03_address: ==IPV4_NET_CONTROL_PREFIX==.99
   stacklight_telemetry_node03_hostname: mtr03
   stacklight_version: '2'
   static_ips_on_deploy_network_enabled: 'False'
