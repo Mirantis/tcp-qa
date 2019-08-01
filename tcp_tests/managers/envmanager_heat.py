@@ -142,7 +142,10 @@ class EnvironmentManagerHeat(object):
         for stack in stacks:
             if stack_id == stack.id:
                 if stack.parent:
-                    return self.__get_stack_parent(stack.parent, stacks)
+                    try:
+                        return self.__get_stack_parent(stack.parent, stacks)
+                    except Exception:
+                        return stack.id
                 else:
                     return stack.id
         raise Exception("stack with ID {} not found!".format(stack_id))
