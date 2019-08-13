@@ -30,6 +30,7 @@
  *   JENKINS_PIPELINE_BRANCH       Should be set in release/proposed/2019.2.0 when we test non-released version
  *   UPDATE_VERSION                Version of update to deploy
  *   LAB_PARAM_DEFAULTS            Filename placed in tcp_tests/templates/_heat_environments, with default parameters for the heat template
+ *   ADDITIONAL_STACKS             Comma separated list of stacks to delete (for BM envs)
  *
  *   CREATE_JENKINS_NODE_CREDENTIALS   Jenkins username and password with rights to add/delete Jenkins agents
  */
@@ -89,6 +90,24 @@ node ("${PARENT_NODE_NAME}") {
                 shared.run_cmd("""\
                     rm /home/jenkins/images/${CFG01_CONFIG_IMAGE_NAME} || true
                 """)
+            }
+
+            if (env.ADDITIONAL_STACKS) {
+                stage("Cleanup: erase additional ${ADDITIONAL_STACKS} stacks") {
+
+                    // delete additional heat stacks
+                    println "Remove heat stacks '${ADDITIONAL_STACKS}'"
+                    shared.run_cmd('''\
+                        # export OS_IDENTITY_API_VERSION=3
+                        # export OS_AUTH_URL=${OS_AUTH_URL}
+                        # export OS_USERNAME=${OS_USERNAME}
+                        # export OS_PASSWORD=${OS_PASSWORD}
+                        # export OS_PROJECT_NAME=${OS_PROJECT_NAME}
+                        openstack --insecure stack delete -y `echo $ADDITIONAL_STACKS|tr , ' '` || true
+                        IFS=', ' read -r -a DELSTACKS <<< "$ADDITIONAL_STACKS"
+                        for DELSTACK in "${DELSTACKS[@]}"; do while openstack --insecure stack show ${DELSTACK} -f value -c stack_status; do sleep 10; done; done;
+                    ''')
+                }
             }
 
             stage("Generate the model") {
