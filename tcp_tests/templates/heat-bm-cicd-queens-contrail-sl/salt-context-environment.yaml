@@ -21,11 +21,11 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp8s0f0:
+        one1:
           role: single_mgm_dhcp
-        ens4f1:
+        ten2:
           role: bond_ctl_contrail_lacp
-        ens11f1:
+        sten2:
           role: bond_ctl_contrail_lacp
 
     kvm02.heat-bm-cicd-queens-contrail-sl.local:
@@ -34,11 +34,11 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp8s0f0:
+        one1:
           role: single_mgm_dhcp
-        ens4f1:
+        ten2:
           role: bond_ctl_contrail_lacp
-        ens11f1:
+        sten2:
           role: bond_ctl_contrail_lacp
 
     kvm03.heat-bm-cicd-queens-contrail-sl.local:
@@ -47,11 +47,11 @@ nodes:
       - infra_kvm
       - linux_system_codename_xenial
       interfaces:
-        enp8s0f0:
+        one1:
           role: single_mgm_dhcp
-        ens4f1:
+        ten2:
           role: bond_ctl_contrail_lacp
-        ens11f1:
+        sten2:
           role: bond_ctl_contrail_lacp
 
     kvm04.heat-bm-cicd-queens-contrail-sl.local:
@@ -61,11 +61,11 @@ nodes:
       - linux_system_codename_xenial
       - salt_master_host
       interfaces:
-        enp8s0f0:
+        one1:
           role: single_mgm_dhcp
-        ens4f1:
+        ten2:
           role: bond_ctl_contrail_lacp
-        ens11f1:
+        sten2:
           role: bond_ctl_contrail_lacp
 
     kvm05.heat-bm-cicd-queens-contrail-sl.local:
@@ -75,11 +75,11 @@ nodes:
       - linux_system_codename_xenial
       - salt_master_host
       interfaces:
-        enp8s0f0:
+        one1:
           role: single_mgm_dhcp
-        ens4f1:
+        ten2:
           role: bond_ctl_contrail_lacp
-        ens11f1:
+        sten2:
           role: bond_ctl_contrail_lacp
 
     kvm06.heat-bm-cicd-queens-contrail-sl.local:
@@ -89,11 +89,11 @@ nodes:
       - linux_system_codename_xenial
       - salt_master_host
       interfaces:
-        enp8s0f0:
+        one1:
           role: single_mgm_dhcp
-        ens4f1:
+        ten2:
           role: bond_ctl_contrail_lacp
-        ens11f1:
+        sten2:
           role: bond_ctl_contrail_lacp
 
     osd<<count>>:
@@ -102,11 +102,11 @@ nodes:
       - ceph_osd
       - linux_system_codename_xenial
       interfaces:
-        eno1:
-          role: single_dhcp
-        ens1f1:
+        one1:
+          role: single_mgm_dhcp
+        ten2:
           role: bond_ctl_contrail_lacp
-        ens2f1:
+        sten2:
           role: bond_ctl_contrail_lacp
 #          role: bond0_ab_vlan_ceph_storage_backend
 # todo: add storage net for ceph to second lacp bond
@@ -119,13 +119,13 @@ nodes:
       interfaces:
         eno1:
           role: single_dhcp
-        ens1f0:
+        ten1:
           role: bond_ctl_contrail_lacp
-        ens1f1:
+        ten2:
           role: bond_contrail_lacp
-        ens2f0:
+        sten1:
           role: bond_ctl_contrail_lacp
-        ens2f1:
+        sten2:
           role: bond_contrail_lacp
 
     cid01.heat-bm-cicd-queens-contrail-sl.local:
