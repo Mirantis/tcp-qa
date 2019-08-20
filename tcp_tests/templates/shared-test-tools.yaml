@@ -1,0 +1,15 @@
+
+{%- macro MACRO_INSTALL_RECLASS_TOOLS() %}
+
+- description: Install reclass-tools python package from repo
+  cmd: |
+    set -e;
+    export LC_ALL=en_US.UTF-8;
+    apt-get install -y build-essential python-dev virtualenv python-virtualenv;
+    virtualenv venv-reclass-tools;
+    . venv-reclass-tools/bin/activate;
+    pip install git+git://github.com/dis-xcom/reclass_tools.git
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 1}
+  skip_fail: false
+{%- endmacro %}
