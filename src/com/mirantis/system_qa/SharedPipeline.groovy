@@ -190,7 +190,7 @@ def update_working_dir(Boolean updateRequirements=true) {
         run_cmd("""\
             if [ -n "$TCP_QA_REFS" ]; then
                 set -e
-                git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
+                git reset --hard && git fetch https://review.gerrithub.io/Mirantis/tcp-qa $TCP_QA_REFS && git checkout FETCH_HEAD || exit \$?
             fi""")
         if (updateRequirements) {
             run_cmd("""\
