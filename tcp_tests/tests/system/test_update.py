@@ -136,3 +136,29 @@ class TestUpdateMcpCluster(object):
     @pytest.mark.run_mcp_update
     def test_update_gluster(self):
         pass
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.run_mcp_update
+    def test_update_galera(self, salt_actions, show_step, _):
+        """ Upgrade Galera automatically
+
+        Scenario:
+            1. Include the Galera upgrade pipeline job to DriveTrain
+            2. Apply the jenkins.client state on the Jenkins nodes
+            3. set the openstack_upgrade_enabled parameter to true
+        """
+        salt = salt_actions
+        # ################### Enable pipeline #################################
+        show_step(1)
+        salt.reclass_add_class(
+            "system.jenkins.client.job.deploy.update.upgrade_galera",
+            "cluster/*/cicd/control/leader.yml")
+        show_step(2)
+        #salt.run_state("I@jenkins:client", "jenkins.client")
+
+        show_step(3)
+        salt.reclass_add_key("parameters._param.openstack_upgrade_enabled",
+                             "true",
+                             "cluster/*/infra/init.yml",
+                             action="add-key-bool")
