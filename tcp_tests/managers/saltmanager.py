@@ -445,10 +445,70 @@ class SaltManager(ExecuteCommandsMixin):
                         password=jenkins_pass)
             )
 
-    def add_cluster_reclass(self, key, value, path):
-        # TODO : add reclass tools as a library to tcp-qa
+    def reclass_add_key(self, key, value, short_path, action='add-key'):
+        """
+        Shows alert if key exists
+
+        :param key: string, parameters which will be added or updated
+        :param value: value of key
+        :param short_path: path to reclass yaml file.
+            It takes into account default path where the reclass locates.
+            May look like cluster/*/cicd/control/leader.yml
+        :param action: string, add-key / add-bool-key
+        :return: None
+        """
+        reclass_tools = ". venv-reclass-tools/bin/activate; reclass-tools "
+        if key in self.cmd_run(
+            'I@salt:master',
+            "{reclass_tools} get-key {key} /srv/salt/reclass/classes/{path}"
+                .format(
+                    reclass_tools=reclass_tools,
+                    key=key,
+                    path=short_path
+                )):
+            LOG.warning("({}) key already exists in reclass".format(key))
+
+        self.cmd_run(
+            'I@salt:master',
+            "{reclass_tools} {action} {key} {value} \
+            /srv/salt/reclass/classes/{path}".format(
+                reclass_tools=reclass_tools,
+                action=action,
+                key=key,
+                value=value,
+                path=short_path
+             ))
+
+    def reclass_add_class(self, value, short_path):
+        """
+        Shows warning if key exists
+        :param value: role to add to 'classes' parameter in the reclass
+        :param short_path: path to reclass yaml file.
+            It takes into account default path where the reclass locates.
+            May look like cluster/*/cicd/control/leader.yml
+        :return: None
+        """
+        reclass_tools = ". venv-reclass-tools/bin/activate; reclass-tools "
+        if value in self.cmd_run(
+                'I@salt:master',
+                "{reclass_tools} get-key classes \
+                /srv/salt/reclass/classes/{path} --merge".format(
+                    reclass_tools=reclass_tools,
+                    value=value,
+                    path=short_path
+                )):
+            LOG.warning("Class {} already exists in {}".format(
+                value,
+                short_path
+            ))
+
         self.cmd_run('I@salt:master',
-                     "reclass-tools add-key {key} {value} {path}")
+                     "{reclass_tools} add-key classes {value} \
+                      /srv/salt/reclass/classes/{path} --merge".format(
+                         reclass_tools=reclass_tools,
+                         value=value,
+                         path=short_path
+                     ))
 
     def create_env_k8s(self):
         """Creates static utils/env_k8s file"""
