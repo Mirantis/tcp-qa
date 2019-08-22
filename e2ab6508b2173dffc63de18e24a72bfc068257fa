@@ -2,6 +2,23 @@
   "comments": [
     {
       "key": {
+        "uuid": "6df0619c_b9ceed62",
+        "filename": "tcp_tests/managers/saltmanager.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 448,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-08-22T13:06:34Z",
+      "side": 1,
+      "message": "looks like we need to add this also https://github.com/dis-xcom/reclass_tools/blob/master/reclass_tools/cli.py#L252 (for enabling backup)",
+      "revId": "e2ab6508b2173dffc63de18e24a72bfc068257fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "ce17e2b7_18305f93",
         "filename": "tcp_tests/managers/saltmanager.py",
         "patchSetId": 4
