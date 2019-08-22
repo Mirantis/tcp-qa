@@ -445,11 +445,6 @@ class SaltManager(ExecuteCommandsMixin):
                         password=jenkins_pass)
             )
 
-    def add_cluster_reclass(self, key, value, path):
-        # TODO : add reclass tools as a library to tcp-qa
-        self.cmd_run('I@salt:master',
-                     "reclass-tools add-key {key} {value} {path}")
-
     def create_env_k8s(self):
         """Creates static utils/env_k8s file"""
 
