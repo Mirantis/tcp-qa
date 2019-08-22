@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ce17e2b7_18305f93",
+        "filename": "tcp_tests/managers/saltmanager.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 460,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-08-22T12:22:42Z",
+      "side": 1,
+      "message": "may be it\u0027s better to keep this in the level above to avoid duplication",
+      "revId": "e2ab6508b2173dffc63de18e24a72bfc068257fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d26c724d_c5a20863",
+        "filename": "tcp_tests/managers/saltmanager.py",
+        "patchSetId": 4
+      },
+      "lineNbr": 491,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-08-22T12:22:42Z",
+      "side": 1,
+      "message": "command \u003d                 \u0027I@salt:master\u0027,\n\t\n                \"{reclass_tools} {action} classes \\\n\t\n                /srv/salt/reclass/classes/{path} --merge\"\n... \ncommand.format(reclass_tools\u003d.., action\u003d\u0027get-key\u0027) and applies to command at 505 line also",
+      "revId": "e2ab6508b2173dffc63de18e24a72bfc068257fa",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
