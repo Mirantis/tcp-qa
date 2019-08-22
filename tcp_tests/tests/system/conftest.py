@@ -28,6 +28,7 @@ from tcp_tests.fixtures.k8s_fixtures import *  # noqa
 from tcp_tests.fixtures.drivetrain_fixtures import *  # noqa
 from tcp_tests.fixtures.day1_fixtures import *  # noqa
 from tcp_tests.fixtures.runtest_fixtures import * # noqa
+from tcp_tests.fixtures.reclass_fixtures import * # noqa
 
 
 __all__ = sorted([  # sort for documentation
