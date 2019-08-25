@@ -18,7 +18,8 @@ develop-eggs
 .installed.cfg
 lib
 local
-lib64
+lib6
+venv4
 MANIFEST
 TAGS
 
@@ -39,6 +40,7 @@ nosetests.xml
 .project
 .pydevproject
 .idea
+.code-workspace
 
 # Local example
 example_local.py
