@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "df264b49_67db7079",
+        "filename": "tcp_tests/tests/system/test_backup_restore_galera.py",
+        "patchSetId": 20
+      },
+      "lineNbr": 18,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:47:49Z",
+      "side": 1,
+      "message": "Looks like it\u0027s copy paste. It\u0027s better to set the proper custom mark for the test.",
+      "range": {
+        "startLine": 18,
+        "startChar": 17,
+        "endLine": 18,
+        "endChar": 31
+      },
+      "revId": "c59558739326025ce8a0b0300e2c33caa6800a99",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "55e35df0_5a4e280b",
+        "filename": "tcp_tests/tests/system/test_backup_restore_galera.py",
+        "patchSetId": 20
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:47:49Z",
+      "side": 1,
+      "message": "- Both steps have the same number.\n- Looks like the steps are switched as the code in the test initially executes galera_backup_database job, then cvp-sanity and cvp-tempest ones.\n- Also in the code below there are 2 show_step statements for \u0027run tests\u0027 kind of action (for sanity and tempest tests correspondingly).",
+      "range": {
+        "startLine": 24,
+        "startChar": 12,
+        "endLine": 25,
+        "endChar": 45
+      },
+      "revId": "c59558739326025ce8a0b0300e2c33caa6800a99",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "254cbc83_faee55af",
+        "filename": "tcp_tests/tests/system/test_backup_restore_galera.py",
+        "patchSetId": 20
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:47:49Z",
+      "side": 1,
+      "message": "Maybe this can be changed, so that salt.login_cluster_jenkins() is not called 3 times, but only once (as all three - url, name and pass - are returned for each call).",
+      "range": {
+        "startLine": 34,
+        "startChar": 8,
+        "endLine": 36,
+        "endChar": 63
+      },
+      "revId": "c59558739326025ce8a0b0300e2c33caa6800a99",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "60976cf3_67a4d749",
+        "filename": "tcp_tests/tests/system/test_backup_restore_galera.py",
+        "patchSetId": 20
+      },
+      "lineNbr": 129,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:47:49Z",
+      "side": 1,
+      "message": "It\u0027s better to use proper name for the var, i.e. something about galera verify/restore (similar to step 2 above .)",
+      "range": {
+        "startLine": 129,
+        "startChar": 8,
+        "endLine": 129,
+        "endChar": 23
+      },
+      "revId": "c59558739326025ce8a0b0300e2c33caa6800a99",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f598f85b_e5affd26",
+        "filename": "tcp_tests/tests/system/test_backup_restore_galera.py",
+        "patchSetId": 20
+      },
+      "lineNbr": 149,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:47:49Z",
+      "side": 1,
+      "message": "As in the previous comment.",
+      "range": {
+        "startLine": 149,
+        "startChar": 15,
+        "endLine": 149,
+        "endChar": 30
+      },
+      "revId": "c59558739326025ce8a0b0300e2c33caa6800a99",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
