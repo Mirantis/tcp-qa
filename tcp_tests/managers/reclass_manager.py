@@ -118,3 +118,21 @@ class ReclassManager(ExecuteCommandsMixin):
                 value=value,
                 path=short_path
             ))
+
+    def delete_key(self, key, short_path):
+        """
+        Remove key from the provided file
+
+        :param value: string, parameter which will be deleted
+        :param short_path: string,, path to reclass yaml file.
+            It takes into account default path where the reclass locates.
+            May look like cluster/*/cicd/control/leader.yml
+        :return: None
+        """
+        self.ssh.check_call(
+            "{reclass_tools} del-key {key} \
+            /srv/salt/reclass/classes/{path}".format(
+                reclass_tools=self.reclass_tools_cmd,
+                key=key,
+                path=short_path
+            ))
