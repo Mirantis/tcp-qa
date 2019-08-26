@@ -1,0 +1,129 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7537a892_21582930",
+        "filename": "tcp_tests/managers/reclass_manager.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 40,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:28:51Z",
+      "side": 1,
+      "message": "Maybe it\u0027s better to correct grammatically (e.g. \u0027key_exists\u0027 or just \u0027exists\u0027).",
+      "range": {
+        "startLine": 40,
+        "startChar": 8,
+        "endLine": 40,
+        "endChar": 18
+      },
+      "revId": "d8c7b732dd644a6028abafc2fea3c6f88b6ca31e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "fe43687d_fb3f7793",
+        "filename": "tcp_tests/managers/reclass_manager.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 53,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:28:51Z",
+      "side": 1,
+      "message": "Looks like the description doesn\u0027t correspond to what the method performs",
+      "revId": "d8c7b732dd644a6028abafc2fea3c6f88b6ca31e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "eb36ac04_3fb85d07",
+        "filename": "tcp_tests/managers/reclass_manager.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 74,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:28:51Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "d8c7b732dd644a6028abafc2fea3c6f88b6ca31e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2c68f612_7c2a0f4f",
+        "filename": "tcp_tests/managers/reclass_manager.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 95,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:28:51Z",
+      "side": 1,
+      "message": "As above",
+      "revId": "d8c7b732dd644a6028abafc2fea3c6f88b6ca31e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "112e1bd7_01f0cac6",
+        "filename": "tcp_tests/tests/system/test_update.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 138,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:28:51Z",
+      "side": 1,
+      "message": "This patch adds a new test and corresponding custom mark \u0027run_mcp_update\u0027 - https://review.gerrithub.io/c/Mirantis/tcp-qa/+/465781/12/tcp_tests/tests/system/test_update.py.\nHere the same custom mark is used, but seems like it\u0027s just a copy-paste issue.",
+      "revId": "d8c7b732dd644a6028abafc2fea3c6f88b6ca31e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "17c21692_53b8cbc1",
+        "filename": "tcp_tests/tests/system/test_update.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 146,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:28:51Z",
+      "side": 1,
+      "message": "The step description can be improved saying on which nodes pillars are refreshed (as the corresponding code targets dbs* nodes)",
+      "revId": "d8c7b732dd644a6028abafc2fea3c6f88b6ca31e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "059ef565_857bfc8b",
+        "filename": "tcp_tests/tests/system/test_update.py",
+        "patchSetId": 14
+      },
+      "lineNbr": 167,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T09:28:51Z",
+      "side": 1,
+      "message": "What is the value of such a log entry? (looks like it\u0027s left after test debug)",
+      "revId": "d8c7b732dd644a6028abafc2fea3c6f88b6ca31e",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
