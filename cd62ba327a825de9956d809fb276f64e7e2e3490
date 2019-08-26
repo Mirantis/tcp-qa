@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "da758633_bc26b400",
+        "filename": "tcp_tests/managers/saltmanager.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T08:46:18Z",
+      "side": 1,
+      "message": "The method name is a bit ambiguous - one can think initially that the 1st word\nis a verb and the method performs login to jenkins.\nMaybe it\u0027s better to rename the method, to make clear that it gets/retrieves jenkins creds.",
+      "revId": "cd62ba327a825de9956d809fb276f64e7e2e3490",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9db3220f_f3f73721",
+        "filename": "tcp_tests/tests/system/test_update.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T08:46:18Z",
+      "side": 1,
+      "message": "If there will be another patch set, this can be changed, so that salt.login_cluster_jenkins() is not called 3 times, but only once (as all three - url, name and pass - are returned for each call).",
+      "revId": "cd62ba327a825de9956d809fb276f64e7e2e3490",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "06c2dd9f_274ef321",
+        "filename": "tcp_tests/tests/system/test_update.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T08:46:18Z",
+      "side": 1,
+      "message": "Is it the correct version of target minor MCP release? Or maybe this should be a test parameter?",
+      "revId": "cd62ba327a825de9956d809fb276f64e7e2e3490",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
