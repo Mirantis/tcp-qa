@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "76379e3f_a1cd56cc",
+        "filename": "tcp_tests/tests/system/test_backup_restore_galera.py",
+        "patchSetId": 22
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-08-26T13:02:51Z",
+      "side": 1,
+      "message": "Still there is a mismatch in scenario description and code. In the code the performed steps are:\n\n1 get Jenkins creds\n2 run galera_backup_database job\n3 [COMMENTED] run sanity\n4 run tempest\n5 run galera_verify_restore job\n6 run tempest",
+      "range": {
+        "startLine": 23,
+        "startChar": 12,
+        "endLine": 27,
+        "endChar": 71
+      },
+      "revId": "b0742e2be2233788179ec55e424de0170dc716d8",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
