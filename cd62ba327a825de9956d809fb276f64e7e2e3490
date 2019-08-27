@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5e43bf43_69b01199",
+        "filename": "tcp_tests/managers/saltmanager.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 377,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-08-27T07:46:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "da758633_bc26b400",
+      "revId": "cd62ba327a825de9956d809fb276f64e7e2e3490",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9db3220f_f3f73721",
         "filename": "tcp_tests/tests/system/test_update.py",
         "patchSetId": 12
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "a46052ac_2706768f",
+        "filename": "tcp_tests/tests/system/test_update.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 36,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-08-27T07:46:21Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "9db3220f_f3f73721",
+      "revId": "cd62ba327a825de9956d809fb276f64e7e2e3490",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "06c2dd9f_274ef321",
         "filename": "tcp_tests/tests/system/test_update.py",
         "patchSetId": 12
@@ -47,6 +83,24 @@
       "writtenOn": "2019-08-26T08:46:18Z",
       "side": 1,
       "message": "Is it the correct version of target minor MCP release? Or maybe this should be a test parameter?",
+      "revId": "cd62ba327a825de9956d809fb276f64e7e2e3490",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "36acd3ab_56e816de",
+        "filename": "tcp_tests/tests/system/test_update.py",
+        "patchSetId": 12
+      },
+      "lineNbr": 111,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-08-27T07:46:21Z",
+      "side": 1,
+      "message": "According to https://docs.mirantis.com/mcp/q4-18/mcp-operations-guide/update-upgrade/minor-update/mcp-update.html it should be the current MCP version\n```the same Deploy - upgrade MCP DriveTrain Jenkins pipeline job but with your current MCP release version set for the TARGET_MCP_VERSION parameter. For example, if your current MCP version is 2019.2.0, set 2019.2.0.```",
+      "parentUuid": "06c2dd9f_274ef321",
       "revId": "cd62ba327a825de9956d809fb276f64e7e2e3490",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
