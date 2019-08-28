@@ -137,6 +137,60 @@ class TestUpdateMcpCluster(object):
     @pytest.mark.grab_versions
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_mcp_update
+    def test_update_glusterfs(self, salt_actions, reclass_actions, show_step, _):
+        """ Upgrade GlusterFS
+        Scenario:
+        1. In infra/init.yml in Reclass, add the glusterfs_version parameter
+        2. Start linux.system.repo state
+        3. Start "update-glusterfs" job
+
+        """
+        salt = salt_actions
+        reclass = reclass_actions
+        jenkins_creds = salt.get_cluster_jenkins_creds()
+        jenkins_url = jenkins_creds.get('url')
+        jenkins_user = jenkins_creds.get('user')
+        jenkins_pass = jenkins_creds.get('pass')
+        # ############## Change reclass ######################################
+        show_step(1)
+        reclass.add_key(
+            "parameters._param.linux_system_repo_mcp_glusterfs_version_number",
+            "5",
+            "cluster/*/infra/init.yml"
+        )
+        # ################# Run linux.system state ###########################
+        show_step(2)
+        salt.enforce_state("*", "linux.system.repo")
+
+        # ############## Start deploy-upgrade-galera job #####################
+        show_step(3)
+        jenkins_build_timeout = 40 * 60
+        job_name = 'deploy-upgrade-galera'
+
+        update_glusterfs = run_jenkins_job.run_job(
+            host=jenkins_url,
+            username=jenkins_user,
+            password=jenkins_pass,
+            build_timeout=jenkins_build_timeout,
+            verbose=False,
+            job_name=job_name)
+
+        (description, stages) = get_jenkins_job_stages.get_deployment_result(
+            host=jenkins_url,
+            username=jenkins_user,
+            password=jenkins_pass,
+            job_name=job_name,
+            build_number='lastBuild')
+
+        LOG.info(description)
+        LOG.info('\n'.join(stages))
+
+        assert update_glusterfs == 'SUCCESS', "{0}\n{1}".format(
+            description, '\n'.join(stages))
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.run_mcp_update
     def test_update_galera(self, salt_actions, reclass_actions, show_step, _):
         """ Upgrade Galera automatically
 
@@ -150,6 +204,7 @@ class TestUpdateMcpCluster(object):
         """
         salt = salt_actions
         reclass = reclass_actions
+        jenkins_creds = salt.get_cluster_jenkins_creds()
         # ################### Enable pipeline #################################
         show_step(1)
         reclass.add_class(
@@ -171,8 +226,6 @@ class TestUpdateMcpCluster(object):
         show_step(5)
         salt.enforce_state("dbs*", "linux.system.repo")
         salt.enforce_state("cfg*", "salt.master")
-
-        jenkins_creds = salt.get_cluster_jenkins_creds()
 
         # #################### Login Jenkins on cid01 node ###################
         show_step(6)
