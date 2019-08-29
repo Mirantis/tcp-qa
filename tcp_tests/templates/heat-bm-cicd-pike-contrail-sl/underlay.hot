@@ -1,6 +1,6 @@
 ---
 
-heat_template_version: pike
+heat_template_version: queens
 
 description: MCP environment for heat-bm-cicd-pike-contrail-sl
 

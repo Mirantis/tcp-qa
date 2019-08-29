@@ -11,16 +11,19 @@ parameters:
 
 resources:
   control_net:
+    depends_on: tenant_net
     type: OS::Neutron::Net
     properties:
       port_security_enabled: false
       name: { list_join: ['-', [ 'control_net', { get_param: env_name } ]] }
   tenant_net:
+    depends_on: management_net
     type: OS::Neutron::Net
     properties:
       port_security_enabled: false
       name: { list_join: ['-', [ 'tenant_net', { get_param: env_name } ]] }
   management_net:
+    depends_on: external_net
     type: OS::Neutron::Net
     properties:
       port_security_enabled: false
