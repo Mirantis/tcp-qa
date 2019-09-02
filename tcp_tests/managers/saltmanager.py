@@ -271,6 +271,14 @@ class SaltManager(ExecuteCommandsMixin):
         result = self.local(tgt=tgt, fun='service.stop', args=service)
         return result['return']
 
+    def pkg_install(self, tgt, pkg):
+        result = self.local(tgt=tgt, fun='pkg.install', args=pkg)
+        return result['return']
+    
+    def pkg_info_installed(self, tgt, pkg):
+        result = self.local(tgt=tgt, fun='pkg.info_installed', args=pkg)
+        return result['return']
+
     def cmd_run(self, tgt, cmd):
         result = self.local(tgt=tgt, fun='cmd.run', args=cmd)
         return result['return']
