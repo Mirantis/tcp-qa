@@ -68,6 +68,19 @@ class ReclassManager(ExecuteCommandsMixin):
                 value=value,
                 path=short_path
             ))
+    
+    def get_key(self, key, short_path):
+        """Find a key in a YAML
+
+        :param key: string, parameter to add
+        :param short_path: path to reclass yaml file.
+            It takes into account default path where the reclass is located.
+            May look like cluster/*/cicd/control/leader.yml
+        :return: str, key if found
+        """
+        return self.ssh.check_call(
+            "{reclass_tools} get-key {key} /srv/salt/reclass/classes".format(
+                reclass_tools=self.reclass_tools_cmd, key=key))
 
     def add_bool_key(self, key, value, short_path):
         """
@@ -118,3 +131,5 @@ class ReclassManager(ExecuteCommandsMixin):
                 value=value,
                 path=short_path
             ))
+    
+
