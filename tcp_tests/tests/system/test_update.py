@@ -207,3 +207,58 @@ class TestUpdateMcpCluster(object):
 
         assert update_galera == 'SUCCESS', "{0}\n{1}".format(
             description, '\n'.join(stages))
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.run_mcp_update
+    def test_update_ceph(self, salt_actions,  show_step, _):
+        """ Updates CEPH to the latest minor version
+
+        Scenario:
+            1. Start ceph-upgrade job with default parameters
+            2. Check Ceph version
+        """
+        salt = salt_actions
+        jenkins_creds = salt.get_cluster_jenkins_creds()
+
+        # ###################### Start ceph-upgrade pipeline #################
+        show_step(1)
+        jenkins_url = jenkins_creds.get('url')
+        jenkins_user = jenkins_creds.get('user')
+        jenkins_pass = jenkins_creds.get('pass')
+        jenkins_build_timeout = 40 * 60
+        job_name = 'ceph-upgrade'
+
+        # FIXME: workaround for PROD-33010
+        job_parameters = {
+            'WAIT_FOR_HEALTHY': 'false',
+            'BACKUP_ENABLED': 'false',
+        }
+
+        update_ceph = run_jenkins_job.run_job(
+            host=jenkins_url,
+            username=jenkins_user,
+            password=jenkins_pass,
+            build_timeout=jenkins_build_timeout,
+            verbose=False,
+            job_name=job_name,
+            job_parameters=job_parameters)
+
+        (description, stages) = get_jenkins_job_stages.get_deployment_result(
+            host=jenkins_url,
+            username=jenkins_user,
+            password=jenkins_pass,
+            job_name=job_name,
+            build_number='lastBuild')
+
+        LOG.info(description)
+        LOG.info('\n'.join(stages))
+
+        assert update_ceph == 'SUCCESS', "{0}\n{1}".format(
+            description, '\n'.join(stages))
+
+        # ########## Verify Ceph version #####################################
+        show_step(2)
+        # TODO: add proper assertion for all nodes
+        for target in ['common', 'mon', 'mgr', 'osd', 'radosgw']:
+            salt.cmd_run("I@ceph:{}".format(target), "ceph version")
