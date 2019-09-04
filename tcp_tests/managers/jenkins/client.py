@@ -30,6 +30,9 @@ class JenkinsClient(object):
     def job_info(self, name):
         return self.__client.get_job_info(name)
 
+    def get_build_test_report(self, name, build_id):
+        return self.__client.get_build_test_report(name, build_id)
+
     def list_builds(self, name):
         return self.job_info(name).get('builds')
 
