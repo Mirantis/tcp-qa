@@ -1,4 +1,10 @@
 default_context:
+  openstack_baremetal_address_baremetal: 10.167.11.20
+  openstack_baremetal_node01_baremetal_address: 10.167.11.21
+  openstack_baremetal_node02_baremetal_address: 10.167.11.22
+  openstack_baremetal_node03_baremetal_address: 10.167.11.23
+  openstack_baremetal_interface: ens7
+  openstack_baremetal_vip_interface: phy-baremetal
   jenkins_cfg_admin_password: r00tme
   bmk_enabled: 'False'
   cicd_control_node01_address: 10.167.11.91

@@ -405,3 +405,37 @@ nodes:
           role: single_dhcp
         ens3:
           role: single_ctl
+
+    bmt01.bm-cicd-queens-ovs-maas.local:
+      reclass_storage_name: openstack_baremetal_node01
+      roles:
+      - openstack_baremetal
+      - linux_system_codename_xenial
+      interfaces:
+        ens2:
+          role: single_dhcp
+        ens3:
+          role: single_ctl
+
+    bmt02.bm-cicd-queens-ovs-maas.local:
+      reclass_storage_name: openstack_baremetal_node02
+      roles:
+      - openstack_baremetal
+      - linux_system_codename_xenial
+      interfaces:
+        ens2:
+          role: single_dhcp
+        ens3:
+          role: single_ctl
+
+    bmt03.bm-cicd-queens-ovs-maas.local:
+      reclass_storage_name: openstack_baremetal_node03
+      roles:
+      - openstack_baremetal
+      - linux_system_codename_xenial
+      interfaces:
+        ens2:
+          role: single_dhcp
+        ens3:
+          role: single_ctl
+
