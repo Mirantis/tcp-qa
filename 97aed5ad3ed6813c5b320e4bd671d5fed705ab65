@@ -1,0 +1,239 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "7b3a4a13_8df6f4c4",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Cfg node can exclusively be identified using \u0027salt:master\u0027 pillar.\nBut maybe it\u0027s better to use \u0027keystone:client\u0027 pillar, as in some deployments keystone can be not present on cfg nodes, but only on ctl* ones.\nAnyway any of 2 these methods is OK:\nroot@cfg01:~# salt -C \u0027I@salt:master\u0027 test.ping\ncfg01.heat-cicd-queens-contrail41-sl.local:\n    True\nroot@cfg01:~# salt -C \u0027I@keystone:client\u0027 test.ping\nctl01.heat-cicd-queens-contrail41-sl.local:\n    True\nctl03.heat-cicd-queens-contrail41-sl.local:\n    True\nctl02.heat-cicd-queens-contrail41-sl.local:\n    True\ncfg01.heat-cicd-queens-contrail41-sl.local:\n    True\n\nAnd in test it would be something like:\nsalt \u003d salt_actions\nkeystone_client \u003d salt.local(\"I@salt:master\", \"test.ping\")[\u0027return\u0027][0].keys()[0]\nor \nkeystone_client \u003d salt.local(\"I@keystone:client\", \"test.ping\")[\u0027return\u0027][0].keys()[0]",
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "2addda6f_45e12467",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Having show_step method not in the test itself is not a good idea. This impacts scenario understanding/readability.",
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b50429a7_09ef8113",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "The same comment for show_step as above, applies to all occurrences of show step in this method.",
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ca4be946_627b42f6",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "It\u0027s better to use pillar value, which is \u0027I@cassandra:backup:client\u0027 in this case.\nOtherwise a person who is not familiar with backup/restore of Cassandra would be puzzled why backup script is executed exactly on ntw01.",
+      "range": {
+        "startLine": 80,
+        "startChar": 12,
+        "endLine": 80,
+        "endChar": 20
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "6b0d0865_3b357b57",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 185,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Step number mismatch issue - inside this method the step 9 is used, but in scenario reclass update is step 10.",
+      "range": {
+        "startLine": 185,
+        "startChar": 13,
+        "endLine": 185,
+        "endChar": 31
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5a6a3a52_f759ae50",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 186,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Step number mismatch. Stop of contrail-database is step 9 in the scenario",
+      "range": {
+        "startLine": 186,
+        "startChar": 8,
+        "endLine": 186,
+        "endChar": 21
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "f1873127_e1157d23",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Seems like a copy-paste issue. As per Cassandra backup/restore guide the sequence is\n- stop service\n- remove files\n- start service.\n\nSo this second stop of service is not needed.",
+      "range": {
+        "startLine": 194,
+        "startChar": 8,
+        "endLine": 197,
+        "endChar": 78
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "929a9898_43839999",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Step number mismatch issue, should be step 12 fas per the scenario",
+      "range": {
+        "startLine": 198,
+        "startChar": 8,
+        "endLine": 198,
+        "endChar": 21
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "9da2c910_e0ec8841",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 203,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Something is missed here - executing just cmd.run function without actual command to execute makes no sense.",
+      "range": {
+        "startLine": 203,
+        "startChar": 8,
+        "endLine": 203,
+        "endChar": 62
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "b8182dd4_e8745b8f",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 204,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Step number mismatch issue - the step says, that there is reboot of controller nodes. But pillar in the actual command targets Cassandra backup client node.",
+      "range": {
+        "startLine": 204,
+        "startChar": 8,
+        "endLine": 204,
+        "endChar": 21
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "ba120c57_ebe42291",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1016850
+      },
+      "writtenOn": "2019-09-05T22:20:48Z",
+      "side": 1,
+      "message": "Will this check pass? The network was created before backup, so (in theory), after restore it should not be present in DB.\n\nAnd probably more fundamental question - is this check valid? The resource is created in OpenStack DB and in the network backend (Contrail). If we restore backend (Contrail) DB, does it mean that changes are reflected back to OpenStack DB? (not sure about this)",
+      "range": {
+        "startLine": 212,
+        "startChar": 8,
+        "endLine": 212,
+        "endChar": 74
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
