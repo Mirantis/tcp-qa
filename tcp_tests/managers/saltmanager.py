@@ -374,29 +374,6 @@ class SaltManager(ExecuteCommandsMixin):
                         password=jenkins_pass)
             )
 
-    def get_cluster_jenkins_creds(self):
-        """
-        Requests cluster Jenkins's login parameters from pillars
-        :return: dict {'url': jenkins_url,
-                       'user': jenkins_user,
-                       'pass': jenkins_pass}
-        """
-        tgt = 'I@docker:client:stack:jenkins and cid01*'
-        jenkins_host = self.get_single_pillar(
-            tgt=tgt, pillar="jenkins:client:master:host")
-        jenkins_port = self.get_single_pillar(
-            tgt=tgt, pillar="jenkins:client:master:port")
-        jenkins_protocol = self.get_single_pillar(
-            tgt=tgt, pillar="jenkins:client:master:proto")
-        jenkins_url = '{0}://{1}:{2}'.format(jenkins_protocol,
-                                             jenkins_host,
-                                             jenkins_port)
-        jenkins_user = self.get_single_pillar(
-            tgt=tgt, pillar="jenkins:client:master:username")
-        jenkins_pass = self.get_single_pillar(
-            tgt=tgt, pillar="jenkins:client:master:password")
-        return {'url': jenkins_url, 'user': jenkins_user, 'pass': jenkins_pass}
-
     def create_env_jenkins_cicd(self):
         """Creates static utils/env_jenkins_cicd file"""
 

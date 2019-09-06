@@ -14,10 +14,7 @@
 import pytest
 
 from devops.helpers import helpers
-
 from tcp_tests import logger
-from tcp_tests.utils import get_jenkins_job_stages
-from tcp_tests.utils import run_jenkins_job
 
 LOG = logger.logger
 
@@ -60,45 +57,12 @@ class TestFailoverCeph(object):
             for node_name in node_names
         }
 
-    def run_jenkins_job(
-            self, creds, name, parameters, start_timeout, build_timeout):
-        """Execute a Jenkins job with provided parameters
-
-        :param creds: dict, Jenkins url and user credentials
-        :param name: string, Jenkins job to execute
-        :param parameters: dict, parameters for Jenkins job
-        :parameter start_timeout: int, timeout to wait until build is started
-        :parameter build_timeout: int, timeout to wait until build is finished
-        :return: tuple, Jenkins job build execution status, high level
-            description of the build and verbose decription of executed job
-            stages
-        """
-        jenkins_url, jenkins_user, jenkins_pass = (
-            creds['url'], creds['user'], creds['pass'])
-        build_status = run_jenkins_job.run_job(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            start_timeout=start_timeout,
-            build_timeout=build_timeout,
-            verbose=False,
-            job_name=name,
-            job_parameters=parameters)
-
-        description, stages = get_jenkins_job_stages.get_deployment_result(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            job_name=name,
-            build_number='lastBuild')
-
-        return build_status, description, stages
-
     @pytest.mark.grab_versions
     @pytest.mark.restart_osd_node
     def test_restart_osd_node(
             self,
             salt_actions,
+            drivetrain_actions,
             underlay_actions,
             show_step):
         """Verify that Ceph OSD node is not affected by system restart
@@ -118,6 +82,7 @@ class TestFailoverCeph(object):
         """
         salt = salt_actions
         ssh = underlay_actions
+        dt = drivetrain_actions
 
         # Find Ceph OSD nodes
         show_step(1)
@@ -153,7 +118,7 @@ class TestFailoverCeph(object):
 
         # Check Ceph cluster health after node restart
         show_step(4)
-        ceph_health = self.get_ceph_health(ssh, osd_hosts) # noqa
+        ceph_health = self.get_ceph_health(ssh, osd_hosts)  # noqa
         # FIXME: uncomment the check once PROD-31374 is fixed
         # status = all(
         #     ["OK" in status for node, status in ceph_health.items()])
@@ -161,35 +126,31 @@ class TestFailoverCeph(object):
 
         # Run Tempest smoke test suite
         show_step(5)
-        jenkins_creds = salt.get_cluster_jenkins_creds()
-        status, description, stages = self.run_jenkins_job(
-            jenkins_creds,
-            self.TEMPEST_JOB_NAME,
-            self.TEMPEST_JOB_PARAMETERS,
-            self.JENKINS_START_TIMEOUT,
-            self.JENKINS_BUILD_TIMEOUT
+        status = dt.start_job_on_cid_jenkins(
+            job_name=self.TEMPEST_JOB_NAME,
+            job_parameters=self.TEMPEST_JOB_PARAMETERS,
+            start_timeout=self.JENKINS_START_TIMEOUT,
+            build_timeout=self.JENKINS_BUILD_TIMEOUT
         )
+
         assert status == 'SUCCESS', (
             "'{0}' job run status is {1} after executing Tempest smoke "
-            "tests. Please check the build:\n{2}\n\nExecuted build "
-            "stages:\n{3}".format(
-                self.TEMPEST_JOB_NAME, status, description, '\n'.join(stages))
+            "tests".format(
+                self.TEMPEST_JOB_NAME, status)
         )
 
         # Run Sanity test
         show_step(6)
-        status, description, stages = self.run_jenkins_job(
-            jenkins_creds,
-            self.SANITY_JOB_NAME,
-            self.SANITY_JOB_PARAMETERS,
-            self.JENKINS_START_TIMEOUT,
-            self.JENKINS_BUILD_TIMEOUT
+        status = dt.start_job_on_cid_jenkins(
+            job_name=self.SANITY_JOB_NAME,
+            job_parameters=self.SANITY_JOB_PARAMETERS,
+            start_timeout=self.JENKINS_START_TIMEOUT,
+            build_timeout=self.JENKINS_BUILD_TIMEOUT
         )
         assert status == 'SUCCESS', (
             "'{0}' job run status is {1} after executing selected sanity "
-            "tests. Please check the build:\n{2}\n\nExecuted build "
-            "stages:\n{3}".format(
-                self.SANITY_JOB_NAME, status, description, '\n'.join(stages))
+            "tests".format(
+                self.SANITY_JOB_NAME, status)
         )
 
     @pytest.mark.grab_versions
@@ -197,6 +158,7 @@ class TestFailoverCeph(object):
     def test_restart_cmn_node(
             self,
             salt_actions,
+            drivetrain_actions,
             underlay_actions,
             show_step):
         """Verify that Ceph CMN node is not affected by system restart
@@ -216,6 +178,7 @@ class TestFailoverCeph(object):
         """
         salt = salt_actions
         ssh = underlay_actions
+        dt = drivetrain_actions
 
         # Find Ceph CMN nodes
         show_step(1)
@@ -259,35 +222,31 @@ class TestFailoverCeph(object):
 
         # Run Tempest smoke test suite
         show_step(5)
-        jenkins_creds = salt.get_cluster_jenkins_creds()
-        status, description, stages = self.run_jenkins_job(
-            jenkins_creds,
-            self.TEMPEST_JOB_NAME,
-            self.TEMPEST_JOB_PARAMETERS,
-            self.JENKINS_START_TIMEOUT,
-            self.JENKINS_BUILD_TIMEOUT
+        status = dt.start_job_on_cid_jenkins(
+            job_name=self.TEMPEST_JOB_NAME,
+            job_parameters=self.TEMPEST_JOB_PARAMETERS,
+            start_timeout=self.JENKINS_START_TIMEOUT,
+            build_timeout=self.JENKINS_BUILD_TIMEOUT
         )
+
         assert status == 'SUCCESS', (
             "'{0}' job run status is {1} after executing Tempest smoke "
-            "tests. Please check the build:\n{2}\n\nExecuted build "
-            "stages:\n{3}".format(
-                self.TEMPEST_JOB_NAME, status, description, '\n'.join(stages))
+            "tests".format(
+                self.TEMPEST_JOB_NAME, status)
         )
 
         # Run Sanity test
         show_step(6)
-        status, description, stages = self.run_jenkins_job(
-            jenkins_creds,
-            self.SANITY_JOB_NAME,
-            self.SANITY_JOB_PARAMETERS,
-            self.JENKINS_START_TIMEOUT,
-            self.JENKINS_BUILD_TIMEOUT
+        status = dt.start_job_on_cid_jenkins(
+            job_name=self.SANITY_JOB_NAME,
+            job_parameters=self.SANITY_JOB_PARAMETERS,
+            start_timeout=self.JENKINS_START_TIMEOUT,
+            build_timeout=self.JENKINS_BUILD_TIMEOUT
         )
         assert status == 'SUCCESS', (
             "'{0}' job run status is {1} after executing selected sanity "
-            "tests. Please check the build:\n{2}\n\nExecuted build "
-            "stages:\n{3}".format(
-                self.SANITY_JOB_NAME, status, description, '\n'.join(stages))
+            "tests".format(
+                self.SANITY_JOB_NAME, status)
         )
 
     @pytest.mark.grab_versions
@@ -295,6 +254,7 @@ class TestFailoverCeph(object):
     def test_restart_rgw_node(
             self,
             salt_actions,
+            drivetrain_actions,
             underlay_actions,
             show_step):
         """Verify that Ceph RGW node is not affected by system restart
@@ -313,6 +273,7 @@ class TestFailoverCeph(object):
         """
         salt = salt_actions
         ssh = underlay_actions
+        dt = drivetrain_actions
 
         # Find Ceph RGW nodes
         show_step(1)
@@ -356,35 +317,31 @@ class TestFailoverCeph(object):
 
         # Run Tempest smoke test suite
         show_step(5)
-        jenkins_creds = salt.get_cluster_jenkins_creds()
-        status, description, stages = self.run_jenkins_job(
-            jenkins_creds,
-            self.TEMPEST_JOB_NAME,
-            self.TEMPEST_JOB_PARAMETERS,
-            self.JENKINS_START_TIMEOUT,
-            self.JENKINS_BUILD_TIMEOUT
+        status = dt.start_job_on_cid_jenkins(
+            job_name=self.TEMPEST_JOB_NAME,
+            job_parameters=self.TEMPEST_JOB_PARAMETERS,
+            start_timeout=self.JENKINS_START_TIMEOUT,
+            build_timeout=self.JENKINS_BUILD_TIMEOUT
         )
+
         assert status == 'SUCCESS', (
             "'{0}' job run status is {1} after executing Tempest smoke "
-            "tests. Please check the build:\n{2}\n\nExecuted build "
-            "stages:\n{3}".format(
-                self.TEMPEST_JOB_NAME, status, description, '\n'.join(stages))
+            "tests".format(
+                self.TEMPEST_JOB_NAME, status)
         )
 
         # Run Sanity test
         show_step(6)
-        status, description, stages = self.run_jenkins_job(
-            jenkins_creds,
-            self.SANITY_JOB_NAME,
-            self.SANITY_JOB_PARAMETERS,
-            self.JENKINS_START_TIMEOUT,
-            self.JENKINS_BUILD_TIMEOUT
+        status = dt.start_job_on_cid_jenkins(
+            job_name=self.SANITY_JOB_NAME,
+            job_parameters=self.SANITY_JOB_PARAMETERS,
+            start_timeout=self.JENKINS_START_TIMEOUT,
+            build_timeout=self.JENKINS_BUILD_TIMEOUT
         )
         assert status == 'SUCCESS', (
             "'{0}' job run status is {1} after executing selected sanity "
-            "tests. Please check the build:\n{2}\n\nExecuted build "
-            "stages:\n{3}".format(
-                self.SANITY_JOB_NAME, status, description, '\n'.join(stages))
+            "tests".format(
+                self.SANITY_JOB_NAME, status)
         )
 
     # #######################################################################
