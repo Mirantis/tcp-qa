@@ -2,8 +2,6 @@ import pytest
 
 from tcp_tests import logger
 from tcp_tests import settings
-from tcp_tests.utils import run_jenkins_job
-from tcp_tests.utils import get_jenkins_job_stages
 
 LOG = logger.logger
 
@@ -17,7 +15,8 @@ class TestUpdateMcpCluster(object):
     @pytest.mark.grab_versions
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_mcp_update
-    def test_update_drivetrain(self, salt_actions, show_step, _):
+    def test_update_drivetrain(self, salt_actions, drivetrain_actions,
+                               show_step, _):
         """Updating DriveTrain component to release/proposed/2019.2.0 version
 
         Scenario:
@@ -29,16 +28,10 @@ class TestUpdateMcpCluster(object):
         Duration: ~35 min
         """
         salt = salt_actions
-        jenkins_creds = salt.get_cluster_jenkins_creds()
+        dt = drivetrain_actions
 
         # #################### Login Jenkins on cid01 node ###################
         show_step(1)
-
-        jenkins_url = jenkins_creds.get('url')
-        jenkins_user = jenkins_creds.get('user')
-        jenkins_pass = jenkins_creds.get('pass')
-        jenkins_start_timeout = 60
-        jenkins_build_timeout = 1800
 
         # FIXME: workaround for PROD-32751
         salt.cmd_run("cfg01*", "cd /srv/salt/reclass; git add -u && \
@@ -50,28 +43,11 @@ class TestUpdateMcpCluster(object):
         job_parameters = {
             'BRANCHES': 'release/proposed/2019.2.0'
         }
-        update_pipelines = run_jenkins_job.run_job(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            start_timeout=jenkins_start_timeout,
-            build_timeout=jenkins_build_timeout,
-            verbose=False,
+        update_pipelines = dt.start_job_on_cid_jenkins(
             job_name=job_name,
             job_parameters=job_parameters)
 
-        (description, stages) = get_jenkins_job_stages.get_deployment_result(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            job_name=job_name,
-            build_number='lastBuild')
-
-        LOG.info(description)
-        LOG.info('\n'.join(stages))
-
-        assert update_pipelines == 'SUCCESS', "{0}\n{1}".format(
-            description, '\n'.join(stages))
+        assert update_pipelines == 'SUCCESS'
 
         # ################### Downstream pipeline-library ####################
         show_step(3)
@@ -79,66 +55,32 @@ class TestUpdateMcpCluster(object):
         job_parameters = {
             'BRANCHES': 'release/proposed/2019.2.0'
         }
-        update_pipeline_library = run_jenkins_job.run_job(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            start_timeout=jenkins_start_timeout,
-            build_timeout=jenkins_build_timeout,
-            verbose=False,
+        update_pipeline_library = dt.start_job_on_cid_jenkins(
             job_name=job_name,
             job_parameters=job_parameters)
 
-        (description, stages) = get_jenkins_job_stages.get_deployment_result(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            job_name=job_name,
-            build_number='lastBuild')
-
-        LOG.info(description)
-        LOG.info('\n'.join(stages))
-
-        assert update_pipeline_library == 'SUCCESS', "{0}\n{1}".format(
-            description, '\n'.join(stages))
+        assert update_pipeline_library == 'SUCCESS'
 
         # ################### Start 'Deploy - upgrade MCP Drivetrain' job #####
         show_step(4)
 
-        jenkins_build_timeout = 3600
         job_name = 'upgrade-mcp-release'
         job_parameters = {
             'MK_PIPELINES_REFSPEC': 'release/proposed/2019.2.0',
             'TARGET_MCP_VERSION': '2019.2.0'
         }
-        update_drivetrain = run_jenkins_job.run_job(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            start_timeout=jenkins_start_timeout,
-            build_timeout=jenkins_build_timeout,
-            verbose=False,
+        update_drivetrain = dt.start_job_on_cid_jenkins(
             job_name=job_name,
-            job_parameters=job_parameters)
+            job_parameters=job_parameters,
+            build_timeout=3600)
 
-        (description, stages) = get_jenkins_job_stages.get_deployment_result(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            job_name=job_name,
-            build_number='lastBuild')
-
-        LOG.info(description)
-        LOG.info('\n'.join(stages))
-
-        assert update_drivetrain == 'SUCCESS', "{0}\n{1}".format(
-            description, '\n'.join(stages))
+        assert update_drivetrain == 'SUCCESS'
 
     @pytest.mark.grab_versions
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_mcp_update
     def test_update_glusterfs(self, salt_actions, reclass_actions,
-                              show_step, _):
+                              drivetrain_actions, show_step, _):
         """ Upgrade GlusterFS
         Scenario:
         1. In infra/init.yml in Reclass, add the glusterfs_version parameter
@@ -150,10 +92,7 @@ class TestUpdateMcpCluster(object):
         """
         salt = salt_actions
         reclass = reclass_actions
-        jenkins_creds = salt.get_cluster_jenkins_creds()
-        jenkins_url = jenkins_creds.get('url')
-        jenkins_user = jenkins_creds.get('user')
-        jenkins_pass = jenkins_creds.get('pass')
+        dt = drivetrain_actions
 
         def has_only_similar(param_by_nodes):
             """
@@ -178,29 +117,13 @@ class TestUpdateMcpCluster(object):
 
         # ############## Start deploy-upgrade-galera job #####################
         show_step(3)
-        jenkins_build_timeout = 40 * 60
         job_name = 'update-glusterfs'
 
-        update_glusterfs = run_jenkins_job.run_job(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            build_timeout=jenkins_build_timeout,
-            verbose=False,
-            job_name=job_name)
-
-        (description, stages) = get_jenkins_job_stages.get_deployment_result(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
+        update_glusterfs = dt.start_job_on_cid_jenkins(
             job_name=job_name,
-            build_number='lastBuild')
+            build_timeout=40 * 60)
 
-        LOG.info(description)
-        LOG.info('\n'.join(stages))
-
-        assert update_glusterfs == 'SUCCESS', "{0}\n{1}".format(
-            description, '\n'.join(stages))
+        assert update_glusterfs == 'SUCCESS'
 
         # ################ Check GlusterFS version for servers ##############
         show_step(4)
@@ -223,7 +146,8 @@ class TestUpdateMcpCluster(object):
     @pytest.mark.grab_versions
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_mcp_update
-    def test_update_galera(self, salt_actions, reclass_actions, show_step, _):
+    def test_update_galera(self, salt_actions, reclass_actions,
+                           drivetrain_actions, show_step, _):
         """ Upgrade Galera automatically
 
         Scenario:
@@ -236,7 +160,7 @@ class TestUpdateMcpCluster(object):
         """
         salt = salt_actions
         reclass = reclass_actions
-        jenkins_creds = salt.get_cluster_jenkins_creds()
+        dt = drivetrain_actions
         # ################### Enable pipeline #################################
         show_step(1)
         reclass.add_class(
@@ -262,33 +186,14 @@ class TestUpdateMcpCluster(object):
         # #################### Login Jenkins on cid01 node ###################
         show_step(6)
 
-        jenkins_url = jenkins_creds.get('url')
-        jenkins_user = jenkins_creds.get('user')
-        jenkins_pass = jenkins_creds.get('pass')
-        jenkins_build_timeout = 40 * 60
         job_name = 'deploy-upgrade-galera'
         job_parameters = {
             'INTERACTIVE': 'false'
         }
 
-        update_galera = run_jenkins_job.run_job(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            build_timeout=jenkins_build_timeout,
-            verbose=False,
+        update_galera = dt.start_job_on_cid_jenkins(
             job_name=job_name,
-            job_parameters=job_parameters)
+            job_parameters=job_parameters,
+            build_timeout=40 * 60)
 
-        (description, stages) = get_jenkins_job_stages.get_deployment_result(
-            host=jenkins_url,
-            username=jenkins_user,
-            password=jenkins_pass,
-            job_name=job_name,
-            build_number='lastBuild')
-
-        LOG.info(description)
-        LOG.info('\n'.join(stages))
-
-        assert update_galera == 'SUCCESS', "{0}\n{1}".format(
-            description, '\n'.join(stages))
+        assert update_galera == 'SUCCESS'
