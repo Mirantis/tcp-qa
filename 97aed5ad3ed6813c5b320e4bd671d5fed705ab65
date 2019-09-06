@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "d09a2906_afc90de6",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 27,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-09-06T13:04:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "7b3a4a13_8df6f4c4",
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "2addda6f_45e12467",
         "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
         "patchSetId": 46
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "af7aff88_3153fa3f",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 44,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-09-06T13:04:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "2addda6f_45e12467",
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "b50429a7_09ef8113",
         "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
         "patchSetId": 46
@@ -50,6 +86,24 @@
       "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "8968ed6e_d5e31aed",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-09-06T13:04:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "b50429a7_09ef8113",
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     },
     {
       "key": {
@@ -73,6 +127,30 @@
       "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "bd957b34_6dd52cc4",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 80,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-09-06T13:04:06Z",
+      "side": 1,
+      "message": "I\u0027ll change to I@cassandra:backup:client\u0027, but in the docs we still have ntw01",
+      "parentUuid": "ca4be946_627b42f6",
+      "range": {
+        "startLine": 80,
+        "startChar": 12,
+        "endLine": 80,
+        "endChar": 20
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     },
     {
       "key": {
@@ -145,6 +223,30 @@
     },
     {
       "key": {
+        "uuid": "52575a16_a1c8739e",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 197,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-09-06T13:04:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "f1873127_e1157d23",
+      "range": {
+        "startLine": 194,
+        "startChar": 8,
+        "endLine": 197,
+        "endChar": 78
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "929a9898_43839999",
         "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
         "patchSetId": 46
@@ -165,6 +267,30 @@
       "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
       "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "dda0674a_c47de1a4",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 198,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-09-06T13:04:06Z",
+      "side": 1,
+      "message": "Done",
+      "parentUuid": "929a9898_43839999",
+      "range": {
+        "startLine": 198,
+        "startChar": 8,
+        "endLine": 198,
+        "endChar": 21
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
     },
     {
       "key": {
@@ -225,6 +351,30 @@
       "writtenOn": "2019-09-05T22:20:48Z",
       "side": 1,
       "message": "Will this check pass? The network was created before backup, so (in theory), after restore it should not be present in DB.\n\nAnd probably more fundamental question - is this check valid? The resource is created in OpenStack DB and in the network backend (Contrail). If we restore backend (Contrail) DB, does it mean that changes are reflected back to OpenStack DB? (not sure about this)",
+      "range": {
+        "startLine": 212,
+        "startChar": 8,
+        "endLine": 212,
+        "endChar": 74
+      },
+      "revId": "97aed5ad3ed6813c5b320e4bd671d5fed705ab65",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "630bbd7a_72a0a86d",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 46
+      },
+      "lineNbr": 212,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-09-06T13:04:06Z",
+      "side": 1,
+      "message": "All changes related to network updates cassndra db. move before backup creation, also add valid assertion",
+      "parentUuid": "ba120c57_ebe42291",
       "range": {
         "startLine": 212,
         "startChar": 8,
