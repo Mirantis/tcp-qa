@@ -197,3 +197,135 @@ class TestUpdateMcpCluster(object):
             build_timeout=40 * 60)
 
         assert update_galera == 'SUCCESS'
+
+    @pytest.fixture
+    def disable_automatic_failover_neutron_for_test(self, salt_actions):
+        """
+        On each OpenStack controller node, modify the neutron.conf file
+        Restart the neutron-server service
+        """
+        def comment_line(node, file, word):
+            """
+            Adds '#' before the specific line in specific file
+
+            :param node: string, salt target of node where the file locates
+            :param file: string, full path to the file
+            :param word: string, the begin of line which should be commented
+            :return: None
+            """
+            salt_actions.cmd_run(node,
+                                 "sed -i 's/^{word}/#{word}/' {file}".
+                                 format(word=word,
+                                        file=file))
+
+        def add_line(node, file, line):
+            """
+            Appends line to the end of file
+
+            :param node: string, salt target of node where the file locates
+            :param file: string, full path to the file
+            :param line: string, line that should be added
+            :return: None
+            """
+            salt_actions.cmd_run(node, "echo {line} >> {file}".format(
+                    line=line,
+                    file=file))
+
+        neutron_conf = '/etc/neutron/neutron.conf'
+        neutron_server = "I@neutron:server"
+        # ########  Create backup for config file #######################
+        salt_actions.cmd_run(
+            neutron_server,
+            "cp -p {file} {file}.backup".format(file=neutron_conf))
+
+        # ## Change parameters in neutron.conf'
+        comment_line(neutron_server, neutron_conf,
+                     "allow_automatic_l3agent_failover",)
+        comment_line(neutron_server, neutron_conf,
+                     "allow_automatic_dhcp_failover")
+        add_line(neutron_server, neutron_conf,
+                 "allow_automatic_dhcp_failover = false")
+        add_line(neutron_server, neutron_conf,
+                 "allow_automatic_l3agent_failover = false")
+
+        # ## Apply changed config to the neutron-server service
+        salt_actions.cmd_run(neutron_server,
+                             "service neutron-server restart")
+        # TODO: add check that neutron-server is up and running
+        yield True
+        # ## Revert file changes
+        salt_actions.cmd_run(
+            neutron_server,
+            "cp -p {file}.backup {file}".format(file=neutron_conf))
+        salt_actions.cmd_run(neutron_server,
+                             "service neutron-server restart")
+
+    @pytest.fixture
+    def disable_neutron_agents_for_test(self, salt_actions):
+        """
+        Restart the neutron-server service
+        """
+        salt_actions.cmd_run("I@neutron:server", """
+                service neutron-dhcp-agent stop && \
+                service neutron-l3-agent stop && \
+                service neutron-metadata-agent stop && \
+                service neutron-openvswitch-agent stop
+                """)
+        yield True
+        # Revert file changes
+        salt_actions.cmd_run("I@neutron:server", """
+                service neutron-dhcp-agent start && \
+                service neutron-l3-agent start && \
+                service neutron-metadata-agent start && \
+                service neutron-openvswitch-agent start
+                """)
+        # TODO: add check that all services are UP and running
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.run_mcp_update
+    def test_update_rabbit(self, salt_actions, reclass_actions,
+                           drivetrain_actions, show_step, _,
+                           disable_automatic_failover_neutron_for_test,
+                           disable_neutron_agents_for_test):
+        """ Updates RabbitMQ
+        Scenario:
+            1. Include the RabbitMQ upgrade pipeline job to DriveTrain
+            2. Add repositories with new RabbitMQ packages
+            3. Start Deploy - upgrade RabbitMQ pipeline
+
+        Updating RabbitMq should be completed before the OpenStack updating
+        process starts
+        """
+        salt = salt_actions
+        reclass = reclass_actions
+        dt = drivetrain_actions
+
+        # ####### Include the RabbitMQ upgrade pipeline job to DriveTrain ####
+        show_step(1)
+        reclass.add_class(
+            "system.jenkins.client.job.deploy.update.upgrade_rabbitmq",
+            "cluster/*/cicd/control/leader.yml")
+        salt.enforce_state("I@jenkins:client", "jenkins.client")
+
+        reclass.add_bool_key("parameters._param.openstack_upgrade_enabled",
+                             "True",
+                             "cluster/*/infra/init.yml")
+        salt.run_state("I@rabbitmq:server", "saltutil.refresh_pillar")
+
+        # ########### Add repositories with new RabbitMQ packages ############
+        show_step(2)
+        salt.enforce_state("I@rabbitmq:server", "linux.system.repo")
+
+        # ########### Start Deploy - upgrade RabbitMQ pipeline  ############
+        show_step(3)
+        job_parameters = {
+            'INTERACTIVE': 'false'
+        }
+
+        update_rabbit = dt.start_job_on_cid_jenkins(
+            job_name='deploy-upgrade-rabbitmq',
+            job_parameters=job_parameters,
+            build_timeout=40 * 60
+        )
+        assert update_rabbit == 'SUCCESS'
