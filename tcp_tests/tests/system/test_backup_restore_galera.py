@@ -29,7 +29,7 @@ class TestBackupRestoreGalera(object):
         dt = drivetrain_actions
 
         # ################## Run backup job #########################
-        show_step(2)
+        show_step(1)
         job_name = 'galera_backup_database'
         job_parameters = {
             'ASK_CONFIRMATION': False
@@ -41,7 +41,7 @@ class TestBackupRestoreGalera(object):
         assert backup_galera_pipeline == 'SUCCESS'
 
         # ######################## Run CPV ###########################
-        show_step(3)
+        show_step(2)
         job_name = 'cvp-sanity'
         job_cvp_sanity_parameters = {
             'EXTRA_PARAMS': '''
@@ -65,7 +65,7 @@ class TestBackupRestoreGalera(object):
         assert run_cvp_sanity == 'SUCCESS'
 
         # ######################## Run Tempest ###########################
-        show_step(4)
+        show_step(3)
         job_name = 'cvp-tempest'
         job_parameters = {
              'TEMPEST_ENDPOINT_TYPE': 'internalURL'
@@ -76,7 +76,7 @@ class TestBackupRestoreGalera(object):
 
         assert run_cvp_tempest == 'SUCCESS'
         # ######################## Run Restore ###########################
-        show_step(5)
+        show_step(4)
         job_name = 'galera_verify_restore'
         job_parameters = {
              'RESTORE_TYPE': 'ONLY_RESTORE',
@@ -88,7 +88,7 @@ class TestBackupRestoreGalera(object):
 
         assert run_galera_verify_restore == 'SUCCESS'
         # ######################## Run CPV ###########################
-        show_step(6)
+        show_step(5)
         job_name = 'cvp-sanity'
         run_cvp_sanity = dt.start_job_on_cid_jenkins(
             job_name=job_name,
@@ -96,7 +96,7 @@ class TestBackupRestoreGalera(object):
 
         assert run_cvp_sanity == 'SUCCESS'
         # ######################## Run Tempest ###########################
-        show_step(7)
+        show_step(6)
         job_name = 'cvp-tempest'
         job_parameters = {
              'TEMPEST_ENDPOINT_TYPE': 'internalURL'
