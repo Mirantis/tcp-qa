@@ -5,6 +5,10 @@ default_context:
   openstack_baremetal_node01_baremetal_address: 10.167.11.21
   openstack_baremetal_node02_baremetal_address: 10.167.11.22
   openstack_baremetal_node03_baremetal_address: 10.167.11.23
+  openstack_baremetal_node01_address: 10.167.11.21
+  openstack_baremetal_node02_address: 10.167.11.22
+  openstack_baremetal_node03_address: 10.167.11.23
+  openstack_baremetal_address: 10.167.11.20
   openstack_baremetal_interface: ens7
   openstack_baremetal_vip_interface: phy-baremetal
   jenkins_cfg_admin_password: r00tme
@@ -704,7 +708,7 @@ default_context:
   openstack_nova_cpu_pinning: 6,7,8,9,10,11
   openstack_nova_compute_reserved_host_memory_mb: '900'
   openstack_ovs_dvr_enabled: 'True'
-  openstack_ovs_encapsulation_type: vxlan
+  openstack_ovs_encapsulation_type: vlan
   openstack_ovs_encapsulation_vlan_range: 2402:2406
   openstack_proxy_address: 10.167.11.80
   openstack_proxy_hostname: prx

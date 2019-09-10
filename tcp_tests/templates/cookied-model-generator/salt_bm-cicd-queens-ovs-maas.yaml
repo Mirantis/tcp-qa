@@ -46,6 +46,8 @@
   cmd: |
     sed -i 's/==IPMI_USER==/${_param:power_user}/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
     sed -i 's/==IPMI_PASS==/${_param:power_password}/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
+    sed -i 's/==IPMI_USER==/${_param:power_user}/g' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/baremetal_nodes.yml;
+    sed -i 's/==IPMI_PASS==/${_param:power_password}/g' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/baremetal_nodes.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -57,6 +59,8 @@
     . /root/venv-reclass-tools/bin/activate;
     reclass-tools add-key parameters._param.power_user {{ IPMI_USER }} /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
     reclass-tools add-key parameters._param.power_password {{ IPMI_PASS }} /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
+    reclass-tools add-key parameters._param.power_user {{ IPMI_USER }} /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/baremetal_nodes.yml;
+    reclass-tools add-key parameters._param.power_password {{ IPMI_PASS }} /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/baremetal_nodes.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false

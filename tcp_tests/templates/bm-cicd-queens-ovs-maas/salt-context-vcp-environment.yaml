@@ -4,6 +4,7 @@ nodes:
       roles:
       - openstack_control_leader
       - linux_system_codename_xenial
+      - features_ironic_baremetal_nodes
       interfaces:
         ens2:
           role: single_dhcp
