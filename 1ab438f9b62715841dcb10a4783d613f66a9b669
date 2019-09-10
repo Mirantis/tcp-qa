@@ -72,6 +72,30 @@
     },
     {
       "key": {
+        "uuid": "27d11438_7f35c213",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 44
+      },
+      "lineNbr": 58,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-09-10T11:17:37Z",
+      "side": 1,
+      "message": "It needs to verify how backup is created",
+      "parentUuid": "07c9f367_26354673",
+      "range": {
+        "startLine": 58,
+        "startChar": 7,
+        "endLine": 58,
+        "endChar": 33
+      },
+      "revId": "1ab438f9b62715841dcb10a4783d613f66a9b669",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "95b1d79e_de6e8ac9",
         "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
         "patchSetId": 44
