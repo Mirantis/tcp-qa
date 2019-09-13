@@ -1,9 +1,43 @@
 import pytest
+import sys
+import os
 
 from tcp_tests import logger
 from tcp_tests import settings
 
+sys.path.append(os.getcwd())
+try:
+    from tcp_tests.fixtures import config_fixtures
+    from tcp_tests.managers import underlay_ssh_manager
+    from tcp_tests.managers import saltmanager as salt_manager
+except ImportError:
+    print("ImportError: Run the application from the tcp-qa directory or "
+          "set the PYTHONPATH environment variable to directory which contains"
+          " ./tcp_tests")
+    sys.exit(1)
 LOG = logger.logger
+
+
+def get_control_plane_targets():
+    config = config_fixtures.config()
+    underlay = underlay_ssh_manager.UnderlaySSHManager(config)
+    saltmanager = salt_manager.SaltManager(config, underlay)
+
+    targets = saltmanager.run_state(
+        "I@keystone:server", 'test.ping')[0]['return'][0].keys()
+    targets += saltmanager.run_state(
+        "I@nginx:server and not I@salt:master",
+        "test.ping")[0]['return'][0].keys()
+
+    # TODO: add check for Manila  existence
+    # Commented to avoid fails during OpenStack updates.
+    # Anyway we don't have deployments with Manila yet
+    # targets.append('share*')
+    # TODO: add check for Tenant Telemetry  existence
+    targets.append('mdb*')
+    # TODO: add check for Barbican existence
+    targets.append('kmn*')
+    return targets
 
 
 class TestUpdateMcpCluster(object):
@@ -204,32 +238,32 @@ class TestUpdateMcpCluster(object):
         On each OpenStack controller node, modify the neutron.conf file
         Restart the neutron-server service
         """
-        def comment_line(node, file, word):
+        def comment_line(node, file_name, word):
             """
             Adds '#' before the specific line in specific file
 
             :param node: string, salt target of node where the file locates
-            :param file: string, full path to the file
+            :param file_name: string, full path to the file
             :param word: string, the begin of line which should be commented
             :return: None
             """
             salt_actions.cmd_run(node,
                                  "sed -i 's/^{word}/#{word}/' {file}".
                                  format(word=word,
-                                        file=file))
+                                        file=file_name))
 
-        def add_line(node, file, line):
+        def add_line(node, file_name, line):
             """
             Appends line to the end of file
 
             :param node: string, salt target of node where the file locates
-            :param file: string, full path to the file
+            :param file_name: string, full path to the file
             :param line: string, line that should be added
             :return: None
             """
             salt_actions.cmd_run(node, "echo {line} >> {file}".format(
                     line=line,
-                    file=file))
+                    file=file_name))
 
         neutron_conf = '/etc/neutron/neutron.conf'
         neutron_server = "I@neutron:server"
@@ -249,10 +283,10 @@ class TestUpdateMcpCluster(object):
                  "allow_automatic_l3agent_failover = false")
 
         # ## Apply changed config to the neutron-server service
-        salt_actions.cmd_run(neutron_server,
-                             "service neutron-server restart")
+        result = salt_actions.cmd_run(neutron_server,
+                                      "service neutron-server restart")
         # TODO: add check that neutron-server is up and running
-        yield True
+        yield result
         # ## Revert file changes
         salt_actions.cmd_run(
             neutron_server,
@@ -263,16 +297,17 @@ class TestUpdateMcpCluster(object):
     @pytest.fixture
     def disable_neutron_agents_for_test(self, salt_actions):
         """
-        Restart the neutron-server service
+        Disable the neutron services before the test and
+        enable it after test
         """
-        salt_actions.cmd_run("I@neutron:server", """
+        result = salt_actions.cmd_run("I@neutron:server", """
                 service neutron-dhcp-agent stop && \
                 service neutron-l3-agent stop && \
                 service neutron-metadata-agent stop && \
                 service neutron-openvswitch-agent stop
                 """)
-        yield True
-        # Revert file changes
+        yield result
+        #
         salt_actions.cmd_run("I@neutron:server", """
                 service neutron-dhcp-agent start && \
                 service neutron-l3-agent start && \
@@ -329,3 +364,75 @@ class TestUpdateMcpCluster(object):
             build_timeout=40 * 60
         )
         assert update_rabbit == 'SUCCESS'
+
+
+class TestOpenstackUpdate(object):
+    @pytest.fixture
+    def switch_to_proposed_pipelines(self, reclass_actions, salt_actions):
+        reclass_actions.add_key(
+            "parameters._param.jenkins_pipelines_branch",
+            "release/proposed/2019.2.0",
+            "cluster/*/infra/init.yml"
+        )
+        salt_actions.enforce_state("I@jenkins:client", "jenkins.client")
+
+    @pytest.mark.grab_versions
+    @pytest.mark.run_mcp_update
+    def test__pre_update__enable_pipeline_job(self,
+                                              reclass_actions, salt_actions,
+                                              show_step, _):
+        """ Enable pipeline in the Drivetrain
+
+        Scenario:
+        1. Add deploy.update.* classes to the reclass
+        2. Start jenkins.client salt state
+
+        """
+        salt = salt_actions
+        reclass = reclass_actions
+        show_step(1)
+        reclass.add_class("system.jenkins.client.job.deploy.update.upgrade",
+                          "cluster/*/cicd/control/leader.yml")
+
+        reclass.add_class(
+            "system.jenkins.client.job.deploy.update.upgrade_ovs_gateway",
+            "cluster/*/cicd/control/leader.yml")
+
+        reclass.add_class(
+            "system.jenkins.client.job.deploy.update.upgrade_compute",
+            "cluster/*/cicd/control/leader.yml")
+
+        show_step(2)
+        r, errors = salt.enforce_state("I@jenkins:client", "jenkins.client")
+        assert errors is None
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.parametrize('target', get_control_plane_targets())
+    @pytest.mark.run_mcp_update
+    def test__update__control_plane(self, drivetrain_actions, _,
+                                    switch_to_proposed_pipelines, target):
+        """Start 'Deploy - upgrade control VMs' for specific node
+        """
+        job_parameters = {
+            "TARGET_SERVERS": target,
+            "INTERACTIVE": False}
+        upgrade_control_pipeline = drivetrain_actions.start_job_on_cid_jenkins(
+            job_name="deploy-upgrade-control",
+            job_parameters=job_parameters)
+
+        assert upgrade_control_pipeline == 'SUCCESS'
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.run_mcp_update
+    def test__update__data_plane(self, drivetrain_actions, _):
+        """Start 'Deploy - upgrade OVS gateway'
+        """
+        job_parameters = {
+            "INTERACTIVE": False}
+        upgrade_data_pipeline = drivetrain_actions.start_job_on_cid_jenkins(
+            job_name="deploy-upgrade-ovs-gateway",
+            job_parameters=job_parameters)
+
+        assert upgrade_data_pipeline == 'SUCCESS'
