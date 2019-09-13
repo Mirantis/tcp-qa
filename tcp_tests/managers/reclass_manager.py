@@ -23,7 +23,7 @@ class ReclassManager(ExecuteCommandsMixin):
 
     __config = None
     __underlay = None
-    reclass_tools_cmd = ". venv-reclass-tools/bin/activate; reclass-tools "
+    reclass_tools_cmd = ". venv-reclass-tools/bin/activate; reclass-tools"
     tgt = "cfg01"    # place where the reclass-tools installed
 
     def __init__(self, config, underlay):
