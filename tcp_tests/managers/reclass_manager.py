@@ -23,7 +23,7 @@ class ReclassManager(ExecuteCommandsMixin):
 
     __config = None
     __underlay = None
-    reclass_tools_cmd = ". venv-reclass-tools/bin/activate; reclass-tools "
+    reclass_tools_cmd = ". venv-reclass-tools/bin/activate; reclass-tools"
     tgt = "cfg01"    # place where the reclass-tools installed
 
     def __init__(self, config, underlay):
@@ -33,6 +33,7 @@ class ReclassManager(ExecuteCommandsMixin):
         reclass_node = [node_name
                         for node_name in self.__underlay.node_names()
                         if self.tgt in node_name]
+        LOG.info("reclass_node {}".format(reclass_node))
         self.ssh = self.__underlay.remote(node_name=reclass_node[0])
 
         super(ReclassManager, self).__init__(config=config, underlay=underlay)

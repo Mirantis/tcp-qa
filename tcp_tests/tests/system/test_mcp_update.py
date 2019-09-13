@@ -1,9 +1,88 @@
 import pytest
+import json
+import sys
+import os
 
 from tcp_tests import logger
 from tcp_tests import settings
 
+sys.path.append(os.getcwd())
+try:
+    from tcp_tests.fixtures import config_fixtures
+    from tcp_tests.managers import underlay_ssh_manager
+    from tcp_tests.managers import saltmanager as salt_manager
+except ImportError:
+    print("ImportError: Run the application from the tcp-qa directory or "
+          "set the PYTHONPATH environment variable to directory which contains"
+          " ./tcp_tests")
+    sys.exit(1)
 LOG = logger.logger
+
+
+# def get_prioritized_components():
+#     config = config_fixtures.config()
+#     underlay = underlay_ssh_manager.UnderlaySSHManager(config)
+#     saltmanager = salt_manager.SaltManager(config, underlay)
+#
+#     priorities = saltmanager.run_state(
+#         "I@salt:master",
+#         "config.get",
+#         "orchestration:upgrade:applications")[0]['return'][0]
+#
+#     # LOG.info(json.dumps(priorities, indent=4))
+#     first_key_name = next(iter(priorities))
+#     priorities1 = {k: v.get('priority') for k, v in
+#                    priorities[first_key_name].items()}
+#     services_in_desc_order = sorted(priorities1,
+#                                     key=priorities1.get, reverse=True)
+#     prioritized_services = services_in_desc_order
+#     return prioritized_services
+
+
+# def get_nodes_by_component(component):
+#     config = config_fixtures.config()
+#     underlay = underlay_ssh_manager.UnderlaySSHManager(config)
+#     saltmanager = salt_manager.SaltManager(config, underlay)
+#
+#     # Cache output of __reclass__:applications into global pytest
+#     if not hasattr(pytest, "node_applications"):
+#         # LOG.info("node_applications")
+#         node_applications = saltmanager.run_state(
+#             '*',
+#             'pillar.items',
+#             "__reclass__:applications")[0]['return'][0]
+#         pytest.node_applications = node_applications
+#
+#     node_components = dict()
+#     # Group nodes by their applications
+#     for node, apps in pytest.node_applications.items():
+#         if component in apps.get("__reclass__:applications"):
+#             if node_components.get(component) is None:
+#                 node_components[component] = []
+#             node_components[component].append(node)
+#     LOG.info("Service {} will be upgraded on the next nodes {}".
+#              format(component, json.dumps(node_components, indent=4)))
+#
+#     return node_components
+
+
+def get_control_plane_targets():
+    config = config_fixtures.config()
+    underlay = underlay_ssh_manager.UnderlaySSHManager(config)
+    saltmanager = salt_manager.SaltManager(config, underlay)
+
+    targets = saltmanager.run_state(
+        "I@keystone:server", 'test.ping')[0]['return'][0].keys()
+    LOG.warning("targets {}".format(targets))
+    targets += saltmanager.run_state(
+        "I@nginx:server and not I@salt:master", 'test.ping')[0]['return'][0].keys()
+    # TODO: add check for Manila existence
+    targets.append('share*')
+    # TODO: add check for Tenant Telemetry  existence
+    targets.append('mdb*')
+    # TODO: add check for Barbican existence
+    targets.append('kmn*')
+    return targets
 
 
 class TestUpdateMcpCluster(object):
@@ -329,3 +408,138 @@ class TestUpdateMcpCluster(object):
             build_timeout=40 * 60
         )
         assert update_rabbit == 'SUCCESS'
+
+
+class TestOpenstackUpdate(object):
+
+    def _test__pre_update__database_migration(self, salt_actions, show_step, _):
+        """ Update OpenStack components
+
+        Scenario:
+        1. Migrate Nova's databases
+        2. Migrate Cinder's databases
+        3. Migrate Ironic's databases if it's present
+        """
+        def is_report_succesful(report):
+            return True
+        salt = salt_actions
+
+        # ######## Migrate Nova's databases ################################
+        show_step(1)
+        nova_migration_report_by_nodes = salt.cmd_run(
+            "I@keystone:server",
+            "nova-manage db online_data_migrations")
+
+        assert is_report_succesful(nova_migration_report_by_nodes)
+        # It shows output like that
+        # ctl01.heat-cicd-queens-contrail41-sl.local:
+        #     Running batches of 50 until complete.
+        #     +--------------------------------------------+--------------+-----------+
+        #     |                 Migration                  | Total Needed | Completed |
+        #     +--------------------------------------------+--------------+-----------+
+        #     |   attachment_specs_online_data_migration   |      0       |     0     |
+        #     |      backup_service_online_migration       |      0       |     0     |
+        #     |    service_uuids_online_data_migration     |      0       |     0     |
+        #     |    shared_targets_online_data_migration    |      0       |     0     |
+        #     | volume_service_uuids_online_data_migration |      0       |     0     |
+        #     +--------------------------------------------+--------------+-----------+
+        # TODO: need to check that total_needed == completed
+
+        # ######## Migrate Cinder's databases ###############################
+        show_step(2)
+        cinder_migration_report_by_nodes = salt.cmd_run(
+            "I@keystone:server",
+            "cinder-manage db online_data_migrations")
+        assert is_report_succesful(cinder_migration_report_by_nodes)
+
+        # ######## Migrate Ironic's databases if it's present ###############
+        show_step(3)
+        # TODO: Check Ironic existence , or show message otherwise
+        ironic_migration_report_by_nodes = salt.cmd_run(
+            "I@keystone:server",
+            "ironic-dbsync online_data_migrations")
+        assert is_report_succesful(ironic_migration_report_by_nodes)
+
+    # @pytest.mark.grab_versions
+    # @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    # @pytest.mark.parametrize("component", get_prioritized_components())
+    # @pytest.mark.run_mcp_update
+    # def _test__pre_update__component(self, salt_actions, show_step, _, component):
+    #     """ Update separate component
+    #     Scenario:
+    #     1. Execute upgrade process upgrade.pre
+    #     2. Verify the results of upgrade process upgrade.verify
+    #     """
+    #     salt = salt_actions
+    #     nodes_to_update = get_nodes_by_component(component)
+    #
+    #     if nodes_to_update.__len__() == 0:
+    #         pytest.skip("Component '{}' isn't found on any node".
+    #                     format(component))
+    #     target = " or ".join(nodes_to_update[component])
+    #
+    #     show_step(1)
+    #     upgrade_pre, errors = salt.enforce_state(
+    #         target,
+    #         "{}.upgrade.pre".format(component))
+    #     assert errors is None
+    #
+    #     show_step(2)
+    #     upgrade_verify, errors = salt.enforce_state(
+    #         target,
+    #         "{}.upgrade.verify".format(component))
+    #     assert errors is None
+
+    @pytest.mark.grab_versions
+    @pytest.mark.run_mcp_update
+    def test__pre_update__enable_pipeline_job(self,
+                                              reclass_actions, salt_actions,
+                                              show_step, _):
+        """ Enable pipeline in the Drivetrain
+
+        Scenario:
+        1. Add deploy.update.* classes to the reclass
+        2. Start jenkins.client salt state
+
+        """
+        salt = salt_actions
+        reclass = reclass_actions
+        show_step(1)
+        reclass.add_class("system.jenkins.client.job.deploy.update.upgrade",
+                          "cluster/*/cicd/control/leader.yml")
+
+        reclass.add_class(
+            "system.jenkins.client.job.deploy.update.upgrade_ovs_gateway",
+            "cluster/*/cicd/control/leader.yml")
+
+        reclass.add_class(
+            "system.jenkins.client.job.deploy.update.upgrade_compute",
+            "cluster/*/cicd/control/leader.yml")
+
+        show_step(2)
+        r, errors = salt.enforce_state("I@jenkins:client", "jenkins.client")
+        assert errors is None
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.parametrize('target', get_control_plane_targets())
+    @pytest.mark.run_mcp_update
+    def test__update__control_plane(self,
+                                    drivetrain_actions, _, target):
+        """Start 'Deploy - upgrade control VMs' for specific node
+
+        """
+        LOG.info("TEST FOR {}".format(target))
+        dt = drivetrain_actions
+
+        job_parameters = {
+            "TARGET_SERVERS": target,
+            "INTERACTIVE": False
+        }
+        upgrade_control_pipeline = dt.start_job_on_cid_jenkins(
+            job_name="deploy-upgrade-control",
+            job_parameters=job_parameters
+        )
+
+        assert upgrade_control_pipeline == 'SUCCESS'
+
