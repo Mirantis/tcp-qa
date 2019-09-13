@@ -1,9 +1,25 @@
 import pytest
+import json
 
 from tcp_tests import logger
 from tcp_tests import settings
 
 LOG = logger.logger
+
+
+@pytest.fixture
+def prioritized_components(request, salt_actions):
+    priorities = salt_actions.run_state(
+        "I@salt:master",
+        "config.get",
+        ["orchestration:upgrade:applications", '--out=json'])[0]['return'][0]
+
+    LOG.info(json.dumps(priorities, indent=4))
+    first_key_name = next(iter(priorities))
+    priorities1 = {k: v.get('priority') for k, v in priorities[first_key_name].items()}
+    services_in_desc_order = sorted(priorities1,
+                                    key=priorities1.get, reverse=True)
+    return services_in_desc_order
 
 
 class TestUpdateMcpCluster(object):
@@ -329,3 +345,69 @@ class TestUpdateMcpCluster(object):
             build_timeout=40 * 60
         )
         assert update_rabbit == 'SUCCESS'
+
+
+class TestOpenstackUpdate(object):
+    def test_database_migration(self, salt_actions, show_step, _):
+        """ Update OpenStack components
+
+        Scenario:
+        1. Migrate Nova's databases
+        2. Migrate Cinder's databases
+        3. Migrate Ironic's databases if it's present
+        """
+        def is_report_succesful(report):
+            return True
+        salt = salt_actions
+
+        # ######## Migrate Nova's databases ################################
+        show_step(1)
+        nova_migration_report_by_nodes = salt.cmd_run(
+            "I@keystone:server",
+            "nova-manage db online_data_migrations")
+
+        assert is_report_succesful(nova_migration_report_by_nodes)
+        # It shows output like that
+        # ctl01.heat-cicd-queens-contrail41-sl.local:
+        #     Running batches of 50 until complete.
+        #     +--------------------------------------------+--------------+-----------+
+        #     |                 Migration                  | Total Needed | Completed |
+        #     +--------------------------------------------+--------------+-----------+
+        #     |   attachment_specs_online_data_migration   |      0       |     0     |
+        #     |      backup_service_online_migration       |      0       |     0     |
+        #     |    service_uuids_online_data_migration     |      0       |     0     |
+        #     |    shared_targets_online_data_migration    |      0       |     0     |
+        #     | volume_service_uuids_online_data_migration |      0       |     0     |
+        #     +--------------------------------------------+--------------+-----------+
+        # TODO: need to check that total_needed == completed
+
+        # ######## Migrate Cinder's databases ###############################
+        show_step(2)
+        cinder_migration_report_by_nodes = salt.cmd_run(
+            "I@keystone:server",
+            "cinder-manage db online_data_migrations")
+        assert is_report_succesful(cinder_migration_report_by_nodes)
+
+        # ######## Migrate Ironic's databases if it's present ###############
+        show_step(3)
+        # TODO: Check Ironic existence , or show message otherwise
+        ironic_migration_report_by_nodes = salt.cmd_run(
+            "I@keystone:server",
+            "ironic-dbsync online_data_migrations")
+        assert is_report_succesful(ironic_migration_report_by_nodes)
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.parametrize('comp', prioritized_components)
+    @pytest.mark.run_mcp_update
+    def test_pre_update_component(self, salt_actions, show_step, _, comp):
+        salt = salt_actions
+        LOG.info("TEST COMPONENT {}".format(prioritized_components))
+        # Get list for all non-salt-master nodes
+        # salt.run_state("not I@salt:master", "pillar.items",
+        #                ["__reclass__:applications", "--out=json"])
+        #
+        # #
+        # salt.enforce_state("I@keystone:client:enabled",
+        #                    "keystone.upgrade.pre")
+
