@@ -5,6 +5,7 @@
 # Other salt model repository parameters see in shared-salt.yaml
 
 {% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-test-tools.yaml' as SHARED_TEST_TOOLS with context %}
 
 {{ SHARED.MACRO_INSTALL_SALT_MINIONS() }}
 
@@ -13,3 +14,5 @@
 {{SHARED.MACRO_CHECK_SALT_VERSION_ON_NODES()}}
 
 {{SHARED.MACRO_IPFLUSH_TENANTS_IFACES()}}
+
+{{SHARED_TEST_TOOLS.MACRO_INSTALL_RECLASS_TOOLS()}}
