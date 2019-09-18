@@ -36,13 +36,13 @@ def pytest_runtest_setup(item):
         item.cls._current_test = item.function
     item._start_time = time.time()
     head = "<" * 5 + "#" * 30 + "[ {} ]" + "#" * 30 + ">" * 5
-    head = head.format(item.function.__name__)
+    head = head.format(item.name)
     start_step = "\n{head}".format(head=head)
     LOG.info(start_step)
 
 
 def pytest_runtest_teardown(item):
-    step_name = item.function.__name__
+    step_name = item.name
     if hasattr(item, '_start_time'):
         spent_time = time.time() - item._start_time
     else:
