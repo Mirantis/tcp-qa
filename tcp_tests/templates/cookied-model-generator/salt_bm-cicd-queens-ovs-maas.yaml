@@ -48,6 +48,8 @@
     sed -i 's/==IPMI_PASS==/${_param:power_password}/g' /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
     sed -i 's/==IPMI_USER==/${_param:power_user}/g' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/baremetal_nodes.yml;
     sed -i 's/==IPMI_PASS==/${_param:power_password}/g' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/baremetal_nodes.yml;
+    sed -i 's/==IPMI_USER==/${_param:power_user}/g' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/switch.yml;
+    sed -i 's/==CISCO_PASS==/${_param:cisco_password}/g' /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/switch.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 10}
   skip_fail: false
@@ -61,6 +63,8 @@
     reclass-tools add-key parameters._param.power_password {{ IPMI_PASS }} /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/infra/maas_machines.yml;
     reclass-tools add-key parameters._param.power_user {{ IPMI_USER }} /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/baremetal_nodes.yml;
     reclass-tools add-key parameters._param.power_password {{ IPMI_PASS }} /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/baremetal_nodes.yml;
+    reclass-tools add-key parameters._param.power_user {{ IPMI_USER }} /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/switch.yml;
+    reclass-tools add-key parameters._param.cisco_password {{ CISCO_PASS }} /srv/salt/reclass/classes/environment/{{ LAB_CONFIG_NAME }}/features/ironic/switch.yml;
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 1, delay: 5}
   skip_fail: false
