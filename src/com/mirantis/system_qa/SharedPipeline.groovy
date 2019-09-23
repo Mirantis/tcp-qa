@@ -215,6 +215,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         def deploy_network_mask = env.DEPLOY_NETWORK_NETMASK ?: ''
         def env_ipmi_user = env.IPMI_USER ?: ''
         def env_ipmi_pass = env.IPMI_PASS ?: ''
+        def env_cisco_pass = env.CISCO_PASS ?: ''
         def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
         def env_lab_ctl_iface = env.LAB_CONTROL_IFACE ?: ''
         def update_repo_custom_tag = env.UPDATE_REPO_CUSTOM_TAG ?: ''
@@ -240,6 +241,7 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'DEPLOY_NETWORK_NETMASK', value: "${deploy_network_mask}"),
                 string(name: 'IPMI_USER', value: env_ipmi_user),
                 string(name: 'IPMI_PASS', value: env_ipmi_pass),
+                string(name: 'CISCO_PASS', value: env_cisco_pass),
                 string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
                 string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
                 string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
@@ -268,6 +270,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
         def mcp_salt_repo_key = env.MCP_SALT_REPO_KEY ?: ''
         def env_ipmi_user = env.IPMI_USER ?: ''
         def env_ipmi_pass = env.IPMI_PASS ?: ''
+        def env_cisco_pass = env.CISCO_PASS ?: ''
         def env_lab_mgm_iface = env.LAB_MANAGEMENT_IFACE ?: ''
         def env_lab_ctl_iface = env.LAB_CONTROL_IFACE ?: ''
         def update_repo_custom_tag = env.UPDATE_REPO_CUSTOM_TAG ?: ''
@@ -295,6 +298,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
                 string(name: 'UPDATE_VERSION', value: "${update_version}"),
                 string(name: 'IPMI_USER', value: env_ipmi_user),
                 string(name: 'IPMI_PASS', value: env_ipmi_pass),
+                string(name: 'CISCO_PASS', value: env_cisco_pass),
                 string(name: 'LAB_MANAGEMENT_IFACE', value: env_lab_mgm_iface),
                 string(name: 'LAB_CONTROL_IFACE', value: env_lab_ctl_iface),
                 string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
@@ -447,6 +451,7 @@ def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IP
                 string(name: 'IPV4_NET_EXTERNAL', value: IPV4_NET_EXTERNAL),
                 string(name: 'IPMI_USER', value: env.IPMI_USER),
                 string(name: 'IPMI_PASS', value: env.IPMI_PASS),
+                string(name: 'CISCO_PASS', value: env.CISCO_PASS),
                 string(name: 'UPDATE_REPO_CUSTOM_TAG', value: "${update_repo_custom_tag}"),
                 string(name: 'JENKINS_PIPELINE_BRANCH', value: "${jenkins_pipelines_branch}"),
                 string(name: 'IMAGE_PATH_CFG01_DAY01', value: env.IMAGE_PATH_CFG01_DAY01),
