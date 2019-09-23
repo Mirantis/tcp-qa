@@ -13,6 +13,7 @@
 
 {%- set IPMI_USER = os_env('IPMI_USER', 'mcp-qa') %}
 {%- set IPMI_PASS = os_env('IPMI_PASS', 'password') %}
+{%- set CISCO_PASS = os_env('CISCO_PASS', 'cisco_pass') %}
 
 
 {% import 'shared-salt.yaml' as SHARED with context %}
