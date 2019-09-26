@@ -136,3 +136,14 @@
   retry: {count: 1, delay: 5}
   skip_fail: false
 {%- endmacro %}
+
+
+{%- macro INCREASE_PGNUM_FOR_CEPH() %}
+- description: |
+    Set pg_num and pgp_num for gnocchi pool in Ceph
+    Workaround for PROD-31374
+  cmd: |
+    salt -C 'I@ceph:mon and *1*' cmd.run "ceph osd pool set gnocchi pg_num 32" &&
+    salt -C 'I@ceph:mon and *1*' cmd.run "ceph osd pool set gnocchi pgp_num 32"
+  node_name: {{ HOSTNAME_CFG01 }}
+{%- endmacro %}
