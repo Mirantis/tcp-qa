@@ -3,6 +3,7 @@
 {% set DOMAIN_NAME='bm-cicd-pike-ovs-maas.local' %}
 
 {% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-test-tools.yaml' as SHARED_TEST_TOOLS with context %}
 
 - description: Wait for salt-master is ready after configdrive user-data
   cmd: |
@@ -76,3 +77,5 @@
   node_name: {{ HOSTNAME_CFG01 }}
   retry: {count: 6, delay: 5}
   skip_fail: false
+
+{{SHARED_TEST_TOOLS.MACRO_INSTALL_RECLASS_TOOLS()}}

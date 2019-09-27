@@ -5,6 +5,7 @@
 # Other salt model repository parameters see in shared-salt.yaml
 
 {% import 'shared-salt.yaml' as SHARED with context %}
+{% import 'shared-test-tools.yaml' as SHARED_TEST_TOOLS with context %}
 
 - description: Wait for salt-master is ready after configdrive user-data
   cmd: |
@@ -73,3 +74,4 @@
   retry: {count: 6, delay: 5}
   skip_fail: false
 
+{{SHARED_TEST_TOOLS.MACRO_INSTALL_RECLASS_TOOLS()}}
