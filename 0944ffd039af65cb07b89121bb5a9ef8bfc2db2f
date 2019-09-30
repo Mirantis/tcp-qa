@@ -1,0 +1,119 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b89a7acf_588bc6e6",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 69
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-09-30T14:27:37Z",
+      "side": 1,
+      "message": "You can replace it with \n\u003e\u003e salt -C \u0027Isalt:master\u0027 network.get_fqdn\ncfg01.released-heat-cicd-pike-dvr-sl.local:\n    cfg01.released-heat-cicd-pike-dvr-sl.local",
+      "range": {
+        "startLine": 25,
+        "startChar": 7,
+        "endLine": 26,
+        "endChar": 49
+      },
+      "revId": "0944ffd039af65cb07b89121bb5a9ef8bfc2db2f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "907bc718_d611980e",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 69
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-09-30T14:27:37Z",
+      "side": 1,
+      "message": "replace it with pytest.fixture\n\ndef add_params_for_test(reclass):\n  # Add params to reclass\n  yield True\n  # Remove parans from reclass",
+      "range": {
+        "startLine": 50,
+        "startChar": 0,
+        "endLine": 73,
+        "endChar": 58
+      },
+      "revId": "0944ffd039af65cb07b89121bb5a9ef8bfc2db2f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "edd707d5_ce85a91b",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 69
+      },
+      "lineNbr": 106,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-09-30T14:27:37Z",
+      "side": 1,
+      "message": "it can be replaced with fixture",
+      "range": {
+        "startLine": 106,
+        "startChar": 0,
+        "endLine": 106,
+        "endChar": 77
+      },
+      "revId": "0944ffd039af65cb07b89121bb5a9ef8bfc2db2f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "aa98837b_3e9100c7",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 69
+      },
+      "lineNbr": 235,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-09-30T14:27:37Z",
+      "side": 1,
+      "message": "it\u0027s a verification of creating backup. Move out into the separate test_backup_create",
+      "range": {
+        "startLine": 224,
+        "startChar": 0,
+        "endLine": 235,
+        "endChar": 60
+      },
+      "revId": "0944ffd039af65cb07b89121bb5a9ef8bfc2db2f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "5390e665_ee4f23bd",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 69
+      },
+      "lineNbr": 264,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-09-30T14:27:37Z",
+      "side": 1,
+      "message": "here should be \u0027assert network_exists()\u0027",
+      "range": {
+        "startLine": 264,
+        "startChar": 8,
+        "endLine": 264,
+        "endChar": 34
+      },
+      "revId": "0944ffd039af65cb07b89121bb5a9ef8bfc2db2f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
