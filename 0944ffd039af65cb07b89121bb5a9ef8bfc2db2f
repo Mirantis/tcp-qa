@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "d5d8aec3_2add4507",
+        "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
+        "patchSetId": 69
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 1016963
+      },
+      "writtenOn": "2019-10-01T11:08:19Z",
+      "side": 1,
+      "message": "why is this better?)",
+      "parentUuid": "b89a7acf_588bc6e6",
+      "range": {
+        "startLine": 25,
+        "startChar": 7,
+        "endLine": 26,
+        "endChar": 49
+      },
+      "revId": "0944ffd039af65cb07b89121bb5a9ef8bfc2db2f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    },
+    {
+      "key": {
         "uuid": "907bc718_d611980e",
         "filename": "tcp_tests/tests/system/test_backup_restore_cassandra.py",
         "patchSetId": 69
