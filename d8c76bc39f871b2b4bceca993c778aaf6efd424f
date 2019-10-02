@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "2f414bb9_9cc5ffb6",
+        "filename": "tcp_tests/tests/system/test_security_updates.py",
+        "patchSetId": 2
+      },
+      "lineNbr": 263,
+      "author": {
+        "id": 1016956
+      },
+      "writtenOn": "2019-10-02T13:05:05Z",
+      "side": 1,
+      "message": "it can be done with parametrization fixtures to make 3 tests\n\nlike\ntest_obtaining_ubuntu_security_updates_manual_hw_nodes[01]\ntest_obtaining_ubuntu_security_updates_manual_hw_nodes[02]\ntest_obtaining_ubuntu_security_updates_manual_hw_nodes[03]",
+      "range": {
+        "startLine": 259,
+        "startChar": 6,
+        "endLine": 263,
+        "endChar": 78
+      },
+      "revId": "d8c76bc39f871b2b4bceca993c778aaf6efd424f",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
