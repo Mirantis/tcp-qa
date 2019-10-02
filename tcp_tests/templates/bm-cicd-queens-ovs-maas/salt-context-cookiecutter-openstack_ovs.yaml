@@ -709,7 +709,8 @@ default_context:
   openstack_nova_compute_reserved_host_memory_mb: '900'
   openstack_ovs_dvr_enabled: 'True'
   openstack_ovs_encapsulation_type: vlan
-  openstack_ovs_encapsulation_vlan_range: 2402:2406
+  openstack_ovs_encapsulation_vlan_range: 2403:2403
+  ironic_vlan_range: 2402:2402
   openstack_proxy_address: 10.167.11.80
   openstack_proxy_hostname: prx
   openstack_proxy_node01_address: 10.167.11.81
