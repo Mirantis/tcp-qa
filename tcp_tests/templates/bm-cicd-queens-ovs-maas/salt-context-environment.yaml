@@ -24,6 +24,10 @@ nodes:
           role: bond_ctl_lacp
         sten2:
           role: bond_ctl_lacp
+        ten1:
+          role: bond_pxe_lacp
+        sten1:
+          role: bond_pxe_lacp
 
     kvm02.bm-cicd-queens-ovs-maas.local:
       reclass_storage_name: infra_kvm_node02
@@ -37,6 +41,10 @@ nodes:
           role: bond_ctl_lacp
         sten2:
           role: bond_ctl_lacp
+        ten1:
+          role: bond_pxe_lacp
+        sten1:
+          role: bond_pxe_lacp
 
     kvm03.bm-cicd-queens-ovs-maas.local:
       reclass_storage_name: infra_kvm_node03
@@ -50,6 +58,10 @@ nodes:
           role: bond_ctl_lacp
         sten2:
           role: bond_ctl_lacp
+        ten1:
+          role: bond_pxe_lacp
+        sten1:
+          role: bond_pxe_lacp
 
     kvm04.bm-cicd-queens-ovs-maas.local:
       reclass_storage_name: infra_kvm_node04
