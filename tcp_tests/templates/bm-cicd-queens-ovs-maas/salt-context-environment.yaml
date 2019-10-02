@@ -10,7 +10,6 @@ nodes:
           role: single_static_mgm
         ens4:
           role: single_static_ctl
-
     # Physical nodes
     kvm01.bm-cicd-queens-ovs-maas.local:
       reclass_storage_name: infra_kvm_node01
@@ -24,6 +23,10 @@ nodes:
           role: bond_ctl_lacp
         sten2:
           role: bond_ctl_lacp
+        ten1:
+          role: bond_baremetal_lacp
+        sten1:
+          role: bond_baremetal_lacp
 
     kvm02.bm-cicd-queens-ovs-maas.local:
       reclass_storage_name: infra_kvm_node02
@@ -37,6 +40,10 @@ nodes:
           role: bond_ctl_lacp
         sten2:
           role: bond_ctl_lacp
+        ten1:
+          role: bond_baremetal_lacp
+        sten1:
+          role: bond_baremetal_lacp
 
     kvm03.bm-cicd-queens-ovs-maas.local:
       reclass_storage_name: infra_kvm_node03
@@ -50,6 +57,10 @@ nodes:
           role: bond_ctl_lacp
         sten2:
           role: bond_ctl_lacp
+        ten1:
+          role: bond_baremetal_lacp
+        sten1:
+          role: bond_baremetal_lacp
 
     kvm04.bm-cicd-queens-ovs-maas.local:
       reclass_storage_name: infra_kvm_node04
@@ -133,11 +144,11 @@ nodes:
         one1:
           role: single_mgm_dhcp
         ten1:
-          role: bond_ctl_lacp
+          role: bond_ctl_baremetal_lacp
         ten2:
           role: bond_prv_lacp
         sten1:
-          role: bond_ctl_lacp
+          role: bond_ctl_baremetal_lacp
         sten2:
           role: bond_prv_lacp
 
@@ -150,11 +161,11 @@ nodes:
         one1:
           role: single_mgm_dhcp
         ten1:
-          role: bond_ctl_lacp
+          role: bond_ctl_baremetal_lacp
         ten2:
           role: bond_prv_lacp
         sten1:
-          role: bond_ctl_lacp
+          role: bond_ctl_baremetal_lacp
         sten2:
           role: bond_prv_lacp
 
@@ -167,10 +178,10 @@ nodes:
         one1:
           role: single_mgm_dhcp
         ten1:
-          role: bond_ctl_lacp
+          role: bond_ctl_baremetal_lacp
         ten2:
           role: bond_prv_lacp
         sten1:
-          role: bond_ctl_lacp
+          role: bond_ctl_baremetal_lacp
         sten2:
           role: bond_prv_lacp
