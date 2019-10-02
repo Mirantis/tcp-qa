@@ -6,6 +6,15 @@ from tcp_tests import settings
 LOG = logger.logger
 
 
+def has_only_similar(values_by_nodes):
+    """
+    :param param_by_nodes:  dict
+    :return: bool, True if all items in the dict have similar values
+    """
+    values = list(values_by_nodes.values())
+    return all(value == values[0] for value in values)
+
+
 class TestUpdateMcpCluster(object):
     """
     Following the steps in
@@ -25,7 +34,7 @@ class TestUpdateMcpCluster(object):
             3. Run job git-mirror-downstream-pipeline-library
             4. If jobs are passed then start 'Deploy - upgrade MCP Drivetrain'
 
-        Duration: ~35 min
+        Duration: ~70 min
         """
         salt = salt_actions
         dt = drivetrain_actions
@@ -66,13 +75,14 @@ class TestUpdateMcpCluster(object):
 
         job_name = 'upgrade-mcp-release'
         job_parameters = {
+            'GIT_REFSPEC': 'release/proposed/2019.2.0',
             'MK_PIPELINES_REFSPEC': 'release/proposed/2019.2.0',
             'TARGET_MCP_VERSION': '2019.2.0'
         }
         update_drivetrain = dt.start_job_on_cid_jenkins(
             job_name=job_name,
             job_parameters=job_parameters,
-            build_timeout=3600)
+            build_timeout=90*60)
 
         assert update_drivetrain == 'SUCCESS'
 
@@ -94,16 +104,6 @@ class TestUpdateMcpCluster(object):
         reclass = reclass_actions
         dt = drivetrain_actions
 
-        def has_only_similar(param_by_nodes):
-            """
-            :param param_by_nodes:  dict
-            :return: bool, True if all items in the dict have similar keys
-            """
-            params = list(param_by_nodes.values())
-
-            def are_similar(x): return x == params[0]
-
-            return all(map(are_similar, params)),
         # ############## Change reclass ######################################
         show_step(1)
         reclass.add_key(
@@ -329,3 +329,42 @@ class TestUpdateMcpCluster(object):
             build_timeout=40 * 60
         )
         assert update_rabbit == 'SUCCESS'
+
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.run_mcp_update
+    def test_update_ceph(self, salt_actions, drivetrain_actions, show_step, _):
+        """ Updates Ceph to the latest minor version
+
+        Scenario:
+            1. Add workaround for unhealth Ceph
+            2. Start ceph-upgrade job with default parameters
+            3. Check Ceph version for all nodes
+
+        https://docs.mirantis.com/mcp/master/mcp-operations-guide/update-upgrade/minor-update/ceph-update.html
+        """
+        salt = salt_actions
+        dt = drivetrain_actions
+
+        # ###################### Add workaround for unhealth Ceph ############
+        show_step(1)
+        salt.cmd_run("I@ceph:radosgw",
+                     "ceph config set 'mon pg warn max object skew' 20")
+        # ###################### Start ceph-upgrade pipeline #################
+        show_step(2)
+        job_parameters = {}
+
+        update_ceph = dt.start_job_on_cid_jenkins(
+            job_name='ceph-update',
+            job_parameters=job_parameters)
+
+        assert update_ceph == 'SUCCESS'
+
+        # ########## Verify Ceph version #####################################
+        show_step(3)
+
+        ceph_version_by_nodes = salt.cmd_run(
+          "I@ceph:* and not I@ceph:monitoring and not I@ceph:backup:server",
+          "ceph version")[0]
+
+        assert has_only_similar(ceph_version_by_nodes), ceph_version_by_nodes
