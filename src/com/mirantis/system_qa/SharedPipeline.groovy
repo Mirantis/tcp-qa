@@ -203,6 +203,7 @@ def swarm_bootstrap_salt_cluster_devops() {
         def common = new com.mirantis.mk.Common()
         def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: is_released_version(env.MCP_VERSION) ? "release/${env.MCP_VERSION}" : 'master'
         def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
+        def salt_models_system_ref_change = env.SALT_MODELS_SYSTEM_REF_CHANGE ?: ''
         def jenkins_pipelines_branch = env.JENKINS_PIPELINE_BRANCH ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
@@ -233,6 +234,7 @@ def swarm_bootstrap_salt_cluster_devops() {
                 string(name: 'PIPELINE_LIBRARY_REF', value: "${pipeline_library_ref}"),
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
                 string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecutter_template_commit}"),
+                string(name: 'SALT_MODELS_SYSTEM_REF_CHANGE', value: "${salt_models_system_ref_change}"),
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
                 string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
@@ -259,6 +261,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
         def common = new com.mirantis.mk.Common()
         def cookiecutter_template_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: "release/${env.MCP_VERSION}"
         def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
+        def salt_models_system_ref_change = env.SALT_MODELS_SYSTEM_REF_CHANGE ?: ''
         def mcp_common_scripts_refs = env.MCP_COMMON_SCRIPTS_REFS ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def mk_pipelines_ref = env.MK_PIPELINES_REF ?: ''
@@ -290,6 +293,7 @@ def swarm_bootstrap_salt_cluster_heat(String jenkins_slave_node_name) {
                 string(name: 'MK_PIPELINES_REF', value: "${mk_pipelines_ref}"),
                 string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecutter_template_commit}"),
                 string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
+                string(name: 'SALT_MODELS_SYSTEM_REF_CHANGE', value: "${salt_models_system_ref_change}"),
                 string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),
                 string(name: 'MCP_SALT_REPO_URL', value: "${mcp_salt_repo_url}"),
@@ -427,7 +431,8 @@ def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IP
         println("IPV4_NET_EXTERNAL=" + IPV4_NET_EXTERNAL)
 
         def cookiecuttertemplate_commit = env.COOKIECUTTER_TEMPLATE_COMMIT ?: is_released_version(env.MCP_VERSION) ? "release/${env.MCP_VERSION}" : 'master'
-        def saltmodels_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
+        def salt_models_system_commit = env.SALT_MODELS_SYSTEM_COMMIT ?: "release/${env.MCP_VERSION}"
+        def salt_models_system_ref_change = env.SALT_MODELS_SYSTEM_REF_CHANGE ?: ''
         def tcp_qa_refs = env.TCP_QA_REFS ?: ''
         def environment_template_ref_change = env.ENVIRONMENT_TEMPLATE_REF_CHANGE ?: ''
         def cookiecutter_ref_change = env.COOKIECUTTER_REF_CHANGE ?: ''
@@ -440,7 +445,8 @@ def generate_cookied_model(IPV4_NET_ADMIN, IPV4_NET_CONTROL, IPV4_NET_TENANT, IP
                 string(name: 'CLUSTER_NAME', value: "${LAB_CONFIG_NAME}"),
                 string(name: 'DOMAIN_NAME', value: "${LAB_CONFIG_NAME}.local"),
                 string(name: 'REPOSITORY_SUITE', value: "${env.MCP_VERSION}"),
-                string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${saltmodels_system_commit}"),
+                string(name: 'SALT_MODELS_SYSTEM_COMMIT', value: "${salt_models_system_commit}"),
+                string(name: 'SALT_MODELS_SYSTEM_REF_CHANGE', value: "${salt_models_system_ref_change}"),
                 string(name: 'COOKIECUTTER_TEMPLATE_COMMIT', value: "${cookiecuttertemplate_commit}"),
                 string(name: 'COOKIECUTTER_REF_CHANGE', value: "${cookiecutter_ref_change}"),
                 string(name: 'ENVIRONMENT_TEMPLATE_REF_CHANGE', value: "${environment_template_ref_change}"),

@@ -545,7 +545,7 @@
     {%- if SALT_MODELS_SYSTEM_REF_CHANGE != '' %}
     pushd /srv/salt/reclass/classes/system/ && \
     {%- for item in SALT_MODELS_SYSTEM_REF_CHANGE.split(" ") %}
-    git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git cherry-pick FETCH_HEAD;
+    git fetch {{ SALT_MODELS_SYSTEM_REPOSITORY }} {{ item }} && git checkout FETCH_HEAD;
     {%- endfor %}
     popd;
     {%- elif SALT_MODELS_SYSTEM_COMMIT != '' %}
