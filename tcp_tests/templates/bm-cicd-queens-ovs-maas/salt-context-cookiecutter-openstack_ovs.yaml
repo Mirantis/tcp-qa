@@ -1,10 +1,13 @@
 default_context:
   ironic_enabled: True
   openstack_baremetal_hostname: bmt
-  openstack_baremetal_address_baremetal: 10.167.11.20
-  openstack_baremetal_node01_baremetal_address: 10.167.11.21
-  openstack_baremetal_node02_baremetal_address: 10.167.11.22
-  openstack_baremetal_node03_baremetal_address: 10.167.11.23
+  openstack_baremetal_address_baremetal: 10.14.0.10
+  openstack_baremetal_node01_baremetal_address: 10.14.0.11
+  openstack_baremetal_node02_baremetal_address: 10.14.0.12
+  openstack_baremetal_node03_baremetal_address: 10.14.0.13
+  openstack_baremetal_neutron_subnet_cidr: 10.14.0.0/24
+  openstack_baremetal_neutron_subnet_allocation_start: 10.14.0.100
+  openstack_baremetal_neutron_subnet_allocation_end: 10.14.0.200
   openstack_baremetal_node01_address: 10.167.11.21
   openstack_baremetal_node02_address: 10.167.11.22
   openstack_baremetal_node03_address: 10.167.11.23
@@ -709,7 +712,8 @@ default_context:
   openstack_nova_compute_reserved_host_memory_mb: '900'
   openstack_ovs_dvr_enabled: 'True'
   openstack_ovs_encapsulation_type: vlan
-  openstack_ovs_encapsulation_vlan_range: 2402:2406
+  openstack_ovs_encapsulation_vlan_range: 2403:2403
+  ironic_vlan_range: 2402:2402
   openstack_proxy_address: 10.167.11.80
   openstack_proxy_hostname: prx
   openstack_proxy_node01_address: 10.167.11.81
