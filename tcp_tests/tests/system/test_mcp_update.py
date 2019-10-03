@@ -31,12 +31,17 @@ def get_control_plane_targets():
     config = config_fixtures.config()
     underlay = underlay_ssh_manager.UnderlaySSHManager(config)
     saltmanager = salt_manager.SaltManager(config, underlay)
-
-    targets = saltmanager.run_state(
-        "I@keystone:server", 'test.ping')[0]['return'][0].keys()
-    targets += saltmanager.run_state(
-        "I@nginx:server and not I@salt:master",
-        "test.ping")[0]['return'][0].keys()
+    targets = list()
+    try:
+        targets += saltmanager.run_state(
+            "I@keystone:server", 'test.ping')[0]['return'][0].keys()
+        targets += saltmanager.run_state(
+            "I@nginx:server and not I@salt:master",
+            "test.ping")[0]['return'][0].keys()
+    except BaseException as err:
+        LOG.warning("Can't retrieve data from Salt. \
+            Maybe cluster is not deployed completely.\
+            Err: {}".format(err))
 
     # TODO: add check for Manila  existence
     # # Commented to avoid fails during OpenStack updates.
