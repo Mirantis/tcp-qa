@@ -131,3 +131,39 @@ class ReclassManager(ExecuteCommandsMixin):
                 value=value,
                 path=short_path
             ))
+
+    def del_class(self, value, short_path):
+        """
+        Removes string {value} from list in classes
+        returns None if class already deleted.
+
+        :param value: role to add to 'classes' parameter in the reclass
+        :param short_path: path to reclass yaml file.
+            It takes into account default path where the reclass locates.
+            May look like cluster/*/cicd/control/leader.yml
+        :return: None
+        """
+        existing_classes = self.ssh.check_call(
+            "{reclass_tools} get-key classes {value} \
+            /srv/salt/reclass/classes/{path}".format(
+                reclass_tools=self.reclass_tools_cmd,
+                value=value,
+                path=short_path
+            ))
+        LOG.info("existing_classes BEFORE {}".format(existing_classes))
+        if value not in existing_classes:
+            LOG.warning("Class {} already deleted in {}".format(
+                value,
+                short_path
+            ))
+            return
+
+        existing_classes.remove(value)
+        LOG.info("existing_classes AFTER {}".format(existing_classes))
+        self.ssh.check_call(
+            "{reclass_tools} add-key classes {value} \
+            /srv/salt/reclass/classes/{path}".format(
+                reclass_tools=self.reclass_tools_cmd,
+                value=existing_classes,
+                path=short_path
+            ))
