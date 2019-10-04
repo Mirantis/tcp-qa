@@ -11,6 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
+import yaml
 
 from tcp_tests import logger
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
@@ -69,18 +70,25 @@ class ReclassManager(ExecuteCommandsMixin):
                 path=short_path
             ))
 
-    def get_key(self, key, short_path):
-        """Find a key in a YAML
+    def get_key(self, key, short_path=None):
+        """Find a key in a YAML or in a whole reclass directory
 
         :param key: string, parameter to add
         :param short_path: path to reclass yaml file.
             It takes into account default path where the reclass is located.
             May look like cluster/*/cicd/control/leader.yml
+            Will be returned all keys found in the reclass directory if no
+            short_path defined
         :return: str, key if found
         """
+        if short_path is None:
+            short_path = ""
         return self.ssh.check_call(
-            "{reclass_tools} get-key {key} /srv/salt/reclass/classes".format(
-                reclass_tools=self.reclass_tools_cmd, key=key))
+            "{reclass_tools} get-key {key} /srv/salt/reclass/classes/\
+            {short_path}".format(
+                reclass_tools=self.reclass_tools_cmd,
+                key=key,
+                short_path=short_path))
 
     def add_bool_key(self, key, value, short_path):
         """
@@ -129,5 +137,38 @@ class ReclassManager(ExecuteCommandsMixin):
             /srv/salt/reclass/classes/{path} --merge".format(
                 reclass_tools=self.reclass_tools_cmd,
                 value=value,
+                path=short_path
+            ))
+
+    def del_class(self, value, short_path):
+        """
+        Removes string {value} from list in classes
+        returns None if class already deleted.
+
+        :param value: role to add to 'classes' parameter in the reclass
+        :param short_path: path to reclass yaml file.
+            It takes into account default path where the reclass locates.
+            May look like cluster/*/cicd/control/leader.yml
+        :return: None
+        """
+        existing_classes = self.get_key("classes", short_path)
+        list_of_classes = yaml.load(existing_classes)
+        LOG.info("existing_classes BEFORE {}".format(existing_classes))
+        if value not in list_of_classes:
+            LOG.warning("Class {} already deleted in {}".format(
+                value,
+                short_path
+            ))
+            return
+
+        list_of_classes.remove(value)
+        LOG.info("existing_classes AFTER {}".format(existing_classes))
+        classes_as_yaml = yaml.safe_dump(list_of_classes,
+                                         default_flow_style=False)
+        self.ssh.check_call(
+            "{reclass_tools} add-key classes {value} \
+            /srv/salt/reclass/classes/{path}".format(
+                reclass_tools=self.reclass_tools_cmd,
+                value=classes_as_yaml,
                 path=short_path
             ))
