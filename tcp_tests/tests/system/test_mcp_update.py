@@ -43,14 +43,20 @@ def get_control_plane_targets():
             Maybe cluster is not deployed completely.\
             Err: {}".format(err))
 
-    # TODO: add check for Manila  existence
-    # # Commented to avoid fails during OpenStack updates.
-    # # Anyway we don't have deployments with Manila yet
-    # targets.append('share*')
-    # TODO: add check for Tenant Telemetry  existence
-    targets.append('mdb*')
-    # TODO: add check for Barbican existence
-    targets.append('kmn*')
+    # check for Manila  existence
+    # if saltmanager.get_single_pillar("I@salt:master",
+    #                                  "_param:manila_service_protocol"):
+    #     targets.append('share*')
+
+    # check for Tenant Telemetry  existence
+    if saltmanager.get_single_pillar("I@salt:master",
+                                     "_param:openstack_telemetry_hostname"):
+        targets.append('mdb*')
+
+    # check for Barbican existence
+    if saltmanager.get_single_pillar("I@salt:master",
+                                     "_param:barbican_enabled") == 'True':
+        targets.append('kmn*')
     return targets
 
 
