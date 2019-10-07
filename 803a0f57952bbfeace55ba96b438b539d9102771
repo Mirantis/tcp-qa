@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "ad55e5e8_f2ee9b6d",
+        "filename": "tcp_tests/tests/system/test_patches_mu6.py",
+        "patchSetId": 7
+      },
+      "lineNbr": 89,
+      "author": {
+        "id": 1013066
+      },
+      "writtenOn": "2019-10-07T10:24:25Z",
+      "side": 1,
+      "message": "Where is step 3 ?",
+      "revId": "803a0f57952bbfeace55ba96b438b539d9102771",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": true
+    }
+  ]
+}
