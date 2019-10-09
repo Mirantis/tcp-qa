@@ -99,6 +99,10 @@ class TestUpdatePikeToQueens(object):
             'parameters._param.openstack_old_version',
             'pike',
             infra_init_yaml)
+        reclass_actions.add_class(
+            'system.keystone.client.v3',
+            'cluster/*/openstack/control_init.yml'
+        )
         underlay_actions.check_call(
             node_name=cfg_node, verbose=verbose,
             cmd="cd /srv/salt/reclass; git add -u && "
