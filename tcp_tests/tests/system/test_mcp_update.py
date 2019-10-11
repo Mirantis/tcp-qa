@@ -61,6 +61,9 @@ def switch_to_proposed_pipelines(reclass_actions, salt_actions):
         "release/proposed/2019.2.0",
         "cluster/*/infra/init.yml"
     )
+    reclass_actions.add_key("parameters._param.linux_system_repo_update_url",
+                            "http://mirror.mirantis.com/update/proposed/",
+                            "cluster/*/infra/init.yml")
     salt_actions.enforce_state("I@jenkins:client", "jenkins.client")
 
 
