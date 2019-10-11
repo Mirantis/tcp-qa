@@ -61,6 +61,19 @@ def switch_to_proposed_pipelines(reclass_actions, salt_actions):
         "release/proposed/2019.2.0",
         "cluster/*/infra/init.yml"
     )
+
+    proposed_branch = "http://mirror.mirantis.com/update/proposed/"
+    url_param = "parameters._param.linux_system_repo_update_url"
+    reclass_actions.add_key(url_param, proposed_branch,
+                            "cluster/*/infra/init.yml")
+    reclass_actions.add_key(url_param, proposed_branch,
+                            "cluster/*/openstack/init.yml")
+    reclass_actions.add_key(url_param, proposed_branch,
+                            "cluster/*/stacklight/init.yml")
+    reclass_actions.add_key(url_param, proposed_branch,
+                            "cluster/*/ceph/init.yml")
+
+    salt_actions.enforce_state("*", "saltutil.refresh_pillar")
     salt_actions.enforce_state("I@jenkins:client", "jenkins.client")
 
 
