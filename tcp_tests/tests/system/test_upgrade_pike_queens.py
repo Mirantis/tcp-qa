@@ -26,6 +26,8 @@ class TestUpdatePikeToQueens(object):
     """
     def execute_pre_post_steps(self, underlay_actions,
                                cfg_node, verbose, type):
+
+        # ### Get the list of all upgradable OpenStack components ############
         ret = underlay_actions.check_call(
             node_name=cfg_node, verbose=verbose,
             cmd="salt 'cfg01*' config.get"
@@ -36,11 +38,21 @@ class TestUpdatePikeToQueens(object):
             for j in cfg_nodes_list[i]:
                 services_for_upgrade.append(j)
         LOG.info(services_for_upgrade)
+
+        # ###### Get the list of all target node #############################
         list_nodes = underlay_actions.check_call(
             node_name=cfg_node, verbose=verbose,
             cmd="salt-key -l accepted | grep -v cfg01 | "
                 "grep -v Accepted")['stdout_str'].splitlines()
         LOG.info(list_nodes)
+
+        # #### guarantee that the KeystoneRC metadata is exported to mine ####
+        ret = underlay_actions.check_call(
+            node_name=cfg_node, verbose=verbose,
+            cmd="salt -C 'I@keystone:client:enabled' state.sls"
+                " keystone.upgrade.pre")
+
+        # ## For each target node, get the list of the installed applications
         for node in list_nodes:
             salt_pillars = underlay_actions.check_call(
                 node_name=cfg_node, verbose=verbose,
@@ -49,6 +61,7 @@ class TestUpdatePikeToQueens(object):
             node_app_output = json.loads(salt_pillars['stdout_str'])
             need_output = '__reclass__:applications'
             LOG.info(node_app_output)
+            # ###### Apply -upgrade- states for node with component #########
             if need_output in node_app_output[node]:
                 node_applications = node_app_output[node][need_output]
                 LOG.info(node_applications)
