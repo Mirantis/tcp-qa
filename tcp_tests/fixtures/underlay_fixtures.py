@@ -158,7 +158,7 @@ def snapshot(request, hardware):
     request.addfinalizer(test_fin)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="session")
 def underlay_actions(config):
     """Fixture that provides SSH access to underlay objects.
 
