@@ -11,7 +11,7 @@
 #    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 #    License for the specific language governing permissions and limitations
 #    under the License.
-
+import json
 from tcp_tests import logger
 from tcp_tests.managers.execute_commands import ExecuteCommandsMixin
 
@@ -69,18 +69,22 @@ class ReclassManager(ExecuteCommandsMixin):
                 path=short_path
             ))
 
-    def get_key(self, key, short_path):
+    def get_key(self, key, file_name):
         """Find a key in a YAML
 
         :param key: string, parameter to add
-        :param short_path: path to reclass yaml file.
-            It takes into account default path where the reclass is located.
-            May look like cluster/*/cicd/control/leader.yml
+        :param file_name: name of YAML file to find a key
         :return: str, key if found
         """
-        return self.ssh.check_call(
-            "{reclass_tools} get-key {key} /srv/salt/reclass/classes".format(
-                reclass_tools=self.reclass_tools_cmd, key=key))
+        request_key = self.ssh.check_call(
+            "{reclass_tools} get-key {key} /srv/salt/reclass/*/{file_name}".
+            format(reclass_tools=self.reclass_tools_cmd,
+                   key=key,
+                   file_name=file_name))['stdout']
+        LOG.info("From reclass.get_key {}".format(request_key))
+        value = json.loads(request_key)
+        LOG.info("From reclass.get_key {}".format(value))
+        return value
 
     def add_bool_key(self, key, value, short_path):
         """
