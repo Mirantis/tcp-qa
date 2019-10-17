@@ -21,7 +21,7 @@ from tcp_tests.managers import saltmanager
 LOG = logger.logger
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def salt_actions(config, underlay_actions):
     """Fixture that provides various actions for salt
 
