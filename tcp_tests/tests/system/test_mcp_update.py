@@ -493,3 +493,16 @@ class TestOpenstackUpdate(object):
             job_parameters=job_parameters)
 
         assert upgrade_data_pipeline == 'SUCCESS'
+
+    @pytest.mark.grab_versions
+    @pytest.mark.run_mcp_update
+    def test__update__computes(self, drivetrain_actions):
+        """Start 'Deploy - upgrade computes'
+        """
+        job_parameters = {
+            "INTERACTIVE": False}
+        upgrade_compute_pipeline = drivetrain_actions.start_job_on_cid_jenkins(
+            job_name="deploy-upgrade-compute",
+            job_parameters=job_parameters)
+
+        assert upgrade_compute_pipeline == 'SUCCESS'
