@@ -432,6 +432,27 @@ class TestUpdateMcpCluster(object):
 
         assert has_only_similar(ceph_version_by_nodes), ceph_version_by_nodes
 
+    @pytest.mark.grab_versions
+    @pytest.mark.parametrize("_", [settings.ENV_NAME])
+    @pytest.mark.run_mcp_update
+    def test_update_stacklight(self, _, drivetrain_actions):
+        """ Update packages for Stacklight
+        Scenario:
+        1. Start Deploy - upgrade Stacklight job
+        """
+        drivetrain = drivetrain_actions
+
+        job_parameters = {
+            "STAGE_UPGRADE_DOCKER_COMPONENTS": True,
+            "STAGE_UPGRADE_ES_KIBANA": True,
+            "STAGE_UPGRADE_SYSTEM_PART": True
+        }
+        upgrade_control_pipeline = drivetrain.start_job_on_cid_jenkins(
+            job_name="stacklight-upgrade",
+            job_parameters=job_parameters)
+
+        assert upgrade_control_pipeline == 'SUCCESS'
+
 
 class TestOpenstackUpdate(object):
 
