@@ -54,29 +54,49 @@ def get_control_plane_targets():
     return targets
 
 
-@pytest.fixture
+@pytest.fixture(scope='class')
 def switch_to_proposed_pipelines(reclass_actions, salt_actions):
-    reclass_actions.add_key(
-        "parameters._param.jenkins_pipelines_branch",
-        "release/proposed/2019.2.0",
-        "cluster/*/infra/init.yml"
-    )
+    reclass = reclass_actions
+    proposed_repo = "http://mirror.mirantis.com/update/proposed/"
+    repo_param = "parameters._param.linux_system_repo_update_url"
 
-    proposed_branch = "http://mirror.mirantis.com/update/proposed/"
-    url_param = "parameters._param.linux_system_repo_update_url"
-    reclass_actions.add_key(url_param, proposed_branch,
-                            "cluster/*/infra/init.yml")
-    reclass_actions.add_key(url_param, proposed_branch,
-                            "cluster/*/openstack/init.yml")
-    reclass_actions.add_key(url_param, proposed_branch,
-                            "cluster/*/stacklight/init.yml")
-    reclass_actions.add_key(url_param, proposed_branch,
-                            "cluster/*/ceph/init.yml")
+    proposed_pipeline_branch = "release/proposed/2019.2.0"
+    pipeline_branch_param = "parameters._param.jenkins_pipelines_branch"
+    infra_yml = "cluster/*/infra/init.yml"
+
+    LOG.info("Check reclass has release/proposed/2019.2.0 branches")
+    if reclass.get_key(pipeline_branch_param,
+                       infra_yml) == proposed_pipeline_branch \
+            and reclass.get_key(repo_param, infra_yml) == proposed_repo:
+        return True
+
+    LOG.info("Switch to release/proposed/2019.2.0 branches")
+    reclass.add_key(pipeline_branch_param, proposed_pipeline_branch, infra_yml)
+
+    reclass.add_key(repo_param, proposed_repo, infra_yml)
+    reclass.add_key(repo_param, proposed_repo, "cluster/*/openstack/init.yml")
+    reclass.add_key(repo_param, proposed_repo, "cluster/*/stacklight/init.yml")
+    reclass.add_key(repo_param, proposed_repo, "cluster/*/ceph/init.yml")
 
     salt_actions.run_state("*", "saltutil.refresh_pillar")
     salt_actions.enforce_state("I@jenkins:client", "jenkins.client")
 
 
+@pytest.fixture(scope='class')
+def enable_openstack_update(reclass_actions, salt_actions):
+    param = "parameters._param.openstack_upgrade_enabled"
+    context_file = "cluster/*/infra/init.yml"
+
+    LOG.info("Enable openstack_upgrade_enabled in reclass")
+    reclass_actions.add_bool_key(param, "True", context_file)
+    salt_actions.run_state("*", "saltutil.refresh_pillar")
+    yield True
+    LOG.info("Disable openstack_upgrade_enabled in reclass")
+    reclass_actions.add_bool_key(param, "False", context_file)
+    salt_actions.run_state("*", "saltutil.refresh_pillar")
+
+
+@pytest.mark.usefixtures("switch_to_proposed_pipelines")
 class TestUpdateMcpCluster(object):
     """
     Following the steps in
@@ -87,7 +107,7 @@ class TestUpdateMcpCluster(object):
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_mcp_update
     def test_update_drivetrain(self, salt_actions, drivetrain_actions,
-                               show_step, _, switch_to_proposed_pipelines):
+                               show_step, _):
         """Updating DriveTrain component to release/proposed/2019.2.0 version
 
         Scenario:
@@ -144,7 +164,7 @@ class TestUpdateMcpCluster(object):
         update_drivetrain = dt.start_job_on_cid_jenkins(
             job_name=job_name,
             job_parameters=job_parameters,
-            build_timeout=90*60)
+            build_timeout=90 * 60)
 
         assert update_drivetrain == 'SUCCESS'
 
@@ -193,7 +213,7 @@ class TestUpdateMcpCluster(object):
             "I@glusterfs:server",
             "glusterd --version|head -n1")[0]
 
-        assert has_only_similar(gluster_server_versions_by_nodes),\
+        assert has_only_similar(gluster_server_versions_by_nodes), \
             gluster_server_versions_by_nodes
 
         # ################ Check GlusterFS version for clients ##############
@@ -266,6 +286,7 @@ class TestUpdateMcpCluster(object):
         On each OpenStack controller node, modify the neutron.conf file
         Restart the neutron-server service
         """
+
         def comment_line(node, file_name, word):
             """
             Adds '#' before the specific line in specific file
@@ -290,8 +311,8 @@ class TestUpdateMcpCluster(object):
             :return: None
             """
             salt_actions.cmd_run(node, "echo {line} >> {file}".format(
-                    line=line,
-                    file=file_name))
+                line=line,
+                file=file_name))
 
         neutron_conf = '/etc/neutron/neutron.conf'
         neutron_server = "I@neutron:server"
@@ -302,7 +323,7 @@ class TestUpdateMcpCluster(object):
 
         # ## Change parameters in neutron.conf'
         comment_line(neutron_server, neutron_conf,
-                     "allow_automatic_l3agent_failover",)
+                     "allow_automatic_l3agent_failover", )
         comment_line(neutron_server, neutron_conf,
                      "allow_automatic_dhcp_failover")
         add_line(neutron_server, neutron_conf,
@@ -427,12 +448,14 @@ class TestUpdateMcpCluster(object):
         show_step(3)
 
         ceph_version_by_nodes = salt.cmd_run(
-          "I@ceph:* and not I@ceph:monitoring and not I@ceph:backup:server",
-          "ceph version")[0]
+            "I@ceph:* and not I@ceph:monitoring and not I@ceph:backup:server",
+            "ceph version")[0]
 
         assert has_only_similar(ceph_version_by_nodes), ceph_version_by_nodes
 
 
+@pytest.mark.usefixtures("switch_to_proposed_pipelines",
+                         "enable_openstack_update")
 class TestOpenstackUpdate(object):
 
     @pytest.mark.grab_versions
@@ -468,8 +491,7 @@ class TestOpenstackUpdate(object):
     @pytest.mark.grab_versions
     @pytest.mark.parametrize('target', get_control_plane_targets())
     @pytest.mark.run_mcp_update
-    def test__update__control_plane(self, drivetrain_actions,
-                                    switch_to_proposed_pipelines, target):
+    def test__update__control_plane(self, drivetrain_actions, target):
         """Start 'Deploy - upgrade control VMs' for specific node
         """
         job_parameters = {
@@ -493,3 +515,16 @@ class TestOpenstackUpdate(object):
             job_parameters=job_parameters)
 
         assert upgrade_data_pipeline == 'SUCCESS'
+
+    @pytest.mark.grab_versions
+    @pytest.mark.run_mcp_update
+    def test__update__computes(self, drivetrain_actions):
+        """Start 'Deploy - upgrade computes'
+        """
+        job_parameters = {
+            "INTERACTIVE": False}
+        upgrade_compute_pipeline = drivetrain_actions.start_job_on_cid_jenkins(
+            job_name="deploy-upgrade-compute",
+            job_parameters=job_parameters)
+
+        assert upgrade_compute_pipeline == 'SUCCESS'
