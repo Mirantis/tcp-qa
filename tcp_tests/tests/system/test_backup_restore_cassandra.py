@@ -224,7 +224,7 @@ class TestBackupRestoreCassandra(object):
         show_step(6)
         salt.run_state("I@cassandra:backup:client",
                        "cmd.run",
-                       "/var/backups/cassandra/dbrestored")
+                       "rm /var/backups/cassandra/dbrestored")
         salt.run_state("I@cassandra:backup:client", "state.sls", "cassandra")
         show_step(7)
         salt.run_state("I@cassandra:backup:client", "system.reboot")
