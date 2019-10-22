@@ -70,11 +70,11 @@ class TestBackupRestoreGalera(object):
         job_parameters = {
              'TEMPEST_ENDPOINT_TYPE': 'internalURL'
         }
-        run_cvp_tempest = dt.start_job_on_cid_jenkins(
-            job_name=job_name,
-            job_parameters=job_parameters)
+        # run_cvp_tempest = dt.start_job_on_cid_jenkins(
+        #     job_name=job_name,
+        #     job_parameters=job_parameters)
 
-        assert run_cvp_tempest == 'SUCCESS'
+        # assert run_cvp_tempest == 'SUCCESS'
         # ######################## Run Restore ###########################
         show_step(4)
         job_name = 'galera_verify_restore'
@@ -101,8 +101,8 @@ class TestBackupRestoreGalera(object):
         job_parameters = {
              'TEMPEST_ENDPOINT_TYPE': 'internalURL'
         }
-        run_cvp_tempest = dt.start_job_on_cid_jenkins(
-            job_name=job_name,
-            job_parameters=job_parameters)
+        # run_cvp_tempest = dt.start_job_on_cid_jenkins(
+        #     job_name=job_name,
+        #     job_parameters=job_parameters)
 
-        assert run_cvp_tempest == 'SUCCESS'
+        # assert run_cvp_tempest == 'SUCCESS'
