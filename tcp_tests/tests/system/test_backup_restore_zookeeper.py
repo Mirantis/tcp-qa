@@ -248,7 +248,7 @@ class TestBackupRestoreZooKeeper(object):
         show_step(7)
         s.run_state("I@opencontrail:control",
                     "cmd.run",
-                    "/var/backups/zookeeper/dbrestored")
+                    "rm /var/backups/zookeeper/dbrestored")
         s.run_state("I@opencontrail:control", "state.apply",
                     "zookeeper.backup")
         show_step(8)
