@@ -82,6 +82,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-add-missing-cases",
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
+                      "--testrail_configuration_name \'tcp-qa\'",
                     ]
                     ret = shared.upload_results_to_testrail(deployment_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(ret.stdout, "blue")
