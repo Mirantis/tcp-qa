@@ -38,6 +38,12 @@ def get_control_plane_targets():
         targets += saltmanager.run_state(
             "I@nginx:server and not I@salt:master",
             "test.ping")[0]['return'][0].keys()
+        telemetry_exists = saltmanager.get_single_pillar(
+            "I@salt:master",
+            "_param:openstack_telemetry_hostname")
+        barbican_exists = saltmanager.get_single_pillar(
+            "I@salt:master",
+            "_param:barbican_enabled")
     except BaseException as err:
         LOG.warning("Can't retrieve data from Salt. \
             Maybe cluster is not deployed completely.\
@@ -49,13 +55,11 @@ def get_control_plane_targets():
     #     targets.append('share*')
 
     # check for Tenant Telemetry  existence
-    if saltmanager.get_single_pillar("I@salt:master",
-                                     "_param:openstack_telemetry_hostname"):
+    if telemetry_exists:
         targets.append('mdb*')
 
     # check for Barbican existence
-    if saltmanager.get_single_pillar("I@salt:master",
-                                     "_param:barbican_enabled"):
+    if barbican_exists:
         targets.append('kmn*')
     return targets
 
