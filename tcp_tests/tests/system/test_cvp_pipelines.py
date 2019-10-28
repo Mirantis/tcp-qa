@@ -298,7 +298,13 @@ class TestCvpPipelines(object):
         jenkins_build_timeout = 1800
 
         job_name = 'cvp-stacklight'
-
+        job_parameters = {
+            "EXTRA_PARAMS": """
+            envs:
+              - SL_AUTOCONF=True
+              - CIRROS_QCOW2_URL=https://docker-prod-local.artifactory.mirantis.com/artifactory/binary-prod-local/mirantis/external/images/cirros/0.4.0/cirros-0.4.0-x86_64-disk.img
+            """
+        }
         show_step(2)
         cvp_stacklight_result = run_jenkins_job.run_job(
             host=jenkins_url,
@@ -308,7 +314,7 @@ class TestCvpPipelines(object):
             build_timeout=jenkins_build_timeout,
             verbose=True,
             job_name=job_name,
-            job_parameters={},
+            job_parameters=job_parameters,
             job_output_prefix='[cvp-stacklight/{build_number}:platform {time}]'
         )
 
