@@ -294,10 +294,20 @@ class TestCvpPipelines(object):
             tgt=tgt, pillar="jenkins:client:master:username")
         jenkins_pass = salt.get_single_pillar(
             tgt=tgt, pillar="jenkins:client:master:password")
+        cirros_image = salt.get_single_pillar(
+            tgt="I@salt:master",
+            pillar="_param:glance_image_cirros_location")
         jenkins_start_timeout = 60
-        jenkins_build_timeout = 1800
+        jenkins_build_timeout = 50 * 60
 
         job_name = 'cvp-stacklight'
+        job_parameters = {
+            "EXTRA_PARAMS": """
+            envs:
+              - SL_AUTOCONF=True
+              - CIRROS_QCOW2_URL={image}
+            """.format(image=cirros_image)
+        }
 
         show_step(2)
         cvp_stacklight_result = run_jenkins_job.run_job(
@@ -308,7 +318,7 @@ class TestCvpPipelines(object):
             build_timeout=jenkins_build_timeout,
             verbose=True,
             job_name=job_name,
-            job_parameters={},
+            job_parameters=job_parameters,
             job_output_prefix='[cvp-stacklight/{build_number}:platform {time}]'
         )
 
