@@ -32,6 +32,8 @@ def get_control_plane_targets():
     underlay = underlay_ssh_manager.UnderlaySSHManager(config)
     saltmanager = salt_manager.SaltManager(config, underlay)
     targets = list()
+    telemetry_exists = False
+    barbican_exists = False
     try:
         targets += saltmanager.run_state(
             "I@keystone:server", 'test.ping')[0]['return'][0].keys()
