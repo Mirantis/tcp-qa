@@ -46,12 +46,6 @@ class TestUpdatePikeToQueens(object):
                 "grep -v Accepted")['stdout_str'].splitlines()
         LOG.info(list_nodes)
 
-        # #### guarantee that the KeystoneRC metadata is exported to mine ####
-        ret = underlay_actions.check_call(
-            node_name=cfg_node, verbose=verbose,
-            cmd="salt -C 'I@keystone:client:enabled' state.sls"
-                " keystone.upgrade.pre")
-
         # ## For each target node, get the list of the installed applications
         for node in list_nodes:
             salt_pillars = underlay_actions.check_call(
@@ -98,6 +92,7 @@ class TestUpdatePikeToQueens(object):
         # ########## Perform the pre-upgrade activities ##########
         show_step(1)
         LOG.info('Add parameters to {}'.format(infra_init_yaml))
+        # ### Edit Infra INIT
         reclass_actions.add_bool_key(
             'parameters._param.openstack_upgrade_enabled',
             'true',
@@ -112,6 +107,16 @@ class TestUpdatePikeToQueens(object):
             'parameters._param.openstack_old_version',
             'pike',
             infra_init_yaml)
+        # ### Edit Openstack INIT
+        reclass_actions.add_key(
+            'parameters._param.gnocchi_version',
+            4.2,
+            infra_init_yaml)
+        reclass_actions.add_key(
+            'parameters._param.gnocchi_old_version',
+            4.0,
+            infra_init_yaml)
+        # ### Edit Openstack control
         reclass_actions.add_class(
             'system.keystone.client.v3',
             'cluster/*/openstack/control_init.yml'
@@ -122,12 +127,40 @@ class TestUpdatePikeToQueens(object):
                 "git commit --allow-empty -m 'Cluster model update'")
         LOG.info('Perform refresh_pillar')
         salt_actions.run_state("*", "saltutil.refresh_pillar")
+        salt_actions.enforce_state("I@keystone:client:os_client_config",
+                                   "keystone.client.os_client_config")
+        # #### guarantee that the KeystoneRC metadata is exported to mine ####
+        underlay_actions.check_call(
+            node_name=cfg_node, verbose=verbose,
+            cmd="salt -C 'I@keystone:client:enabled' state.sls"
+                " keystone.upgrade.pre")
+
         self.execute_pre_post_steps(underlay_actions, cfg_node,
                                     verbose, 'pre')
         LOG.info('Perform refresh_pillar')
         salt_actions.run_state("*", "saltutil.refresh_pillar")
         # ########## Upgrade control VMs #########
         show_step(2)
+        LOG.info("Enable upgrade jobs in cluster Jenkins")
+        cicd_leader = "cluster/*/cicd/control/leader.yml"
+        salt_actions.add_class(
+            "system.jenkins.client.job.deploy.update.upgrade",
+            cicd_leader
+        )
+        salt_actions.add_class(
+            "system.jenkins.client.job.deploy.update.upgrade_ovs_gateway",
+            cicd_leader
+        )
+        salt_actions.add_class(
+            "system.jenkins.client.job.deploy.update.upgrade_compute",
+            cicd_leader
+        )
+        salt_actions.enforce_state("I@jenkins:client",
+                                   "jenkins.client")
+        # #### Add QUEENS's repos
+        salt_actions.enforce_state("*", "linux.system.repo")
+
+        # ########## Upgrade control nodes  ###########
         LOG.info('Upgrade control VMs')
         job_name = 'deploy-upgrade-control'
         job_parameters = {
@@ -135,10 +168,34 @@ class TestUpdatePikeToQueens(object):
             'OS_DIST_UPGRADE': False,
             'OS_UPGRADE': False
         }
+        # ####### Run job for ctl* ###
+        job_parameters["TARGET_SERVERS"] = "ctl*"
         update_control_vms = dt.start_job_on_cid_jenkins(
             job_name=job_name,
             job_parameters=job_parameters)
         assert update_control_vms == 'SUCCESS'
+
+        # ####### Run job for mdb* ###
+        job_parameters["TARGET_SERVERS"] = "mdb*"
+        update_control_vms = dt.start_job_on_cid_jenkins(
+            job_name=job_name,
+            job_parameters=job_parameters)
+        assert update_control_vms == 'SUCCESS'
+
+        # ####### Run job for kmn* ###
+        job_parameters["TARGET_SERVERS"] = "kmn*"
+        update_control_vms = dt.start_job_on_cid_jenkins(
+            job_name=job_name,
+            job_parameters=job_parameters)
+        assert update_control_vms == 'SUCCESS'
+
+        # ####### Run job for prx* ###
+        job_parameters["TARGET_SERVERS"] = "prx*"
+        update_control_vms = dt.start_job_on_cid_jenkins(
+            job_name=job_name,
+            job_parameters=job_parameters)
+        assert update_control_vms == 'SUCCESS'
+
         # ########## Upgrade gatewey nodes  ###########
         show_step(3)
         LOG.info('Upgrade gateway')
@@ -146,7 +203,8 @@ class TestUpdatePikeToQueens(object):
         job_parameters = {
             'INTERACTIVE': False,
             'OS_DIST_UPGRADE': False,
-            'OS_UPGRADE': False
+            'OS_UPGRADE': False,
+            'TARGET_SERVERS': "gtw*"
         }
         update_gateway = dt.start_job_on_cid_jenkins(
             job_name=job_name,
@@ -159,12 +217,14 @@ class TestUpdatePikeToQueens(object):
         job_parameters = {
             'INTERACTIVE': False,
             'OS_DIST_UPGRADE': False,
-            'OS_UPGRADE': False
+            'OS_UPGRADE': False,
+            'TARGET_SERVERS': "cmp*"
         }
         update_computes = dt.start_job_on_cid_jenkins(
             job_name=job_name,
             job_parameters=job_parameters)
         assert update_computes == 'SUCCESS'
+
         # ############ Perform the post-upgrade activities ##########
         show_step(5)
         LOG.info('Add parameters._param.openstack_upgrade_enabled false'
