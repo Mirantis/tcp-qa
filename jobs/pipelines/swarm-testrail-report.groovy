@@ -105,6 +105,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-add-missing-cases",
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
+                      "--testrail_configuration_name \'tcp-qa\'",
                     ]
                     ret = shared.upload_results_to_testrail(tcpqa_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(ret.stdout, "blue")
@@ -123,7 +124,16 @@ node ("${PARENT_NODE_NAME}") {
                     testSuiteName = env.TEMPEST_TEST_SUITE_NAME
                     methodname = "{classname}.{methodname}"
                     testrail_name_template = "{title}"
-                    ret = shared.upload_results_to_testrail(tempest_report_name, testSuiteName, methodname, testrail_name_template)
+                    reporter_extra_options = [
+                      "--send-duplicates",
+                      "--testrail-add-missing-cases",
+                      "--testrail_configuration_name \'tcp-qa\'",
+                    ]
+                    ret = shared.upload_results_to_testrail(tempest_report_name,
+                                                            testSuiteName,
+                                                            methodname,
+                                                            testrail_name_template,
+                                                            reporter_extra_options)
                     common.printMsg(ret.stdout, "blue")
                     report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
@@ -212,6 +222,7 @@ node ("${PARENT_NODE_NAME}") {
                       "--testrail-add-missing-cases",
                       "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
                       "--testrail-case-section-name \'All\'",
+                      "--testrail_configuration_name \'tcp-qa\'",
                     ]
                     ret = shared.upload_results_to_testrail(cvp_sanity_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(ret.stdout, "blue")
