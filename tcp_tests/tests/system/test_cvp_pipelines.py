@@ -38,11 +38,11 @@ class TestCvpPipelines(object):
     @pytest.mark.parametrize("_", [settings.ENV_NAME])
     @pytest.mark.run_cvp_func_smoke
     def test_run_cvp_func_smoke(self, salt_actions, show_step, _):
-        """Runner for Pipeline CVP - Functional tests
+        """Runner for Pipeline CVP-Tempest
 
         Scenario:
             1. Get CICD Jenkins access credentials from salt
-            2. Run job cvp-func
+            2. Run job cvp-tempest
             3. Get passed stages from cvp-func
         """
         salt = salt_actions
@@ -65,9 +65,8 @@ class TestCvpPipelines(object):
         jenkins_start_timeout = 60
         jenkins_build_timeout = 1800
 
-        job_name = 'cvp-func'
+        job_name = 'cvp-tempest'
         job_parameters = {
-            'TARGET_NODE': 'gtw01*',
             'TEMPEST_ENDPOINT_TYPE': 'internalURL',
             'TEMPEST_TEST_PATTERN': 'set=smoke',
         }
