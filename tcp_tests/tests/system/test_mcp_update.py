@@ -91,6 +91,7 @@ def switch_to_proposed_pipelines(reclass_actions, salt_actions):
     reclass.add_key(repo_param, proposed_repo, "cluster/*/ceph/init.yml")
 
     salt_actions.run_state("*", "saltutil.refresh_pillar")
+    salt_actions.enforce_state("*", "salt.minion")
     salt_actions.enforce_state("I@jenkins:client", "jenkins.client")
 
 
