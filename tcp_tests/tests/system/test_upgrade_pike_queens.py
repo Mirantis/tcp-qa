@@ -25,18 +25,18 @@ class TestUpdatePikeToQueens(object):
     Created by https://mirantis.jira.com/browse/PROD-32683
     """
     def execute_pre_post_steps(self, underlay_actions,
-                               cfg_node, verbose, type):
+                               cfg_node, verbose, type, with_verify=False):
 
         # ### Get the list of all upgradable OpenStack components ############
         ret = underlay_actions.check_call(
             node_name=cfg_node, verbose=verbose,
             cmd="salt 'cfg01*' config.get"
-                " orchestration:upgrade:applications --out=json")
-        cfg_nodes_list = json.loads(ret['stdout_str'])
-        services_for_upgrade = []
-        for i in cfg_nodes_list:
-            for j in cfg_nodes_list[i]:
-                services_for_upgrade.append(j)
+                " orchestration:upgrade:applications --out=json")['stdout_str']
+        ## It returns json like {"local": {"galera": {"priority": 910}, "heat": { ...
+        all_formulas = json.loads(ret).get("local")
+        services_for_upgrade = sorted(all_formulas,
+                                      key=all_formulas.get,
+                                      reverse=True)
         LOG.info(services_for_upgrade)
 
         # ###### Get the list of all target node #############################
@@ -60,11 +60,22 @@ class TestUpdatePikeToQueens(object):
                 node_applications = node_app_output[node][need_output]
                 LOG.info(node_applications)
                 for service in services_for_upgrade:
-                    if service in node_applications:
-                        underlay_actions.check_call(
-                            node_name=cfg_node, verbose=verbose,
-                            cmd="salt {} state.apply "
-                                "{}.upgrade.{}".format(node, service, type))
+                    if service not in node_applications:
+                        continue
+                    cmd = "salt {} state.apply {}.upgrade.{}".\
+                        format(node, service, type)
+                    LOG.info("Apply: {}".format(cmd))
+                    underlay_actions.check_call(
+                        node_name=cfg_node, verbose=verbose, cmd=cmd)
+
+                    # Run upgrade.verify if needed
+                    if not with_verify:
+                        continue
+                    cmd = "salt {} state.apply {}.upgrade.verify".\
+                        format(node, service)
+                    LOG.info("Apply: {}".format(cmd))
+                    underlay_actions.check_call(
+                        node_name=cfg_node, verbose=verbose, cmd=cmd)
 
     @pytest.mark.day1_underlay
     def test_upgrade_pike_queens(self,
@@ -91,8 +102,18 @@ class TestUpdatePikeToQueens(object):
         infra_init_yaml = "cluster/*/infra/init.yml"
         # ########## Perform the pre-upgrade activities ##########
         show_step(1)
+        salt_actions.enforce_state("I@keystone:client:os_client_config",
+                                   "keystone.client.os_client_config")
+        # #### guarantee that the KeystoneRC metadata is exported to mine ####
+        underlay_actions.check_call(
+            node_name=cfg_node, verbose=verbose,
+            cmd="salt -C 'I@keystone:client:enabled' state.sls"
+                " keystone.upgrade.pre")
+        # ### Run upgrade.pre and upgrade.verify
+        self.execute_pre_post_steps(underlay_actions, cfg_node,
+                                    verbose, 'pre', with_verify=True)
         LOG.info('Add parameters to {}'.format(infra_init_yaml))
-        # ### Edit Infra INIT
+        # ### Edit Infra INIT #####
         reclass_actions.add_bool_key(
             'parameters._param.openstack_upgrade_enabled',
             'true',
@@ -107,16 +128,18 @@ class TestUpdatePikeToQueens(object):
             'parameters._param.openstack_old_version',
             'pike',
             infra_init_yaml)
-        # ### Edit Openstack INIT
-        reclass_actions.add_key(
-            'parameters._param.gnocchi_version',
-            4.2,
-            infra_init_yaml)
-        reclass_actions.add_key(
-            'parameters._param.gnocchi_old_version',
-            4.0,
-            infra_init_yaml)
-        # ### Edit Openstack control
+
+        # ### Edit Openstack INIT #####
+        openstack_init_yaml = "cluster/*/openstack/init.yml"
+        LOG.info('Add parameters to {}'.format(openstack_init_yaml))
+        reclass_actions.add_key('parameters._param.gnocchi_version',
+                                4.2,
+                                openstack_init_yaml)
+        reclass_actions.add_key('parameters._param.gnocchi_old_version',
+                                4.0,
+                                openstack_init_yaml)
+
+        # ### Edit Openstack control #####
         reclass_actions.add_class(
             'system.keystone.client.v3',
             'cluster/*/openstack/control_init.yml'
@@ -125,15 +148,10 @@ class TestUpdatePikeToQueens(object):
             node_name=cfg_node, verbose=verbose,
             cmd="cd /srv/salt/reclass; git add -u && "
                 "git commit --allow-empty -m 'Cluster model update'")
+
+        # ### Apply state to enable changes in reclass
         LOG.info('Perform refresh_pillar')
         salt_actions.run_state("*", "saltutil.refresh_pillar")
-        salt_actions.enforce_state("I@keystone:client:os_client_config",
-                                   "keystone.client.os_client_config")
-        # #### guarantee that the KeystoneRC metadata is exported to mine ####
-        underlay_actions.check_call(
-            node_name=cfg_node, verbose=verbose,
-            cmd="salt -C 'I@keystone:client:enabled' state.sls"
-                " keystone.upgrade.pre")
 
         self.execute_pre_post_steps(underlay_actions, cfg_node,
                                     verbose, 'pre')
@@ -196,7 +214,7 @@ class TestUpdatePikeToQueens(object):
             job_parameters=job_parameters)
         assert update_control_vms == 'SUCCESS'
 
-        # ########## Upgrade gatewey nodes  ###########
+        # ########## Upgrade gateway nodes  ###########
         show_step(3)
         LOG.info('Upgrade gateway')
         job_name = 'deploy-upgrade-ovs-gateway'
