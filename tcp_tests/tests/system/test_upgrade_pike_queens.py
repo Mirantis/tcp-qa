@@ -221,17 +221,17 @@ class TestUpdatePikeToQueens(object):
         # ########## Upgrade gateway nodes  ###########
         show_step(3)
         LOG.info('Upgrade gateway')
-        job_name = 'deploy-upgrade-ovs-gateway'
-        job_parameters = {
-            'INTERACTIVE': False,
-            'OS_DIST_UPGRADE': False,
-            'OS_UPGRADE': False,
-            'TARGET_SERVERS': "gtw*"
-        }
-        update_gateway = dt.start_job_on_cid_jenkins(
-            job_name=job_name,
-            job_parameters=job_parameters)
-        assert update_gateway == 'SUCCESS'
+        # job_name = 'deploy-upgrade-ovs-gateway'
+        # job_parameters = {
+        #     'INTERACTIVE': False,
+        #     'OS_DIST_UPGRADE': False,
+        #     'OS_UPGRADE': False,
+        #     'TARGET_SERVERS': "gtw*"
+        # }
+        # update_gateway = dt.start_job_on_cid_jenkins(
+        #     job_name=job_name,
+        #     job_parameters=job_parameters)
+        # assert update_gateway == 'SUCCESS'
         # ############ Upgrade compute nodes  ############
         show_step(4)
         LOG.info('Upgrade compute nodes')
