@@ -195,7 +195,10 @@ node ("${PARENT_NODE_NAME}") {
                     testSuiteName = "LMA2.0_Automated"
                     methodname = "{methodname}"
                     testrail_name_template = "{title}"
-                    ret = shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template)
+                    reporter_extra_options = [
+                      "--testrail-add-missing-cases",
+                      "--testrail-case-custom-fields {\\\"custom_qa_team\\\":\\\"9\\\"}",
+                    ret = shared.upload_results_to_testrail(stacklight_report_name, testSuiteName, methodname, testrail_name_template, reporter_extra_options)
                     common.printMsg(ret.stdout, "blue")
                     report_url = ret.stdout.split("\n").each {
                         if (it.contains("[TestRun URL]")) {
