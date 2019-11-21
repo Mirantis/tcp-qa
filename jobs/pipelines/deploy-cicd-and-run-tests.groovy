@@ -168,7 +168,7 @@ timeout(time: 15, unit: 'HOURS') {
             if (jenkins_slave_node_name != env.NODE_NAME) {
                 node ("${jenkins_slave_node_name}") {
                     stage("Archive all xml reports from node ${jenkins_slave_node_name}") {
-                        archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz"
+                        archiveArtifacts artifacts: "**/*.xml,**/*.ini,**/*.log,**/*.tar.gz", allowEmptyArchive: true
                     }
                     if ("${env.REPORT_TO_TESTRAIL}" != "false") {
                         stage("report results to testrail") {
