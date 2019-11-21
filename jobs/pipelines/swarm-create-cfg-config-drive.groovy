@@ -43,15 +43,26 @@ node (node_name) {
                           credentialsId: env.GERRIT_MCP_CREDENTIALS_ID,
                           usernameVariable: "GERRIT_USERNAME",
                           passwordVariable: "GERRIT_PASSWORD"]]) {
+            def gerrit_user = env.GERRIT_USERNAME
+            def gerrit_password = env.GERRIT_PASSWORD
+            String gerrit_host = "gerrit.mcp.mirantis.net"
+            String gerrit_port = "29418"
+            ssh.prepareSshAgentKey(credentialsId)
 
-            sh ("""\
-                set -ex
-                eval \$(ssh-agent)
-                ssh-add ${GERRIT_KEY}
-                git clone ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mcp/mcp-common-scripts mcp-common-scripts-git
-                git clone --mirror ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mk/mk-pipelines mk-pipelines
-                git clone --mirror ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mcp-ci/pipeline-library pipeline-library
-            """)
+            ssh.agentSh(
+                "set -ex; " +
+                "git clone ssh://${gerrit_user}@${gerrit_host}:${gerrit_port}/mcp/mcp-common-scripts mcp-common-scripts-git; " +
+                "git clone --mirror ssh://${gerrit_user}@${gerrit_host}:${gerrit_port}/mk/mk-pipelines mk-pipelines; " +
+                "git clone --mirror ssh://${gerrit_user}@${gerrit_host}:${gerrit_port}/mcp-ci/pipeline-library pipeline-library")
+            
+            // sh ("""\
+            //     set -ex
+            //     eval \$(ssh-agent)
+            //     ssh-add ${GERRIT_KEY}
+            //     git clone ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mcp/mcp-common-scripts mcp-common-scripts-git
+            //     git clone --mirror ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mk/mk-pipelines mk-pipelines
+            //     git clone --mirror ssh://${GERRIT_USERNAME}@gerrit.mcp.mirantis.net:29418/mcp-ci/pipeline-library pipeline-library
+            // """)
 
             if (COMMON_SCRIPTS_COMMIT != '') {
                 sh ("""\
@@ -63,42 +74,59 @@ node (node_name) {
             }
 
             if (MCP_COMMON_SCRIPTS_REFS != '') {
-                sh ("""\
-                    set -ex
-                    eval \$(ssh-agent)
-                    ssh-add ${GERRIT_KEY}
-                    cd mcp-common-scripts-git
-                    git fetch https://gerrit.mcp.mirantis.com/mcp/mcp-common-scripts ${MCP_COMMON_SCRIPTS_REFS} && git checkout FETCH_HEAD
-                    git log -1
-                """)
+                ssh.agentSh(
+                    "set -ex; " +
+                    "cd mcp-common-scripts-git; " +
+                    "git fetch https://${gerrit_host}/mcp/mcp-common-scripts ${MCP_COMMON_SCRIPTS_REFS} && git checkout FETCH_HEAD; " +
+                    "git log -1")
+                // sh ("""\
+                //     set -ex
+                //     eval \$(ssh-agent)
+                //     ssh-add ${GERRIT_KEY}
+                //     cd mcp-common-scripts-git
+                //     git fetch https://gerrit.mcp.mirantis.com/mcp/mcp-common-scripts ${MCP_COMMON_SCRIPTS_REFS} && git checkout FETCH_HEAD
+                //     git log -1
+                // """)
             }
 
             if (PIPELINE_LIBRARY_REF != '') {
-                sh ("""\
-                    set -ex
-                    eval \$(ssh-agent)
-                    ssh-add ${GERRIT_KEY}
-                    cd pipeline-library
-                    git fetch https://gerrit.mcp.mirantis.net/mcp-ci/pipeline-library ${PIPELINE_LIBRARY_REF}
-                    git tag ${MCP_VERSION} FETCH_HEAD -f
-                    git branch -f release/${MCP_VERSION} FETCH_HEAD
-                    git log -1
-                """)
+                ssh.agentSh(
+                    "set -ex; " +
+                    "cd pipeline-library; " +
+                    "git fetch https://${gerrit_host}/mcp-ci/pipeline-library ${PIPELINE_LIBRARY_REF}; " +
+                    "git tag ${MCP_VERSION} FETCH_HEAD -f; " +
+                    "git branch -f release/${MCP_VERSION} FETCH_HEAD; " +
+                    "git log -1")
+                // sh ("""\
+                //     set -ex
+                //     eval \$(ssh-agent)
+                //     ssh-add ${GERRIT_KEY}
+                //     cd pipeline-library
+                //     git fetch https://gerrit.mcp.mirantis.net/mcp-ci/pipeline-library ${PIPELINE_LIBRARY_REF}
+                //     git tag ${MCP_VERSION} FETCH_HEAD -f
+                //     git branch -f release/${MCP_VERSION} FETCH_HEAD
+                //     git log -1
+                // """)
             }
             if (MK_PIPELINES_REF != '') {
-                sh ("""\
-                    set -ex
-                    eval \$(ssh-agent)
-                    ssh-add ${GERRIT_KEY}
-                    cd mk-pipelines
-                    git fetch https://gerrit.mcp.mirantis.net/mk/mk-pipelines ${MK_PIPELINES_REF}
-                    git tag ${MCP_VERSION} FETCH_HEAD -f
-                    git branch -f release/${MCP_VERSION} FETCH_HEAD
-                    git log -1
-                """)
+                ssh.agentSh(
+                    "set -ex; " +
+                    "cd mk-pipelines; " +
+                    "git fetch https://${gerrit_host}/mk/mk-pipelines ${MK_PIPELINES_REF}; " +
+                    "git tag ${MCP_VERSION} FETCH_HEAD -f; " + 
+                    "git branch -f release/${MCP_VERSION} FETCH_HEAD; " +
+                    "git log -1")
+                // sh ("""\
+                //     set -ex
+                //     eval \$(ssh-agent)
+                //     ssh-add ${GERRIT_KEY}
+                //     cd mk-pipelines
+                //     git fetch https://gerrit.mcp.mirantis.net/mk/mk-pipelines ${MK_PIPELINES_REF}
+                //     git tag ${MCP_VERSION} FETCH_HEAD -f
+                //     git branch -f release/${MCP_VERSION} FETCH_HEAD
+                //     git log -1
+                // """)
             }
-
-
         }
     }
 
