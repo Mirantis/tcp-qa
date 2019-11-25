@@ -497,7 +497,8 @@ def generate_configdrive_iso(SALT_MASTER_IP, ADMIN_NETWORK_GW) {
                 string(name: 'TCP_QA_REFS', value: "${tcp_qa_refs}"),
                 string(name: 'UPDATE_VERSION', value: "${update_version}"),
                 string(name: 'MCP_COMMON_SCRIPTS_REFS', value: "${mcp_common_scripts_ref}"),
-                string(name: 'MCP_SALT_REPO_UPDATES', value: "'deb [arch=amd64] http://mirror.mirantis.com/update/${UPDATE_VERSION}/salt-formulas/xenial xenial main'"),
+                // string(name: 'MCP_SALT_REPO_UPDATES', value: "'deb [arch=amd64] http://mirror.mirantis.com/update/${UPDATE_VERSION}/salt-formulas/xenial xenial main'"),
+                string(name: 'MCP_SALT_REPO_UPDATES', value: "'deb [arch=amd64] http://mirror.mirantis.com/${UPDATE_VERSION}/salt-formulas/xenial xenial main'"),
             ]
         build_pipeline_job('swarm-create-cfg-config-drive', parameters)
 }

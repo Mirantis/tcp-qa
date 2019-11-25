@@ -22,6 +22,15 @@
 
 {{ SHARED.MACRO_GENERATE_INVENTORY(RERUN_SALTMASTER_STATE=true) }}
 
+- description: "Delete occurrences of system.linux.system.repo.mcp.apt_mirantis.update* classes inclusion from model"
+  cmd: |
+    set -e;
+    set -x;
+    grep 'system.linux.system.repo.mcp.apt_mirantis.update' -rlZ /srv/salt/reclass/classes/cluster/{{ LAB_CONFIG_NAME }}/ | xargs -0 sed -i '/system.linux.system.repo.mcp.apt_mirantis.update/d'
+  node_name: {{ HOSTNAME_CFG01 }}
+  retry: {count: 1, delay: 5}
+  skip_fail: false
+
 - description: "Add cpu_mode"
   cmd: |
     set -e;
